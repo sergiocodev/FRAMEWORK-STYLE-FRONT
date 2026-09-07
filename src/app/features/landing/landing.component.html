@@ -1,0 +1,267 @@
+<div class="landing-page">
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="logo">
+        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M16 2L2 9.5L16 17L30 9.5L16 2Z" fill="url(#paint0_linear)"/>
+          <path d="M2 22.5L16 30L30 22.5" stroke="url(#paint1_linear)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M2 16L16 23.5L30 16" stroke="url(#paint2_linear)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          <defs>
+            <linearGradient id="paint0_linear" x1="2" y1="9.5" x2="30" y2="9.5" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#FF3366"/>
+              <stop offset="1" stop-color="#7C3AED"/>
+            </linearGradient>
+            <linearGradient id="paint1_linear" x1="2" y1="26.25" x2="30" y2="26.25" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#FF3366"/>
+              <stop offset="1" stop-color="#7C3AED"/>
+            </linearGradient>
+            <linearGradient id="paint2_linear" x1="2" y1="19.75" x2="30" y2="19.75" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#FF3366"/>
+              <stop offset="1" stop-color="#7C3AED"/>
+            </linearGradient>
+          </defs>
+        </svg>
+        <span class="brand">STYLE Framework</span>
+      </div>
+
+      <div class="nav-links">
+        <a href="#inicio">Inicio</a>
+        <a href="#que-es-style">¿Qué es STYLE?</a>
+        <a href="#beneficios">Beneficios</a>
+        <a href="#recursos">Recursos</a>
+        <a href="#precios">Precios</a>
+      </div>
+
+      <div class="nav-actions">
+        <a routerLink="/login" class="btn-ghost">Iniciar sesión</a>
+        <a routerLink="/register" class="btn-primary">Empezar gratis</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-bg-grid"></div>
+    <div class="hero-glow"></div>
+    
+    <div class="hero-content">
+      
+      <h1>
+        Diseña interfaces gráficas <br/>
+        con <span>propósito y estética</span>
+      </h1>
+      
+      <p>
+        Un marco de trabajo metodológico diseñado para guiarte desde la investigación 
+        hasta la evaluación heurística. Garantiza que tus interfaces sean visualmente 
+        extraordinarias y centradas en el usuario.
+      </p>
+
+      <div class="hero-actions">
+        <a routerLink="/register" class="btn-primary btn-large">
+          Comenzar proyecto
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+        </a>
+        <a href="#fases" class="btn-secondary btn-large">
+          Explorar metodología
+        </a>
+      </div>
+    </div>
+
+    <!-- Canvas / Editor Mockup -->
+    <div class="hero-mockup-wrapper">
+      <div class="editor-window">
+        <!-- Editor Header -->
+        <div class="editor-header">
+          <div class="window-controls">
+            <span></span><span></span><span></span>
+          </div>
+          <div class="editor-tabs">
+            <div class="tab active">Investigación.fig</div>
+            <div class="tab">Wireframes.fig</div>
+            <div class="tab">Componentes.fig</div>
+          </div>
+          <div class="editor-tools">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+            <span>100%</span>
+          </div>
+        </div>
+        
+        <!-- Editor Body -->
+        <div class="editor-body">
+          <!-- Sidebar Left -->
+          <div class="editor-sidebar-left">
+            <div class="sidebar-section">
+              <div class="section-title">FASES DEL FRAMEWORK</div>
+              <div class="layer-item active"><span class="icon">🔍</span> 1. Investigación</div>
+              <div class="layer-item"><span class="icon">📐</span> 2. Diseño Conceptual</div>
+              <div class="layer-item"><span class="icon">🎨</span> 3. Diseño Visual</div>
+              <div class="layer-item"><span class="icon">✨</span> 4. Diseño Detallado</div>
+              <div class="layer-item"><span class="icon">📊</span> 5. Evaluación Estética</div>
+            </div>
+          </div>
+          
+          <!-- Main Canvas -->
+          <div class="editor-canvas">
+            <div class="canvas-grid"></div>
+            
+            <!-- Artboard -->
+            <div class="artboard floating-element">
+              <div class="artboard-label">Dashboard_App_Final</div>
+              <div class="artboard-content">
+                <div class="mock-nav"></div>
+                <div class="mock-content-row">
+                  <div class="mock-card pink-glow"></div>
+                  <div class="mock-card purple-glow"></div>
+                  <div class="mock-card blue-glow"></div>
+                </div>
+                <div class="mock-content-large"></div>
+              </div>
+            </div>
+
+            <!-- Floating UI Elements -->
+            <div class="floating-palette">
+              <div class="color-swatch" style="background: #FF3366"></div>
+              <div class="color-swatch" style="background: #7C3AED"></div>
+              <div class="color-swatch" style="background: #10B981"></div>
+              <div class="color-swatch" style="background: #F59E0B"></div>
+            </div>
+            
+            <div class="cursor-mockup">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M5.5 3.5L19.5 10.5L12 13L15.5 21L12.5 22.5L9 14.5L3.5 17L5.5 3.5Z" fill="#111" stroke="white" stroke-width="2"/>
+              </svg>
+              <div class="cursor-tag">Sandro E.</div>
+            </div>
+          </div>
+          
+          <!-- Sidebar Right -->
+          <div class="editor-sidebar-right">
+            <div class="sidebar-section">
+              <div class="section-title">EVALUACIÓN HEURÍSTICA</div>
+              
+              <div class="prop-panel">
+                <div class="prop-label">Contraste (WCAG)</div>
+                <div class="prop-bar"><div class="fill success" style="width: 100%"></div></div>
+                <div class="prop-value">Aprobado (AAA)</div>
+              </div>
+              
+              <div class="prop-panel">
+                <div class="prop-label">Jerarquía Visual</div>
+                <div class="prop-bar"><div class="fill warning" style="width: 85%"></div></div>
+                <div class="prop-value">Óptima</div>
+              </div>
+              
+              <div class="prop-panel">
+                <div class="prop-label">Espaciado y Retícula</div>
+                <div class="prop-bar"><div class="fill success" style="width: 95%"></div></div>
+                <div class="prop-value">Consistente</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Phases Section (Bento Box) -->
+  <section id="fases" class="phases-section">
+    <div class="section-header">
+      <h2>Las 5 fases de STYLE</h2>
+      <p>Una metodología iterativa que abarca desde la conceptualización hasta la validación estética final.</p>
+    </div>
+
+    <div class="bento-grid">
+      <!-- Fase 1 -->
+      <div class="bento-card phase-1">
+        <div class="card-content">
+          <div class="phase-number">Fase 01</div>
+          <h3>Investigación</h3>
+          <p>Comprende el problema, analiza referencias y documenta las expectativas y necesidades de los usuarios mediante entrevistas y revisión documental.</p>
+        </div>
+        <div class="card-visual">
+          <div class="mock-doc">
+            <div class="line"></div>
+            <div class="line short"></div>
+            <div class="line"></div>
+            <div class="line medium"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Fase 2 -->
+      <div class="bento-card phase-2">
+        <div class="card-content">
+          <div class="phase-number">Fase 02</div>
+          <h3>Diseño Conceptual</h3>
+          <p>Organiza la estructura de la interfaz, prioriza los contenidos y elabora wireframes de baja fidelidad.</p>
+        </div>
+        <div class="card-visual wireframe-mock">
+          <div class="wire-box head"></div>
+          <div class="wire-box body"></div>
+        </div>
+      </div>
+
+      <!-- Fase 3 -->
+      <div class="bento-card phase-3 col-span-2">
+        <div class="card-content">
+          <div class="phase-number">Fase 03</div>
+          <h3>Diseño Visual</h3>
+          <p>Define la dirección estética: paletas de colores, sistemas tipográficos y componentes visuales que representarán la identidad institucional.</p>
+        </div>
+        <div class="card-visual palette-mock">
+          <div class="circle c1"></div>
+          <div class="circle c2"></div>
+          <div class="circle c3"></div>
+          <div class="typography-mock">Aa</div>
+        </div>
+      </div>
+
+      <!-- Fase 4 -->
+      <div class="bento-card phase-4 col-span-2">
+        <div class="card-content">
+          <div class="phase-number">Fase 04</div>
+          <h3>Diseño Detallado</h3>
+          <p>Transforma los wireframes en un prototipo visual de alta fidelidad, aplicando los lineamientos establecidos en la guía visual.</p>
+        </div>
+        <div class="card-visual hifi-mock">
+          <div class="hifi-screen">
+            <div class="hifi-header"></div>
+            <div class="hifi-body">
+              <div class="hifi-img"></div>
+              <div class="hifi-text"></div>
+              <div class="hifi-btn"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Fase 5 -->
+      <div class="bento-card phase-5">
+        <div class="card-content">
+          <div class="phase-number">Fase 05</div>
+          <h3>Evaluación Estética</h3>
+          <p>Valora la interfaz mediante métodos heurísticos, pruebas A/B o cuestionarios VisAWI para garantizar que el diseño sea atractivo y usable.</p>
+        </div>
+        <div class="card-visual chart-mock">
+          <div class="bar h100"></div>
+          <div class="bar h60"></div>
+          <div class="bar h80"></div>
+          <div class="bar h40"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="bottom-cta">
+    <div class="cta-content">
+      <h2>Transforma tu forma de diseñar</h2>
+      <p>Aplica el framework STYLE hoy mismo y asegura la calidad visual de todas tus interfaces.</p>
+      <a routerLink="/register" class="btn-primary btn-large">
+        Crear cuenta gratis
+      </a>
+    </div>
+  </section>
+</div>
