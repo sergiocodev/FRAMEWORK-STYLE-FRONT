@@ -1,0 +1,75 @@
+<div class="card border-0 shadow-sm rounded-4 p-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+      <div class="d-flex align-items-center gap-2 text-primary">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+          <circle cx="9" cy="7" r="4"></circle>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+        </svg>
+        <h6 class="fw-bold mb-0 text-dark">2. Usuarios</h6>
+      </div>
+      <p class="text-secondary small mb-0 mt-1">Define los perfiles de usuarios (arquetipos) y sus principales
+        necesidades.</p>
+    </div>
+    <button (click)="addUser()"
+      class="btn btn-outline-primary rounded-3 fw-medium text-primary bg-primary bg-opacity-10 border-0 d-flex align-items-center gap-2 px-3 py-2 btn-sm hover-bg-primary-hover">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round">
+        <line x1="12" y1="5" x2="12" y2="19"></line>
+        <line x1="5" y1="12" x2="19" y2="12"></line>
+      </svg>
+      Añadir arquetipo
+    </button>
+  </div>
+
+  <div class="row g-3 mt-1">
+    <!-- Arquetipos Cards -->
+    <div class="col-12 col-md-4" *ngFor="let user of usuarios; let i = index">
+      <div class="card h-100 rounded-3 border bg-white shadow-sm hover-lift position-relative">
+        
+        <div class="card-body p-3">
+          <div class="d-flex justify-content-between align-items-start mb-3">
+            <div class="d-flex align-items-center gap-2 w-100 pe-3">
+              <img [src]="user.photoUrl" class="rounded-circle border flex-shrink-0" width="40" height="40" alt="Avatar">
+              <div class="w-100">
+                <div class="d-flex align-items-center gap-2 mb-1 w-100">
+                  <input type="text" [(ngModel)]="user.role" (ngModelChange)="emitChanges()" class="form-control form-control-sm border-0 fw-bold text-dark p-0 shadow-none bg-transparent" style="font-size: 0.85rem;" placeholder="Rol...">
+                  <select [(ngModel)]="user.tag" (ngModelChange)="emitChanges()" class="form-select form-select-sm border-0 shadow-none p-0 pe-3 flex-shrink-0 w-auto text-center badge rounded-pill fw-medium"
+                    [ngClass]="user.tag === 'Principal' ? 'bg-info bg-opacity-10 text-info' : 'bg-secondary bg-opacity-10 text-secondary'"
+                    style="font-size: 0.6rem; cursor: pointer;">
+                    <option value="Principal">Principal</option>
+                    <option value="Secundario">Secundario</option>
+                    <option value="General">General</option>
+                  </select>
+                </div>
+                <input type="text" [(ngModel)]="user.name" (ngModelChange)="emitChanges()" class="form-control form-control-sm border-0 text-secondary small p-0 shadow-none bg-transparent" style="font-size: 0.75rem;" placeholder="Nombre ficticio...">
+              </div>
+            </div>
+            <button (click)="removeUser(i)" class="btn btn-link text-muted p-0 m-0 position-absolute top-0 end-0 mt-3 me-3" title="Eliminar"><svg width="16" height="16" viewBox="0 0 24 24"
+                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg></button>
+          </div>
+          
+          <ul class="list-unstyled mb-0 ms-1">
+            <li *ngFor="let need of user.needs; let j = index" class="text-secondary small d-flex gap-2 align-items-start mb-2"
+              style="font-size: 0.75rem;">
+              <span class="text-primary mt-2" style="font-size: 0.5rem;">●</span>
+              <input type="text" [(ngModel)]="user.needs[j]" (ngModelChange)="emitChanges()" class="form-control form-control-sm border-0 bg-light p-1 px-2 text-secondary shadow-none w-100" placeholder="Escribe una necesidad...">
+              <button (click)="removeNeed(user, j)" class="btn btn-sm btn-link text-muted p-0 mt-1 ms-1 hover-text-danger"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+            </li>
+          </ul>
+          <button (click)="addNeed(user)" class="btn btn-sm btn-link text-primary text-decoration-none p-0 ms-3 mt-1 d-flex align-items-center gap-1" style="font-size: 0.7rem;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            Añadir necesidad
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

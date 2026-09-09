@@ -51,11 +51,11 @@ export class SidebarComponent {
     {
       title: 'FRAMEWORK STYLE',
       items: [
-        { label: 'Investigación', link: '/framework/investigation', iconSvg: '<circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>' },
-        { label: 'Conceptual', link: '/framework/conceptual', iconSvg: '<rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><rect x="7" y="7" width="10" height="10" rx="1" ry="1"></rect>' },
-        { label: 'Visual', link: '/framework/visual', iconSvg: '<circle cx="13.5" cy="6.5" r=".5" fill="currentColor"></circle><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"></circle><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"></circle><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"></circle><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10c1.38 0 2.5-1.12 2.5-2.5 0-.61-.23-1.17-.61-1.59-.44-.48-.68-1.07-.64-1.69.09-1.28 1.15-2.22 2.45-2.22H18c2.21 0 4-1.79 4-4 0-4.42-4.48-8-10-8z"></path>' },
-        { label: 'Detallado', link: '/framework/detallado', iconSvg: '<rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line>' },
-        { label: 'Evaluación', link: '/framework/evaluacion', iconSvg: '<polyline points="20 6 9 17 4 12"></polyline>' }
+        { label: 'Investigación', link: '/framework/projects/1/investigation', iconSvg: '<circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>' },
+        { label: 'Conceptual', link: '/framework/projects/1/conceptual', iconSvg: '<rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><rect x="7" y="7" width="10" height="10" rx="1" ry="1"></rect>' },
+        { label: 'Visual', link: '/framework/projects/1/visual', iconSvg: '<circle cx="13.5" cy="6.5" r=".5" fill="currentColor"></circle><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"></circle><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"></circle><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"></circle><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10c1.38 0 2.5-1.12 2.5-2.5 0-.61-.23-1.17-.61-1.59-.44-.48-.68-1.07-.64-1.69.09-1.28 1.15-2.22 2.45-2.22H18c2.21 0 4-1.79 4-4 0-4.42-4.48-8-10-8z"></path>' },
+        { label: 'Detallado', link: '/framework/projects/1/detallado', iconSvg: '<rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line>' },
+        { label: 'Evaluación', link: '/framework/projects/1/evaluacion', iconSvg: '<polyline points="20 6 9 17 4 12"></polyline>' }
       ]
     }
   ];
