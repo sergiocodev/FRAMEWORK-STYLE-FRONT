@@ -1,20 +1,11 @@
 $primary-color: #ec4899;
 $primary-hover: #db2777;
-$text-main: #1e293b;
-$text-muted: #64748b;
 $bg-color: #f8fafc;
-$error-color: #ef4444;
 
 .register-wrapper {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   background-color: $bg-color;
   font-family: 'Outfit', sans-serif;
-  position: relative;
   overflow: hidden;
-  padding: 2rem 0;
 }
 
 // Background Dynamic Orbs (Premium look)
@@ -69,17 +60,10 @@ $error-color: #ef4444;
 
 // Glassmorphism Card
 .register-card {
-  position: relative;
-  z-index: 1;
-  width: 100%;
   max-width: 460px;
   background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  border-radius: 24px;
-  padding: 2.5rem 2.5rem;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
   animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
@@ -88,201 +72,133 @@ $error-color: #ef4444;
   100% { opacity: 1; transform: translateY(0); }
 }
 
-.card-header {
-  text-align: center;
-  margin-bottom: 2rem;
-
-  .logo {
-    width: 56px;
-    height: 56px;
-    background: linear-gradient(135deg, $primary-color, #f43f5e);
-    border-radius: 16px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 1.25rem;
-    box-shadow: 0 10px 15px -3px rgba(236, 72, 153, 0.3);
-
-    svg {
-      width: 32px;
-      height: 32px;
-      color: white;
-    }
-  }
-
-  h2 {
-    margin: 0 0 0.5rem;
-    font-size: 1.75rem;
-    color: $text-main;
-    font-weight: 700;
-  }
-
-  p {
-    margin: 0;
-    color: $text-muted;
-    font-size: 0.95rem;
-  }
-}
-
-.register-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-
-  label {
-    font-size: 0.85rem;
-    font-weight: 500;
-    color: $text-main;
-    margin-left: 0.25rem;
-  }
-
-  .input-container {
-    display: flex;
-    align-items: center;
-    background: white;
-    border: 1px solid #e2e8f0;
-    border-radius: 12px;
-    padding: 0 1rem;
-    transition: all 0.2s ease;
-
-    &:focus-within {
-      border-color: $primary-color;
-      box-shadow: 0 0 0 4px rgba(236, 72, 153, 0.1);
-    }
-
-    &.has-error {
-      border-color: $error-color;
-      background: #fef2f2;
-      .icon { color: $error-color; }
-    }
-
-    .icon {
-      width: 18px;
-      height: 18px;
-      color: #94a3b8;
-      margin-right: 0.75rem;
-    }
-
-    input {
-      flex: 1;
-      border: none;
-      background: transparent;
-      padding: 0.8rem 0;
-      font-size: 0.95rem;
-      font-family: inherit;
-      color: $text-main;
-      outline: none;
-
-      &::placeholder {
-        color: #cbd5e1;
-      }
-    }
-  }
-
-  .error-text {
-    font-size: 0.75rem;
-    color: $error-color;
-    margin-left: 0.25rem;
-  }
-}
-
-.submit-btn {
-  margin-top: 1rem;
-  background: $primary-color;
-  color: white;
-  border: none;
-  border-radius: 12px;
-  padding: 1rem;
-  font-size: 1rem;
-  font-weight: 600;
-  font-family: inherit;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4px 6px -1px rgba(236, 72, 153, 0.2);
-
-  &:hover:not(:disabled) {
-    background: $primary-hover;
-    transform: translateY(-2px);
-    box-shadow: 0 10px 15px -3px rgba(236, 72, 153, 0.3);
-  }
-
-  &:active:not(:disabled) {
-    transform: translateY(0);
-  }
-
-  &:disabled {
-    opacity: 0.7;
-    cursor: not-allowed;
-  }
-}
-
-.alert-box {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.75rem 1rem;
-  border-radius: 8px;
-  font-size: 0.875rem;
-  font-weight: 500;
-  animation: fadeIn 0.3s ease;
-  margin-top: 0.5rem;
-
-  &.error {
-    background: #fef2f2;
-    color: #991b1b;
-    border: 1px solid #fecaca;
-  }
+.logo {
+  width: 56px;
+  height: 56px;
+  background: linear-gradient(135deg, $primary-color, #f43f5e);
+  box-shadow: 0 10px 15px -3px rgba(236, 72, 153, 0.3);
 
   svg {
-    width: 20px;
-    height: 20px;
+    width: 32px;
+    height: 32px;
+    color: white;
   }
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-10px); }
-  to { opacity: 1; transform: translateY(0); }
+// Overrides for Bootstrap elements to match the original premium style
+.custom-btn {
+  background-color: $primary-color;
+  border-color: $primary-color;
+  transition: all 0.3s ease;
+
+  &:hover, &:focus, &:active {
+    background-color: $primary-hover !important;
+    border-color: $primary-hover !important;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(236, 72, 153, 0.3) !important;
+  }
 }
 
-// Loading Spinner
-.spinner {
-  width: 20px;
-  height: 20px;
-  border: 3px solid rgba(255, 255, 255, 0.3);
-  border-radius: 50%;
-  border-top-color: white;
-  animation: spin 1s ease-in-out infinite;
+.custom-link {
+  color: $primary-color !important;
+  transition: color 0.2s ease;
+  
+  &:hover {
+    color: $primary-hover !important;
+    text-decoration: underline !important;
+  }
 }
 
-@keyframes spin {
-  to { transform: rotate(360deg); }
+// Input Group styling to seamlessly integrate icon and input
+.input-group-text {
+  border-right: none;
+}
+.form-control {
+  border-left: none;
+  font-family: inherit;
+  
+  &:focus {
+    box-shadow: none;
+    border-color: #dee2e6;
+  }
+  &::placeholder {
+    color: #cbd5e1;
+  }
 }
 
-.login-redirect {
-  text-align: center;
-  margin-top: 1rem;
-  font-size: 0.9rem;
-  color: $text-muted;
+// Custom focus ring for the entire input group
+.input-group:focus-within {
+  box-shadow: 0 0 0 4px rgba(236, 72, 153, 0.1) !important;
+  border-radius: 0.375rem;
+  
+  .input-group-text, .form-control {
+    border-color: $primary-color;
+  }
+}
 
-  a {
+// Handle Bootstrap's is-invalid state inside input-group
+.input-group:has(.is-invalid) {
+  .input-group-text {
+    border-color: var(--bs-form-invalid-border-color);
+    svg { color: var(--bs-form-invalid-color) !important; }
+  }
+}
+
+// Floating Back Button
+.floating-back-btn {
+  position: absolute;
+  top: 2rem;
+  left: 2rem;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 50px;
+  color: #334155;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  overflow: hidden;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+
+  svg {
+    width: 22px;
+    height: 22px;
+    flex-shrink: 0;
+    transition: transform 0.3s ease;
+  }
+
+  .back-text {
+    font-size: 0.875rem;
+    font-weight: 500;
+    white-space: nowrap;
+    opacity: 0;
+    max-width: 0;
+    transition: all 0.4s ease;
+  }
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.8);
+    padding-right: 1.25rem;
     color: $primary-color;
-    font-weight: 600;
-    text-decoration: none;
-    margin-left: 0.4rem;
-    transition: color 0.2s ease;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    border-color: rgba(255, 255, 255, 0.8);
 
-    &:hover {
-      color: $primary-hover;
-      text-decoration: underline;
+    svg {
+      transform: translateX(-3px);
     }
+
+    .back-text {
+      opacity: 1;
+      max-width: 150px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    top: 1rem;
+    left: 1rem;
   }
 }

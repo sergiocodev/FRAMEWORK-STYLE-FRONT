@@ -1,0 +1,24 @@
+.stepper-wrapper {
+  /* Hide scrollbar for cleaner look, but keep functionality */
+  &::-webkit-scrollbar {
+    height: 4px;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+  }
+
+  .step-card {
+    min-width: 220px; /* Ensure cards don't shrink too much on small screens */
+    transition: all 0.3s ease;
+  }
+  
+  .active-step {
+    /* Slight blue tint to background to match the active state */
+    background-color: #eff6ff !important; 
+    border-color: #bfdbfe !important;
+  }
+}

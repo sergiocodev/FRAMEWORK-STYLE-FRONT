@@ -1,0 +1,428 @@
+<div class="investigation-container min-vh-100 bg-light d-flex flex-column"
+  style="background-color: #F8FAFC !important;">
+  <!-- Header Navbar -->
+  <header class="bg-white border-bottom px-4 py-3 sticky-top z-3">
+    <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+      
+      <!-- Project Info (Left) -->
+      <div class="d-flex align-items-center gap-3">
+        <div class="bg-primary bg-opacity-10 text-primary rounded-3 d-flex align-items-center justify-content-center flex-shrink-0" style="width: 48px; height: 48px;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+            <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
+          </svg>
+        </div>
+        <div>
+          <div class="d-flex align-items-center gap-2 mb-1">
+            <h4 class="fw-bold text-dark mb-0 fs-5">{{ project.title }}</h4>
+            <span class="badge bg-primary bg-opacity-10 text-primary rounded-pill fw-semibold px-2 py-1" style="font-size: 0.7rem;">{{ project.status }}</span>
+          </div>
+          <p class="text-secondary small mb-0 fw-medium">Tipo: {{ project.type }} <span class="mx-2 text-light-gray">|</span> Cliente: {{ project.client }}</p>
+        </div>
+      </div>
+
+      <!-- Actions (Right) -->
+      <div class="d-flex align-items-center gap-3">
+        <button class="btn btn-white border rounded-3 fw-medium text-dark d-flex align-items-center gap-2 px-3 shadow-sm hover-bg-light">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+            <polyline points="17 21 17 13 7 13 7 21"></polyline>
+            <polyline points="7 3 7 8 15 8"></polyline>
+          </svg>
+          Guardar borrador
+        </button>
+        <button class="btn btn-primary rounded-3 fw-medium d-flex align-items-center gap-2 px-3 shadow-sm" style="background-color: #2563EB;">
+          Siguiente: Fase 2
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Stepper Component -->
+    <div class="px-4 pt-4 pb-2">
+      <app-stepper [phases]="phases"></app-stepper>
+    </div>
+  </header>
+
+
+
+  <!-- Main Content -->
+  <div class="container-fluid py-4 flex-grow-1 d-flex flex-column overflow-hidden">
+    <div class="row g-4 h-100 flex-grow-1">
+
+      <!-- Left Panel: Form Inputs -->
+      <div class="col-12 col-xl-6 d-flex flex-column h-100 pb-2">
+
+        <div class="mb-4 ps-2 flex-shrink-0">
+          <div class="d-flex align-items-center gap-2 mb-1">
+            <svg class="text-primary" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="16" y1="13" x2="8" y2="13"></line>
+              <line x1="16" y1="17" x2="8" y2="17"></line>
+              <polyline points="10 9 9 9 8 9"></polyline>
+            </svg>
+            <h5 class="fw-bold mb-0 text-dark">Configuración del proyecto</h5>
+          </div>
+          <p class="text-secondary small mb-0">Completa la información para la Fase 1: Investigación</p>
+        </div>
+
+        <div class="d-flex flex-column gap-4 pb-2 flex-grow-1 pe-xl-2 overflow-auto custom-scrollbar">
+
+          <!-- 1. Necesidad -->
+          <div class="card border-0 shadow-sm rounded-4 p-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <div class="d-flex align-items-center gap-2 text-primary">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                  <polyline points="14 2 14 8 20 8"></polyline>
+                  <line x1="16" y1="13" x2="8" y2="13"></line>
+                  <line x1="16" y1="17" x2="8" y2="17"></line>
+                  <polyline points="10 9 9 9 8 9"></polyline>
+                </svg>
+                <h6 class="fw-bold mb-0 text-dark">1. Necesidad</h6>
+              </div>
+              <button class="btn btn-link text-secondary p-0"><svg width="20" height="20" viewBox="0 0 24 24"
+                  fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg></button>
+            </div>
+            <p class="text-secondary small mb-3">Describe el problema o necesidad que se busca resolver con el proyecto.
+            </p>
+            <div class="position-relative">
+              <textarea class="form-control rounded-3 border-light bg-light shadow-none p-3 text-secondary" rows="5"
+                placeholder="Escribe la necesidad..."
+                style="font-size: 0.9rem; resize: none;">{{ necesidad }}</textarea>
+              <div class="text-end mt-2">
+                <span class="text-secondary small" style="font-size: 0.75rem;">{{ necesidad.length }}/1000</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 2. Usuarios -->
+          <div class="card border-0 shadow-sm rounded-4 p-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <div>
+                <div class="d-flex align-items-center gap-2 text-primary">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                  </svg>
+                  <h6 class="fw-bold mb-0 text-dark">2. Usuarios</h6>
+                </div>
+                <p class="text-secondary small mb-0 mt-1">Define los perfiles de usuarios (arquetipos) y sus principales
+                  necesidades.</p>
+              </div>
+              <button
+                class="btn btn-outline-primary rounded-3 fw-medium text-primary bg-primary bg-opacity-10 border-0 d-flex align-items-center gap-2 px-3 py-2 btn-sm hover-bg-primary-hover">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="12" y1="5" x2="12" y2="19"></line>
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+                Añadir arquetipo
+              </button>
+            </div>
+
+            <div class="row g-3 mt-1">
+              <!-- Arquetipos Cards -->
+              <div class="col-12 col-md-4" *ngFor="let user of usuarios">
+                <div class="card h-100 rounded-3 border bg-white shadow-sm hover-lift">
+                  <div class="card-body p-3">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                      <div class="d-flex align-items-center gap-2">
+                        <img [src]="user.photoUrl" class="rounded-circle border" width="40" height="40" alt="Avatar">
+                        <div>
+                          <div class="d-flex align-items-center gap-2">
+                            <h6 class="fw-bold text-dark mb-0" style="font-size: 0.85rem;">{{ user.role }}</h6>
+                            <span class="badge rounded-pill fw-medium"
+                              [ngClass]="user.tag === 'Principal' ? 'bg-info bg-opacity-10 text-info' : 'bg-secondary bg-opacity-10 text-secondary'"
+                              style="font-size: 0.6rem;">{{ user.tag }}</span>
+                          </div>
+                          <p class="text-secondary small mb-0" style="font-size: 0.75rem;">{{ user.name }}</p>
+                        </div>
+                      </div>
+                      <button class="btn btn-link text-muted p-0 m-0"><svg width="16" height="16" viewBox="0 0 24 24"
+                          fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                          stroke-linejoin="round">
+                          <circle cx="12" cy="12" r="1"></circle>
+                          <circle cx="12" cy="5" r="1"></circle>
+                          <circle cx="12" cy="19" r="1"></circle>
+                        </svg></button>
+                    </div>
+                    <ul class="list-unstyled mb-0 ms-1">
+                      <li *ngFor="let need of user.needs" class="text-secondary small mb-1 d-flex gap-2"
+                        style="font-size: 0.75rem;">
+                        <span class="text-primary mt-1" style="font-size: 0.5rem;">●</span> {{ need }}
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3. Recursos -->
+          <div class="card border-0 shadow-sm rounded-4 p-4 mb-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <div>
+                <div class="d-flex align-items-center gap-2 text-primary">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="17 8 12 3 7 8"></polyline>
+                    <line x1="12" y1="3" x2="12" y2="15"></line>
+                  </svg>
+                  <h6 class="fw-bold mb-0 text-dark">3. Recursos</h6>
+                </div>
+                <p class="text-secondary small mb-0 mt-1">Adjunta los recursos que ayudarán a comprender el contexto del
+                  proyecto.</p>
+              </div>
+              <button class="btn btn-link text-secondary p-0"><svg width="20" height="20" viewBox="0 0 24 24"
+                  fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg></button>
+            </div>
+
+            <!-- Drag and Drop Area -->
+            <div
+              class="border border-2 border-dashed rounded-4 p-4 text-center cursor-pointer mb-4 upload-zone hover-bg-light"
+              style="border-color: #cbd5e1 !important; border-style: dashed !important;">
+              <div
+                class="d-inline-flex align-items-center justify-content-center bg-primary bg-opacity-10 text-primary rounded-circle mb-3"
+                style="width: 48px; height: 48px;">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="17 8 12 3 7 8"></polyline>
+                  <line x1="12" y1="3" x2="12" y2="15"></line>
+                </svg>
+              </div>
+              <h6 class="fw-bold text-dark mb-1">Arrastra y suelta tus archivos aquí</h6>
+              <p class="text-primary mb-2 small fw-medium">o haz clic para seleccionar</p>
+              <p class="text-secondary small mb-0" style="font-size: 0.75rem;">Formatos permitidos: PDF, PNG, JPG, ZIP
+                <span class="mx-1">•</span> Tamaño máximo: 10 MB
+              </p>
+            </div>
+
+            <!-- Uploaded Files List -->
+            <div class="row g-3">
+              <div class="col-12 col-md-4" *ngFor="let file of recursos">
+                <div
+                  class="d-flex align-items-center justify-content-between border rounded-3 p-2 px-3 bg-white shadow-sm">
+                  <div class="d-flex align-items-center gap-3">
+                    <div class="text-danger" *ngIf="file.type === 'pdf'">
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                        <line x1="16" y1="17" x2="8" y2="17"></line>
+                        <polyline points="10 9 9 9 8 9"></polyline>
+                      </svg>
+                    </div>
+                    <div class="text-purple" style="color: #8b5cf6;" *ngIf="file.type === 'image'">
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                        <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                        <polyline points="21 15 16 10 5 21"></polyline>
+                      </svg>
+                    </div>
+                    <div class="text-warning" style="color: #f59e0b;" *ngIf="file.type === 'zip'">
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <line x1="12" y1="18" x2="12" y2="12"></line>
+                        <line x1="9" y1="15" x2="15" y2="15"></line>
+                      </svg>
+                    </div>
+                    <div>
+                      <h6 class="text-dark fw-medium mb-0 text-truncate" style="font-size: 0.8rem; max-width: 120px;">{{
+                        file.name }}</h6>
+                      <p class="text-secondary small mb-0" style="font-size: 0.7rem;">{{ file.size }}</p>
+                    </div>
+                  </div>
+                  <button class="btn btn-link text-secondary p-0 ms-2 hover-text-danger"><svg width="16" height="16"
+                      viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                      stroke-linejoin="round">
+                      <line x1="18" y1="6" x2="6" y2="18"></line>
+                      <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg></button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Right Panel: Document Preview -->
+      <div class="col-12 col-xl-6 d-flex flex-column h-100 pb-2">
+        <!-- Preview Toolbar -->
+        <div class="d-flex justify-content-between align-items-center mb-3 flex-shrink-0">
+          <div class="d-flex align-items-center gap-2">
+            <h5 class="fw-bold mb-0 text-dark">Vista previa del Informe de Investigación</h5>
+          </div>
+
+          <div class="d-flex align-items-center gap-3">
+            <span
+              class="badge bg-success bg-opacity-10 text-success rounded-pill fw-medium d-flex align-items-center gap-1 px-2 py-1 border border-success border-opacity-25"
+              style="font-size: 0.7rem;">
+              <div class="rounded-circle bg-success" style="width: 6px; height: 6px;"></div> Actualización en tiempo
+              real
+            </span>
+            <div class="bg-white rounded-3 shadow-sm border d-flex p-1">
+              <button
+                class="btn btn-sm btn-primary bg-primary bg-opacity-10 rounded-2 px-3 text-primary fw-medium border-0 d-flex align-items-center gap-2 hover-bg-primary-hover">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                  <polyline points="14 2 14 8 20 8"></polyline>
+                  <line x1="16" y1="13" x2="8" y2="13"></line>
+                  <line x1="16" y1="17" x2="8" y2="17"></line>
+                  <polyline points="10 9 9 9 8 9"></polyline>
+                </svg>
+                Vista previa
+              </button>
+              <button
+                class="btn btn-sm btn-white bg-transparent border-0 rounded-2 px-3 text-secondary fw-medium d-flex align-items-center gap-2 hover-bg-light">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="16 18 22 12 16 6"></polyline>
+                  <polyline points="8 6 2 12 8 18"></polyline>
+                </svg>
+                Markdown
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- A4 Document Preview Area -->
+        <div class="document-preview-container bg-white shadow-sm flex-grow-1 p-5 overflow-auto custom-scrollbar border"
+          style="font-family: 'Inter', sans-serif; border-radius: 4px;">
+
+          <!-- Doc Header -->
+          <div class="d-flex justify-content-between align-items-start mb-5 border-bottom pb-4">
+            <div class="d-flex align-items-center gap-3">
+              <div
+                class="bg-primary text-white d-flex align-items-center justify-content-center rounded-3 fs-3 fw-bold shadow-sm"
+                style="width: 48px; height: 48px;">
+                S
+              </div>
+              <div>
+                <h4 class="fw-bold text-dark mb-0 fs-5" style="letter-spacing: 1px;">STYLE</h4>
+                <p class="text-secondary mb-0" style="font-size: 0.7rem; line-height: 1.2;">Framework de Diseño y
+                  Mejora<br>de Interfaces de Usuario</p>
+              </div>
+            </div>
+            <div class="text-end">
+              <h5 class="fw-bold text-dark mb-2 fs-6">Informe de Investigación</h5>
+              <p class="text-secondary mb-1" style="font-size: 0.8rem;"><span class="fw-bold text-dark">Proyecto:</span>
+                {{ project.title }}</p>
+              <p class="text-secondary mb-1" style="font-size: 0.8rem;"><span class="fw-bold text-dark">Cliente:</span>
+                {{ project.client }}</p>
+              <p class="text-secondary mb-0" style="font-size: 0.8rem;"><span class="fw-bold text-dark">Fecha:</span> 12
+                sep 2025</p>
+            </div>
+          </div>
+
+          <!-- Doc Content -->
+          <div class="doc-content text-dark px-3">
+
+            <h6 class="fw-bold mb-3 fs-6" style="color: #1e293b;">1. Resumen del proyecto</h6>
+            <p class="mb-4 text-secondary" style="font-size: 0.9rem; line-height: 1.6;">El presente informe recopila la
+              información inicial del proyecto {{ project.title }}, con el objetivo de comprender la necesidad del
+              cliente, identificar a los usuarios y analizar los recursos disponibles para el desarrollo de una solución
+              digital que mejore la experiencia de aprendizaje y la gestión académica del colegio.</p>
+
+            <h6 class="fw-bold mb-3 fs-6" style="color: #1e293b;">2. Necesidad del proyecto</h6>
+            <p class="mb-4 text-secondary" style="font-size: 0.9rem; line-height: 1.6;">{{ necesidad }}</p>
+
+            <h6 class="fw-bold mb-4 fs-6" style="color: #1e293b;">3. Usuarios (Arquetipos)</h6>
+            <div class="row g-3 mb-5">
+              <div class="col-12 col-md-4" *ngFor="let user of usuarios">
+                <div class="border rounded-3 p-3 h-100">
+                  <div class="d-flex align-items-center gap-2 mb-3">
+                    <img [src]="user.photoUrl" class="rounded-circle border" width="36" height="36" alt="Avatar">
+                    <div>
+                      <div class="fw-bold text-dark" style="font-size: 0.8rem;">{{ user.role }}</div>
+                      <div class="text-primary" style="font-size: 0.75rem; font-weight: 500;">{{ user.name }}</div>
+                    </div>
+                  </div>
+                  <ul class="list-unstyled mb-0 ms-1">
+                    <li *ngFor="let need of user.needs" class="text-secondary mb-2 d-flex gap-2"
+                      style="font-size: 0.75rem; line-height: 1.4;">
+                      <span class="text-primary mt-1" style="font-size: 0.5rem;">●</span> <span>{{ need }}</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <h6 class="fw-bold mb-4 fs-6" style="color: #1e293b;">4. Recursos</h6>
+            <div class="d-flex flex-column gap-3 mb-5">
+
+              <div class="d-flex align-items-center gap-4" *ngFor="let file of recursos; let i = index">
+                <div
+                  class="d-flex align-items-center justify-content-center bg-light rounded-3 text-secondary border flex-shrink-0"
+                  style="width: 40px; height: 40px;">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round" *ngIf="file.type === 'pdf'">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                    <polyline points="10 9 9 9 8 9"></polyline>
+                  </svg>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round" *ngIf="file.type === 'image'">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                    <polyline points="21 15 16 10 5 21"></polyline>
+                  </svg>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round" *ngIf="file.type === 'zip'">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                    <line x1="12" y1="18" x2="12" y2="12"></line>
+                    <line x1="9" y1="15" x2="15" y2="15"></line>
+                  </svg>
+                </div>
+                <div style="min-width: 180px;">
+                  <h6 class="text-dark fw-bold mb-0" style="font-size: 0.8rem;">{{ file.name }}</h6>
+                  <p class="text-secondary small mb-0" style="font-size: 0.7rem;">{{ file.size }}</p>
+                </div>
+                <div class="text-secondary small flex-grow-1" style="font-size: 0.75rem;">
+                  <ng-container *ngIf="i === 0">Documento de identidad visual de la institución.</ng-container>
+                  <ng-container *ngIf="i === 1">Referencia de la interfaz actual del sistema.</ng-container>
+                  <ng-container *ngIf="i === 2">Ejemplos de plataformas educativas y buenas prácticas.</ng-container>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+          <!-- Doc Footer -->
+          <div class="mt-5 pt-4 border-top d-flex justify-content-between align-items-center text-secondary"
+            style="font-size: 0.7rem;">
+            <div><span class="fw-bold">STYLE</span> - Framework de Diseño y Mejora de Interfaces de Usuario</div>
+            <div>Página 1 de 1</div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

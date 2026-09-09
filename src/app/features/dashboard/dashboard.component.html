@@ -1,0 +1,542 @@
+<div class="dashboard-container p-4">
+  <!-- Header -->
+  <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+    <div>
+      <h2 class="fw-bold text-dark mb-1" style="letter-spacing: -0.5px;">¡Hola, Sergio!</h2>
+      <p class="text-secondary mb-0">Aquí tienes el estado general de todos los proyectos bajo el marco STYLE.</p>
+    </div>
+    
+    <div class="dropdown">
+      <button class="btn btn-primary d-flex align-items-center gap-2 px-3 py-2 rounded-3 shadow-sm border-0 fw-medium" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="background-color: #2563EB;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+        Nuevo Proyecto
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ms-1"><polyline points="6 9 12 15 18 9"></polyline></svg>
+      </button>
+      <ul class="dropdown-menu dropdown-menu-end border-0 shadow mt-2 rounded-3 py-2" style="min-width: 200px;">
+        <li><a class="dropdown-item py-2 px-3 d-flex align-items-center gap-3 text-dark fw-medium" href="#">
+          <svg class="text-primary" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+          Nuevo proyecto
+        </a></li>
+        <li><a class="dropdown-item py-2 px-3 d-flex align-items-center gap-3 text-dark fw-medium" href="#">
+          <svg class="text-secondary" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/></svg>
+          Rediseño
+        </a></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Stats Cards -->
+  <div class="row g-4 mb-5">
+    <!-- Total Proyectos -->
+    <div class="col-12 col-sm-6 col-xl-3">
+      <div class="card border-0 shadow-sm rounded-4 h-100 p-4">
+        <div class="d-flex align-items-center gap-3">
+          <div class="bg-primary bg-opacity-10 text-primary rounded-3 d-flex align-items-center justify-content-center flex-shrink-0" style="width: 54px; height: 54px;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+          </div>
+          <div>
+            <div class="text-secondary small fw-medium mb-1">Total de proyectos</div>
+            <h2 class="fw-bold mb-0 text-dark" style="letter-spacing: -1px;">7</h2>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- En proceso -->
+    <div class="col-12 col-sm-6 col-xl-3">
+      <div class="card border-0 shadow-sm rounded-4 h-100 p-4">
+        <div class="d-flex align-items-center gap-3">
+          <div class="bg-success bg-opacity-10 text-success rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 54px; height: 54px;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+          </div>
+          <div>
+            <div class="text-secondary small fw-medium mb-1">En proceso</div>
+            <h2 class="fw-bold mb-0 text-dark" style="letter-spacing: -1px;">4</h2>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- En espera -->
+    <div class="col-12 col-sm-6 col-xl-3">
+      <div class="card border-0 shadow-sm rounded-4 h-100 p-4">
+        <div class="d-flex align-items-center gap-3">
+          <div class="bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 54px; height: 54px; color: #8b5cf6; background-color: rgba(139,92,246,0.1);">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+          </div>
+          <div>
+            <div class="text-secondary small fw-medium mb-1">En espera</div>
+            <h2 class="fw-bold mb-0 text-dark" style="letter-spacing: -1px;">2</h2>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Completados -->
+    <div class="col-12 col-sm-6 col-xl-3">
+      <div class="card border-0 shadow-sm rounded-4 h-100 p-4">
+        <div class="d-flex align-items-center gap-3">
+          <div class="bg-secondary bg-opacity-10 text-secondary rounded-3 d-flex align-items-center justify-content-center flex-shrink-0" style="width: 54px; height: 54px;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+          </div>
+          <div>
+            <div class="text-secondary small fw-medium mb-1">Completados</div>
+            <h2 class="fw-bold mb-0 text-dark" style="letter-spacing: -1px;">1</h2>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <!-- Left Column: Projects -->
+    <div class="col-12 col-xl-8">
+      
+      <!-- Filters Header -->
+      <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+        <h4 class="fw-bold text-dark mb-0">Proyectos</h4>
+        
+        <div class="d-flex align-items-center gap-3 flex-wrap">
+          <div class="input-group bg-white shadow-sm rounded-3 overflow-hidden border" style="width: 250px;">
+            <span class="input-group-text bg-transparent border-0 text-muted pe-1" id="search-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            </span>
+            <input type="text" class="form-control border-0 ps-1" placeholder="Buscar proyecto..." aria-label="Buscar" aria-describedby="search-icon">
+          </div>
+          
+          <select class="form-select shadow-sm rounded-3 border bg-white text-dark fw-medium" style="width: 130px;">
+            <option selected>Todos</option>
+            <option value="1">Activos</option>
+            <option value="2">Completados</option>
+          </select>
+          
+          <div class="bg-white rounded-3 shadow-sm border d-flex p-1">
+            <button class="btn btn-sm btn-primary rounded-2 px-2 text-white d-flex align-items-center" style="background-color: #2563EB;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+            </button>
+            <button class="btn btn-sm btn-light bg-transparent border-0 rounded-2 px-2 text-secondary d-flex align-items-center hover-bg-light">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Project Cards Grid -->
+      <div class="row g-4">
+        <!-- Card 1 -->
+        <div class="col-12 col-md-6">
+          <div class="card border-0 shadow-sm rounded-4 h-100 p-4 project-card">
+            <!-- Header -->
+            <div class="d-flex justify-content-between align-items-start mb-3">
+              <div class="d-flex align-items-center gap-3">
+                <div class="bg-primary bg-opacity-10 text-primary rounded-3 d-flex align-items-center justify-content-center flex-shrink-0" style="width: 50px; height: 50px;">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path></svg>
+                </div>
+                <div>
+                  <span class="badge bg-primary bg-opacity-10 text-primary rounded-pill fw-semibold px-2 py-1 mb-1 d-inline-block" style="font-size: 0.7rem;">Nuevo</span>
+                  <h6 class="fw-bold text-dark mb-0 fs-6">Plataforma Educativa</h6>
+                </div>
+              </div>
+              <button class="btn btn-link text-muted p-0"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg></button>
+            </div>
+            <!-- Info -->
+            <div class="mb-4">
+              <p class="text-secondary small mb-1">Cliente: <span class="text-dark fw-medium">Colegio San Martín</span></p>
+              <p class="text-secondary small mb-0">Última modificación: <span class="text-dark fw-medium">12 sep 2025, 10:24 a. m.</span></p>
+            </div>
+            <!-- Progress Tracker -->
+            <div class="mb-4 mt-auto">
+              <p class="text-dark fw-bold mb-3" style="font-size: 0.75rem;">Fases del framework STYLE</p>
+              <div class="d-flex align-items-center justify-content-between position-relative px-2">
+                <div class="position-absolute top-50 start-0 end-0 translate-middle-y z-0" style="height: 2px; background: #e5e7eb; margin: 0 15px;"></div>
+                <div class="position-absolute top-50 start-0 translate-middle-y z-0 bg-success" style="height: 2px; width: 10%; margin: 0 15px;"></div>
+                
+                <div class="step z-1 text-center bg-white">
+                  <div class="rounded-circle d-flex align-items-center justify-content-center mx-auto bg-success text-white" style="width: 24px; height: 24px;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  </div>
+                  <div class="mt-2 text-muted" style="font-size: 0.55rem; line-height: 1.1;">Investigación</div>
+                </div>
+                <div class="step z-1 text-center bg-white">
+                  <div class="rounded-circle d-flex align-items-center justify-content-center mx-auto bg-primary text-white shadow-sm" style="width: 24px; height: 24px; font-size: 0.75rem; font-weight: 600;">2</div>
+                  <div class="mt-2 text-primary fw-bold" style="font-size: 0.55rem; line-height: 1.1;">Diseño<br>Conceptual</div>
+                </div>
+                <div class="step z-1 text-center bg-white">
+                  <div class="rounded-circle d-flex align-items-center justify-content-center mx-auto border border-2 bg-white text-muted" style="width: 24px; height: 24px; font-size: 0.75rem; font-weight: 600;">3</div>
+                  <div class="mt-2 text-muted" style="font-size: 0.55rem; line-height: 1.1;">Diseño<br>Visual</div>
+                </div>
+                <div class="step z-1 text-center bg-white">
+                  <div class="rounded-circle d-flex align-items-center justify-content-center mx-auto border border-2 bg-white text-muted" style="width: 24px; height: 24px; font-size: 0.75rem; font-weight: 600;">4</div>
+                  <div class="mt-2 text-muted" style="font-size: 0.55rem; line-height: 1.1;">Diseño<br>Detallado</div>
+                </div>
+                <div class="step z-1 text-center bg-white">
+                  <div class="rounded-circle d-flex align-items-center justify-content-center mx-auto border border-2 bg-white text-muted" style="width: 24px; height: 24px; font-size: 0.75rem; font-weight: 600;">5</div>
+                  <div class="mt-2 text-muted" style="font-size: 0.55rem; line-height: 1.1;">Evaluación<br>Estética</div>
+                </div>
+              </div>
+            </div>
+            <!-- Footer -->
+            <div class="d-flex justify-content-between align-items-center pt-3 mt-2 border-top">
+              <div class="d-flex align-items-center gap-2 text-primary fw-semibold small">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                Nuevo
+              </div>
+              <a href="#" class="text-primary text-decoration-none fw-semibold small d-flex align-items-center gap-1">Ver detalles <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="col-12 col-md-6">
+          <div class="card border-0 shadow-sm rounded-4 h-100 p-4 project-card">
+            <!-- Header -->
+            <div class="d-flex justify-content-between align-items-start mb-3">
+              <div class="d-flex align-items-center gap-3">
+                <div class="bg-opacity-10 rounded-3 d-flex align-items-center justify-content-center flex-shrink-0" style="width: 50px; height: 50px; color:#8b5cf6; background: rgba(139,92,246,0.1);">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+                </div>
+                <div>
+                  <span class="badge rounded-pill fw-semibold px-2 py-1 mb-1 d-inline-block" style="font-size: 0.7rem; color:#8b5cf6; background:rgba(139,92,246,0.1);">En desarrollo</span>
+                  <h6 class="fw-bold text-dark mb-0 fs-6">Tienda Virtual</h6>
+                </div>
+              </div>
+              <button class="btn btn-link text-muted p-0"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg></button>
+            </div>
+            <!-- Info -->
+            <div class="mb-4">
+              <p class="text-secondary small mb-1">Cliente: <span class="text-dark fw-medium">Comercial Andina S.A.C.</span></p>
+              <p class="text-secondary small mb-0">Última modificación: <span class="text-dark fw-medium">11 sep 2025, 04:37 p. m.</span></p>
+            </div>
+            <!-- Progress Tracker -->
+            <div class="mb-4 mt-auto">
+              <p class="text-dark fw-bold mb-3" style="font-size: 0.75rem;">Fases del framework STYLE</p>
+              <div class="d-flex align-items-center justify-content-between position-relative px-2">
+                <div class="position-absolute top-50 start-0 end-0 translate-middle-y z-0" style="height: 2px; background: #e5e7eb; margin: 0 15px;"></div>
+                <div class="position-absolute top-50 start-0 translate-middle-y z-0 bg-success" style="height: 2px; width: 35%; margin: 0 15px;"></div>
+                
+                <div class="step z-1 text-center bg-white">
+                  <div class="rounded-circle d-flex align-items-center justify-content-center mx-auto bg-success text-white" style="width: 24px; height: 24px;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  </div>
+                  <div class="mt-2 text-muted" style="font-size: 0.55rem; line-height: 1.1;">Investigación</div>
+                </div>
+                <div class="step z-1 text-center bg-white">
+                  <div class="rounded-circle d-flex align-items-center justify-content-center mx-auto bg-success text-white" style="width: 24px; height: 24px;">
+                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  </div>
+                  <div class="mt-2 text-muted" style="font-size: 0.55rem; line-height: 1.1;">Diseño<br>Conceptual</div>
+                </div>
+                <div class="step z-1 text-center bg-white">
+                  <div class="rounded-circle d-flex align-items-center justify-content-center mx-auto bg-primary text-white shadow-sm" style="width: 24px; height: 24px; font-size: 0.75rem; font-weight: 600;">3</div>
+                  <div class="mt-2 text-primary fw-bold" style="font-size: 0.55rem; line-height: 1.1;">Diseño<br>Visual</div>
+                </div>
+                <div class="step z-1 text-center bg-white">
+                  <div class="rounded-circle d-flex align-items-center justify-content-center mx-auto border border-2 bg-white text-muted" style="width: 24px; height: 24px; font-size: 0.75rem; font-weight: 600;">4</div>
+                  <div class="mt-2 text-muted" style="font-size: 0.55rem; line-height: 1.1;">Diseño<br>Detallado</div>
+                </div>
+                <div class="step z-1 text-center bg-white">
+                  <div class="rounded-circle d-flex align-items-center justify-content-center mx-auto border border-2 bg-white text-muted" style="width: 24px; height: 24px; font-size: 0.75rem; font-weight: 600;">5</div>
+                  <div class="mt-2 text-muted" style="font-size: 0.55rem; line-height: 1.1;">Evaluación<br>Estética</div>
+                </div>
+              </div>
+            </div>
+            <!-- Footer -->
+            <div class="d-flex justify-content-between align-items-center pt-3 mt-2 border-top">
+              <div class="d-flex align-items-center gap-2 text-secondary fw-semibold small">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/></svg>
+                Rediseño
+              </div>
+              <a href="#" class="text-primary text-decoration-none fw-semibold small d-flex align-items-center gap-1">Ver detalles <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="col-12 col-md-6">
+          <div class="card border-0 shadow-sm rounded-4 h-100 p-4 project-card">
+            <!-- Header -->
+            <div class="d-flex justify-content-between align-items-start mb-3">
+              <div class="d-flex align-items-center gap-3">
+                <div class="bg-success bg-opacity-10 text-success rounded-3 d-flex align-items-center justify-content-center flex-shrink-0" style="width: 50px; height: 50px;">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect><rect x="9" y="9" width="6" height="6"></rect><line x1="9" y1="1" x2="9" y2="4"></line><line x1="15" y1="1" x2="15" y2="4"></line><line x1="9" y1="20" x2="9" y2="23"></line><line x1="15" y1="20" x2="15" y2="23"></line><line x1="20" y1="9" x2="23" y2="9"></line><line x1="20" y1="14" x2="23" y2="14"></line><line x1="1" y1="9" x2="4" y2="9"></line><line x1="1" y1="14" x2="4" y2="14"></line></svg>
+                </div>
+                <div>
+                  <span class="badge bg-success bg-opacity-10 text-success rounded-pill fw-semibold px-2 py-1 mb-1 d-inline-block" style="font-size: 0.7rem;">Completado</span>
+                  <h6 class="fw-bold text-dark mb-0 fs-6">Portal Corporativo</h6>
+                </div>
+              </div>
+              <button class="btn btn-link text-muted p-0"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg></button>
+            </div>
+            <!-- Info -->
+            <div class="mb-4">
+              <p class="text-secondary small mb-1">Cliente: <span class="text-dark fw-medium">Grupo Nova</span></p>
+              <p class="text-secondary small mb-0">Última modificación: <span class="text-dark fw-medium">08 sep 2025, 02:46 p. m.</span></p>
+            </div>
+            <!-- Progress Tracker -->
+            <div class="mb-4 mt-auto">
+              <p class="text-dark fw-bold mb-3" style="font-size: 0.75rem;">Fases del framework STYLE</p>
+              <div class="d-flex align-items-center justify-content-between position-relative px-2">
+                <div class="position-absolute top-50 start-0 end-0 translate-middle-y z-0 bg-success" style="height: 2px; margin: 0 15px;"></div>
+                
+                <div class="step z-1 text-center bg-white">
+                  <div class="rounded-circle d-flex align-items-center justify-content-center mx-auto bg-success text-white" style="width: 24px; height: 24px;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  </div>
+                  <div class="mt-2 text-muted" style="font-size: 0.55rem; line-height: 1.1;">Investigación</div>
+                </div>
+                <div class="step z-1 text-center bg-white">
+                  <div class="rounded-circle d-flex align-items-center justify-content-center mx-auto bg-success text-white" style="width: 24px; height: 24px;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  </div>
+                  <div class="mt-2 text-muted" style="font-size: 0.55rem; line-height: 1.1;">Diseño<br>Conceptual</div>
+                </div>
+                <div class="step z-1 text-center bg-white">
+                  <div class="rounded-circle d-flex align-items-center justify-content-center mx-auto bg-success text-white" style="width: 24px; height: 24px;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  </div>
+                  <div class="mt-2 text-muted" style="font-size: 0.55rem; line-height: 1.1;">Diseño<br>Visual</div>
+                </div>
+                <div class="step z-1 text-center bg-white">
+                  <div class="rounded-circle d-flex align-items-center justify-content-center mx-auto bg-success text-white" style="width: 24px; height: 24px;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  </div>
+                  <div class="mt-2 text-muted" style="font-size: 0.55rem; line-height: 1.1;">Diseño<br>Detallado</div>
+                </div>
+                <div class="step z-1 text-center bg-white">
+                  <div class="rounded-circle d-flex align-items-center justify-content-center mx-auto bg-success text-white" style="width: 24px; height: 24px;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  </div>
+                  <div class="mt-2 text-muted" style="font-size: 0.55rem; line-height: 1.1;">Evaluación<br>Estética</div>
+                </div>
+              </div>
+            </div>
+            <!-- Footer -->
+            <div class="d-flex justify-content-between align-items-center pt-3 mt-2 border-top">
+              <div class="d-flex align-items-center gap-2 text-secondary fw-semibold small">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/></svg>
+                Rediseño
+              </div>
+              <a href="#" class="text-primary text-decoration-none fw-semibold small d-flex align-items-center gap-1">Ver detalles <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="col-12 col-md-6">
+          <div class="card border-0 shadow-sm rounded-4 h-100 p-4 project-card">
+            <!-- Header -->
+            <div class="d-flex justify-content-between align-items-start mb-3">
+              <div class="d-flex align-items-center gap-3">
+                <div class="bg-primary bg-opacity-10 text-primary rounded-3 d-flex align-items-center justify-content-center flex-shrink-0" style="width: 50px; height: 50px; background-color: rgba(14,165,233,0.1); color: #0ea5e9;">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+                </div>
+                <div>
+                  <span class="badge rounded-pill fw-semibold px-2 py-1 mb-1 d-inline-block" style="font-size: 0.7rem; background-color: rgba(14,165,233,0.1); color: #0ea5e9;">En desarrollo</span>
+                  <h6 class="fw-bold text-dark mb-0 fs-6">Rediseño Web Institucional</h6>
+                </div>
+              </div>
+              <button class="btn btn-link text-muted p-0"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg></button>
+            </div>
+            <!-- Info -->
+            <div class="mb-4">
+              <p class="text-secondary small mb-1">Cliente: <span class="text-dark fw-medium">Universidad del Valle</span></p>
+              <p class="text-secondary small mb-0">Última modificación: <span class="text-dark fw-medium">05 sep 2025, 11:20 a. m.</span></p>
+            </div>
+            <!-- Progress Tracker -->
+            <div class="mb-4 mt-auto">
+              <p class="text-dark fw-bold mb-3" style="font-size: 0.75rem;">Fases del framework STYLE</p>
+              <div class="d-flex align-items-center justify-content-between position-relative px-2">
+                <div class="position-absolute top-50 start-0 end-0 translate-middle-y z-0" style="height: 2px; background: #e5e7eb; margin: 0 15px;"></div>
+                <div class="position-absolute top-50 start-0 translate-middle-y z-0 bg-success" style="height: 2px; width: 35%; margin: 0 15px;"></div>
+                
+                <div class="step z-1 text-center bg-white">
+                  <div class="rounded-circle d-flex align-items-center justify-content-center mx-auto bg-success text-white" style="width: 24px; height: 24px;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  </div>
+                  <div class="mt-2 text-muted" style="font-size: 0.55rem; line-height: 1.1;">Investigación</div>
+                </div>
+                <div class="step z-1 text-center bg-white">
+                  <div class="rounded-circle d-flex align-items-center justify-content-center mx-auto bg-success text-white" style="width: 24px; height: 24px;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  </div>
+                  <div class="mt-2 text-muted" style="font-size: 0.55rem; line-height: 1.1;">Diseño<br>Conceptual</div>
+                </div>
+                <div class="step z-1 text-center bg-white">
+                  <div class="rounded-circle d-flex align-items-center justify-content-center mx-auto bg-primary text-white shadow-sm" style="width: 24px; height: 24px; font-size: 0.75rem; font-weight: 600;">3</div>
+                  <div class="mt-2 text-primary fw-bold" style="font-size: 0.55rem; line-height: 1.1;">Diseño<br>Visual</div>
+                </div>
+                <div class="step z-1 text-center bg-white">
+                  <div class="rounded-circle d-flex align-items-center justify-content-center mx-auto border border-2 bg-white text-muted" style="width: 24px; height: 24px; font-size: 0.75rem; font-weight: 600;">4</div>
+                  <div class="mt-2 text-muted" style="font-size: 0.55rem; line-height: 1.1;">Diseño<br>Detallado</div>
+                </div>
+                <div class="step z-1 text-center bg-white">
+                  <div class="rounded-circle d-flex align-items-center justify-content-center mx-auto border border-2 bg-white text-muted" style="width: 24px; height: 24px; font-size: 0.75rem; font-weight: 600;">5</div>
+                  <div class="mt-2 text-muted" style="font-size: 0.55rem; line-height: 1.1;">Evaluación<br>Estética</div>
+                </div>
+              </div>
+            </div>
+            <!-- Footer -->
+            <div class="d-flex justify-content-between align-items-center pt-3 mt-2 border-top">
+              <div class="d-flex align-items-center gap-2 text-primary fw-semibold small">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                Nuevo
+              </div>
+              <a href="#" class="text-primary text-decoration-none fw-semibold small d-flex align-items-center gap-1">Ver detalles <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Right Column: Sidebar (Tasks & Notifications) -->
+    <div class="col-12 col-xl-4">
+      
+      <!-- Tareas pendientes -->
+      <div class="card border-0 shadow-sm rounded-4 mb-4 p-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <div class="d-flex align-items-center gap-2">
+            <div class="text-primary bg-primary bg-opacity-10 rounded-2 p-2 d-flex">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+            </div>
+            <h5 class="fw-bold mb-0 text-dark">Tareas pendientes</h5>
+            <span class="badge bg-danger rounded-circle d-flex align-items-center justify-content-center ms-1" style="width: 22px; height: 22px; font-size: 0.75rem;">5</span>
+          </div>
+          <a href="#" class="text-primary text-decoration-none small fw-semibold">Ver todas</a>
+        </div>
+        
+        <div class="d-flex flex-column gap-3">
+          <!-- Task 1 -->
+          <div class="d-flex align-items-start gap-3">
+            <input class="form-check-input flex-shrink-0 rounded-circle border-secondary border-opacity-25" type="radio" style="width: 1.4rem; height: 1.4rem; margin-top: 2px;">
+            <div class="flex-grow-1">
+              <div class="d-flex justify-content-between align-items-start mb-1 gap-2">
+                <span class="text-dark fw-medium" style="font-size: 0.9rem; line-height: 1.3;">Falta definir la jerarquía en Fase 2</span>
+                <span class="badge rounded-pill fw-medium flex-shrink-0" style="font-size: 0.65rem; background:#E0E7FF; color:#4338CA;">Fase 2</span>
+              </div>
+              <p class="text-secondary small mb-0" style="font-size: 0.8rem;">Plataforma de Ventas</p>
+            </div>
+          </div>
+          <hr class="my-2 border-light">
+          <!-- Task 2 -->
+          <div class="d-flex align-items-start gap-3">
+            <input class="form-check-input flex-shrink-0 rounded-circle border-secondary border-opacity-25" type="radio" style="width: 1.4rem; height: 1.4rem; margin-top: 2px;">
+            <div class="flex-grow-1">
+              <div class="d-flex justify-content-between align-items-start mb-1 gap-2">
+                <span class="text-dark fw-medium" style="font-size: 0.9rem; line-height: 1.3;">Revisar copy de la landing page</span>
+                <span class="badge rounded-pill fw-medium flex-shrink-0" style="font-size: 0.65rem; background:#FFEDD5; color:#C2410C;">Fase 3</span>
+              </div>
+              <p class="text-secondary small mb-0" style="font-size: 0.8rem;">Plataforma de Ventas</p>
+            </div>
+          </div>
+          <hr class="my-2 border-light">
+          <!-- Task 3 -->
+          <div class="d-flex align-items-start gap-3">
+            <input class="form-check-input flex-shrink-0 rounded-circle border-secondary border-opacity-25" type="radio" style="width: 1.4rem; height: 1.4rem; margin-top: 2px;">
+            <div class="flex-grow-1">
+              <div class="d-flex justify-content-between align-items-start mb-1 gap-2">
+                <span class="text-dark fw-medium" style="font-size: 0.9rem; line-height: 1.3;">Ajustar flujo de usuario</span>
+                <span class="badge rounded-pill fw-medium flex-shrink-0" style="font-size: 0.65rem; background:#E0E7FF; color:#4338CA;">Fase 2</span>
+              </div>
+              <p class="text-secondary small mb-0" style="font-size: 0.8rem;">App Móvil - Delivery</p>
+            </div>
+          </div>
+          <hr class="my-2 border-light">
+          <!-- Task 4 -->
+          <div class="d-flex align-items-start gap-3">
+            <input class="form-check-input flex-shrink-0 rounded-circle border-secondary border-opacity-25" type="radio" style="width: 1.4rem; height: 1.4rem; margin-top: 2px;">
+            <div class="flex-grow-1">
+              <div class="d-flex justify-content-between align-items-start mb-1 gap-2">
+                <span class="text-dark fw-medium" style="font-size: 0.9rem; line-height: 1.3;">Validar componentes en prototipo</span>
+                <span class="badge rounded-pill fw-medium flex-shrink-0" style="font-size: 0.65rem; background:#DCFCE7; color:#15803D;">Fase 1</span>
+              </div>
+              <p class="text-secondary small mb-0" style="font-size: 0.8rem;">Portal Corporativo</p>
+            </div>
+          </div>
+          <hr class="my-2 border-light">
+          <!-- Task 5 -->
+          <div class="d-flex align-items-start gap-3">
+            <input class="form-check-input flex-shrink-0 rounded-circle border-secondary border-opacity-25" type="radio" style="width: 1.4rem; height: 1.4rem; margin-top: 2px;">
+            <div class="flex-grow-1">
+              <div class="d-flex justify-content-between align-items-start mb-1 gap-2">
+                <span class="text-dark fw-medium" style="font-size: 0.9rem; line-height: 1.3;">Revisar paleta de colores</span>
+                <span class="badge rounded-pill fw-medium flex-shrink-0" style="font-size: 0.65rem; background:#FFEDD5; color:#C2410C;">Fase 3</span>
+              </div>
+              <p class="text-secondary small mb-0" style="font-size: 0.8rem;">Rediseño Web Institucional</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Notificaciones -->
+      <div class="card border-0 shadow-sm rounded-4 p-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <div class="d-flex align-items-center gap-2">
+            <div class="text-primary bg-primary bg-opacity-10 rounded-2 p-2 d-flex">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+            </div>
+            <h5 class="fw-bold mb-0 text-dark">Notificaciones del equipo</h5>
+          </div>
+          <a href="#" class="text-primary text-decoration-none small fw-semibold">Ver todas</a>
+        </div>
+
+        <div class="d-flex flex-column gap-4">
+          <!-- Notif 1 -->
+          <div class="d-flex gap-3 align-items-start">
+            <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 mt-1" style="width: 36px; height: 36px;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+            </div>
+            <div>
+              <p class="text-dark mb-1" style="font-size: 0.85rem; line-height: 1.4;"><span class="fw-bold">Ana Torres</span> comentó en el proyecto <br><span class="fw-medium text-secondary">Plataforma de Ventas</span></p>
+              <p class="text-secondary small mb-0" style="font-size: 0.75rem;">Hace 2 horas</p>
+            </div>
+          </div>
+          
+          <!-- Notif 2 -->
+          <div class="d-flex gap-3 align-items-start">
+            <div class="bg-success bg-opacity-10 text-success rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 mt-1" style="width: 36px; height: 36px;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+            </div>
+            <div>
+              <p class="text-dark mb-1" style="font-size: 0.85rem; line-height: 1.4;"><span class="fw-bold">Luis Pérez</span> subió un archivo en <br><span class="fw-medium text-secondary">App Móvil - Delivery</span></p>
+              <p class="text-secondary small mb-0" style="font-size: 0.75rem;">Hace 4 horas</p>
+            </div>
+          </div>
+
+          <!-- Notif 3 -->
+          <div class="d-flex gap-3 align-items-start">
+            <div class="bg-purple bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 mt-1" style="width: 36px; height: 36px; color: #8b5cf6;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            </div>
+            <div>
+              <p class="text-dark mb-1" style="font-size: 0.85rem; line-height: 1.4;"><span class="fw-bold">María López</span> asignó una tarea en <br><span class="fw-medium text-secondary">Sistema de Gestión Escolar</span></p>
+              <p class="text-secondary small mb-0" style="font-size: 0.75rem;">Hace 5 horas</p>
+            </div>
+          </div>
+
+          <!-- Notif 4 -->
+          <div class="d-flex gap-3 align-items-start">
+            <div class="bg-success bg-opacity-10 text-success rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 mt-1" style="width: 36px; height: 36px;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+            </div>
+            <div>
+              <p class="text-dark mb-1" style="font-size: 0.85rem; line-height: 1.4;"><span class="fw-bold">Carlos Rojas</span> completó la Fase 1 en <br><span class="fw-medium text-secondary">Rediseño Web Institucional</span></p>
+              <p class="text-secondary small mb-0" style="font-size: 0.75rem;">Hace 1 día</p>
+            </div>
+          </div>
+          
+          <!-- Notif 5 -->
+          <div class="d-flex gap-3 align-items-start">
+            <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 mt-1" style="width: 36px; height: 36px;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+            </div>
+            <div>
+              <p class="text-dark mb-1" style="font-size: 0.85rem; line-height: 1.4;">Se agregó un nuevo proyecto: <br><span class="fw-medium text-secondary">Portal Corporativo</span></p>
+              <p class="text-secondary small mb-0" style="font-size: 0.75rem;">Hace 2 días</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+</div>

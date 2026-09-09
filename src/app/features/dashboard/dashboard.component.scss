@@ -1,0 +1,21 @@
+.project-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1) !important;
+  }
+}
+
+.hover-bg-light:hover {
+  background-color: #f1f5f9 !important;
+}
+
+// Customize radio buttons for tasks to match design
+.form-check-input {
+  cursor: pointer;
+  &:checked[type="radio"] {
+    background-color: transparent;
+    border-color: #0ea5e9; // Blue border when selected, or could just stay gray if it's meant to be unchecked visually
+    background-image: none;
+  }
+}

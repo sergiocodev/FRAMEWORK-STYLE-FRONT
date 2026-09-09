@@ -43,8 +43,7 @@ export class LoginComponent implements OnInit {
       next: (response) => {
         localStorage.setItem('access_token', response.access_token);
         this.isLoading = false;
-        alert('¡Login exitoso con Google! Token guardado.');
-        // this.router.navigate(['/dashboard']);
+        this.router.navigate(['/dashboard']);
       },
       error: (err) => {
         this.isLoading = false;
@@ -73,7 +72,7 @@ export class LoginComponent implements OnInit {
       next: (response) => {
         localStorage.setItem('access_token', response.access_token);
         this.isLoading = false;
-        alert('¡Login exitoso! Token guardado.');
+        this.router.navigate(['/dashboard']);
       },
       error: (err) => {
         this.isLoading = false;

@@ -1,0 +1,15 @@
+<div class="d-flex" style="height: 100vh; overflow: hidden; background-color: #F8FAFC;">
+  <!-- Sidebar (Left, Fixed) -->
+  <app-sidebar></app-sidebar>
+  
+  <!-- Right Side Column -->
+  <div class="d-flex flex-column flex-grow-1 overflow-hidden">
+    <!-- Header (Top, Fixed) -->
+    <app-header></app-header>
+    
+    <!-- Main Content Area (Scrollable) -->
+    <div class="flex-grow-1 overflow-auto position-relative">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</div>
