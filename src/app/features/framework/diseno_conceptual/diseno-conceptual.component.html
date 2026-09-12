@@ -1,0 +1,53 @@
+@if (isLoading) {
+  <div class="d-flex justify-content-center align-items-center min-vh-100 bg-light">
+    <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+      <span class="visually-hidden">Cargando...</span>
+    </div>
+  </div>
+} @else if (error && !project?.title) {
+  <div class="d-flex flex-column justify-content-center align-items-center min-vh-100 bg-light text-center">
+    <div class="bg-white p-5 rounded-4 shadow-sm border">
+      <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mb-4">
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="15" y1="9" x2="9" y2="15"></line>
+        <line x1="9" y1="9" x2="15" y2="15"></line>
+      </svg>
+      <h4 class="fw-bold text-dark">Proyecto no encontrado</h4>
+      <p class="text-secondary mb-0 mt-2">No se pudo cargar la información del proyecto o hubo un error de conexión.</p>
+    </div>
+  </div>
+} @else {
+  <div class="diseno-container min-vh-100 bg-light d-flex flex-column"
+    style="background-color: #F8FAFC !important;">
+    
+    <!-- Header Navbar -->
+    <app-diseno-header [project]="project" [phases]="phases"></app-diseno-header>
+
+    <!-- Main Content -->
+    <div class="container-fluid py-4 flex-grow-1 d-flex flex-column overflow-hidden">
+      <div class="row g-4 h-100 flex-grow-1" cdkDropListGroup>
+
+        <!-- Left Panel: Canvas -->
+        <div class="col-12 col-xl-8 d-flex flex-column h-100 pb-2">
+          <app-diseno-canvas class="h-100" [projectId]="projectId"></app-diseno-canvas>
+        </div>
+
+        <!-- Right Panel: Inventory & Tools -->
+        <div class="col-12 col-xl-4 d-flex flex-column h-100 pb-2 overflow-auto custom-scrollbar pe-2">
+          <!-- Espaciador para alinear con la barra de herramientas del canvas (solo en escritorio) -->
+          <div class="mb-3 px-1 d-none d-xl-block" style="visibility: hidden;">
+            <div class="d-flex align-items-center gap-2 mb-1">
+              <h4 class="fw-bold mb-0">Fase 2: Diseño Conceptual</h4>
+            </div>
+            <p class="small mb-0">Define el mapa de navegación y la jerarquía de contenidos, sin colores aún.</p>
+          </div>
+          
+          <app-diseno-inventory [projectId]="projectId"></app-diseno-inventory>
+          <app-diseno-wireframes [projectId]="projectId"></app-diseno-wireframes>
+          <app-diseno-checklist [projectId]="projectId"></app-diseno-checklist>
+        </div>
+
+      </div>
+    </div>
+  </div>
+}

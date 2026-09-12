@@ -1,0 +1,37 @@
+<header class="bg-white border-bottom px-4 py-3 sticky-top z-3">
+  <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+    
+    <!-- Project Info (Left) -->
+    <div class="d-flex align-items-center gap-3">
+      <div class="bg-primary bg-opacity-10 text-primary rounded-3 d-flex align-items-center justify-content-center flex-shrink-0" style="width: 48px; height: 48px;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+          <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
+        </svg>
+      </div>
+      <div>
+        <div class="d-flex align-items-center gap-2 mb-1">
+          <h4 class="fw-bold text-dark mb-0 fs-5">{{ project?.title }}</h4>
+          <span class="badge bg-primary bg-opacity-10 text-primary rounded-pill fw-semibold px-2 py-1" style="font-size: 0.7rem;">{{ project?.status }}</span>
+        </div>
+        <p class="text-secondary small mb-0 fw-medium">Cliente: {{ project?.client }} <span class="mx-2 text-light-gray">|</span> Última modificación: 12 sep 2025, 10:24 a. m.</p>
+      </div>
+    </div>
+
+    <!-- Actions (Right) -->
+    <div class="d-flex align-items-center gap-3">
+      <button class="btn btn-primary rounded-3 fw-medium d-flex align-items-center gap-2 px-3 shadow-sm" style="background-color: #2563EB;">
+        Siguiente: Fase 3
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+          <polyline points="12 5 19 12 12 19"></polyline>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Stepper Component -->
+  <div class="px-4 pt-4 pb-2">
+    <app-stepper [phases]="phases"></app-stepper>
+  </div>
+</header>
