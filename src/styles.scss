@@ -1,13 +1,348 @@
 /* You can add global styles to this file, and also import other style files */
 
-html, body {
+:root,
+[data-bs-theme="light"] {
+  // ============================================================
+  // COLORES SEMÁNTICOS DE BOOTSTRAP — Tema Claro
+  // ============================================================
+  --bs-primary: #FF3366;
+  --bs-primary-rgb: 255, 51, 102;
+  --bs-secondary: #7C3AED;
+  --bs-secondary-rgb: 124, 58, 237;
+  --bs-success: #10B981;
+  --bs-success-rgb: 16, 185, 129;
+  --bs-danger: #EF4444;
+  --bs-danger-rgb: 239, 68, 68;
+  --bs-warning: #F59E0B;
+  --bs-warning-rgb: 245, 158, 11;
+  --bs-info: #0EA5E9;
+  --bs-info-rgb: 14, 165, 233;
+  --bs-light: #F1F5F9;
+  --bs-light-rgb: 241, 245, 249;
+  --bs-dark: #0F172A;
+  --bs-dark-rgb: 15, 23, 42;
+
+  --bs-body-bg: #F8FAFC;
+  --bs-body-color: #0F172A;
+  --bs-secondary-color: #64748B;
+  --bs-tertiary-color: #94A3B8; // texto muy apagado (placeholders, metadata)
+  --bs-emphasis-color: #020617; // texto de máximo contraste
+  --bs-border-color: #E2E8F0;
+  --bs-border-color-translucent: rgba(226, 232, 240, 0.65);
+  --bs-tertiary-bg: #F1F5F9;
+
+  --bs-link-color: var(--bs-primary);
+  --bs-link-hover-color: #E62958;
+  --bs-focus-ring-color: rgba(255, 51, 102, 0.25);
+
+  // ============================================================
+  // ESCALA PRIMARY (rosa/rojo de marca) — 50 a 950
+  // ============================================================
+  --app-primary-50: #FFF1F4;
+  --app-primary-100: #FFE1E8;
+  --app-primary-200: #FFC2D2;
+  --app-primary-300: #FF9BB4;
+  --app-primary-400: #FF6D92;
+  --app-primary-500: #FF3366; // = --bs-primary
+  --app-primary-600: #F5104A;
+  --app-primary-700: #D1063D;
+  --app-primary-800: #AA0532;
+  --app-primary-900: #830227;
+  --app-primary-950: #52011A;
+
+  // ============================================================
+  // ESCALA SECONDARY (violeta de marca) — 50 a 950
+  // ============================================================
+  --app-secondary-50: #F5F3FF;
+  --app-secondary-100: #EDE9FE;
+  --app-secondary-200: #DDD6FE;
+  --app-secondary-300: #C4B5FD;
+  --app-secondary-400: #A78BFA;
+  --app-secondary-500: #8B5CF6;
+  --app-secondary-600: #7C3AED; // = --bs-secondary
+  --app-secondary-700: #6D28D9;
+  --app-secondary-800: #5B21B6;
+  --app-secondary-900: #4C1D95;
+  --app-secondary-950: #2E1065;
+
+  // ============================================================
+  // ESCALA DE GRISES (Slate, coherente con tu body-bg/color actual)
+  // ============================================================
+  --app-gray-50: #F8FAFC;
+  --app-gray-100: #F1F5F9;
+  --app-gray-200: #E2E8F0;
+  --app-gray-300: #CBD5E1;
+  --app-gray-400: #94A3B8;
+  --app-gray-500: #64748B;
+  --app-gray-600: #475569;
+  --app-gray-700: #334155;
+  --app-gray-800: #1E293B;
+  --app-gray-900: #0F172A;
+  --app-gray-950: #020617;
+
+  // ============================================================
+  // FONDOS "SOFT" — para badges, alerts, chips
+  // ============================================================
+  --app-primary-soft-bg: rgba(255, 51, 102, 0.10);
+  --app-secondary-soft-bg: rgba(124, 58, 237, 0.10);
+  --app-success-soft-bg: rgba(16, 185, 129, 0.10);
+  --app-danger-soft-bg: rgba(239, 68, 68, 0.10);
+  --app-warning-soft-bg: rgba(245, 158, 11, 0.12);
+  --app-info-soft-bg: rgba(14, 165, 233, 0.10);
+
+  // ============================================================
+  // ESTADOS DE SUSCRIPCIÓN — específico para un SaaS
+  // (planes, facturación, ciclo de vida del cliente)
+  // ============================================================
+  --app-status-active: var(--bs-success);
+  --app-status-active-bg: var(--app-success-soft-bg);
+  --app-status-trial: var(--bs-info);
+  --app-status-trial-bg: var(--app-info-soft-bg);
+  --app-status-past-due: var(--bs-warning);
+  --app-status-past-due-bg: var(--app-warning-soft-bg);
+  --app-status-canceled: var(--bs-danger);
+  --app-status-canceled-bg: var(--app-danger-soft-bg);
+
+  // ============================================================
+  // COLORES PARA GRÁFICAS / ANALYTICS (dashboards, MRR, uso)
+  // ============================================================
+  --app-chart-1: #FF3366;
+  --app-chart-2: #7C3AED;
+  --app-chart-3: #0EA5E9;
+  --app-chart-4: #F59E0B;
+  --app-chart-5: #10B981;
+  --app-chart-6: #EC4899;
+
+  // ============================================================
+  // GRADIENTES DE MARCA
+  // ============================================================
+  --app-gradient-primary: linear-gradient(135deg, #FF3366 0%, #7C3AED 100%);
+  --app-gradient-primary-soft: linear-gradient(135deg, rgba(255, 51, 102, 0.10) 0%, rgba(124, 58, 237, 0.10) 100%);
+
+  // ============================================================
+  // Propiedades ya existentes de la app
+  // ============================================================
+  --app-surface-bg: #FFFFFF;
+  --app-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --app-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --app-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --app-hover-bg: #F1F5F9;
+  --app-hover-primary-bg: rgba(255, 51, 102, 0.1);
+
+  // ============================================================
+  // OVERLAY / SELECCIÓN / SCROLLBAR
+  // ============================================================
+  --app-overlay-bg: rgba(15, 23, 42, 0.5);
+  --app-selection-bg: rgba(255, 51, 102, 0.2);
+  --app-scrollbar-thumb: #CBD5E1;
+  --app-scrollbar-track: transparent;
+}
+
+[data-bs-theme="dark"] {
+  // ============================================================
+  // COLORES SEMÁNTICOS DE BOOTSTRAP — Tema Oscuro
+  // ============================================================
+  --bs-primary: #FF3366;
+  --bs-primary-rgb: 255, 51, 102;
+  --bs-secondary: #7C3AED;
+  --bs-secondary-rgb: 124, 58, 237;
+  --bs-success: #34D399;
+  --bs-success-rgb: 52, 211, 153;
+  --bs-danger: #F87171;
+  --bs-danger-rgb: 248, 113, 113;
+  --bs-warning: #FBBF24;
+  --bs-warning-rgb: 251, 191, 36;
+  --bs-info: #38BDF8;
+  --bs-info-rgb: 56, 189, 248;
+  --bs-light: #27272A;
+  --bs-light-rgb: 39, 39, 42;
+  --bs-dark: #FAFAFA;
+  --bs-dark-rgb: 250, 250, 250;
+
+  --bs-body-bg: #09090B; // Matched from landing $bg-dark
+  --bs-body-color: #FAFAFA; // Matched from landing $text-light
+  --bs-secondary-color: #A1A1AA; // Matched from landing $text-muted
+  --bs-tertiary-color: #71717A;
+  --bs-emphasis-color: #FFFFFF;
+  --bs-border-color: rgba(255, 255, 255, 0.1);
+  --bs-border-color-translucent: rgba(255, 255, 255, 0.05);
+  --bs-tertiary-bg: rgba(255, 255, 255, 0.03);
+
+  --bs-link-color: #FF6690;
+  --bs-link-hover-color: #FF9BB4;
+  --bs-focus-ring-color: rgba(255, 51, 102, 0.35);
+
+  // ============================================================
+  // ESCALA PRIMARY — invertida para uso correcto sobre fondo oscuro
+  // ============================================================
+  --app-primary-50: #52011A;
+  --app-primary-100: #830227;
+  --app-primary-200: #AA0532;
+  --app-primary-300: #D1063D;
+  --app-primary-400: #F5104A;
+  --app-primary-500: #FF3366;
+  --app-primary-600: #FF6D92;
+  --app-primary-700: #FF9BB4;
+  --app-primary-800: #FFC2D2;
+  --app-primary-900: #FFE1E8;
+  --app-primary-950: #FFF1F4;
+
+  // ============================================================
+  // ESCALA SECONDARY — invertida
+  // ============================================================
+  --app-secondary-50: #2E1065;
+  --app-secondary-100: #4C1D95;
+  --app-secondary-200: #5B21B6;
+  --app-secondary-300: #6D28D9;
+  --app-secondary-400: #7C3AED;
+  --app-secondary-500: #8B5CF6;
+  --app-secondary-600: #A78BFA;
+  --app-secondary-700: #C4B5FD;
+  --app-secondary-800: #DDD6FE;
+  --app-secondary-900: #EDE9FE;
+  --app-secondary-950: #F5F3FF;
+
+  // ============================================================
+  // ESCALA DE GRISES (Zinc, coherente con tu bg #09090B)
+  // ============================================================
+  --app-gray-50: #FAFAFA;
+  --app-gray-100: #F4F4F5;
+  --app-gray-200: #E4E4E7;
+  --app-gray-300: #D4D4D8;
+  --app-gray-400: #A1A1AA;
+  --app-gray-500: #71717A;
+  --app-gray-600: #52525B;
+  --app-gray-700: #3F3F46;
+  --app-gray-800: #27272A;
+  --app-gray-900: #18181B;
+  --app-gray-950: #09090B;
+
+  // ============================================================
+  // FONDOS "SOFT"
+  // ============================================================
+  --app-primary-soft-bg: rgba(255, 51, 102, 0.15);
+  --app-secondary-soft-bg: rgba(124, 58, 237, 0.18);
+  --app-success-soft-bg: rgba(52, 211, 153, 0.15);
+  --app-danger-soft-bg: rgba(248, 113, 113, 0.15);
+  --app-warning-soft-bg: rgba(251, 191, 36, 0.15);
+  --app-info-soft-bg: rgba(56, 189, 248, 0.15);
+
+  // ============================================================
+  // ESTADOS DE SUSCRIPCIÓN
+  // ============================================================
+  --app-status-active: var(--bs-success);
+  --app-status-active-bg: var(--app-success-soft-bg);
+  --app-status-trial: var(--bs-info);
+  --app-status-trial-bg: var(--app-info-soft-bg);
+  --app-status-past-due: var(--bs-warning);
+  --app-status-past-due-bg: var(--app-warning-soft-bg);
+  --app-status-canceled: var(--bs-danger);
+  --app-status-canceled-bg: var(--app-danger-soft-bg);
+
+  // ============================================================
+  // COLORES PARA GRÁFICAS / ANALYTICS
+  // ============================================================
+  --app-chart-1: #FF6690;
+  --app-chart-2: #A78BFA;
+  --app-chart-3: #38BDF8;
+  --app-chart-4: #FBBF24;
+  --app-chart-5: #34D399;
+  --app-chart-6: #F472B6;
+
+  // ============================================================
+  // GRADIENTES DE MARCA
+  // ============================================================
+  --app-gradient-primary: linear-gradient(135deg, #FF3366 0%, #7C3AED 100%);
+  --app-gradient-primary-soft: linear-gradient(135deg, rgba(255, 51, 102, 0.15) 0%, rgba(124, 58, 237, 0.18) 100%);
+
+  // ============================================================
+  // Propiedades ya existentes de la app
+  // ============================================================
+  --app-surface-bg: rgba(255, 255, 255, 0.03); // Matched from landing $surface
+  --app-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  --app-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.24);
+  --app-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
+  --app-hover-bg: rgba(255, 255, 255, 0.08); // Matched from landing $surface-hover
+  --app-hover-primary-bg: rgba(255, 51, 102, 0.15);
+
+  // ============================================================
+  // OVERLAY / SELECCIÓN / SCROLLBAR
+  // ============================================================
+  --app-overlay-bg: rgba(0, 0, 0, 0.6);
+  --app-selection-bg: rgba(255, 51, 102, 0.3);
+  --app-scrollbar-thumb: #3F3F46;
+  --app-scrollbar-track: transparent;
+}
+
+// ==================================================================
+// Ensure standard bootstrap elements use the surface background
+// ==================================================================
+.card,
+.modal-content,
+.dropdown-menu {
+  background-color: var(--app-surface-bg);
+  border-color: var(--bs-border-color);
+}
+
+// ==================================================================
+// Utilidades opcionales que aprovechan los nuevos tokens
+// (bórralas si no las necesitas)
+// ==================================================================
+.text-gradient-primary {
+  background: var(--app-gradient-primary);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.badge-status {
+  &.status-active {
+    color: var(--app-status-active);
+    background-color: var(--app-status-active-bg);
+  }
+
+  &.status-trial {
+    color: var(--app-status-trial);
+    background-color: var(--app-status-trial-bg);
+  }
+
+  &.status-past-due {
+    color: var(--app-status-past-due);
+    background-color: var(--app-status-past-due-bg);
+  }
+
+  &.status-canceled {
+    color: var(--app-status-canceled);
+    background-color: var(--app-status-canceled-bg);
+  }
+}
+
+::selection {
+  background-color: var(--app-selection-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--app-scrollbar-thumb);
+  border-radius: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: var(--app-scrollbar-track);
+}
+
+html,
+body {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
   width: 100%;
   height: 100%;
+  background-color: var(--bs-body-bg);
+  color: var(--bs-body-color);
 }
 
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: inherit;
 }

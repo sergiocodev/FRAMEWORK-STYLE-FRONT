@@ -1,16 +1,16 @@
 .sidebar {
   width: 260px;
-  background-color: #ffffff;
-  border-right: 1px solid #e5e7eb;
+  background-color: #0d1426;
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  color: #1f2937;
+  color: #ffffff;
   transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   overflow-x: hidden;
 }
 
 .sidebar.collapsed {
   width: 80px;
-  
+
   .section-title {
     font-size: 0.8rem;
     letter-spacing: 0;
@@ -40,7 +40,7 @@
 
 .nav-section {
   .section-title {
-    color: #4b5563;
+    color: rgba(255, 255, 255, 0.7);
     font-size: 0.75rem;
     letter-spacing: 0.5px;
     margin-top: 10px;
@@ -51,27 +51,27 @@
   font-size: 0.95rem;
   font-weight: 400;
   padding: 8px 12px;
-  color: #374151;
+  color: #ffffff;
   transition: all 0.2s ease-in-out;
   height: 40px; // Ensure consistent height even when icon/text shifts
 
-  .nav-icon {
-    color: #4b5563;
+  ::ng-deep .nav-icon {
+    color: var(--app-primary-500, #FF3366);
   }
 
   &.active {
-    background-color: #e5e7eb;
-    color: #111827;
+    background-color: var(--app-primary-500, #FF3366);
+    color: #ffffff;
     font-weight: 500;
-    
-    .nav-icon {
-      color: #111827;
+
+    ::ng-deep .nav-icon {
+      color: #ffffff;
     }
   }
 
   &.hover-bg:hover {
-    background-color: #f3f4f6;
-    color: #111827;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
   }
 }
 
@@ -85,13 +85,16 @@ ul.nav {
   &::-webkit-scrollbar {
     width: 6px;
   }
+
   &::-webkit-scrollbar-track {
     background: transparent;
   }
+
   &::-webkit-scrollbar-thumb {
     background-color: #cbd5e1;
     border-radius: 10px;
   }
+
   &:hover::-webkit-scrollbar-thumb {
     background-color: #94a3b8;
   }

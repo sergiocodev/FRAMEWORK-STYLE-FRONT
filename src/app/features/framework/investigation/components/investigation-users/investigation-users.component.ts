@@ -1,11 +1,12 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { UserArchetypeCardComponent } from '../../../../../shared/components/cards/user-archetype-card/user-archetype-card.component';
 
 @Component({
   selector: 'app-investigation-users',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, UserArchetypeCardComponent],
   templateUrl: './investigation-users.component.html',
   styleUrls: ['./investigation-users.component.scss']
 })

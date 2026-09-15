@@ -1,24 +1,89 @@
-.stepper-wrapper {
-  /* Hide scrollbar for cleaner look, but keep functionality */
+.stepper-line-wrapper {
+  /* Scrollbar styling */
   &::-webkit-scrollbar {
-    height: 4px;
+    height: 6px;
   }
   &::-webkit-scrollbar-track {
     background: transparent;
   }
   &::-webkit-scrollbar-thumb {
-    background: #cbd5e1;
-    border-radius: 4px;
+    background: rgba(0,0,0,0.1);
+    border-radius: 10px;
+  }
+  &::-webkit-scrollbar-thumb:hover {
+    background: rgba(0,0,0,0.2);
   }
 
-  .step-card {
-    min-width: 220px; /* Ensure cards don't shrink too much on small screens */
-    transition: all 0.3s ease;
+  /* Connecting Lines */
+  .step-line {
+    transition: background-color 0.5s ease;
   }
   
-  .active-step {
-    /* Slight blue tint to background to match the active state */
-    background-color: #eff6ff !important; 
-    border-color: #bfdbfe !important;
+  .line-filled {
+    background: linear-gradient(90deg, #6366f1, #8b5cf6) !important;
+  }
+  
+  .line-empty {
+    background-color: #e2e8f0 !important;
+  }
+
+  /* Node Styles */
+  .step-node {
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    
+    &:hover {
+      transform: scale(1.1);
+    }
+  }
+
+  .icon-completed {
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    border: 2px solid #ffffff;
+  }
+
+  .icon-active {
+    border: 3px solid #6366f1;
+    background: #ffffff;
+    
+    .active-dot {
+      width: 18px;
+      height: 18px;
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    }
+
+    .pulse-ring {
+      border: 2px solid #6366f1;
+      animation: pulse-border 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+    }
+  }
+
+  .icon-upcoming {
+    background: #f8fafc;
+    border-color: #cbd5e1 !important;
+  }
+
+  /* Text Styles */
+  .text-active {
+    color: #4f46e5;
+  }
+  .text-completed {
+    color: #1e293b;
+  }
+  .text-upcoming {
+    color: #94a3b8;
+  }
+  .text-upcoming-sub {
+    color: #cbd5e1;
+  }
+
+  @keyframes pulse-border {
+    0% {
+      transform: scale(1);
+      opacity: 1;
+    }
+    100% {
+      transform: scale(1.5);
+      opacity: 0;
+    }
   }
 }

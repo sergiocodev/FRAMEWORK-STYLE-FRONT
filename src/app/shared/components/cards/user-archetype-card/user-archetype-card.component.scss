@@ -1,0 +1,78 @@
+.delete-card-btn {
+  opacity: 0;
+  transform: scale(0.9);
+
+  &:hover {
+    background-color: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+    border-color: rgba(239, 68, 68, 0.2);
+    transform: scale(1.05);
+  }
+}
+
+.premium-card:hover .delete-card-btn {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.remove-need-btn {
+  opacity: 0;
+}
+
+.need-item:hover .remove-need-btn {
+  opacity: 1;
+}
+
+.add-need-btn {
+  border: none;
+  background: rgba(255, 255, 255, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  padding: 0.6rem 1rem;
+  color: #6366f1;
+  font-size: 0.8rem;
+  font-weight: 600;
+  border-radius: 16px;
+  transition: all 0.3s ease;
+  width: auto;
+  align-self: flex-start;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.8);
+    color: #4f46e5;
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.1);
+    transform: translateY(-1px);
+  }
+}
+
+.editable-div {
+  word-break: break-word;
+  transition: background-color 0.2s ease;
+
+  &:focus {
+    background-color: rgba(0, 0, 0, 0.03) !important;
+  }
+
+  &:empty:before {
+    content: attr(data-placeholder);
+    color: #adb5bd;
+    pointer-events: none;
+    display: block;
+  }
+}
+
+/* Custom Tag Select Colors to prevent Bootstrap bg-primary conflicts */
+.tag-principal {
+  background-color: rgba(13, 110, 253, 0.1) !important;
+  color: #0d6efd !important;
+}
+
+.tag-secundario {
+  background-color: rgba(13, 202, 240, 0.1) !important;
+  color: #0dcaf0 !important;
+}
+
+.tag-general {
+  background-color: rgba(108, 117, 125, 0.1) !important;
+  color: #6c757d !important;
+}

@@ -42,6 +42,9 @@ export class InvestigationComponent implements OnInit {
   usuarios: any[] = [];
   recursos: any[] = [];
 
+  // Mobile Tabs State
+  activeMobileTab: 'form' | 'preview' = 'form';
+
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
       const idParam = params.get('id');

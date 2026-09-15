@@ -1,4 +1,4 @@
-<div class="sidebar d-flex flex-column bg-white h-100" [class.collapsed]="isCollapsed">
+<div class="sidebar d-flex flex-column h-100" [class.collapsed]="isCollapsed">
 
   <!-- Header / Logo -->
   <div class="sidebar-header p-3 pb-3 border-bottom-0 d-flex justify-content-between align-items-center" [class.justify-content-center]="isCollapsed" [class.px-4]="!isCollapsed">
@@ -6,11 +6,11 @@
       <div class="logo-box text-white d-flex justify-content-center align-items-center rounded-3 fw-bold fs-4 flex-shrink-0" [class.me-3]="!isCollapsed">
         S
       </div>
-      <span class="fw-bold fs-5 logo-text text-dark flex-shrink-0 text-truncate" [class.d-none]="isCollapsed" style="transition: opacity 0.2s; opacity: 1;">STYLE</span>
+      <span class="fw-bold fs-5 logo-text text-white flex-shrink-0 text-truncate" [class.d-none]="isCollapsed" style="transition: opacity 0.2s; opacity: 1;">STYLE</span>
     </div>
     
     <!-- Toggle Button -->
-    <button *ngIf="!isCollapsed" class="btn btn-sm btn-link text-secondary p-0 ms-2 hover-bg toggle-btn" (click)="toggleSidebar()" title="Colapsar menú">
+    <button *ngIf="!isCollapsed" class="btn btn-sm btn-link text-white p-0 ms-2 hover-bg toggle-btn" (click)="toggleSidebar()" title="Colapsar menú">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <polyline points="15 18 9 12 15 6"></polyline>
       </svg>
@@ -35,7 +35,7 @@
             <ng-container *ngIf="!item.iconSvg && item.isSubItem && isCollapsed">
                <!-- Dot icon when collapsed without icon -->
                <div class="d-flex align-items-center justify-content-center w-100 flex-shrink-0">
-                  <div class="rounded-circle bg-secondary" style="width: 6px; height: 6px;"></div>
+                  <div class="rounded-circle bg-white" style="width: 6px; height: 6px;"></div>
                </div>
             </ng-container>
             

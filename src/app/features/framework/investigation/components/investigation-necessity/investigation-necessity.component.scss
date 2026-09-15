@@ -1,0 +1,113 @@
+.necessity-card {
+  background-color: var(--app-surface-bg);
+  box-shadow: var(--app-shadow-sm);
+  border-radius: 1.25rem; // 20px
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+  position: relative;
+  overflow: hidden;
+
+  // Subtle gradient top border
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--app-gradient-primary);
+    opacity: 0.8;
+    transition: opacity 0.3s ease;
+  }
+
+  &:hover {
+    box-shadow: var(--app-shadow-md);
+    transform: translateY(-2px);
+    
+    &::before {
+      opacity: 1;
+    }
+  }
+
+  .icon-container {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background: var(--app-primary-soft-bg);
+    color: var(--bs-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: inset 0 0 0 1px rgba(var(--bs-primary-rgb), 0.1);
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  &:hover .icon-container {
+    transform: scale(1.05);
+    background: rgba(var(--bs-primary-rgb), 0.15);
+  }
+
+  .card-title {
+    color: var(--bs-emphasis-color);
+    font-size: 1.1rem;
+    letter-spacing: -0.01em;
+  }
+
+  .card-description {
+    color: var(--bs-secondary-color);
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+
+  .btn-icon-secondary {
+    color: var(--bs-tertiary-color);
+    background: transparent;
+    border: none;
+    padding: 0.5rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background: var(--app-hover-bg);
+      color: var(--bs-body-color);
+    }
+  }
+
+  .textarea-wrapper {
+    position: relative;
+    
+    .custom-textarea {
+      background-color: var(--bs-tertiary-bg);
+      border: 1px solid var(--bs-border-color);
+      color: var(--bs-body-color);
+      border-radius: 12px;
+      padding: 1rem;
+      font-size: 0.95rem;
+      resize: none;
+      transition: all 0.2s ease-in-out;
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.02);
+
+      &::placeholder {
+        color: var(--bs-tertiary-color);
+      }
+
+      &:focus {
+        background-color: var(--app-surface-bg);
+        border-color: var(--bs-primary);
+        box-shadow: 0 0 0 4px var(--bs-focus-ring-color);
+        outline: none;
+      }
+    }
+
+    .textarea-footer {
+      .char-counter {
+        font-size: 0.8rem;
+        font-weight: 500;
+        color: var(--bs-secondary-color);
+        transition: color 0.2s ease;
+      }
+    }
+  }
+}

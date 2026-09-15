@@ -4,11 +4,11 @@
 
 // Utilities
 .hover-bg-light:hover {
-  background-color: #f1f5f9 !important;
+  background-color: var(--app-hover-bg) !important;
 }
 
 .hover-bg-primary-hover:hover {
-  background-color: rgba(37, 99, 235, 0.15) !important; // Slightly darker than the default .1
+  background-color: var(--app-hover-primary-bg) !important;
 }
 
 .hover-text-danger:hover {
@@ -20,7 +20,7 @@
 }
 
 .text-light-gray {
-  color: #cbd5e1;
+  color: var(--bs-secondary-color);
 }
 
 // Custom Scrollbar for overflow areas
@@ -32,11 +32,11 @@
     background: transparent;
   }
   &::-webkit-scrollbar-thumb {
-    background: #cbd5e1;
+    background: var(--bs-border-color);
     border-radius: 4px;
   }
   &::-webkit-scrollbar-thumb:hover {
-    background: #94a3b8;
+    background: var(--bs-secondary-color);
   }
 }
 
@@ -52,21 +52,50 @@
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
+    box-shadow: var(--app-shadow-lg) !important;
   }
 }
 
 // Upload zone
 .upload-zone {
   transition: background-color 0.2s ease, border-color 0.2s ease;
+  border-color: var(--bs-border-color);
   &:hover {
-    border-color: #3b82f6 !important;
+    border-color: var(--bs-primary) !important;
   }
+}
+
+// Document Preview Wrapper
+.document-shadow {
+  box-shadow: var(--app-shadow-lg) !important;
+  border: 1px solid var(--bs-border-color);
 }
 
 // Document Preview
 .document-preview-container {
-  // To look like a physical piece of paper
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
-  border: 1px solid #e2e8f0;
+  // Inner styling if needed, but wrapper handles shadow now
+}
+
+// Section Header
+.main-section-header {
+  .icon-container {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: var(--app-primary-soft-bg);
+    color: var(--bs-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: inset 0 0 0 1px rgba(var(--bs-primary-rgb), 0.1);
+  }
+  
+  .title {
+    color: var(--bs-emphasis-color);
+    letter-spacing: -0.01em;
+  }
+  
+  .subtitle {
+    color: var(--bs-secondary-color);
+  }
 }
