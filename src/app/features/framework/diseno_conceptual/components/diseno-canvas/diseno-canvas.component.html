@@ -1,0 +1,228 @@
+<div class="d-flex flex-column" [class.h-100]="!isFullscreen" [class.position-fixed]="isFullscreen" [class.top-0]="isFullscreen" [class.start-0]="isFullscreen" [class.w-100]="isFullscreen" [class.vh-100]="isFullscreen" [style.z-index]="isFullscreen ? 9999 : 'auto'" [class.bg-light]="isFullscreen" [class.p-3]="isFullscreen">
+  <!-- Header of Canvas -->
+  @if (!isFullscreen) {
+  <div class="mb-3 px-1 flex-shrink-0 d-flex justify-content-between align-items-center">
+    <div>
+      <div class="d-flex align-items-center gap-2 mb-1">
+        <h4 class="fw-bold mb-0 text-dark">Fase 2: Diseño Conceptual <span class="text-secondary fs-5 fw-normal">(Estructura)</span></h4>
+      </div>
+      <p class="text-secondary small mb-0">Define el mapa de navegación y la jerarquía de contenidos, sin colores aún.</p>
+    </div>
+    <button class="btn btn-primary d-flex align-items-center gap-2 rounded-pill px-4 shadow-sm" (click)="scrollToChecklists()">
+      Siguiente (Checklists)
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="13 17 18 12 13 7"></polyline>
+        <polyline points="6 17 11 12 6 7"></polyline>
+      </svg>
+    </button>
+  </div>
+  }
+
+  <!-- Toolbar -->
+  <div class="bg-white rounded-4 border p-2 flex-shrink-0 d-flex justify-content-between align-items-center"
+       [ngClass]="isFullscreen ? 'position-fixed shadow-lg' : 'mb-3 shadow-sm'"
+       [style.top]="isFullscreen ? '15px' : 'auto'"
+       [style.left]="isFullscreen ? '50%' : 'auto'"
+       [style.transform]="isFullscreen ? 'translateX(-50%)' : 'none'"
+       [style.width]="isFullscreen ? '900px' : 'auto'"
+       [style.max-width]="isFullscreen ? '90vw' : 'none'"
+       [style.z-index]="isFullscreen ? 10000 : 'auto'">
+    
+    <div class="d-flex gap-2" style="flex: 1;">
+      <button class="btn btn-light btn-sm rounded-3 d-flex align-items-center gap-2 px-3 py-2 text-dark border-0" (click)="addNodo()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect>
+          <line x1="4" y1="10" x2="20" y2="10"></line>
+        </svg>
+        Nodo
+      </button>
+      <button class="btn btn-sm rounded-3 d-flex align-items-center gap-2 px-3 py-2 border-0"
+              [ngClass]="isConnectionMode ? 'btn-warning text-dark fw-bold' : 'btn-light text-dark'"
+              (click)="toggleConexion()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+          <polyline points="12 5 19 12 12 19"></polyline>
+        </svg>
+        Conexión
+      </button>
+      <button class="btn btn-light btn-sm rounded-3 d-flex align-items-center gap-2 px-3 py-2 text-dark border-0" (click)="addTexto()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="4 7 4 4 20 4 20 7"></polyline>
+          <line x1="9" y1="20" x2="15" y2="20"></line>
+          <line x1="12" y1="4" x2="12" y2="20"></line>
+        </svg>
+        Texto
+      </button>
+    </div>
+
+    <div class="d-flex justify-content-center" style="flex: 1;">
+      <button class="btn btn-sm rounded-4 shadow-sm d-flex align-items-center gap-2 px-4 py-2 fw-bold transition-all" 
+              [ngClass]="isPrioritizationMode ? 'btn-primary text-white shadow' : 'btn-outline-primary text-primary bg-white'"
+              (click)="togglePriorizacion()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+        </svg>
+        Priorización
+      </button>
+    </div>
+    
+    <div class="d-flex gap-2 justify-content-end" style="flex: 1;">
+      <button class="btn btn-light btn-sm rounded-3 text-dark border-0 px-3 py-2 d-flex align-items-center gap-2" (click)="deshacer()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 7v6h6"></path>
+          <path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"></path>
+        </svg>
+        Deshacer
+      </button>
+      <button class="btn btn-light btn-sm rounded-3 text-dark border-0 px-3 py-2 d-flex align-items-center gap-2" (click)="rehacer()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 7v6h-6"></path>
+          <path d="M3 17a9 9 0 0 1 9-9 9 9 0 0 1 6 2.3l3 2.7"></path>
+        </svg>
+        Rehacer
+      </button>
+      <div class="vr mx-1"></div>
+      <div class="d-flex align-items-center bg-light rounded-3 px-2">
+        <button class="btn btn-link btn-sm text-dark text-decoration-none px-1 p-0" (click)="zoomOut()">-</button>
+        <span class="small mx-2 cursor-pointer" (click)="resetZoom()">{{ zoom * 100 | number:'1.0-0' }}%</span>
+        <button class="btn btn-link btn-sm text-dark text-decoration-none px-1 p-0" (click)="zoomIn()">+</button>
+      </div>
+      <button class="btn btn-light btn-sm rounded-3 text-dark border-0 px-2 py-2" (click)="toggleFullscreen()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15 3 21 3 21 9"></polyline>
+          <polyline points="9 21 3 21 3 15"></polyline>
+          <line x1="21" y1="3" x2="14" y2="10"></line>
+          <line x1="3" y1="21" x2="10" y2="14"></line>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Canvas Area -->
+  <div class="canvas-area bg-white rounded-4 shadow-sm border flex-grow-1 position-relative overflow-hidden d-block">
+    
+    <!-- The actual flowchart -->
+    <div class="flowchart-container position-relative w-100 h-100" [style.zoom]="zoom" style="min-height: 800px; transform-origin: 0 0;"
+         (mousedown)="onCanvasMouseDown($event)" (mousemove)="onCanvasMouseMove($event)" (mouseup)="onCanvasMouseUp($event)" (mouseleave)="onCanvasMouseUp($event)">
+      
+      @if (isBoxSelecting) {
+        <div class="position-absolute border border-primary bg-primary bg-opacity-10"
+             [style.left.px]="selectionBox.x"
+             [style.top.px]="selectionBox.y"
+             [style.width.px]="selectionBox.width"
+             [style.height.px]="selectionBox.height"
+             style="z-index: 1000; pointer-events: none;">
+        </div>
+      }
+
+      <!-- Conexiones SVG -->
+      <svg class="position-absolute top-0 start-0 w-100 h-100" style="pointer-events: none; z-index: 1; overflow: visible;">
+        @for (con of conexiones; track con.id) {
+          <path [attr.d]="getConnectorPath(con)" 
+                fill="none" 
+                [attr.stroke]="selectedConexionId === con.id ? '#dc3545' : '#0d6efd'" 
+                [attr.stroke-width]="selectedConexionId === con.id ? '4' : '2.5'" 
+                stroke-dasharray="6,4" 
+                style="cursor: pointer; pointer-events: stroke;"
+                (click)="selectConexion(con, $event)" />
+        }
+      </svg>
+
+      @for (nodo of nodos; track nodo.id) {
+        <div [id]="'node-' + nodo.id" class="position-absolute z-2 cursor-pointer" [ngClass]="nodo.icono === 'texto_libre' ? 'px-2 py-1 rounded-2' : 'node-card border rounded-3 shadow-sm p-2'" [class.bg-white]="!nodo.prioridad && (nodo.icono !== 'texto_libre' || isSelected(nodo) || (isConnectionMode && selectedSourceNodeId === nodo.id))" [class.border]="nodo.prioridad || nodo.icono !== 'texto_libre' || isSelected(nodo) || (isConnectionMode && selectedSourceNodeId === nodo.id)" [class.bg-opacity-75]="nodo.icono === 'texto_libre' && (isSelected(nodo) || (isConnectionMode && selectedSourceNodeId === nodo.id))" [class.shadow-sm]="nodo.prioridad || nodo.icono !== 'texto_libre' || isSelected(nodo) || (isConnectionMode && selectedSourceNodeId === nodo.id)" [class.bg-danger]="nodo.prioridad === 'alta'" [class.bg-opacity-10]="nodo.prioridad" [class.border-danger]="nodo.prioridad === 'alta'" [class.bg-warning]="nodo.prioridad === 'media'" [class.border-warning]="nodo.prioridad === 'media' || (isConnectionMode && selectedSourceNodeId === nodo.id)" [class.bg-success]="nodo.prioridad === 'baja'" [class.border-success]="nodo.prioridad === 'baja'" [class.border-primary]="!nodo.prioridad && nodo.icono !== 'texto_libre' && (!isConnectionMode || selectedSourceNodeId !== nodo.id) && !isSelected(nodo)" [class.border-3]="isConnectionMode && selectedSourceNodeId === nodo.id" [class.border-info]="!nodo.prioridad && !isConnectionMode && isSelected(nodo)" [class.border-2]="!isConnectionMode && isSelected(nodo)" [style.width]="nodo.icono === 'texto_libre' ? 'max-content' : '170px'" style="top: 0; left: 0;" (click)="onNodeClick(nodo, $event); $event.stopPropagation()" cdkDrag [cdkDragFreeDragPosition]="{x: nodo.pos_x || 0, y: nodo.pos_y || 0}" cdkDragBoundary=".flowchart-container" (cdkDragMoved)="onNodeDragMoved($event, nodo)" (cdkDragEnded)="onNodeDragEnded($event, nodo)" cdkDropList (cdkDropListDropped)="onDrop($event, nodo)" (mousedown)="$event.stopPropagation()">
+          
+          @if (nodo.prioridad) {
+            <span class="position-absolute top-0 start-0 translate-middle badge rounded-pill"
+                  [ngClass]="{'bg-danger': nodo.prioridad === 'alta', 'bg-warning text-dark': nodo.prioridad === 'media', 'bg-success': nodo.prioridad === 'baja'}"
+                  [style.margin-top]="nodo.icono === 'texto_libre' ? '-10px' : '2px'"
+                  [style.margin-left]="nodo.icono === 'texto_libre' ? '15px' : '20px'"
+                  style="font-size: 0.65rem;">
+              {{ nodo.prioridad | titlecase }}
+            </span>
+          }
+
+          @if (nodo.icono === 'texto_libre') {
+            <h6 #titleEl class="mb-0 text-black fw-bold fs-4 text-center lh-1" style="cursor: text; word-break: break-word; overflow-wrap: break-word; letter-spacing: -0.5px; min-width: 30px;"
+                contenteditable="false" 
+                (dblclick)="enableEdit(titleEl, $event)"
+                (mousedown)="titleEl.isContentEditable ? $event.stopPropagation() : null"
+                (blur)="titleEl.setAttribute('contenteditable', 'false'); onNodeTextChange($event, nodo, 'nombre')"
+                (keydown.enter)="$event.preventDefault(); titleEl.blur()">
+              {{ nodo.nombre }}
+            </h6>
+          } @else {
+            <div class="d-flex align-items-start gap-1 mb-1 pb-1 border-bottom border-primary border-opacity-25 bg-primary bg-opacity-10 p-1 rounded-top-2 mx-n2 mt-n2">
+              <div class="flex-grow-1 px-1">
+                <h6 #titleEl class="mb-0 fw-bold text-dark" style="font-size: 0.8rem; cursor: text; word-break: break-word; overflow-wrap: break-word;"
+                    contenteditable="false" 
+                    (dblclick)="enableEdit(titleEl, $event)"
+                    (mousedown)="titleEl.isContentEditable ? $event.stopPropagation() : null"
+                    (blur)="titleEl.setAttribute('contenteditable', 'false'); onNodeTextChange($event, nodo, 'nombre')"
+                    (keydown.enter)="$event.preventDefault(); titleEl.blur()">
+                  {{ nodo.nombre }}
+                </h6>
+                <span #descEl class="text-secondary mt-1 d-block lh-sm" style="font-size: 0.65rem; cursor: text; word-break: break-word; overflow-wrap: break-word;"
+                      contenteditable="false"
+                      (dblclick)="enableEdit(descEl, $event)"
+                      (mousedown)="descEl.isContentEditable ? $event.stopPropagation() : null"
+                      (blur)="descEl.setAttribute('contenteditable', 'false'); onNodeTextChange($event, nodo, 'descripcion')"
+                      (keydown.enter)="$event.preventDefault(); descEl.blur()">
+                  {{ nodo.descripcion || 'Descripción...' }}
+                </span>
+                <select class="form-select form-select-sm mt-1 border-0 bg-white shadow-sm" style="font-size: 0.65rem; padding: 0px 14px 0px 4px; height: auto;" (mousedown)="$event.stopPropagation()" (change)="onNodeTypeChange($event, nodo)">
+                  <option value="modulo" [selected]="nodo.tipo === 'modulo'">Módulo</option>
+                  <option value="pantalla" [selected]="nodo.tipo === 'pantalla' || !nodo.tipo">Pantalla</option>
+                  <option value="componente" [selected]="nodo.tipo === 'componente'">Componente</option>
+                </select>
+              </div>
+            </div>
+            
+            <div class="d-flex flex-column gap-1">
+              @for (cont of nodo.contenidos; track cont.id) {
+                <div class="d-flex justify-content-between align-items-center bg-light p-1 rounded border shadow-sm mb-1">
+                  <span #contEl class="small text-dark flex-grow-1 mx-1" style="font-size: 0.75rem; cursor: text; word-break: break-word; overflow-wrap: break-word;" 
+                        contenteditable="false"
+                        (dblclick)="enableEdit(contEl, $event)"
+                        (mousedown)="contEl.isContentEditable ? $event.stopPropagation() : null"
+                        (blur)="contEl.setAttribute('contenteditable', 'false'); onContenidoTextChange($event, cont)"
+                        (keydown.enter)="$event.preventDefault(); contEl.blur()">
+                    {{ cont.nombre }}
+                  </span>
+                  @if (cont.prioridad === 'alta') {
+                    <span class="badge rounded-pill text-danger bg-danger bg-opacity-10" style="font-size: 0.65rem;">Alta</span>
+                  } @else if (cont.prioridad === 'media') {
+                    <span class="badge rounded-pill text-warning bg-warning bg-opacity-10" style="font-size: 0.65rem;">Media</span>
+                  } @else {
+                    <span class="badge rounded-pill text-success bg-success bg-opacity-10" style="font-size: 0.65rem;">Baja</span>
+                  }
+                </div>
+              }
+            </div>
+          }
+        </div>
+      }
+
+      @if (nodos.length === 0) {
+        <div class="position-absolute top-50 start-50 translate-middle text-secondary border p-4 rounded-4 bg-light text-center" style="z-index: 0; min-width: 300px;">
+          <h5 class="fw-bold mb-2 text-dark">No hay nodos ni textos creados</h5>
+          <p class="small mb-0">Usa los botones "Nodo" o "Texto" en la barra de herramientas para iniciar el diseño de la estructura.</p>
+        </div>
+      }
+
+    </div>
+  </div>
+
+  @if (isPrioritizationMode && activePriorityMenuNodeId) {
+    <div class="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center" style="z-index: 10050; background: rgba(0,0,0,0.15);" (click)="activePriorityMenuNodeId = null">
+      <div class="bg-white shadow-lg rounded-4 p-4 border d-flex flex-column align-items-center gap-3 animate__animated animate__zoomIn animate__faster" (click)="$event.stopPropagation()">
+        <h6 class="fw-bold mb-0 text-dark">Nivel de Priorización</h6>
+        <div class="d-flex gap-2">
+          <button class="btn btn-danger text-white rounded-3 px-4 py-2 fw-bold shadow-sm" (click)="setPrioridadById(activePriorityMenuNodeId, 'alta')">Alta</button>
+          <button class="btn btn-warning text-dark rounded-3 px-4 py-2 fw-bold shadow-sm" (click)="setPrioridadById(activePriorityMenuNodeId, 'media')">Media</button>
+          <button class="btn btn-success text-white rounded-3 px-4 py-2 fw-bold shadow-sm" (click)="setPrioridadById(activePriorityMenuNodeId, 'baja')">Baja</button>
+        </div>
+        <button class="btn btn-light text-secondary rounded-3 px-3 py-1 mt-1 btn-sm border" (click)="setPrioridadById(activePriorityMenuNodeId, null)">Quitar prioridad</button>
+      </div>
+    </div>
+  }
+</div>

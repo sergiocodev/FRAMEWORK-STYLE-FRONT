@@ -1,0 +1,114 @@
+<div class="bg-white rounded-4 shadow-sm border p-4 mb-3 flex-shrink-0">
+  <div class="d-flex align-items-center justify-content-between mb-3">
+    <div class="d-flex align-items-center gap-2">
+      <svg class="text-primary" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+      <h6 class="fw-bold mb-0 text-dark">Inventario de contenidos</h6>
+    </div>
+    <button class="btn btn-link text-secondary p-0">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>
+    </button>
+  </div>
+
+  <div class="d-flex gap-2 mb-3">
+    <div class="position-relative flex-grow-1">
+      <svg class="position-absolute text-secondary" style="top: 10px; left: 10px;" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+      <input type="text" class="form-control form-control-sm bg-light border-0" style="padding-left: 32px;" placeholder="Buscar contenido..." [(ngModel)]="searchTerm">
+    </div>
+    <div class="d-flex align-items-center gap-2">
+      <select class="form-select form-select-sm bg-light border-0 w-auto" style="min-width: 90px;" [(ngModel)]="priorityFilter">
+        <option value="todos">Todos</option>
+        <option value="alta">Alta</option>
+        <option value="media">Media</option>
+        <option value="baja">Baja</option>
+      </select>
+      <div class="d-flex align-items-center justify-content-center" style="width: 16px; height: 16px;">
+        @if (priorityFilter === 'alta') {
+          <span class="rounded-circle bg-danger" style="width: 12px; height: 12px;"></span>
+        } @else if (priorityFilter === 'media') {
+          <span class="rounded-circle bg-warning" style="width: 12px; height: 12px;"></span>
+        } @else if (priorityFilter === 'baja') {
+          <span class="rounded-circle bg-success" style="width: 12px; height: 12px;"></span>
+        } @else {
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-secondary"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+        }
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <ul class="nav nav-pills mb-3 gap-2 border-bottom pb-2">
+    <li class="nav-item">
+      <button class="nav-link py-1 px-3 d-flex align-items-center gap-2 small fw-medium rounded-pill"
+              [ngClass]="activeTab === 'estructura' || activeTab === 'todos' ? 'bg-primary bg-opacity-10 text-primary active' : 'text-secondary hover-bg-light'"
+              (click)="activeTab = 'estructura'">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="10" y="3" width="4" height="4"></rect><rect x="3" y="17" width="4" height="4"></rect><rect x="17" y="17" width="4" height="4"></rect><path d="M12 7v4"></path><path d="M5 17v-2a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v2"></path></svg>
+        Estructura <span class="badge rounded-pill ms-1" style="font-size: 0.65rem;" [ngClass]="activeTab === 'estructura' || activeTab === 'todos' ? 'bg-primary text-white' : 'bg-secondary bg-opacity-10 text-secondary'">{{ estructuraNodes.length }}</span>
+      </button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link py-1 px-3 d-flex align-items-center gap-2 small fw-medium rounded-pill"
+              [ngClass]="activeTab === 'imagenes' ? 'bg-primary bg-opacity-10 text-primary active' : 'text-secondary hover-bg-light'"
+              (click)="activeTab = 'imagenes'">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+        Imágenes <span class="badge rounded-pill ms-1" style="font-size: 0.65rem;" [ngClass]="activeTab === 'imagenes' ? 'bg-primary text-white' : 'bg-secondary bg-opacity-10 text-secondary'">{{ imageNodes.length }}</span>
+      </button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link py-1 px-3 d-flex align-items-center gap-2 small fw-medium rounded-pill"
+              [ngClass]="activeTab === 'otros' ? 'bg-primary bg-opacity-10 text-primary active' : 'text-secondary hover-bg-light'"
+              (click)="activeTab = 'otros'">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+        Otros <span class="badge rounded-pill ms-1" style="font-size: 0.65rem;" [ngClass]="activeTab === 'otros' ? 'bg-primary text-white' : 'bg-secondary bg-opacity-10 text-secondary'">{{ otherNodes.length }}</span>
+      </button>
+    </li>
+  </ul>
+
+  <!-- List Items -->
+  <div class="d-flex flex-column gap-2 overflow-auto" style="max-height: 350px; overscroll-behavior: contain;"
+       cdkDropList
+       id="inventarioList"
+       [cdkDropListData]="filteredItems">
+    
+    @for (item of filteredItems; track item.id) {
+      <div class="d-flex align-items-center justify-content-between p-2 border rounded-3 hover-shadow-sm bg-light"
+           cdkDrag [cdkDragData]="item"
+           style="cursor: pointer;"
+           (click)="item.id && selectNode(item.id)">
+        <div class="d-flex align-items-center gap-3">
+          <div class="text-secondary cursor-grab" cdkDragHandle>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
+          </div>
+          <div class="bg-white text-primary rounded p-1 shadow-sm border">
+            @if (item.icono === 'texto_libre') {
+               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 7 4 4 20 4 20 7"></polyline><line x1="9" y1="20" x2="15" y2="20"></line><line x1="12" y1="4" x2="12" y2="20"></line></svg>
+            } @else if (item.icono === 'imagen') {
+               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+            } @else {
+               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect></svg>
+            }
+          </div>
+          <div>
+            <div class="fw-medium text-dark small mb-0">{{ item.nombre || 'Nuevo elemento' }}</div>
+            <div class="text-secondary" style="font-size: 0.7rem;">{{ item.descripcion || 'Sin detalle' }}</div>
+          </div>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          @if (item.prioridad === 'alta') {
+            <span class="badge text-danger bg-danger bg-opacity-10 rounded-pill fw-medium">Alta</span>
+          } @else if (item.prioridad === 'media') {
+            <span class="badge text-warning bg-warning bg-opacity-10 rounded-pill fw-medium">Media</span>
+          } @else if (item.prioridad === 'baja') {
+            <span class="badge text-success bg-success bg-opacity-10 rounded-pill fw-medium">Baja</span>
+          }
+        </div>
+      </div>
+    }
+
+    @if (filteredItems.length === 0) {
+      <div class="text-center p-3 text-secondary small border border-dashed rounded-3 bg-light">
+        No hay ítems en el inventario que coincidan.
+      </div>
+    }
+
+  </div>
+</div>

@@ -1,0 +1,15 @@
+.border-dashed {
+  border-style: dashed !important;
+}
+.upload-area {
+  transition: all 0.2s ease-in-out;
+}
+.upload-area:hover {
+  background-color: rgba(13, 110, 253, 0.15) !important;
+}
+.cursor-pointer {
+  cursor: pointer;
+}
+.hover-danger:hover {
+  color: #dc3545 !important;
+}
