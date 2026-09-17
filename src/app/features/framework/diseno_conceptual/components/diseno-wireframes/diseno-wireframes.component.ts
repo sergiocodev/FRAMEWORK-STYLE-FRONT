@@ -24,28 +24,24 @@ export class DisenoWireframesComponent implements OnInit {
   }
 
   loadWireframes() {
-    const localData = localStorage.getItem(`mock_wireframes_${this.projectId}`);
-    if (localData) {
-      try {
-        this.wireframes = JSON.parse(localData);
-      } catch (e) {}
-    }
-    
     this.disenoService.getWireframes(this.projectId).subscribe({
       next: (data: Wireframe[]) => {
-        const apiIds = new Set(data.map(w => w.id));
-        const localOnly = this.wireframes.filter(w => !apiIds.has(w.id));
-        this.wireframes = [...data, ...localOnly];
-        this.saveWireframesLocal();
+        this.wireframes = data.map(w => {
+          const cacheStr = localStorage.getItem(`wf_cache_${w.id}`);
+          if (cacheStr) {
+            try {
+              const cache = JSON.parse(cacheStr);
+              w.base64Data = cache.base64Data;
+              w.fileName = cache.fileName;
+            } catch(e) {}
+          }
+          return w;
+        });
       },
       error: (err: any) => {
         console.error('Error cargando wireframes de backend', err);
       }
     });
-  }
-
-  saveWireframesLocal() {
-    localStorage.setItem(`mock_wireframes_${this.projectId}`, JSON.stringify(this.wireframes));
   }
 
   onDragOver(event: DragEvent) {
@@ -74,6 +70,8 @@ export class DisenoWireframesComponent implements OnInit {
     if (event.target.files && event.target.files.length > 0) {
       this.handleFiles(event.target.files);
     }
+    // Clear input so the same file can be selected again
+    event.target.value = '';
   }
 
   private handleFiles(files: FileList) {
@@ -81,44 +79,58 @@ export class DisenoWireframesComponent implements OnInit {
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
       
-      // En una aplicación real, aquí subiríamos el archivo al backend
-      // usando FormData a un endpoint como POST /api/archivos
-      // y recibiríamos el archivo_id.
+      // Validar que solo sea imagen
+      if (!file.type.startsWith('image/')) {
+        alert(`El archivo "${file.name}" no es una imagen y ha sido ignorado.`);
+        continue;
+      }
       
-      // Simularemos la subida creando un wireframe con un archivo_id aleatorio
-      const dummyArchivoId = Math.floor(Math.random() * 10000) + 1;
+      const reader = new FileReader();
       
-      const newWireframe: Wireframe = {
-        archivo_id: dummyArchivoId,
-        version: '1.0'
+      reader.onload = (e: any) => {
+        // Here we'd ideally upload the file first and get an archivo_id
+        // For now, we mock the archivo_id as 1 to satisfy the backend
+        const dummyArchivoId = 1;
+        
+        const newWireframe: Wireframe = {
+          archivo_id: dummyArchivoId,
+          version: '1.0',
+          fileName: file.name,
+          base64Data: e.target.result
+        };
+        
+        this.disenoService.createWireframe(this.projectId, newWireframe).subscribe({
+          next: (res) => {
+            // Keep base64 locally to show the image if backend doesn't store it yet
+            res.base64Data = newWireframe.base64Data;
+            res.fileName = newWireframe.fileName;
+            this.wireframes.push(res);
+            
+            // Guardar en cache temporal para la pantalla de validación
+            const cacheKey = `wf_cache_${res.id}`;
+            try {
+              localStorage.setItem(cacheKey, JSON.stringify({
+                base64Data: res.base64Data,
+                fileName: res.fileName
+              }));
+            } catch(e) { console.error('Cache limit exceeded'); }
+          },
+          error: (err) => {
+            console.error('Error guardando wireframe en backend', err);
+          }
+        });
       };
       
-      this.disenoService.createWireframe(this.projectId, newWireframe).subscribe({
-        next: (res) => {
-          this.wireframes.push(res);
-          this.saveWireframesLocal();
-        },
-        error: (err) => {
-          console.error('Error guardando wireframe en backend, usando fallback local', err);
-          newWireframe.id = Math.floor(Math.random() * 100000);
-          this.wireframes.push(newWireframe);
-          this.saveWireframesLocal();
-        }
-      });
+      reader.readAsDataURL(file);
     }
   }
 
   deleteWireframe(id: number) {
-    // Remove locally first for immediate UI feedback
-    this.wireframes = this.wireframes.filter(w => w.id !== id);
-    this.saveWireframesLocal();
-    
-    // Attempt backend delete
     this.disenoService.deleteWireframe(this.projectId, id).subscribe({
       next: () => {
-        // Success
+        this.wireframes = this.wireframes.filter(w => w.id !== id);
       },
-      error: (err: any) => console.error('Error al eliminar wireframe en backend (puede ser local)', err)
+      error: (err: any) => console.error('Error al eliminar wireframe', err)
     });
   }
 }

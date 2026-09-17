@@ -1,0 +1,12 @@
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.transition-all {
+  transition: all 0.2s ease-in-out;
+}
+
+.hover-shadow-sm:hover {
+  box-shadow: 0 .125rem .25rem rgba(0,0,0,.075) !important;
+  transform: translateY(-1px);
+}

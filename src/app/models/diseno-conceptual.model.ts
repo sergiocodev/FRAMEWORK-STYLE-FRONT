@@ -72,4 +72,6 @@ export interface Wireframe {
   generado_por_ia?: boolean;
   creado_en?: string;
   checklist_items?: WireframeChecklistItem[];
+  base64Data?: string;
+  fileName?: string;
 }

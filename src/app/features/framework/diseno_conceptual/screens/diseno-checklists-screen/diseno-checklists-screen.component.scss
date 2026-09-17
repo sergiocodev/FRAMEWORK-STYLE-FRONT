@@ -1,0 +1,16 @@
+.hover-bg-light:hover {
+  background-color: #f8f9fa !important;
+}
+
+.group .group-hover-opacity-100 {
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.group:hover .group-hover-opacity-100 {
+  opacity: 1 !important;
+}
+
+.hover-danger:hover {
+  color: #dc3545 !important;
+}
