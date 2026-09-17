@@ -11,31 +11,42 @@
           <polyline points="10 9 9 9 8 9"></polyline>
         </svg>
       </div>
-      <h6 class="card-title fw-bold mb-0">1. Necesidad</h6>
+      <h6 class="card-title fw-bold mb-0">1. Comprender el proyecto</h6>
     </div>
-    
-    <button class="btn btn-icon-secondary">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
-        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <polyline points="6 9 12 15 18 9"></polyline>
-      </svg>
-    </button>
   </div>
   
   <p class="card-description mb-4">
-    Describe el problema o necesidad que se busca resolver con el proyecto.
+    Describe el problema que origina el proyecto, su objetivo principal y las características del producto o módulo a diseñar.
   </p>
   
-  <div class="textarea-wrapper">
-    <textarea class="form-control custom-textarea" rows="5"
-      placeholder="Escribe la necesidad con el mayor nivel de detalle posible..."
-      [ngModel]="necesidad"
-      (ngModelChange)="onNecesidadChange($event)"></textarea>
-      
-    <div class="textarea-footer d-flex justify-content-end mt-2">
-      <span class="char-counter" [class.text-danger]="necesidad.length >= 1000">
-        {{ necesidad.length || 0 }} <span class="opacity-50">/ 1000</span>
-      </span>
+  <div class="mb-4">
+    <label class="form-label fw-medium mb-1" style="font-size: 0.85rem;">Problema o Necesidad</label>
+    <div class="textarea-wrapper">
+      <textarea class="form-control custom-textarea" rows="3"
+        placeholder="¿Qué problema o necesidad se busca resolver?"
+        [ngModel]="problema"
+        (ngModelChange)="onProblemaChange($event)"></textarea>
     </div>
   </div>
+
+  <div class="mb-4">
+    <label class="form-label fw-medium mb-1" style="font-size: 0.85rem;">Objetivo del Proyecto</label>
+    <div class="textarea-wrapper">
+      <textarea class="form-control custom-textarea" rows="2"
+        placeholder="¿Qué se espera lograr con el diseño de esta interfaz?"
+        [ngModel]="objetivo"
+        (ngModelChange)="onObjetivoChange($event)"></textarea>
+    </div>
+  </div>
+
+  <div>
+    <label class="form-label fw-medium mb-1" style="font-size: 0.85rem;">Descripción del Producto</label>
+    <div class="textarea-wrapper">
+      <textarea class="form-control custom-textarea" rows="2"
+        placeholder="Información sobre el sistema, app o módulo (ej. Dashboard web, App móvil)"
+        [ngModel]="producto"
+        (ngModelChange)="onProductoChange($event)"></textarea>
+    </div>
+  </div>
+
 </div>

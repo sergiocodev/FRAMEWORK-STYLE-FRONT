@@ -1,12 +1,12 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Phase } from '../../../../../shared/components/stepper/stepper.component';
-import { StepperComponent } from '../../../../../shared/components/stepper/stepper.component';
+
 
 @Component({
   selector: 'app-diseno-header',
   standalone: true,
-  imports: [CommonModule, StepperComponent],
+  imports: [CommonModule],
   templateUrl: './diseno-header.component.html',
   styleUrls: ['./diseno-header.component.scss']
 })

@@ -30,8 +30,16 @@
     </div>
   </div>
 
-  <!-- Stepper Component -->
-  <div class="px-4 pt-4 pb-2">
-    <app-stepper [phases]="phases"></app-stepper>
+  <!-- Segmented Progress Bar -->
+  <div class="header-progress-bar d-flex">
+    <div *ngFor="let phase of phases" 
+         class="progress-segment flex-fill"
+         [ngClass]="{
+           'segment-completed': phase.status === 'completed',
+           'segment-active': phase.status === 'active',
+           'segment-upcoming': phase.status === 'upcoming'
+         }"
+         [title]="phase.name">
+    </div>
   </div>
 </header>

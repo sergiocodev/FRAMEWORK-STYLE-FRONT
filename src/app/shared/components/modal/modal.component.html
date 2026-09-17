@@ -1,0 +1,38 @@
+<div 
+  class="modal-overlay" 
+  [class.is-open]="isOpen" 
+  (click)="onOverlayClick($event)"
+  aria-modal="true"
+  role="dialog">
+  
+  <div class="modal-container" [ngClass]="size" [class.is-open]="isOpen">
+    
+    <div class="modal-header">
+      <div class="header-content">
+        <h3 class="modal-title" *ngIf="title">{{ title }}</h3>
+        <ng-content select="[modal-header]"></ng-content>
+      </div>
+      
+      <button 
+        *ngIf="!hideCloseButton" 
+        class="close-button" 
+        (click)="close()" 
+        aria-label="Cerrar modal">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <div class="modal-body">
+      <!-- Supports specific body content projection or default projection -->
+      <ng-content select="[modal-body]"></ng-content>
+      <ng-content></ng-content>
+    </div>
+
+    <div class="modal-footer">
+      <ng-content select="[modal-footer]"></ng-content>
+    </div>
+  </div>
+</div>

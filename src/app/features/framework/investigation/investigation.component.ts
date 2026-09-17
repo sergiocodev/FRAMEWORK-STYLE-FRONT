@@ -1,14 +1,16 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, ActivatedRoute } from '@angular/router';
-import { forkJoin, of } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { Subject, forkJoin, of } from 'rxjs';
+import { catchError, debounceTime } from 'rxjs/operators';
 import { Phase } from '../../../shared/components/stepper/stepper.component';
 import { InvestigationHeaderComponent } from './components/investigation-header/investigation-header.component';
 import { InvestigationNecessityComponent } from './components/investigation-necessity/investigation-necessity.component';
+import { InvestigationExpectationsComponent } from './components/investigation-expectations/investigation-expectations.component';
 import { InvestigationUsersComponent } from './components/investigation-users/investigation-users.component';
 import { InvestigationResourcesComponent } from './components/investigation-resources/investigation-resources.component';
 import { InvestigationPreviewComponent } from './components/investigation-preview/investigation-preview.component';
+import { ModalComponent } from '../../../shared/components/modal/modal.component';
 
 import { ProjectService } from '../../../core/services/project.service';
 import { InvestigationService } from '../services/investigation.service';
@@ -21,9 +23,11 @@ import { InvestigationService } from '../services/investigation.service';
     RouterModule, 
     InvestigationHeaderComponent,
     InvestigationNecessityComponent,
+    InvestigationExpectationsComponent,
     InvestigationUsersComponent,
     InvestigationResourcesComponent,
-    InvestigationPreviewComponent
+    InvestigationPreviewComponent,
+    ModalComponent
   ],
   templateUrl: './investigation.component.html',
   styleUrls: ['./investigation.component.scss']
@@ -38,19 +42,68 @@ export class InvestigationComponent implements OnInit {
 
   project: any = {};
   phases: Phase[] = [];
-  necesidad: string = '';
-  usuarios: any[] = [];
-  recursos: any[] = [];
+  
+  // Phase 1 Data States (with auto-save hooks)
+  private _problema: string = '';
+  get problema() { return this._problema; }
+  set problema(v) { this._problema = v; this.triggerAutoSave(); }
 
-  // Mobile Tabs State
-  activeMobileTab: 'form' | 'preview' = 'form';
+  private _objetivo: string = '';
+  get objetivo() { return this._objetivo; }
+  set objetivo(v) { this._objetivo = v; this.triggerAutoSave(); }
+
+  private _producto: string = '';
+  get producto() { return this._producto; }
+  set producto(v) { this._producto = v; this.triggerAutoSave(); }
+  
+  private _expectativas: string = '';
+  get expectativas() { return this._expectativas; }
+  set expectativas(v) { this._expectativas = v; this.triggerAutoSave(); }
+
+  private _referencias: { url: string, notas: string }[] = [];
+  get referencias() { return this._referencias; }
+  set referencias(v) { this._referencias = v; this.triggerAutoSave(); }
+
+  private _analisisActual: string = '';
+  get analisisActual() { return this._analisisActual; }
+  set analisisActual(v) { this._analisisActual = v; this.triggerAutoSave(); }
+  
+  usuarios: any[] = []; // Currently not handled by simple autosave payload
+  recursos: any[] = [];
+  
+  private _restricciones: string = '';
+  get restricciones() { return this._restricciones; }
+  set restricciones(v) { this._restricciones = v; this.triggerAutoSave(); }
+
+  private _identidadMarca = { tieneManual: false, colores: '', notas: '' };
+  get identidadMarca() { return this._identidadMarca; }
+  set identidadMarca(v) { this._identidadMarca = v; this.triggerAutoSave(); }
+
+  private saveSubject = new Subject<void>();
+
+  // Mobile Tabs State (Removido ya que usamos Modal)
+  
+  // Modal State
+  isModalOpen: boolean = false;
+
+  // Save State
+  currentProjectId: number = 0;
+  isSaving: boolean = false;
+  saveSuccess: boolean = false;
 
   ngOnInit(): void {
+    // Setup autosave
+    this.saveSubject.pipe(
+      debounceTime(1500)
+    ).subscribe(() => {
+      this.saveChanges();
+    });
+
     this.route.paramMap.subscribe(params => {
       const idParam = params.get('id');
       if (idParam) {
-        const projectId = Number(idParam);
-        this.fetchData(projectId);
+        this.currentProjectId = Number(idParam);
+        this.fetchData(this.currentProjectId);
       } else {
         this.error = true;
         this.isLoading = false;
@@ -62,7 +115,6 @@ export class InvestigationComponent implements OnInit {
     this.isLoading = true;
     forkJoin({
       project: this.projectService.getProjectById(projectId),
-      // Si el informe no existe (404), capturamos el error para no romper todo el forkJoin
       informe: this.investigationService.getInforme(projectId).pipe(catchError(() => of({ necesidad_proyecto: 'Aún no se ha definido una necesidad.' }))),
       arquetipos: this.investigationService.getArquetipos(projectId).pipe(catchError(() => of([]))),
       recursosList: this.investigationService.getRecursos(projectId).pipe(catchError(() => of([])))
@@ -85,14 +137,21 @@ export class InvestigationComponent implements OnInit {
         ];
 
         // Map Informe
-        this.necesidad = data.informe.necesidad_proyecto || 'Sin descripción detallada';
+        this.problema = data.informe.problema || 'Sin descripción detallada';
+        this.objetivo = data.informe.objetivo || '';
+        this.producto = data.informe.producto || '';
+        this.expectativas = data.informe.expectativas || '';
+        this.referencias = data.informe.referencias || [];
+        this.analisisActual = data.informe.analisis_actual || '';
+        this.restricciones = data.informe.restricciones || '';
+        this.identidadMarca = data.informe.identidad_marca || { tieneManual: false, colores: '', notas: '' };
 
         // Map Arquetipos
         this.usuarios = data.arquetipos.map((a: any) => ({
           name: a.nombre,
           role: a.nombre, 
           tag: a.etiqueta || 'General',
-          photoUrl: 'https://i.pravatar.cc/150?img=11', // Placeholder genérico temporal
+          photoUrl: 'https://i.pravatar.cc/150?img=11',
           needs: a.necesidades ? a.necesidades.map((n: any) => n.descripcion) : []
         }));
 
@@ -116,6 +175,42 @@ export class InvestigationComponent implements OnInit {
         console.error('Error fetching data', err);
         this.error = true;
         this.isLoading = false;
+      }
+    });
+  }
+
+  triggerAutoSave(): void {
+    if (!this.isLoading) {
+      this.saveSubject.next();
+    }
+  }
+
+  saveChanges(): void {
+    if (!this.currentProjectId) return;
+    
+    this.isSaving = true;
+    this.saveSuccess = false;
+    
+    const payload = {
+      problema: this.problema,
+      objetivo: this.objetivo,
+      producto: this.producto,
+      expectativas: this.expectativas,
+      referencias: this.referencias,
+      analisis_actual: this.analisisActual,
+      restricciones: this.restricciones,
+      identidad_marca: this.identidadMarca
+    };
+    
+    this.investigationService.updateInforme(this.currentProjectId, payload).subscribe({
+      next: () => {
+        this.isSaving = false;
+        this.saveSuccess = true;
+        setTimeout(() => this.saveSuccess = false, 3000);
+      },
+      error: (err) => {
+        console.error('Error al guardar', err);
+        this.isSaving = false;
       }
     });
   }

@@ -1,4 +1,4 @@
-<div class="card resources-card border-0 p-4">
+<div class="card resources-card border-0 p-4 mt-4">
   <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-4">
     <div class="card-header-content">
       <div class="d-flex align-items-center gap-3 mb-2">
@@ -10,14 +10,47 @@
             <line x1="12" y1="3" x2="12" y2="15"></line>
           </svg>
         </div>
-        <h6 class="card-title fw-bold mb-0">3. Recursos</h6>
+        <h6 class="card-title fw-bold mb-0">4. Recursos y Restricciones</h6>
       </div>
       <p class="card-description mb-0">
-        Adjunta los recursos que ayudarán a comprender el contexto del proyecto.
+        Registra restricciones técnicas, detalles de marca y adjunta los recursos útiles.
       </p>
     </div>
   </div>
 
+  <div class="mb-4">
+    <label class="form-label fw-medium mb-1" style="font-size: 0.85rem;">Restricciones Técnicas</label>
+    <div class="textarea-wrapper">
+      <textarea class="form-control custom-textarea" rows="2"
+        placeholder="Plataformas (Web, iOS), resoluciones, tecnologías requeridas, etc."
+        [ngModel]="restricciones"
+        (ngModelChange)="onRestriccionesChange($event)"></textarea>
+    </div>
+  </div>
+
+  <div class="mb-4 p-3 bg-light rounded-3 border">
+    <label class="form-label fw-medium mb-3 d-block" style="font-size: 0.85rem;">Identidad Institucional</label>
+    
+    <div class="form-check form-switch mb-3">
+      <input class="form-check-input" type="checkbox" id="tieneManual" 
+             [(ngModel)]="identidadMarca.tieneManual" (ngModelChange)="onIdentidadMarcaChange()">
+      <label class="form-check-label ms-2" for="tieneManual" style="font-size: 0.85rem;">¿Cuenta con manual de marca o lineamientos visuales?</label>
+    </div>
+    
+    <div class="mb-3">
+      <label class="form-label text-secondary mb-1" style="font-size: 0.75rem;">Colores Principales</label>
+      <input type="text" class="form-control custom-input" placeholder="Ej. Azul primario (#003366), Naranja secundario" 
+             [(ngModel)]="identidadMarca.colores" (ngModelChange)="onIdentidadMarcaChange()">
+    </div>
+    
+    <div>
+      <label class="form-label text-secondary mb-1" style="font-size: 0.75rem;">Otras notas de marca (Tipografía, logo)</label>
+      <input type="text" class="form-control custom-input" placeholder="Ej. Usar logo en versión blanca, tipografía Arial" 
+             [(ngModel)]="identidadMarca.notas" (ngModelChange)="onIdentidadMarcaChange()">
+    </div>
+  </div>
+
+  <label class="form-label fw-medium mb-2" style="font-size: 0.85rem;">Archivos Adjuntos</label>
   <!-- Drag and Drop Area -->
   <div class="upload-zone mb-4"
     [class.is-dragging]="isDragging"

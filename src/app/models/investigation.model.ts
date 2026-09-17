@@ -1,9 +1,13 @@
 export interface InvestigacionInformeResponse {
   proyecto_id: number;
-  necesidad_proyecto?: string;
-  expectativas_cliente?: string;
-  situacion_actual?: string;
-  recursos_restricciones?: string;
+  problema?: string;
+  objetivo?: string;
+  producto?: string;
+  expectativas?: string;
+  referencias?: {url: string, notas: string}[];
+  analisis_actual?: string;
+  restricciones?: string;
+  identidad_marca?: {tieneManual: boolean, colores: string, notas: string};
   conclusiones_fase2?: string;
   actualizado_en: string;
 }

@@ -12,9 +12,21 @@ import { marked } from 'marked';
 })
 export class InvestigationPreviewComponent implements OnChanges {
   @Input() project: any;
-  @Input() necesidad: string = '';
+  
+  // Phase 1 Data
+  @Input() problema: string = '';
+  @Input() objetivo: string = '';
+  @Input() producto: string = '';
+  
+  @Input() expectativas: string = '';
+  @Input() referencias: { url: string, notas: string }[] = [];
+  @Input() analisisActual: string = '';
+  
   @Input() usuarios: any[] = [];
+  
   @Input() recursos: any[] = [];
+  @Input() restricciones: string = '';
+  @Input() identidadMarca: { tieneManual: boolean, colores: string, notas: string } = { tieneManual: false, colores: '', notas: '' };
 
   safeMarkdown: SafeHtml = '';
   private sanitizer = inject(DomSanitizer);
@@ -25,7 +37,6 @@ export class InvestigationPreviewComponent implements OnChanges {
 
   private async updatePreview() {
     const markdownString = this.generateMarkdown();
-    // Parse markdown to HTML asynchronously (marked.parse can return string or Promise depending on config, but by default string)
     const rawHtml = await marked.parse(markdownString);
     this.safeMarkdown = this.sanitizer.bypassSecurityTrustHtml(rawHtml);
   }
@@ -54,14 +65,58 @@ export class InvestigationPreviewComponent implements OnChanges {
 
 <div class="doc-content text-dark px-3">
 
-<h6 class="fw-bold mb-3 fs-6" style="color: #1e293b;">1. Resumen del proyecto</h6>
-<p class="mb-4 text-secondary" style="font-size: 0.9rem; line-height: 1.6;">El presente informe recopila la información inicial del proyecto ${this.project?.title || 'Sin nombre'}, con el objetivo de comprender la necesidad del cliente, identificar a los usuarios y analizar los recursos disponibles para el desarrollo de una solución digital que mejore la experiencia.</p>
+<h6 class="fw-bold mb-3 fs-6" style="color: #1e293b;">1. Comprensión del proyecto</h6>
+<div class="mb-4">
+  <div class="mb-3">
+    <span class="fw-bold" style="font-size: 0.85rem;">Problema o Necesidad:</span>
+    <p class="text-secondary mb-0 mt-1" style="font-size: 0.85rem; line-height: 1.5; white-space: pre-wrap;">${this.problema || '*Sin especificar*'}</p>
+  </div>
+  <div class="mb-3">
+    <span class="fw-bold" style="font-size: 0.85rem;">Objetivo del Proyecto:</span>
+    <p class="text-secondary mb-0 mt-1" style="font-size: 0.85rem; line-height: 1.5; white-space: pre-wrap;">${this.objetivo || '*Sin especificar*'}</p>
+  </div>
+  <div>
+    <span class="fw-bold" style="font-size: 0.85rem;">Descripción del Producto:</span>
+    <p class="text-secondary mb-0 mt-1" style="font-size: 0.85rem; line-height: 1.5; white-space: pre-wrap;">${this.producto || '*Sin especificar*'}</p>
+  </div>
+</div>
 
-<h6 class="fw-bold mb-3 fs-6" style="color: #1e293b;">2. Necesidad del proyecto</h6>
-<p class="mb-4 text-secondary" style="font-size: 0.9rem; line-height: 1.6; white-space: pre-wrap;">${this.necesidad || '*Sin especificar*'}</p>
+<hr class="my-4" style="opacity: 0.1;">
+
+<h6 class="fw-bold mb-3 fs-6" style="color: #1e293b;">2. Expectativas y Referencias</h6>
+<div class="mb-4">
+  <div class="mb-3">
+    <span class="fw-bold" style="font-size: 0.85rem;">Expectativas del Cliente:</span>
+    <p class="text-secondary mb-0 mt-1" style="font-size: 0.85rem; line-height: 1.5; white-space: pre-wrap;">${this.expectativas || '*Sin especificar*'}</p>
+  </div>
+  
+  <div class="mb-3">
+    <span class="fw-bold" style="font-size: 0.85rem;">Referencias (Inspiración):</span>
+`;
+    
+    if (this.referencias && this.referencias.length > 0) {
+      md += `<ul class="text-secondary mb-0 mt-1" style="font-size: 0.85rem; line-height: 1.5;">`;
+      for (const ref of this.referencias) {
+        md += `<li><strong>${ref.url}</strong>: ${ref.notas || 'Sin notas'}</li>`;
+      }
+      md += `</ul>`;
+    } else {
+      md += `<p class="text-secondary mb-0 mt-1" style="font-size: 0.85rem;">*Sin referencias adjuntas*</p>`;
+    }
+    
+    md += `
+  </div>
+  
+  <div>
+    <span class="fw-bold" style="font-size: 0.85rem;">Análisis de Situación Actual:</span>
+    <p class="text-secondary mb-0 mt-1" style="font-size: 0.85rem; line-height: 1.5; white-space: pre-wrap;">${this.analisisActual || '*Sin análisis previo*'}</p>
+  </div>
+</div>
+
+<hr class="my-4" style="opacity: 0.1;">
 
 <h6 class="fw-bold mb-4 fs-6" style="color: #1e293b;">3. Usuarios (Arquetipos)</h6>
-<div class="row g-3 mb-5">
+<div class="row g-3 mb-4">
 `;
 
     if (this.usuarios && this.usuarios.length > 0) {
@@ -90,8 +145,26 @@ export class InvestigationPreviewComponent implements OnChanges {
     md += `
 </div>
 
-<h6 class="fw-bold mb-4 fs-6" style="color: #1e293b;">4. Recursos</h6>
-<div class="d-flex flex-column gap-3 mb-5">
+<hr class="my-4" style="opacity: 0.1;">
+
+<h6 class="fw-bold mb-4 fs-6" style="color: #1e293b;">4. Recursos y Restricciones</h6>
+<div class="mb-4">
+  <div class="mb-3">
+    <span class="fw-bold" style="font-size: 0.85rem;">Restricciones Técnicas:</span>
+    <p class="text-secondary mb-0 mt-1" style="font-size: 0.85rem; line-height: 1.5; white-space: pre-wrap;">${this.restricciones || '*Sin restricciones*'}</p>
+  </div>
+  
+  <div class="mb-4 p-3 bg-light rounded border">
+    <span class="fw-bold d-block mb-2" style="font-size: 0.85rem;">Identidad Institucional:</span>
+    <ul class="text-secondary mb-0" style="font-size: 0.85rem; line-height: 1.5; list-style-type: none; padding-left: 0;">
+      <li><strong>Manual de marca:</strong> ${this.identidadMarca?.tieneManual ? 'Sí' : 'No'}</li>
+      <li><strong>Colores Principales:</strong> ${this.identidadMarca?.colores || '*No especificado*'}</li>
+      <li><strong>Notas adicionales:</strong> ${this.identidadMarca?.notas || '*No especificado*'}</li>
+    </ul>
+  </div>
+  
+  <span class="fw-bold d-block mb-2" style="font-size: 0.85rem;">Archivos Adjuntos:</span>
+  <div class="d-flex flex-column gap-2 mb-2">
 `;
 
     if (this.recursos && this.recursos.length > 0) {
@@ -106,22 +179,24 @@ export class InvestigationPreviewComponent implements OnChanges {
         }
         
         md += `
-  <div class="d-flex align-items-center gap-4 border p-2 rounded-3 mb-2">
-    <div class="d-flex align-items-center justify-content-center bg-light rounded-3 text-secondary border flex-shrink-0" style="width: 40px; height: 40px;">
-      ${icon}
-    </div>
-    <div style="min-width: 180px;">
-      <h6 class="text-dark fw-bold mb-0" style="font-size: 0.8rem;">${file.name}</h6>
-      <p class="text-secondary small mb-0" style="font-size: 0.7rem;">${file.size}</p>
-    </div>
-  </div>`;
+    <div class="d-flex align-items-center gap-3 border p-2 rounded-2">
+      <div class="d-flex align-items-center justify-content-center bg-light rounded text-secondary border flex-shrink-0" style="width: 36px; height: 36px;">
+        ${icon}
+      </div>
+      <div>
+        <h6 class="text-dark fw-bold mb-0" style="font-size: 0.75rem;">${file.name}</h6>
+        <p class="text-secondary small mb-0" style="font-size: 0.7rem;">${file.size}</p>
+      </div>
+    </div>`;
       }
     } else {
       md += `<p class="text-secondary small">*No hay recursos adjuntos*</p>`;
     }
 
     md += `
+  </div>
 </div>
+
 </div>
 <div class="mt-5 pt-4 border-top d-flex justify-content-between align-items-center text-secondary" style="font-size: 0.7rem;">
   <div><span class="fw-bold">STYLE</span> - Framework de Diseño y Mejora de Interfaces de Usuario</div>

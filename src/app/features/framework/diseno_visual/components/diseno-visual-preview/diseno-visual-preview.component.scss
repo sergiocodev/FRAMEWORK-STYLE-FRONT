@@ -1,0 +1,105 @@
+.bg-light-blue {
+  background-color: #f0f4ff;
+}
+
+.text-primary-blue {
+  color: #2563eb;
+}
+
+.bg-primary-blue {
+  background-color: #2563eb;
+  color: white;
+}
+
+.preview-pane {
+  background-color: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+}
+
+.preview-inner {
+  background-color: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e5e7eb;
+  display: flex;
+  min-height: 400px;
+  overflow: hidden;
+}
+
+.preview-sidebar {
+  width: 200px;
+  background-color: #f8fafc;
+  border-right: 1px solid #e5e7eb;
+  padding: 1rem;
+}
+
+.preview-content {
+  flex: 1;
+  padding: 1.5rem;
+}
+
+.stat-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  text-align: center;
+}
+
+.btn-premium-gradient {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  color: #09090b !important; // Dark text for contrast inside the white pill
+  text-decoration: none;
+  border-radius: 8px;
+  background: transparent;
+  position: relative;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1;
+  border: none;
+
+  // Glowing aura
+  &::before {
+    content: '';
+    position: absolute;
+    inset: -3px;
+    background: linear-gradient(135deg, #FF3366, #7C3AED);
+    border-radius: 11px;
+    z-index: -1;
+    opacity: 0.4;
+    filter: blur(8px);
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  // Inner shape (white background)
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: #ffffff;
+    border-radius: 8px;
+    z-index: -1;
+  }
+
+  &:hover {
+    transform: translateY(-2px);
+    
+    &::before {
+      opacity: 0.85;
+      filter: blur(14px);
+      inset: -4px;
+    }
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  // Ensure svg and span text render above the ::after background
+  > svg, > span {
+    position: relative;
+    z-index: 2;
+  }
+}

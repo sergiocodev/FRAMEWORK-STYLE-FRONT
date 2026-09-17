@@ -29,5 +29,9 @@ export class InvestigationService {
     return this.http.get<ArchivoResponse[]>(`${this.getBaseUrl(projectId)}/recursos`);
   }
 
-  // Future CRUD methods (POST, PUT, DELETE) can go here
+  updateInforme(projectId: number, data: any): Observable<InvestigacionInformeResponse> {
+    return this.http.put<InvestigacionInformeResponse>(`${this.getBaseUrl(projectId)}/informe`, data);
+  }
+
+  // Future CRUD methods (POST, DELETE) can go here
 }

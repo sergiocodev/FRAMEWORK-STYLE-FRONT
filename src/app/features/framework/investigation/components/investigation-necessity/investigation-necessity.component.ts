@@ -10,11 +10,27 @@ import { FormsModule } from '@angular/forms';
   styleUrls: ['./investigation-necessity.component.scss']
 })
 export class InvestigationNecessityComponent {
-  @Input() necesidad: string = '';
-  @Output() necesidadChange = new EventEmitter<string>();
+  @Input() problema: string = '';
+  @Output() problemaChange = new EventEmitter<string>();
 
-  onNecesidadChange(value: string) {
-    this.necesidad = value;
-    this.necesidadChange.emit(this.necesidad);
+  @Input() objetivo: string = '';
+  @Output() objetivoChange = new EventEmitter<string>();
+
+  @Input() producto: string = '';
+  @Output() productoChange = new EventEmitter<string>();
+
+  onProblemaChange(value: string) {
+    this.problema = value;
+    this.problemaChange.emit(this.problema);
+  }
+
+  onObjetivoChange(value: string) {
+    this.objetivo = value;
+    this.objetivoChange.emit(this.objetivo);
+  }
+
+  onProductoChange(value: string) {
+    this.producto = value;
+    this.productoChange.emit(this.producto);
   }
 }

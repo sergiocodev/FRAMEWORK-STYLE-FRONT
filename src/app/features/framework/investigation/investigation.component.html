@@ -1,93 +1,102 @@
 @if (isLoading) {
-  <div class="d-flex justify-content-center align-items-center min-vh-100 bg-light">
-    <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
-      <span class="visually-hidden">Cargando...</span>
-    </div>
+<div class="d-flex justify-content-center align-items-center min-vh-100 bg-light">
+  <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+    <span class="visually-hidden">Cargando...</span>
   </div>
+</div>
 } @else if (error) {
-  <div class="d-flex flex-column justify-content-center align-items-center min-vh-100 bg-light text-center">
-    <div class="bg-white p-5 rounded-4 shadow-sm border">
-      <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mb-4">
-        <circle cx="12" cy="12" r="10"></circle>
-        <line x1="15" y1="9" x2="9" y2="15"></line>
-        <line x1="9" y1="9" x2="15" y2="15"></line>
-      </svg>
-      <h4 class="fw-bold text-dark">Proyecto no encontrado</h4>
-      <p class="text-secondary mb-0 mt-2">No se pudo cargar la información del proyecto o hubo un error de conexión.</p>
-    </div>
+<div class="d-flex flex-column justify-content-center align-items-center min-vh-100 bg-light text-center">
+  <div class="bg-white p-5 rounded-4 shadow-sm border">
+    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round"
+      stroke-linejoin="round" class="mb-4">
+      <circle cx="12" cy="12" r="10"></circle>
+      <line x1="15" y1="9" x2="9" y2="15"></line>
+      <line x1="9" y1="9" x2="15" y2="15"></line>
+    </svg>
+    <h4 class="fw-bold text-dark">Proyecto no encontrado</h4>
+    <p class="text-secondary mb-0 mt-2">No se pudo cargar la información del proyecto o hubo un error de conexión.</p>
   </div>
+</div>
 } @else {
-  <div class="investigation-container min-vh-100 bg-light d-flex flex-column"
-    style="background-color: #F8FAFC !important;">
-    
-    <!-- Header Navbar -->
-    <app-investigation-header [project]="project" [phases]="phases"></app-investigation-header>
+<div class="investigation-container min-vh-100 bg-light d-flex flex-column"
+  style="background-color: #F8FAFC !important;">
 
-    <!-- Main Content -->
-    <div class="container-fluid py-4 flex-grow-1 d-flex flex-column overflow-hidden">
-      
-      <!-- Mobile Tabs (Visible solo en < xl) -->
-      <div class="d-xl-none mb-3">
-        <ul class="nav nav-pills nav-fill bg-white p-1 rounded-3 shadow-sm border">
-          <li class="nav-item">
-            <a class="nav-link cursor-pointer" [class.active]="activeMobileTab === 'form'" (click)="activeMobileTab = 'form'">
-              Editar
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link cursor-pointer" [class.active]="activeMobileTab === 'preview'" (click)="activeMobileTab = 'preview'">
-              Vista Previa
-            </a>
-          </li>
-        </ul>
-      </div>
+  <!-- Header Navbar -->
+  <app-investigation-header [project]="project" [phases]="phases" [isSaving]="isSaving" [saveSuccess]="saveSuccess"></app-investigation-header>
 
-      <div class="row g-4 h-100 flex-grow-1">
+  <!-- Main Content -->
+  <div class="container-fluid py-4 flex-grow-1 d-flex flex-column overflow-hidden">
 
-        <!-- Left Panel: Form Inputs -->
-        <div class="col-12 col-xl-6 flex-column h-100 pb-2"
-             [ngClass]="activeMobileTab === 'form' ? 'd-flex' : 'd-none d-xl-flex'">
+    <div class="row g-4 h-100 flex-grow-1">
 
-          <div class="main-section-header mb-4 ps-2 flex-shrink-0">
-            <div class="d-flex align-items-center gap-3 mb-2">
-              <div class="icon-container shadow-sm">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                  <polyline points="14 2 14 8 20 8"></polyline>
-                  <line x1="16" y1="13" x2="8" y2="13"></line>
-                  <line x1="16" y1="17" x2="8" y2="17"></line>
-                  <polyline points="10 9 9 9 8 9"></polyline>
+      <!-- Main Panel: Form Inputs -->
+      <div class="col-12 flex-column h-100 pb-2 d-flex">
+
+        <div class="main-section-header mb-4 ps-2 flex-shrink-0">
+
+          <div class="d-flex align-items-center justify-content-end w-100" style="min-height: 42px;">
+
+            <div class="d-flex align-items-center gap-3">
+              <!-- Preview Button -->
+              <button
+                class="btn btn-outline-primary d-flex align-items-center gap-2 shadow-sm rounded-3 px-3 transition-all"
+                style="font-weight: 500;" (click)="isModalOpen = true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                  <circle cx="12" cy="12" r="3"></circle>
                 </svg>
-              </div>
-              <h5 class="title fw-bold mb-0">Configuración del proyecto</h5>
+                Vista Previa
+              </button>
             </div>
-            <div class="d-flex align-items-center" style="min-height: 42px;">
-              <p class="subtitle small mb-0 ms-1">Completa la información para la Fase 1: Investigación</p>
-            </div>
-          </div>
-
-          <div class="d-flex flex-column gap-4 pb-2 flex-grow-1 pe-xl-2 overflow-auto custom-scrollbar">
-
-            <!-- 1. Necesidad -->
-            <app-investigation-necessity [(necesidad)]="necesidad"></app-investigation-necessity>
-
-            <!-- 2. Usuarios -->
-            <app-investigation-users [(usuarios)]="usuarios"></app-investigation-users>
-
-            <!-- 3. Recursos -->
-            <app-investigation-resources [(recursos)]="recursos"></app-investigation-resources>
-
           </div>
         </div>
 
-        <!-- Right Panel: Document Preview -->
-        <div class="col-12 col-xl-6 flex-column h-100 pb-2"
-             [ngClass]="activeMobileTab === 'preview' ? 'd-flex' : 'd-none d-xl-flex'">
-          <app-investigation-preview class="d-flex flex-column h-100 w-100" [project]="project" [necesidad]="necesidad" [usuarios]="usuarios" [recursos]="recursos"></app-investigation-preview>
-        </div>
+        <div class="row g-4 pb-2 flex-grow-1 pe-xl-2 overflow-auto custom-scrollbar m-0">
 
+          <!-- 1. Necesidad -->
+          <div class="col-12 col-xl-6 d-flex flex-column">
+            <app-investigation-necessity class="flex-grow-1 d-flex flex-column" [(problema)]="problema"
+              [(objetivo)]="objetivo" [(producto)]="producto">
+            </app-investigation-necessity>
+          </div>
+
+          <!-- 2. Expectativas y Referencias -->
+          <div class="col-12 col-xl-6 d-flex flex-column">
+            <app-investigation-expectations class="flex-grow-1 d-flex flex-column" [(expectativas)]="expectativas"
+              [(referencias)]="referencias" [(analisisActual)]="analisisActual">
+            </app-investigation-expectations>
+          </div>
+
+          <!-- 3. Usuarios -->
+          <div class="col-12 col-xl-6 d-flex flex-column">
+            <app-investigation-users class="flex-grow-1 d-flex flex-column" [(usuarios)]="usuarios">
+            </app-investigation-users>
+          </div>
+
+          <!-- 4. Recursos -->
+          <div class="col-12 col-xl-6 d-flex flex-column">
+            <app-investigation-resources class="flex-grow-1 d-flex flex-column" [(recursos)]="recursos"
+              [(restricciones)]="restricciones" [(identidadMarca)]="identidadMarca">
+            </app-investigation-resources>
+          </div>
+
+        </div>
       </div>
+
     </div>
   </div>
+</div>
+
+<!-- Preview Modal -->
+<app-modal [isOpen]="isModalOpen" title="Vista Previa de Investigación" size="large" (closeEvent)="isModalOpen = false">
+
+  <div modal-body class="h-100 w-100 d-flex flex-column" style="min-height: 70vh;">
+    <app-investigation-preview class="d-flex flex-column h-100 w-100" [project]="project" [problema]="problema"
+      [objetivo]="objetivo" [producto]="producto" [expectativas]="expectativas" [referencias]="referencias"
+      [analisisActual]="analisisActual" [usuarios]="usuarios" [recursos]="recursos" [restricciones]="restricciones"
+      [identidadMarca]="identidadMarca">
+    </app-investigation-preview>
+  </div>
+</app-modal>
 }

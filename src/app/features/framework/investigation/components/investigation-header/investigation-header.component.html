@@ -12,8 +12,8 @@
       </div>
       <div>
         <div class="d-flex align-items-center gap-2 mb-1">
-          <h4 class="project-title mb-0">{{ project?.title || 'Nuevo Proyecto de Investigación' }}</h4>
-          <span class="project-badge status-active">{{ project?.status || 'En progreso' }}</span>
+          <h4 class="project-title mb-0">{{ project?.title || project?.nombre || 'Nuevo Proyecto de Investigación' }}</h4>
+          <span class="project-badge status-active">{{ formattedStatus }}</span>
         </div>
         <p class="project-meta mb-0">
           <span class="fw-medium text-secondary-emphasis">Tipo:</span> <span class="opacity-75">{{ project?.type || 'Estudio de mercado' }}</span> 
@@ -25,16 +25,19 @@
 
     <!-- Actions (Right) -->
     <div class="d-flex align-items-center gap-3">
-      <button class="btn btn-custom-outline d-flex align-items-center gap-2 px-3 py-2">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-          stroke-linecap="round" stroke-linejoin="round">
-          <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
-          <polyline points="17 21 17 13 7 13 7 21"></polyline>
-          <polyline points="7 3 7 8 15 8"></polyline>
-        </svg>
-        <span>Guardar borrador</span>
-      </button>
-      
+      <!-- Auto-save indicator -->
+      <div class="d-flex align-items-center gap-2 text-secondary me-3" style="font-size: 0.85rem;">
+        @if (isSaving) {
+          <span class="spinner-border spinner-border-sm text-primary" role="status"></span>
+          <span>Guardando...</span>
+        } @else if (saveSuccess) {
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          <span class="text-success">Guardado en la nube</span>
+        } @else {
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+          <span>Todos los cambios guardados</span>
+        }
+      </div>
       <button class="btn btn-custom-primary d-flex align-items-center gap-2 px-4 py-2">
         <span>Siguiente: Fase 2</span>
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -45,9 +48,16 @@
       </button>
     </div>
   </div>
-
-  <!-- Stepper Component -->
-  <div class="stepper-container px-4 pt-3 pb-2">
-    <app-stepper [phases]="phases"></app-stepper>
+  <!-- Segmented Progress Bar -->
+  <div class="header-progress-bar d-flex">
+    <div *ngFor="let phase of phases" 
+         class="progress-segment flex-fill"
+         [ngClass]="{
+           'segment-completed': phase.status === 'completed',
+           'segment-active': phase.status === 'active',
+           'segment-upcoming': phase.status === 'upcoming'
+         }"
+         [title]="phase.name">
+    </div>
   </div>
 </header>

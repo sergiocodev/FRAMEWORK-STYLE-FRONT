@@ -13,6 +13,7 @@ export interface MenuItem {
 export interface MenuSection {
   title?: string;
   items: MenuItem[];
+  isStepper?: boolean;
 }
 
 @Component({
@@ -50,6 +51,7 @@ export class SidebarComponent {
     },
     {
       title: 'FRAMEWORK STYLE',
+      isStepper: true,
       items: [
         { label: 'Investigación', link: '/framework/projects/1/investigation', iconSvg: '<circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>' },
         { label: 'Conceptual', link: '/framework/projects/1/diseno_conceptual', iconSvg: '<rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><rect x="7" y="7" width="10" height="10" rx="1" ry="1"></rect>' },
