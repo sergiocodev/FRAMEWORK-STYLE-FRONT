@@ -2,7 +2,6 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { DisenoVisualHeaderComponent, Phase } from './components/diseno-visual-header/diseno-visual-header.component';
-import { DisenoVisualSidebarComponent } from './components/diseno-visual-sidebar/diseno-visual-sidebar.component';
 import { DisenoVisualLibraryComponent } from './components/diseno-visual-library/diseno-visual-library.component';
 import { DisenoVisualPreviewComponent } from './components/diseno-visual-preview/diseno-visual-preview.component';
 import { ModalComponent } from '../../../shared/components/modal/modal.component';
@@ -14,7 +13,6 @@ import { ProjectService } from '../../../core/services/project.service';
   imports: [
     CommonModule,
     DisenoVisualHeaderComponent,
-    DisenoVisualSidebarComponent,
     DisenoVisualLibraryComponent,
     DisenoVisualPreviewComponent,
     ModalComponent

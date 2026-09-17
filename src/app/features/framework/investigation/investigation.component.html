@@ -22,17 +22,18 @@
   style="background-color: #F8FAFC !important;">
 
   <!-- Header Navbar -->
-  <app-investigation-header [project]="project" [phases]="phases" [isSaving]="isSaving" [saveSuccess]="saveSuccess"></app-investigation-header>
+  <app-investigation-header [project]="project" [phases]="phases" [isSaving]="isSaving"
+    [saveSuccess]="saveSuccess"></app-investigation-header>
 
   <!-- Main Content -->
-  <div class="container-fluid py-4 flex-grow-1 d-flex flex-column overflow-hidden">
+  <div class="container-fluid pt-2 pb-4 flex-grow-1 d-flex flex-column overflow-hidden">
 
     <div class="row g-4 h-100 flex-grow-1">
 
       <!-- Main Panel: Form Inputs -->
       <div class="col-12 flex-column h-100 pb-2 d-flex">
 
-        <div class="main-section-header mb-4 ps-2 flex-shrink-0">
+        <div class="main-section-header mb-3 ps-2 flex-shrink-0">
 
           <div class="d-flex align-items-center justify-content-end w-100" style="min-height: 42px;">
 
@@ -52,7 +53,7 @@
           </div>
         </div>
 
-        <div class="row g-4 pb-2 flex-grow-1 pe-xl-2 overflow-auto custom-scrollbar m-0">
+        <div class="row g-4 pb-2 flex-grow-1 overflow-auto custom-scrollbar">
 
           <!-- 1. Necesidad -->
           <div class="col-12 col-xl-6 d-flex flex-column">

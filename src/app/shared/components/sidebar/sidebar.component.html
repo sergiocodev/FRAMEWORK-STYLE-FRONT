@@ -1,62 +1,43 @@
-<div class="sidebar d-flex flex-column h-100" [class.collapsed]="isCollapsed">
-
+<div class="sidebar d-flex flex-column h-100">
   <!-- Header / Logo -->
-  <div class="sidebar-header p-3 pb-3 border-bottom-0 d-flex justify-content-between align-items-center" [class.justify-content-center]="isCollapsed" [class.px-4]="!isCollapsed">
-    <div class="d-flex align-items-center overflow-hidden flex-nowrap" [ngClass]="{'cursor-pointer': isCollapsed}" (click)="isCollapsed && toggleSidebar()">
-      <div class="logo-box text-white d-flex justify-content-center align-items-center rounded-3 fw-bold fs-4 flex-shrink-0" [class.me-3]="!isCollapsed">
-        S
-      </div>
-      <span class="fw-bold fs-5 logo-text text-white flex-shrink-0 text-truncate" [class.d-none]="isCollapsed" style="transition: opacity 0.2s; opacity: 1;">STYLE</span>
+  <div class="sidebar-header">
+    <div class="logo-box text-white d-flex justify-content-center align-items-center rounded-3 fw-bold fs-4">
+      S
     </div>
-    
-    <!-- Toggle Button -->
-    <button *ngIf="!isCollapsed" class="btn btn-sm btn-link text-white p-0 ms-2 hover-bg toggle-btn" (click)="toggleSidebar()" title="Colapsar menú">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <polyline points="15 18 9 12 15 6"></polyline>
-      </svg>
-    </button>
   </div>
 
-  <!-- Navigation Content -->
-  <div class="sidebar-nav flex-grow-1 overflow-auto px-3 py-2 custom-scrollbar">
+  <div class="sidebar-divider"></div>
 
-    <!-- Dynamic Sections -->
-    <div class="nav-section mb-4" *ngFor="let section of mainSections">
-      <div class="section-title fw-bold mb-3 px-3 text-truncate" [class.text-center]="isCollapsed" [class.px-0]="isCollapsed" [title]="section.title" *ngIf="section.title">
-        <ng-container *ngIf="!isCollapsed">{{ section.title }}</ng-container>
-        <ng-container *ngIf="isCollapsed">...</ng-container>
-      </div>
-      <ul class="nav flex-column gap-1">
-        <li class="nav-item" *ngFor="let item of section.items" [class.ps-4]="item.isSubItem && !isCollapsed" [class.ms-2]="item.isSubItem && !isCollapsed">
-          <a [routerLink]="item.link" routerLinkActive="active" class="nav-link d-flex align-items-center rounded-3 hover-bg overflow-hidden flex-nowrap position-relative" [class.justify-content-center]="isCollapsed" [title]="isCollapsed ? item.label : ''">
-            <ng-container *ngIf="item.iconSvg">
-              <span [innerHTML]="getSafeIcon(item.iconSvg, isCollapsed)" class="d-flex align-items-center justify-content-center"></span>
-            </ng-container>
-            <ng-container *ngIf="!item.iconSvg && item.isSubItem && isCollapsed">
-               <!-- Dot icon when collapsed without icon -->
-               <div class="d-flex align-items-center justify-content-center w-100 flex-shrink-0">
-                  <div class="rounded-circle bg-white" style="width: 6px; height: 6px;"></div>
-               </div>
-            </ng-container>
-            
-            <span class="nav-label flex-shrink-0 text-truncate" [class.ps-1]="item.isSubItem" [class.d-none]="isCollapsed" style="transition: opacity 0.2s;">
-              {{ item.label }}
-            </span>
+  <!-- Navigation Content -->
+  <div class="sidebar-nav flex-grow-1 overflow-auto custom-scrollbar">
+    <div class="nav-section" *ngFor="let section of mainSections; let i = index">
+      
+      <ul class="nav flex-column align-items-center">
+        <li class="nav-item w-100 d-flex justify-content-center" *ngFor="let item of section.items">
+          <a [routerLink]="item.link" routerLinkActive="active" class="nav-link">
+            <div class="icon-wrapper">
+              <span [innerHTML]="getSafeIcon(item.iconSvg)" class="icon-inner d-flex align-items-center justify-content-center"></span>
+            </div>
+            <span class="nav-label">{{ item.label }}</span>
           </a>
         </li>
       </ul>
+      
+      <div *ngIf="i < mainSections.length - 1" class="sidebar-divider"></div>
     </div>
   </div>
 
+  <div class="sidebar-divider mb-2"></div>
+
   <!-- Footer Options -->
-  <div class="sidebar-footer p-3 border-top mt-auto mb-2">
-    <ul class="nav flex-column gap-1">
-      <li class="nav-item" *ngFor="let item of footerSection.items">
-        <a [routerLink]="item.link" class="nav-link d-flex align-items-center rounded-3 hover-bg overflow-hidden flex-nowrap" [class.justify-content-center]="isCollapsed" [title]="isCollapsed ? item.label : ''">
-          <span [innerHTML]="getSafeIcon(item.iconSvg, isCollapsed)" class="d-flex align-items-center justify-content-center"></span>
-          <span class="nav-label flex-shrink-0 text-truncate" [class.d-none]="isCollapsed" style="transition: opacity 0.2s;">
-            {{ item.label }}
-          </span>
+  <div class="sidebar-footer mb-3">
+    <ul class="nav flex-column align-items-center">
+      <li class="nav-item w-100 d-flex justify-content-center" *ngFor="let item of footerSection.items">
+        <a [routerLink]="item.link" routerLinkActive="active" class="nav-link">
+          <div class="icon-wrapper">
+            <span [innerHTML]="getSafeIcon(item.iconSvg)" class="icon-inner d-flex align-items-center justify-content-center"></span>
+          </div>
+          <span class="nav-label">{{ item.label }}</span>
         </a>
       </li>
     </ul>

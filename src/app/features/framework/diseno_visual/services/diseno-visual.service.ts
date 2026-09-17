@@ -44,6 +44,7 @@ export interface TypographyItem {
   tamano_px: number;
   peso: string;
   interlineado: number;
+  tipo_fuente?: string;
   orden?: number;
 }
 
@@ -147,6 +148,14 @@ export class DisenoVisualService {
       tap(() => {
         const current = this.tipografias();
         this.tipografias.set(current.filter(t => t.id !== id));
+      })
+    );
+  }
+
+  reemplazarTipografias(proyectoId: number, tipos: TypographyItem[]): Observable<TypographyItem[]> {
+    return this.http.post<TypographyItem[]>(`${this.apiUrl}/${proyectoId}/tipografias/batch`, tipos).pipe(
+      tap(res => {
+        this.tipografias.set(res);
       })
     );
   }

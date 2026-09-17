@@ -1,13 +1,3 @@
-<div class="d-flex justify-content-between align-items-center mb-3">
-  <button class="btn btn-outline-secondary btn-sm bg-white d-flex align-items-center gap-2">
-    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
-      <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
-      <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
-    </svg>
-    Todos los estilos
-  </button>
-</div>
-
 <!-- Paleta de colores -->
 <div class="bg-white rounded p-4 mb-4 shadow-sm border border-light">
   <div class="d-flex justify-content-between align-items-center mb-1">
@@ -21,68 +11,201 @@
       </svg>
       Paleta de colores
     </h6>
+    <button class="btn btn-sm btn-outline-primary d-flex align-items-center gap-2" (click)="abrirModalArmonias()">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+        <path
+          d="M2.5 8a5.5 5.5 0 0 1 8.25-4.764.5.5 0 0 0 .5-.866A6.5 6.5 0 1 0 14.5 8a.5.5 0 0 0-1 0 5.5 5.5 0 1 1-11 0z" />
+        <path
+          d="M15.354 3.354a.5.5 0 0 0-.708-.708L8 9.293 5.354 6.646a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l7-7z" />
+      </svg>
+      Generar Armonías
+    </button>
   </div>
   <div class="text-muted small mb-4">Define los colores principales de tu interfaz y verifica el contraste y la
     accesibilidad.</div>
 
-  <div class="row gx-3 align-items-stretch">
-    <!-- Color Cards -->
-    <div class="col-md-4 mb-4" *ngFor="let color of colores()">
-      <div class="card h-100 border-light shadow-sm rounded-4 overflow-hidden">
-        <div class="color-swatch-header p-3 position-relative d-flex flex-column justify-content-end"
-          [style.background-color]="color.hex_code" style="height: 100px;">
-          <button class="btn btn-sm position-absolute top-0 end-0 m-2 text-white border-0 opacity-75 hover-opacity-100"
-            (click)="abrirModalEliminar(color)" title="Eliminar"
-            [style.color]="contrastRatio(color.hex_code, '#ffffff') > 2.5 ? '#ffffff' : '#000000'">
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
-              <path
-                d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
-              <path fill-rule="evenodd"
-                d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
-            </svg>
-          </button>
-          <div class="fw-bold" [style.color]="contrastRatio(color.hex_code, '#ffffff') > 2.5 ? '#ffffff' : '#000000'">
-            {{color.hex_code}}</div>
+  <div class="row gx-4">
+    <div class="col-xl-8 mb-4">
+      <div class="row gx-3 align-items-stretch">
+        <!-- Color Cards -->
+        <div class="col-md-6 mb-4" *ngFor="let color of colores()">
+          <div class="card h-100 border-light shadow-sm rounded-4 overflow-hidden">
+            <div class="color-swatch-header p-3 position-relative d-flex flex-column justify-content-end"
+              [style.background-color]="color.hex_code" style="height: 100px;">
+              <button
+                class="btn btn-sm position-absolute top-0 end-0 m-2 text-white border-0 opacity-75 hover-opacity-100"
+                (click)="abrirModalEliminar(color)" title="Eliminar"
+                [style.color]="contrastRatio(color.hex_code, '#ffffff') > 2.5 ? '#ffffff' : '#000000'">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+                  <path
+                    d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
+                  <path fill-rule="evenodd"
+                    d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
+                </svg>
+              </button>
+              <div class="fw-bold"
+                [style.color]="contrastRatio(color.hex_code, '#ffffff') > 2.5 ? '#ffffff' : '#000000'">
+                {{color.hex_code}}</div>
+            </div>
+            <div class="card-body p-3">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <span class="fw-bold text-dark">{{color.nombre}}</span>
+                <span class="badge bg-light text-primary-blue border rounded-pill px-2 py-1 fw-normal"
+                  style="font-size: 0.75rem; border-color: #e2e8f0 !important; background-color: #f1f5f9 !important;">
+                  {{color.token_name || 'color.token'}}
+                </span>
+              </div>
+              <div class="d-flex align-items-center mb-3 border rounded px-2 py-1">
+                <div class="rounded-circle me-2 flex-shrink-0 border" [style.background-color]="color.hex_code"
+                  style="width: 14px; height: 14px;"></div>
+                <select class="form-select form-select-sm text-muted border-0 shadow-none p-0 w-100"
+                  [(ngModel)]="color.uso" (change)="actualizarUsoColor(color)">
+                  <option *ngFor="let rol of rolesDisponibles" [value]="rol">{{rol}}</option>
+                </select>
+              </div>
+              <button class="btn btn-outline-secondary btn-sm px-3 d-flex align-items-center gap-2"
+                (click)="abrirModalColor(color)">
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" viewBox="0 0 16 16">
+                  <path
+                    d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z" />
+                </svg>
+                Editar
+              </button>
+            </div>
+          </div>
         </div>
-        <div class="card-body p-3">
-          <div class="d-flex justify-content-between align-items-center mb-3">
-            <span class="fw-bold text-dark">{{color.nombre}}</span>
-            <span class="badge bg-light text-primary-blue border rounded-pill px-2 py-1 fw-normal"
-              style="font-size: 0.75rem; border-color: #e2e8f0 !important; background-color: #f1f5f9 !important;">
-              {{color.token_name || 'color.token'}}
-            </span>
-          </div>
-          <div class="d-flex align-items-center mb-3 border rounded px-2 py-1">
-            <div class="rounded-circle me-2 flex-shrink-0 border" [style.background-color]="color.hex_code"
-              style="width: 14px; height: 14px;"></div>
-            <select class="form-select form-select-sm text-muted border-0 shadow-none p-0 w-100" [(ngModel)]="color.uso"
-              (change)="actualizarUsoColor(color)">
-              <option *ngFor="let rol of rolesDisponibles" [value]="rol">{{rol}}</option>
-            </select>
-          </div>
-          <button class="btn btn-outline-secondary btn-sm px-3 d-flex align-items-center gap-2"
-            (click)="abrirModalColor(color)">
-            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" viewBox="0 0 16 16">
+
+        <!-- Agregar Color card -->
+        <div class="col-md-6 mb-4">
+          <div
+            class="card h-100 dash-border bg-white cursor-pointer d-flex flex-column align-items-center justify-content-center py-5"
+            (click)="abrirModalColor()" style="border-radius: 0.75rem; min-height: 200px;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
+              class="mb-2 text-primary-blue" viewBox="0 0 16 16">
               <path
-                d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z" />
+                d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
             </svg>
-            Editar
-          </button>
+            <span class="text-primary-blue fw-bold">Agregar color</span>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- Agregar Color card -->
-    <div class="col-md-4 mb-4">
-      <div
-        class="card h-100 dash-border bg-white cursor-pointer d-flex flex-column align-items-center justify-content-center py-5"
-        (click)="abrirModalColor()" style="border-radius: 0.75rem; min-height: 200px;">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
-          class="mb-2 text-primary-blue" viewBox="0 0 16 16">
-          <path
-            d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
-        </svg>
-        <span class="text-primary-blue fw-bold">Agregar color</span>
+    <!-- Simulador UI (Regla 60-30-10) -->
+    <div class="col-xl-4 mb-4">
+      <div class="card border-0 rounded-4 h-100 p-4 shadow-sm"
+        [style.background-color]="getColorPorRol('Fondo', '#f8f9fa')"
+        [style.border]="'1px solid ' + getColorPorRol('Borde', '#dee2e6')">
+        <div class="d-flex align-items-center gap-2 mb-2">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor"
+            [style.color]="getColorPorRol('Texto principal', '#212529')" viewBox="0 0 16 16">
+            <path
+              d="M12.258 3h-8.51l-.083 2.46h.479c.26-1.544.758-1.783 2.693-1.845l.424-.013v7.827c0 .663-.144.82-1.3.923v.52h4.082v-.52c-1.162-.103-1.306-.26-1.306-.923V3.602l.431.013c1.934.062 2.434.301 2.693 1.846h.479L12.258 3z" />
+          </svg>
+          <h6 class="fw-bold mb-0" [style.color]="getColorPorRol('Texto principal', '#212529')">Regla 60-30-10</h6>
+        </div>
+        <p class="small mb-4" [style.color]="getColorPorRol('Texto secundario', '#6c757d')">Evalúa el equilibrio
+          estético de tus colores aplicados en una interfaz real.</p>
+
+        <!-- Fake UI Card (Superficie) -->
+        <div class="rounded-4 overflow-hidden shadow-sm mb-4"
+          [style.background-color]="getColorPorRol('Superficie', '#ffffff')"
+          [style.border]="'1px solid ' + getColorPorRol('Borde', '#dee2e6')">
+          <!-- Header -->
+          <div class="p-3 d-flex justify-content-between align-items-center border-bottom"
+            [style.border-color]="getColorPorRol('Borde', '#dee2e6') + ' !important'">
+            <div class="d-flex align-items-center gap-2">
+              <div class="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold"
+                [style.background-color]="getColorPorRol('Principal', '#0d6efd')"
+                [style.color]="contrastRatio(getColorPorRol('Principal', '#0d6efd'), '#ffffff') > 2.5 ? '#ffffff' : '#000000'"
+                style="width: 28px; height: 28px; font-size: 10px;">
+                UI
+              </div>
+              <div class="fw-bold" [style.color]="getColorPorRol('Texto principal', '#212529')">MiAplicación</div>
+              <span class="badge rounded-pill ms-2" style="font-size: 0.6rem;"
+                [style.background-color]="getColorPorRol('Secundario', '#6c757d')"
+                [style.color]="contrastRatio(getColorPorRol('Secundario', '#6c757d'), '#ffffff') > 2.5 ? '#ffffff' : '#000000'">Pro</span>
+            </div>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+              [style.color]="getColorPorRol('Texto secundario', '#6c757d')" viewBox="0 0 16 16">
+              <path fill-rule="evenodd"
+                d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z" />
+            </svg>
+          </div>
+          <!-- Body -->
+          <div class="p-4">
+            <h5 class="fw-bold mb-2" [style.color]="getColorPorRol('Texto principal', '#212529')">Bienvenido de nuevo
+            </h5>
+            <p class="small mb-3" [style.color]="getColorPorRol('Texto secundario', '#6c757d')">Esta tarjeta usa tus
+              colores: 60% Fondo, 30% Superficie y Textos, 10% Acento principal.</p>
+
+            <!-- Indicators -->
+            <div class="d-flex align-items-center gap-2 mb-3">
+              <div class="rounded-circle shadow-sm" [style.background-color]="getColorPorRol('Éxito', '#198754')"
+                style="width:12px; height:12px;" title="Éxito"></div>
+              <div class="rounded-circle shadow-sm" [style.background-color]="getColorPorRol('Advertencia', '#ffc107')"
+                style="width:12px; height:12px;" title="Advertencia"></div>
+              <div class="rounded-circle shadow-sm" [style.background-color]="getColorPorRol('Error', '#dc3545')"
+                style="width:12px; height:12px;" title="Error"></div>
+              <div class="rounded-circle shadow-sm" [style.background-color]="getColorPorRol('Información', '#0dcaf0')"
+                style="width:12px; height:12px;" title="Información"></div>
+              <a href="javascript:void(0)" class="small ms-auto text-decoration-none fw-bold"
+                [style.color]="getColorPorRol('Acento', '#0dcaf0')">Detalles &rarr;</a>
+            </div>
+
+            <button class="btn w-100 fw-bold border-0 shadow-sm"
+              [style.background-color]="getColorPorRol('Principal', '#0d6efd')"
+              [style.color]="contrastRatio(getColorPorRol('Principal', '#0d6efd'), '#ffffff') > 2.5 ? '#ffffff' : '#000000'">
+              Llamada a la acción
+            </button>
+          </div>
+        </div>
+
+        <!-- Proportions Legend -->
+        <div>
+          <div class="d-flex align-items-center mb-2">
+            <div class="rounded me-2 border" [style.background-color]="getColorPorRol('Fondo', '#f8f9fa')"
+              style="width: 16px; height: 16px;"></div>
+            <span class="small" [style.color]="getColorPorRol('Texto secundario', '#6c757d')"><strong
+                [style.color]="getColorPorRol('Texto principal', '#212529')">60%</strong> Fondo (Dominante)</span>
+          </div>
+          <div class="d-flex align-items-center mb-2">
+            <div class="rounded me-2 border" [style.background-color]="getColorPorRol('Superficie', '#ffffff')"
+              style="width: 16px; height: 16px;"></div>
+            <span class="small" [style.color]="getColorPorRol('Texto secundario', '#6c757d')"><strong
+                [style.color]="getColorPorRol('Texto principal', '#212529')">30%</strong> Superficie y Textos</span>
+          </div>
+          <div class="d-flex align-items-center mb-3">
+            <div class="rounded me-2 border" [style.background-color]="getColorPorRol('Principal', '#0d6efd')"
+              style="width: 16px; height: 16px;"></div>
+            <span class="small" [style.color]="getColorPorRol('Texto secundario', '#6c757d')"><strong
+                [style.color]="getColorPorRol('Texto principal', '#212529')">10%</strong> Principal (Acento)</span>
+          </div>
+          <div class="pt-2 border-top" [style.border-color]="getColorPorRol('Borde', '#dee2e6') + ' !important'">
+            <span class="small fw-bold d-block mb-2" [style.color]="getColorPorRol('Texto principal', '#212529')">Otros
+              roles aplicados:</span>
+            <div class="d-flex flex-wrap gap-2">
+              <span class="badge border fw-normal" [style.color]="getColorPorRol('Texto secundario', '#6c757d')"
+                [style.border-color]="getColorPorRol('Borde', '#dee2e6') + ' !important'">
+                <span class="d-inline-block rounded-circle me-1"
+                  [style.background-color]="getColorPorRol('Secundario', '#6c757d')"
+                  style="width:8px; height:8px;"></span> Secundario
+              </span>
+              <span class="badge border fw-normal" [style.color]="getColorPorRol('Texto secundario', '#6c757d')"
+                [style.border-color]="getColorPorRol('Borde', '#dee2e6') + ' !important'">
+                <span class="d-inline-block rounded-circle me-1"
+                  [style.background-color]="getColorPorRol('Acento', '#0dcaf0')" style="width:8px; height:8px;"></span>
+                Acento
+              </span>
+              <span class="badge border fw-normal" [style.color]="getColorPorRol('Texto secundario', '#6c757d')"
+                [style.border-color]="getColorPorRol('Borde', '#dee2e6') + ' !important'">
+                <span class="d-inline-block rounded-circle me-1"
+                  [style.background-color]="getColorPorRol('Éxito', '#198754')" style="width:8px; height:8px;"></span>
+                Estados (Éxito, Error...)
+              </span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -107,8 +230,28 @@
       Ver todas las combinaciones
     </button>
   </div>
-  <div class="text-muted small mb-4">Comprueba que tus combinaciones de color cumplan con los estándares de
+  <div class="text-muted small mb-3">Comprueba que tus combinaciones de color cumplan con los estándares de
     accesibilidad WCAG.</div>
+
+  <!-- Leyenda WCAG -->
+  <div class="d-flex flex-wrap gap-3 mb-4 bg-light p-3 rounded border">
+    <div class="d-flex align-items-center gap-2">
+      <span class="badge bg-success text-white border border-success">AAA</span>
+      <span class="small text-muted">Contraste ideal (>7.0). Excelente para cualquier texto.</span>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+      <span class="badge bg-success bg-opacity-75 text-white border border-success">AA</span>
+      <span class="small text-muted">Contraste bueno (>4.5). Aceptable para texto normal.</span>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+      <span class="badge bg-warning text-dark border border-warning">AA 18pt+</span>
+      <span class="small text-muted">Contraste bajo (>3.0). Solo texto grande o negrita.</span>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+      <span class="badge bg-danger text-white border border-danger">Fail</span>
+      <span class="small text-muted">Contraste pobre (<3.0). No utilizar para textos.</span>
+    </div>
+  </div>
 
   <div class="table-responsive rounded border-0 bg-white shadow-sm" style="max-height: 600px; overflow: auto;">
     <table class="table table-bordered table-custom align-middle mb-0" style="table-layout: fixed;">
@@ -153,7 +296,7 @@
               <!-- Botón de sugerencia -->
               <button *ngIf="cell.sugerenciaHex"
                 class="btn btn-sm btn-light py-0 px-2 shadow-sm text-primary rounded-pill mt-1"
-                style="font-size: 0.6rem; opacity: 0.9;" (click)="aplicarSugerencia(row.fg, cell.sugerenciaHex)"
+                style="font-size: 0.6rem; opacity: 0.9;" (click)="abrirModalContraste(row.fg, cell.sugerenciaHex)"
                 title="Sugerencia segura: {{cell.sugerenciaHex}}">
                 Corregir
               </button>
@@ -197,6 +340,15 @@
           </select>
         </div>
       </div>
+      <div *ngIf="advertenciaTipografica()"
+        class="alert alert-warning border-warning shadow-sm mt-3 d-flex align-items-start" style="font-size: 0.8rem;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+          class="me-2 mt-1 text-warning flex-shrink-0" viewBox="0 0 16 16">
+          <path
+            d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
+        </svg>
+        <span><strong>Alerta Estética:</strong> {{ advertenciaTipografica() }}</span>
+      </div>
     </div>
     <div class="col-md-7">
       <div class="card bg-light border-0 shadow-sm h-100">
@@ -205,18 +357,16 @@
           <p class="text-muted mb-3" style="font-size: 0.75rem;">Usa un ratio matemático para autogenerar una jerarquía
             visual perfecta partiendo desde un tamaño base.</p>
           <div class="row g-2 align-items-end">
-            <div class="col-4">
+            <div class="col-6">
               <label class="small text-muted mb-1" style="font-size: 0.7rem;">Tamaño base (px)</label>
-              <input type="number" class="form-control form-control-sm" [(ngModel)]="escalaBase">
+              <input type="number" class="form-control form-control-sm" [(ngModel)]="escalaBase"
+                (ngModelChange)="previewEscala()">
             </div>
-            <div class="col-5">
+            <div class="col-6">
               <label class="small text-muted mb-1" style="font-size: 0.7rem;">Escala (Ratio)</label>
-              <select class="form-select form-select-sm" [(ngModel)]="escalaRatio">
+              <select class="form-select form-select-sm" [(ngModel)]="escalaRatio" (ngModelChange)="previewEscala()">
                 <option *ngFor="let r of ratios" [value]="r.valor">{{r.nombre}}</option>
               </select>
-            </div>
-            <div class="col-3">
-              <button class="btn btn-primary btn-sm w-100 fw-bold" (click)="generarEscalaTipografica()">Generar</button>
             </div>
           </div>
         </div>
@@ -230,30 +380,60 @@
       estilo</button>
   </div>
 
-  <div class="table-responsive bg-white rounded border border-light shadow-sm">
-    <table class="table table-borderless align-middle mb-0">
-      <thead class="bg-light text-muted small border-bottom border-light">
+  <!-- Banner de previsualización -->
+  <div *ngIf="tipografiasPreview() !== null"
+    class="alert alert-warning border-warning shadow-sm d-flex align-items-center justify-content-between mb-4">
+    <div class="d-flex align-items-center">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="me-2 text-warning"
+        viewBox="0 0 16 16">
+        <path
+          d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
+      </svg>
+      <div>
+        <strong>Modo Previsualización:</strong> Estás viendo cómo quedaría la nueva escala tipográfica.
+      </div>
+    </div>
+    <div class="d-flex gap-2">
+      <button class="btn btn-sm btn-outline-secondary bg-white" (click)="cancelarEscalaPreview()">Descartar</button>
+      <button class="btn btn-sm btn-success fw-bold px-3" (click)="guardarEscalaPreview()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="me-1"
+          viewBox="0 0 16 16">
+          <path
+            d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z" />
+        </svg>
+        Guardar esta escala
+      </button>
+    </div>
+  </div>
+
+  <div class="card bg-white border-0 shadow-sm rounded-4 overflow-hidden mb-4">
+    <table class="table table-hover mb-0 border-light">
+      <thead class="bg-light">
         <tr>
-          <th class="py-3 px-4 fw-medium">Estilo & Preview real</th>
-          <th class="py-3 px-4 fw-medium">Tamaño</th>
-          <th class="py-3 px-4 fw-medium">Peso</th>
-          <th class="py-3 px-4 fw-medium">Interlineado</th>
-          <th class="py-3 px-4 fw-medium"></th>
+          <th class="px-4 py-3 text-muted small fw-semibold border-bottom-0">Estilo & Preview real</th>
+          <th class="px-4 py-3 text-muted small fw-semibold border-bottom-0">Tamaño</th>
+          <th class="px-4 py-3 text-muted small fw-semibold border-bottom-0">Peso</th>
+          <th class="px-4 py-3 text-muted small fw-semibold border-bottom-0">Interlineado</th>
+          <th class="px-4 py-3 text-muted small fw-semibold border-bottom-0 text-end">Acciones</th>
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let tipo of tipografias()" class="border-bottom border-light">
-          <td class="px-4 py-3 fw-bold align-middle">
-            <span class="d-inline-block me-3 text-dark bg-light rounded px-3 py-2 text-center shadow-sm"
-              [style.font-family]="tipo.estilo.includes('H') || tipo.estilo.includes('Display') ? config()?.fuente_principal : config()?.fuente_secundaria"
+        <tr *ngFor="let tipo of (tipografiasPreview() || tipografias())" class="border-bottom border-light">
+          <td class="px-4 py-3 align-middle" style="max-width: 350px;">
+            <div class="text-muted small fw-bold mb-2">{{tipo.estilo}} <span
+                class="badge bg-light text-secondary border fw-normal ms-1">{{tipo.tipo_fuente}}</span></div>
+            <div class="text-dark text-truncate"
+              [style.font-family]="tipo.tipo_fuente === 'Principal' ? config()?.fuente_principal : config()?.fuente_secundaria"
               [style.font-size.px]="tipo.tamano_px"
-              [style.font-weight]="tipo.peso.includes('700') ? 700 : (tipo.peso.includes('600') ? 600 : (tipo.peso.includes('500') ? 500 : 400))"
-              style="min-width: 80px; line-height: 1;">Aa</span>
-            <span class="text-dark">{{tipo.estilo}}</span>
+              [style.font-weight]="tipo.peso.includes('800') ? 800 : (tipo.peso.includes('700') ? 700 : (tipo.peso.includes('600') ? 600 : (tipo.peso.includes('500') ? 500 : (tipo.peso.includes('300') ? 300 : 400))))"
+              [style.line-height]="tipo.interlineado">
+              El veloz murciélago hindú comía feliz cardillo y kiwi.
+            </div>
           </td>
           <td class="px-4 py-3">
             <span class="badge bg-secondary bg-opacity-10 text-secondary fw-bold">{{tipo.tamano_px}} px</span>
-            <span class="text-muted ms-2 small">({{(tipo.tamano_px / 16).toFixed(3)}} rem)</span>
+            <span class="text-muted ms-2 small" title="Calculado usando la base de {{escalaBase}}px">({{(tipo.tamano_px
+              / escalaBase).toFixed(3)}} rem)</span>
           </td>
           <td class="px-4 py-3 text-muted small">{{tipo.peso}}</td>
           <td class="px-4 py-3 text-muted small">{{tipo.interlineado}} ({{(tipo.interlineado * 100).toFixed(0)}}%)</td>
@@ -283,6 +463,8 @@
       </tbody>
     </table>
   </div>
+
+
 </div>
 
 <!-- Iconografía -->
@@ -409,9 +591,25 @@
       </h5>
       <div class="text-muted small mt-1">Configura la escala geométrica, márgenes y la grilla base de diseño.</div>
     </div>
-    <button class="btn btn-outline-primary btn-sm rounded-pill px-3 fw-medium shadow-sm">
-      <i class="bi bi-magic me-1"></i> Auto-Generar Escala
+    <button class="btn btn-outline-primary btn-sm rounded-pill px-3 fw-medium shadow-sm"
+      (click)="resetearEscalaEspaciado()">
+      <i class="bi bi-arrow-counterclockwise me-1"></i> Resetear a Estándar
     </button>
+  </div>
+
+  <!-- Validador Estético: Sistema de 8 Puntos -->
+  <div
+    class="alert alert-warning bg-warning bg-opacity-10 border border-warning border-opacity-50 d-flex align-items-center py-2 mb-4 shadow-sm rounded-3 transition-all"
+    role="alert" *ngIf="advertenciaSistemaOchoPuntos">
+    <div
+      class="bg-warning text-white rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 me-3 shadow-sm"
+      style="width: 36px; height: 36px;">
+      <i class="bi bi-lightbulb-fill"></i>
+    </div>
+    <div>
+      <div class="fw-bold small mb-0" style="color: #856404;">Sugerencia: Sistema de Diseño</div>
+      <div class="small mb-0" style="color: #856404;">{{advertenciaSistemaOchoPuntos}}</div>
+    </div>
   </div>
 
   <div class="row g-4">
@@ -420,44 +618,26 @@
       <div class="bg-white border rounded p-4 h-100 shadow-sm transition-hover">
         <div class="d-flex justify-content-between align-items-center mb-4">
           <label class="fw-bold text-dark mb-0 fs-6">Escala de Espaciado (Spacing)</label>
-          <span class="badge bg-light text-muted border px-2 py-1">Base: 8px</span>
+          <div class="d-flex align-items-center gap-2" *ngIf="config()">
+            <span class="text-muted small fw-medium">Base:</span>
+            <input type="number"
+              class="form-control form-control-sm text-center fw-bold shadow-sm border-secondary-subtle"
+              style="width: 70px;" [(ngModel)]="config().escala_espaciado_base" (change)="actualizarConfiguracion()">
+            <span class="text-muted small">px</span>
+          </div>
         </div>
 
-        <div class="d-flex flex-column gap-3 mt-4">
-          <!-- Token: xs -->
-          <div class="d-flex align-items-center">
-            <div class="text-muted small fw-medium" style="width: 80px;">xs (4px)</div>
-            <div class="bg-primary-blue bg-opacity-25 rounded-1" style="width: 4px; height: 24px;"></div>
-            <div class="ms-auto font-monospace text-muted bg-light px-2 py-1 rounded" style="font-size: 0.7rem;">
-              --spacing-xs</div>
-          </div>
-          <!-- Token: sm -->
-          <div class="d-flex align-items-center">
-            <div class="text-muted small fw-medium" style="width: 80px;">sm (8px)</div>
-            <div class="bg-primary-blue bg-opacity-50 rounded-1" style="width: 8px; height: 24px;"></div>
-            <div class="ms-auto font-monospace text-muted bg-light px-2 py-1 rounded" style="font-size: 0.7rem;">
-              --spacing-sm</div>
-          </div>
-          <!-- Token: md -->
-          <div class="d-flex align-items-center">
-            <div class="text-muted small fw-medium" style="width: 80px;">md (16px)</div>
-            <div class="bg-primary-blue rounded-1" style="width: 16px; height: 24px;"></div>
-            <div class="ms-auto font-monospace text-primary bg-primary bg-opacity-10 px-2 py-1 rounded fw-bold"
-              style="font-size: 0.7rem;">--spacing-md (Base)</div>
-          </div>
-          <!-- Token: lg -->
-          <div class="d-flex align-items-center">
-            <div class="text-muted small fw-medium" style="width: 80px;">lg (24px)</div>
-            <div class="bg-primary-blue rounded-1" style="width: 24px; height: 24px;"></div>
-            <div class="ms-auto font-monospace text-muted bg-light px-2 py-1 rounded" style="font-size: 0.7rem;">
-              --spacing-lg</div>
-          </div>
-          <!-- Token: xl -->
-          <div class="d-flex align-items-center">
-            <div class="text-muted small fw-medium" style="width: 80px;">xl (32px)</div>
-            <div class="bg-primary-blue rounded-1" style="width: 32px; height: 24px;"></div>
-            <div class="ms-auto font-monospace text-muted bg-light px-2 py-1 rounded" style="font-size: 0.7rem;">
-              --spacing-xl</div>
+        <div class="d-flex flex-column gap-3 mt-4" *ngIf="config()">
+          <div class="d-flex align-items-center" *ngFor="let espacio of escalaEspaciado">
+            <div class="text-muted small fw-medium" style="width: 80px;">{{espacio.token}} ({{espacio.valor}}px)</div>
+            <div class="bg-primary-blue rounded-1 transition-all" [class.bg-opacity-25]="espacio.token === 'xs'"
+              [class.bg-opacity-50]="espacio.token === 'sm'" [style.width.px]="espacio.valor" style="height: 24px;">
+            </div>
+            <div class="ms-auto font-monospace px-2 py-1 rounded"
+              [ngClass]="espacio.token === 'md' ? 'text-primary bg-primary bg-opacity-10 fw-bold' : 'text-muted bg-light'"
+              style="font-size: 0.7rem;">
+              --spacing-{{espacio.token}} <span *ngIf="espacio.token === 'md'">(Base)</span>
+            </div>
           </div>
         </div>
       </div>
@@ -466,46 +646,49 @@
     <!-- Bordes y Radios (Forma) -->
     <div class="col-12 col-md-6 col-xl-3">
       <div class="bg-white border rounded p-4 h-100 shadow-sm transition-hover">
-        <label class="fw-bold text-dark mb-4 d-block fs-6">Radios de Borde (Forma)</label>
+        <label class="fw-bold text-dark mb-3 d-block fs-6">Radios de Borde (Forma)</label>
 
-        <div class="d-flex flex-column gap-4 align-items-center mt-3" *ngIf="config()">
-          <div class="d-flex align-items-center gap-3 w-100 cursor-pointer"
-            [class.opacity-50]="config().radio_borde_base !== 0"
-            (click)="config().radio_borde_base = 0; actualizarConfiguracion()">
-            <div class="bg-light border border-secondary" style="width: 48px; height: 48px; border-radius: 0;"></div>
-            <div>
-              <div class="small fw-bold" [class.text-primary-blue]="config().radio_borde_base === 0">Sharp <span
-                  *ngIf="config().radio_borde_base === 0" class="badge bg-primary-blue text-white ms-1"
-                  style="font-size: 0.6rem;">Activo</span></div>
-              <div class="text-muted" style="font-size: 0.7rem;">0px</div>
+        <!-- Detector de Armonía Estilística -->
+        <div *ngIf="advertenciaArmoniaEstilistica"
+          class="alert alert-{{advertenciaArmoniaEstilistica.tipo}} bg-{{advertenciaArmoniaEstilistica.tipo}} bg-opacity-10 py-2 px-3 shadow-sm border border-{{advertenciaArmoniaEstilistica.tipo}} border-opacity-25 d-flex align-items-start gap-2 mb-3"
+          style="font-size: 0.75rem; line-height: 1.3;">
+          <i
+            class="bi {{advertenciaArmoniaEstilistica.icono}} text-{{advertenciaArmoniaEstilistica.tipo}} flex-shrink-0 mt-1"></i>
+          <div><strong class="text-dark">Sugerencia: </strong> <span
+              class="text-muted">{{advertenciaArmoniaEstilistica.mensaje}}</span></div>
+        </div>
+
+        <div class="d-flex flex-column gap-3" *ngIf="config()">
+
+          <div class="d-flex align-items-center justify-content-between mb-2">
+            <label class="small text-muted mb-0 fw-medium">Radio Base</label>
+            <div class="d-flex align-items-center gap-2">
+              <input type="number"
+                class="form-control form-control-sm text-center fw-bold shadow-sm border-secondary-subtle"
+                style="width: 70px;" [(ngModel)]="config().radio_borde_base" (change)="actualizarConfiguracion()">
+              <span class="text-muted small">px</span>
             </div>
           </div>
-          <div class="d-flex align-items-center gap-3 w-100 cursor-pointer"
-            [class.opacity-50]="config().radio_borde_base !== 8"
-            (click)="config().radio_borde_base = 8; actualizarConfiguracion()">
-            <div [class.bg-primary-blue]="config().radio_borde_base === 8"
-              [class.bg-opacity-10]="config().radio_borde_base === 8"
-              [class.border-primary]="config().radio_borde_base === 8"
-              [class.shadow-sm]="config().radio_borde_base === 8" class="bg-light border border-secondary"
-              style="width: 48px; height: 48px; border-radius: 8px;"></div>
-            <div>
-              <div class="small fw-bold" [class.text-primary-blue]="config().radio_borde_base === 8">Rounded <span
-                  *ngIf="config().radio_borde_base === 8" class="badge bg-primary-blue text-white ms-1"
-                  style="font-size: 0.6rem;">Activo</span></div>
-              <div class="text-muted" style="font-size: 0.7rem;">8px</div>
+
+          <!-- Visualizador general dinámico -->
+          <div class="d-flex justify-content-center my-4">
+            <div class="bg-primary-blue bg-opacity-10 border border-primary shadow-sm"
+              [style.border-radius.px]="config().radio_borde_base"
+              style="width: 80px; height: 80px; transition: border-radius 0.3s ease;">
             </div>
           </div>
-          <div class="d-flex align-items-center gap-3 w-100 cursor-pointer"
-            [class.opacity-50]="config().radio_borde_base !== 999"
-            (click)="config().radio_borde_base = 999; actualizarConfiguracion()">
-            <div class="bg-light border border-secondary" style="width: 48px; height: 48px; border-radius: 24px;"></div>
-            <div>
-              <div class="small fw-bold" [class.text-primary-blue]="config().radio_borde_base === 999">Pill / Circle
-                <span *ngIf="config().radio_borde_base === 999" class="badge bg-primary-blue text-white ms-1"
-                  style="font-size: 0.6rem;">Activo</span>
-              </div>
-              <div class="text-muted" style="font-size: 0.7rem;">999px</div>
-            </div>
+
+          <!-- Presets -->
+          <div class="d-flex gap-2 justify-content-center">
+            <button class="btn btn-sm flex-fill"
+              [ngClass]="config().radio_borde_base === 0 ? 'btn-primary' : 'btn-outline-secondary'"
+              (click)="config().radio_borde_base = 0; actualizarConfiguracion()">Sharp</button>
+            <button class="btn btn-sm flex-fill"
+              [ngClass]="config().radio_borde_base === 8 ? 'btn-primary' : 'btn-outline-secondary'"
+              (click)="config().radio_borde_base = 8; actualizarConfiguracion()">Rounded</button>
+            <button class="btn btn-sm flex-fill"
+              [ngClass]="config().radio_borde_base >= 999 ? 'btn-primary' : 'btn-outline-secondary'"
+              (click)="config().radio_borde_base = 999; actualizarConfiguracion()">Pill</button>
           </div>
         </div>
       </div>
@@ -514,7 +697,26 @@
     <!-- Grilla de Columnas (Layout) -->
     <div class="col-12 col-md-6 col-xl-3">
       <div class="bg-white border rounded p-4 h-100 shadow-sm transition-hover">
-        <label class="fw-bold text-dark mb-4 d-block fs-6">Grilla Base (Layout)</label>
+        <div class="d-flex justify-content-between align-items-start mb-4">
+          <label class="fw-bold text-dark mb-0 fs-6">Grilla Base (Layout)</label>
+          <div class="dropdown">
+            <button
+              class="btn btn-sm btn-light border-secondary-subtle rounded-pill dropdown-toggle shadow-sm py-0 px-2 text-muted"
+              type="button" data-bs-toggle="dropdown" aria-expanded="false"
+              style="font-size: 0.75rem; line-height: 1.8;">
+              <i class="bi bi-magic text-primary"></i> Asistente
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end shadow border-0" style="font-size: 0.8rem;">
+              <li>
+                <h6 class="dropdown-header text-primary fw-bold">Proporciones Matemáticas</h6>
+              </li>
+              <li><a class="dropdown-item cursor-pointer" (click)="aplicarProporcionAurea()"><i
+                    class="bi bi-aspect-ratio me-2 text-muted"></i>Proporción Áurea (8 Col)</a></li>
+              <li><a class="dropdown-item cursor-pointer" (click)="aplicarReglaTercios()"><i
+                    class="bi bi-grid-3x3 me-2 text-muted"></i>Regla de los Tercios (12 Col)</a></li>
+            </ul>
+          </div>
+        </div>
 
         <div class="mb-3" *ngIf="config()">
           <label class="small text-muted mb-1 fw-medium">Columnas (Desktop)</label>
@@ -537,21 +739,26 @@
         </div>
 
         <!-- Mini Grid Visualizer -->
-        <label class="small text-muted mb-2 fw-medium d-block">Vista Previa</label>
-        <div class="d-flex gap-1" style="height: 40px;">
-          <div class="bg-primary-blue bg-opacity-25 w-100 rounded-1"></div>
-          <div class="bg-primary-blue bg-opacity-25 w-100 rounded-1"></div>
-          <div class="bg-primary-blue bg-opacity-25 w-100 rounded-1"></div>
-          <div class="bg-primary-blue bg-opacity-25 w-100 rounded-1"></div>
-          <div class="bg-primary-blue bg-opacity-25 w-100 rounded-1"></div>
-          <div class="bg-primary-blue bg-opacity-25 w-100 rounded-1"></div>
-          <div class="bg-primary-blue bg-opacity-25 w-100 rounded-1"></div>
-          <div class="bg-primary-blue bg-opacity-25 w-100 rounded-1"></div>
-          <div class="bg-primary-blue bg-opacity-25 w-100 rounded-1"></div>
-          <div class="bg-primary-blue bg-opacity-25 w-100 rounded-1"></div>
-          <div class="bg-primary-blue bg-opacity-25 w-100 rounded-1"></div>
-          <div class="bg-primary-blue bg-opacity-25 w-100 rounded-1"></div>
+        <label class="small text-muted mb-2 fw-medium d-block">Vista Previa Dinámica</label>
+        <div class="d-flex" [style.gap.px]="config()?.grid_gutter" style="height: 40px; width: 100%;">
+          <div *ngFor="let col of arrayColumnas" class="bg-primary-blue bg-opacity-25 w-100 rounded-1"
+            style="transition: all 0.3s ease;">
+          </div>
         </div>
+
+        <!-- Medidor de Densidad Visual -->
+        <div class="mt-4 pt-3 border-top" *ngIf="scoreDensidadVisual">
+          <label class="small text-muted mb-2 fw-medium d-block">Diagnóstico de Densidad</label>
+          <div class="d-flex align-items-center gap-2 mb-1">
+            <span class="badge bg-{{scoreDensidadVisual.color}} d-flex align-items-center gap-1 shadow-sm px-2 py-1">
+              <i class="bi {{scoreDensidadVisual.icono}}"></i> {{scoreDensidadVisual.nivel}}
+            </span>
+          </div>
+          <div class="text-muted" style="font-size: 0.7rem; line-height: 1.3;">
+            {{scoreDensidadVisual.mensaje}}
+          </div>
+        </div>
+
       </div>
     </div>
   </div>
@@ -592,6 +799,28 @@
           <select class="form-select form-select-sm" [(ngModel)]="editingColor.uso">
             <option *ngFor="let rol of rolesDisponibles" [value]="rol">{{rol}}</option>
           </select>
+        </div>
+
+        <!-- Inconsistencia Estética -->
+        <div *ngIf="saturacionInconsistente.isWarning"
+          class="alert alert-warning d-flex flex-column mb-3 py-2 px-3 border border-warning"
+          style="font-size: 0.85rem;">
+          <div class="d-flex align-items-start gap-2 mb-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+              class="mt-1 flex-shrink-0" viewBox="0 0 16 16">
+              <path
+                d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
+            </svg>
+            <div>
+              <strong>Inconsistencia Estética:</strong> Este color ({{saturacionInconsistente.currentSat}}% saturación)
+              desentona fuertemente con el resto de tu paleta (promedio {{saturacionInconsistente.avgSat}}% de
+              saturación).
+            </div>
+          </div>
+          <button class="btn btn-sm btn-outline-warning bg-warning bg-opacity-10 text-dark align-self-start fw-bold"
+            (click)="aplicarSaturacionSugerida()">
+            Armonizar color a {{saturacionInconsistente.suggestedHex}}
+          </button>
         </div>
 
         <label class="form-label small fw-medium text-muted mb-1">Vista previa</label>
@@ -682,8 +911,14 @@
           <label class="form-label small fw-medium text-muted mb-1">Nombre del estilo</label>
           <input type="text" class="form-control" [(ngModel)]="editingTypography.estilo"
             placeholder="ej. H1, Body, Subtítulo">
-          <div class="form-text" style="font-size: 0.7rem;">Si incluye "H" o "Display", usará la fuente principal en el
-            preview.</div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label small fw-medium text-muted mb-1">Tipo de fuente (Familia)</label>
+          <select class="form-select" [(ngModel)]="editingTypography.tipo_fuente">
+            <option value="Principal">Principal ({{config()?.fuente_principal}})</option>
+            <option value="Secundaria">Secundaria ({{config()?.fuente_secundaria}})</option>
+          </select>
         </div>
 
         <div class="row mb-3">
@@ -710,6 +945,17 @@
         </div>
 
       </div>
+      <div *ngIf="advertenciaProporciones"
+        class="alert alert-info border-info shadow-sm d-flex align-items-start mx-4 mb-3 p-3"
+        style="font-size: 0.8rem; background-color: #f8fbff;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+          class="me-2 mt-1 flex-shrink-0 text-info" viewBox="0 0 16 16">
+          <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+          <path
+            d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z" />
+        </svg>
+        <span><strong>Sugerencia Estética:</strong> {{ advertenciaProporciones }}</span>
+      </div>
       <div class="modal-footer border-top-0 bg-light px-4 py-3">
         <button type="button" class="btn btn-light fw-medium px-4" (click)="cerrarModalTipografia()">Cancelar</button>
         <button type="button" class="btn btn-primary fw-medium px-4 rounded-pill shadow-sm"
@@ -720,3 +966,122 @@
     </div>
   </div>
 </div>
+
+<!-- Modal Confirmar Corrección de Contraste -->
+<div class="modal" [class.show]="showContrastFixModal" [style.display]="showContrastFixModal ? 'block' : 'none'"
+  tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg">
+      <div class="modal-header bg-light border-bottom-0 pb-0">
+        <h5 class="modal-title fw-bold text-dark d-flex align-items-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="text-primary-blue"
+            viewBox="0 0 16 16">
+            <path
+              d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
+          </svg>
+          Corregir Contraste
+        </h5>
+        <button type="button" class="btn-close" (click)="cerrarModalContraste()"></button>
+      </div>
+      <div class="modal-body pt-4 pb-4">
+        <p class="text-muted mb-4">
+          Hemos encontrado un color accesible para <strong>{{colorToFix?.nombre}}</strong>.
+          ¿Deseas sobreescribir el color original o agregarlo como una nueva variante de la paleta?
+        </p>
+
+        <div class="d-flex align-items-center justify-content-center gap-4 mb-4">
+          <div class="text-center">
+            <div class="rounded-circle shadow-sm border mx-auto mb-2" [style.background-color]="colorToFix?.hex_code"
+              style="width: 48px; height: 48px;"></div>
+            <div class="small fw-bold">Actual</div>
+            <div class="text-muted small">{{colorToFix?.hex_code}}</div>
+          </div>
+          <div>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="text-muted"
+              viewBox="0 0 16 16">
+              <path fill-rule="evenodd"
+                d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z" />
+            </svg>
+          </div>
+          <div class="text-center">
+            <div class="rounded-circle shadow-sm border mx-auto mb-2" [style.background-color]="suggestedHex"
+              style="width: 48px; height: 48px;"></div>
+            <div class="small fw-bold text-success">Sugerido</div>
+            <div class="text-success small">{{suggestedHex}}</div>
+          </div>
+        </div>
+
+      </div>
+      <div class="modal-footer bg-light border-top-0 d-flex justify-content-between">
+        <button type="button" class="btn btn-outline-secondary" (click)="cerrarModalContraste()">Cancelar</button>
+        <div class="d-flex gap-2">
+          <button type="button" class="btn btn-warning text-dark" (click)="sobreescribirColorContraste()">Sobreescribir
+            original</button>
+          <button type="button" class="btn btn-primary" (click)="guardarComoVarianteContraste()">Guardar como
+            variante</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Backdrop for Modal -->
+<div class="modal-backdrop fade show" *ngIf="showContrastFixModal"></div>
+
+<!-- Modal Generador de Armonías -->
+<div class="modal" [class.show]="showHarmonyModal" [style.display]="showHarmonyModal ? 'block' : 'none'" tabindex="-1">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg">
+      <div class="modal-header bg-light border-bottom-0 pb-0">
+        <h5 class="modal-title fw-bold text-dark d-flex align-items-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="text-primary-blue"
+            viewBox="0 0 16 16">
+            <path
+              d="M2.5 8a5.5 5.5 0 0 1 8.25-4.764.5.5 0 0 0 .5-.866A6.5 6.5 0 1 0 14.5 8a.5.5 0 0 0-1 0 5.5 5.5 0 1 1-11 0z" />
+            <path
+              d="M15.354 3.354a.5.5 0 0 0-.708-.708L8 9.293 5.354 6.646a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l7-7z" />
+          </svg>
+          Generador de Armonías
+        </h5>
+        <button type="button" class="btn-close" (click)="cerrarModalArmonias()"></button>
+      </div>
+      <div class="modal-body pt-4 pb-4">
+        <div class="row mb-4">
+          <div class="col-md-6">
+            <label class="form-label small fw-medium text-muted mb-1">Color Base</label>
+            <select class="form-select" [(ngModel)]="harmonyBaseColor" (change)="onHarmonyBaseChange()">
+              <option *ngFor="let color of colores()" [ngValue]="color">
+                {{color.nombre}} ({{color.hex_code}})
+              </option>
+            </select>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label small fw-medium text-muted mb-1">Regla de Armonía</label>
+            <select class="form-select" [(ngModel)]="harmonyType" (change)="onHarmonyTypeChange()">
+              <option value="Analogous">Análoga (Colores vecinos)</option>
+              <option value="Complementary">Complementaria (Colores opuestos)</option>
+              <option value="Triadic">Triádica (3 colores equidistantes)</option>
+              <option value="Monochromatic">Monocromática (Variaciones de luminosidad)</option>
+              <option value="TonalScale">Escala Tonal (50-900)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Preview -->
+        <div class="d-flex align-items-stretch justify-content-center flex-wrap gap-2 w-100" style="min-height: 120px;">
+          <div *ngFor="let item of harmonyPreview" class="d-flex flex-column align-items-center flex-grow-1"
+            [style.min-width]="harmonyType === 'TonalScale' ? '60px' : '100px'">
+            <div class="w-100 rounded-top shadow-sm border mb-2 flex-grow-1" [style.background-color]="item.hex"></div>
+            <div class="fw-bold small">{{item.hex}}</div>
+            <div class="text-muted" style="font-size: 0.65rem;">{{item.role}}</div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer bg-light border-top-0 d-flex justify-content-between">
+        <button type="button" class="btn btn-outline-secondary" (click)="cerrarModalArmonias()">Cancelar</button>
+        <button type="button" class="btn btn-primary" (click)="guardarPaletaArmonica()">Añadir a mi paleta</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Backdrop for Modal -->
+<div class="modal-backdrop fade show" *ngIf="showHarmonyModal"></div>

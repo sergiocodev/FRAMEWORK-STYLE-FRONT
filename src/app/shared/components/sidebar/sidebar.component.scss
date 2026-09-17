@@ -1,107 +1,106 @@
 .sidebar {
-  width: 260px;
-  background-color: #0d1426;
-  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  width: 76px;
+  background-color: #ffffff;
+  border-right: 1px solid #E5E7EB;
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  color: #ffffff;
-  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   overflow-x: hidden;
+  box-shadow: 2px 0 8px rgba(0,0,0,0.02);
 }
 
-.sidebar.collapsed {
-  width: 80px;
-
-  .section-title {
-    font-size: 0.8rem;
-    letter-spacing: 0;
+.sidebar-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 24px 0 16px 0;
+  
+  .logo-box {
+    width: 38px;
+    height: 38px;
+    background-color: #2563eb;
   }
 }
 
-.logo-box {
-  width: 38px;
-  height: 38px;
-  background-color: #2563eb;
+.sidebar-divider {
+  width: 32px;
+  height: 1px;
+  background-color: #E5E7EB;
+  margin: 16px auto;
 }
 
-.logo-text {
-  letter-spacing: 0.5px;
+ul.nav {
+  margin-bottom: 0;
+  padding-left: 0;
 }
 
-.user-avatar {
-  width: 40px;
-  height: 40px;
-  background-color: #2563eb;
-}
-
-.user-subtext {
-  font-size: 0.8rem;
-  color: #6b7280;
-}
-
-.nav-section {
-  .section-title {
-    color: rgba(255, 255, 255, 0.7);
-    font-size: 0.75rem;
-    letter-spacing: 0.5px;
-    margin-top: 10px;
-  }
+.nav-item {
+  width: 100%;
 }
 
 .nav-link {
-  font-size: 0.95rem;
-  font-weight: 400;
-  padding: 8px 12px;
-  color: #ffffff;
-  transition: all 0.2s ease-in-out;
-  height: 40px; // Ensure consistent height even when icon/text shifts
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  color: #111827;
+  padding: 8px 0;
+  margin-bottom: 8px;
+  cursor: pointer;
 
-  ::ng-deep .nav-icon {
-    color: var(--app-primary-500, #FF3366);
-  }
+  .icon-wrapper {
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    margin-bottom: 6px;
+    transition: all 0.2s ease;
+    color: #111827;
 
-  &.active {
-    background-color: var(--app-primary-500, #FF3366);
-    color: #ffffff;
-    font-weight: 500;
-
-    ::ng-deep .nav-icon {
-      color: #ffffff;
+    ::ng-deep svg {
+      width: 22px;
+      height: 22px;
+      stroke-width: 1.8px;
     }
   }
 
-  &.hover-bg:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-    color: #ffffff;
+  .nav-label {
+    font-size: 10px;
+    font-weight: 500;
+    color: #111827;
+    letter-spacing: 0.2px;
+    text-align: center;
+    width: 100%;
+    padding: 0 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &.active {
+    .icon-wrapper {
+      background-color: #E8F2FF;
+      color: #0066FF;
+    }
+    
+    .nav-label {
+      color: #111827;
+    }
+  }
+
+  &:hover:not(.active) {
+    .icon-wrapper {
+      background-color: #F3F4F6;
+    }
   }
 }
 
-// Ensure proper spacing and alignment
-ul.nav {
-  margin-bottom: 0;
-}
-
-// Custom scrollbar
 .custom-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  
   &::-webkit-scrollbar {
-    width: 6px;
+    display: none;
   }
-
-  &::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background-color: #cbd5e1;
-    border-radius: 10px;
-  }
-
-  &:hover::-webkit-scrollbar-thumb {
-    background-color: #94a3b8;
-  }
-}
-
-.cursor-pointer {
-  cursor: pointer;
-}
-
-
+}

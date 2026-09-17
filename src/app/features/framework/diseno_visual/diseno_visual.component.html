@@ -3,15 +3,8 @@
   <app-diseno-visual-header [project]="project" [phases]="phases"></app-diseno-visual-header>
 
   <div class="row gx-4">
-    <!-- Left Sidebar Menu -->
-    <div class="col-12 col-xl-2 col-lg-3">
-      <div class="bg-white rounded p-3 h-100 shadow-sm border border-light custom-sidebar">
-        <app-diseno-visual-sidebar></app-diseno-visual-sidebar>
-      </div>
-    </div>
-
     <!-- Center Column: Biblioteca de estilos -->
-    <div class="col-12 col-xl-10 col-lg-9">
+    <div class="col-12">
       <div class="d-flex justify-content-end mb-3">
         <button class="btn btn-primary d-flex align-items-center gap-2" (click)="openPreviewModal()">
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
@@ -22,7 +15,7 @@
           Vista Previa
         </button>
       </div>
-      <div class="h-100 overflow-auto custom-scrollbar pe-2" style="max-height: calc(100vh - 200px);">
+      <div class="h-100 pb-5">
         <app-diseno-visual-library></app-diseno-visual-library>
       </div>
     </div>
