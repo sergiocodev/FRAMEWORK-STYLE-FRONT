@@ -9,7 +9,6 @@ import { DisenoHeaderComponent } from './components/diseno-header/diseno-header.
 import { DisenoCanvasComponent } from './components/diseno-canvas/diseno-canvas.component';
 import { DisenoInventoryComponent } from './components/diseno-inventory/diseno-inventory.component';
 import { DisenoWireframesComponent } from './components/diseno-wireframes/diseno-wireframes.component';
-import { DisenoChecklistComponent } from './components/diseno-checklist/diseno-checklist.component';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 
 import { ProjectService } from '../../../core/services/project.service';
@@ -24,8 +23,7 @@ import { ProjectService } from '../../../core/services/project.service';
     DisenoHeaderComponent,
     DisenoCanvasComponent,
     DisenoInventoryComponent,
-    DisenoWireframesComponent,
-    DisenoChecklistComponent
+    DisenoWireframesComponent
   ],
   templateUrl: './diseno-conceptual.component.html',
   styleUrls: ['./diseno-conceptual.component.scss']

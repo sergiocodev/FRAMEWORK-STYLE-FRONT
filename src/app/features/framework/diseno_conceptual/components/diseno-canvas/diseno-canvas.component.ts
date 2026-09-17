@@ -2,6 +2,7 @@ import { Component, Input, OnInit, HostListener, inject } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { DragDropModule, CdkDragDrop, CdkDragEnd } from '@angular/cdk/drag-drop';
+import { Router } from '@angular/router';
 import { DisenoConceptualService } from '../../../services/diseno-conceptual.service';
 import { NodoPantalla, ContenidoItem, NodoConexion } from '../../../../../models/diseno-conceptual.model';
 
@@ -15,6 +16,7 @@ import { NodoPantalla, ContenidoItem, NodoConexion } from '../../../../../models
 export class DisenoCanvasComponent implements OnInit {
   @Input() projectId!: number;
   private disenoService = inject(DisenoConceptualService);
+  private router = inject(Router);
   
   nodos: NodoPantalla[] = [];
   conexiones: NodoConexion[] = [];
@@ -150,10 +152,7 @@ export class DisenoCanvasComponent implements OnInit {
     });
   }
   scrollToChecklists() {
-    const el = document.querySelector('app-diseno-checklist');
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth' });
-    }
+    this.router.navigate(['/framework/projects', this.projectId, 'diseno_conceptual', 'checklists']);
   }
 
   onDrop(event: CdkDragDrop<any>, nodo: NodoPantalla) {
