@@ -10,7 +10,7 @@ export interface ProyectoResponse {
   plataforma?: string;
   estado: string;
   fase_actual_id: number;
-  responsable_id: number;
+  user_id: number;
   cliente?: ClienteResponse;
   creado_en: string;
   actualizado_en?: string;

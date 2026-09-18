@@ -37,7 +37,7 @@ export class SidebarComponent {
     {
       title: 'NAVEGACIÓN',
       items: [
-        { label: 'Inicio', link: '/dashboard', iconSvg: '<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline>' },
+        { label: 'Inicio', link: '/inicio', iconSvg: '<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline>' },
         { label: 'Proyectos', link: '/projects', iconSvg: '<path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>' },
         /*{ label: 'Compartido', link: '/shared', iconSvg: '<path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path><polyline points="16 6 12 2 8 6"></polyline><line x1="12" y1="2" x2="12" y2="15"></line>' },*/
         /*{ label: 'Biblioteca', link: '/library', iconSvg: '<path d="M6 2h9l5 5v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z"></path><path d="M4 6v14a2 2 0 0 0 2 2h11"></path>' }*/

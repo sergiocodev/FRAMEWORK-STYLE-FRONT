@@ -1,0 +1,471 @@
+<div class="projects-container min-vh-100 d-flex flex-column" style="background-color: #F8FAFC !important;">
+
+  <!-- Premium Header -->
+  <header class="bg-white border-bottom shadow-sm px-4 py-3 sticky-top z-3">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3">
+      <div>
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb mb-1">
+            <li class="breadcrumb-item"><a href="#" class="text-decoration-none text-muted">Inicio</a></li>
+            <li class="breadcrumb-item active fw-medium text-dark" aria-current="page">Gestor de Proyectos</li>
+          </ol>
+        </nav>
+        <h3 class="mb-0 fw-bold text-dark d-flex align-items-center gap-2">
+
+          Portafolio de Proyectos
+        </h3>
+      </div>
+
+      <div class="d-flex align-items-center gap-3 w-100" style="max-width: 500px;">
+        <div class="input-group search-bar rounded-pill overflow-hidden border shadow-sm flex-grow-1">
+          <span class="input-group-text bg-white border-0 pe-1 text-muted">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+          </span>
+          <input type="text" class="form-control border-0 shadow-none bg-white" placeholder="Buscar proyecto..."
+            aria-label="Buscar" [(ngModel)]="searchTerm" (ngModelChange)="filterProjects()">
+        </div>
+
+        <div class="dropdown">
+          <button
+            class="btn btn-primary d-flex align-items-center gap-2 px-3 py-2 shadow-sm border-0 fw-medium text-nowrap"
+            type="button" data-bs-toggle="dropdown" aria-expanded="false"
+            style="background-color: #2563EB; border-radius: 12px;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            Nuevo Proyecto
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round" class="ms-1">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end border-0 shadow mt-2 py-2"
+            style="min-width: 200px; border-radius: 8px;">
+            <li><button
+                class="dropdown-item py-2 px-3 d-flex align-items-center gap-3 text-dark fw-medium border-0 bg-transparent"
+                (click)="openCreateModal('nuevo')">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                  <polyline points="14 2 14 8 20 8"></polyline>
+                </svg>
+                Nuevo proyecto
+              </button></li>
+            <li><button
+                class="dropdown-item py-2 px-3 d-flex align-items-center gap-3 text-dark fw-medium border-0 bg-transparent"
+                (click)="openCreateModal('rediseño')">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2" />
+                </svg>
+                Rediseño
+              </button></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="container-fluid py-4 flex-grow-1 d-flex flex-column">
+
+    <!-- Main Content Area -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h5 class="fw-bold mb-0 text-dark">Proyectos Recientes</h5>
+      <div class="d-flex gap-2">
+        <select
+          class="form-select form-select-sm border-0 shadow-sm rounded-pill px-3 py-2 text-muted fw-medium bg-white cursor-pointer"
+          style="width: auto;">
+          <option selected>Todos los estados</option>
+          <option value="1">Activos</option>
+          <option value="2">Completados</option>
+          <option value="3">En Riesgo</option>
+        </select>
+        <button
+          class="btn btn-sm btn-white border shadow-sm rounded-circle d-flex align-items-center justify-content-center p-2 text-muted hover-bg-light"
+          style="width: 36px; height: 36px;" title="Vista de Filtros">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Loading State -->
+    @if (isLoading) {
+    <div class="row g-4 pb-4">
+      @for (i of [1,2,3,4,5,6]; track i) {
+      <div class="col-12 col-md-6 col-xxl-4">
+        <div class="card project-card border-0 shadow-sm rounded-4 h-100 overflow-hidden" aria-hidden="true">
+          <div class="card-body p-4 d-flex flex-column">
+            <div class="d-flex justify-content-between align-items-start mb-4 placeholder-glow">
+              <div class="d-flex align-items-center gap-3">
+                <div class="rounded-3 placeholder col-12" style="width: 48px; height: 48px;"></div>
+                <div>
+                  <span class="placeholder col-6 rounded-pill mb-2"></span>
+                  <span class="placeholder col-8 rounded-pill d-block"></span>
+                </div>
+              </div>
+            </div>
+            <div class="stepper-wrapper flex-grow-1 mt-3 mb-4 placeholder-glow">
+              <span class="placeholder col-12 rounded-pill" style="height: 10px;"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+      }
+    </div>
+    } @else {
+    <!-- Empty State -->
+    @if (filteredProjects.length === 0) {
+    <div class="text-center py-5">
+      <div class="d-inline-flex align-items-center justify-content-center bg-light rounded-circle mb-3"
+        style="width: 80px; height: 80px;">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#6c757d" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+      </div>
+      <h4 class="text-dark fw-bold">No se encontraron proyectos</h4>
+      <p class="text-muted">Intenta con otros términos de búsqueda o crea un proyecto nuevo.</p>
+    </div>
+    }
+
+    <!-- Projects Grid -->
+    <div class="row g-4 pb-4">
+      @for (project of filteredProjects.slice(0, visibleCount); track project.id) {
+      <div class="col-12 col-md-6 col-xxl-4">
+        <div class="card project-card border-0 shadow-sm rounded-4 h-100 overflow-hidden"
+          (click)="goToProject(project.id)">
+          <div class="card-body p-4 d-flex flex-column">
+
+            <!-- Card Header -->
+            <div class="d-flex justify-content-between align-items-start mb-4">
+              <div class="d-flex gap-3">
+                <div class="icon-box" [style.backgroundColor]="project.iconBg" [style.color]="project.iconColor">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <path [attr.d]="project.icon"></path>
+                  </svg>
+                </div>
+                <div>
+                  <span class="badge rounded-pill px-2 py-1 mb-2 {{getStatusClass(project.status)}}">
+                    {{project.status}}
+                  </span>
+                  <h5 class="card-title fw-bold text-dark mb-0 fs-6">{{project.name}}</h5>
+                </div>
+              </div>
+              <div class="dropdown" (click)="$event.stopPropagation()">
+                <button class="btn btn-link text-muted p-0 text-decoration-none hover-primary" type="button"
+                  data-bs-toggle="dropdown" aria-expanded="false">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="1"></circle>
+                    <circle cx="19" cy="12" r="1"></circle>
+                    <circle cx="5" cy="12" r="1"></circle>
+                  </svg>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0" style="border-radius: 8px;">
+                  <li>
+                    <button class="dropdown-item d-flex align-items-center gap-2 py-2"
+                      (click)="openEditModal(project, $event)">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                      </svg>
+                      Editar proyecto
+                    </button>
+                  </li>
+                  <li>
+                    <button class="dropdown-item d-flex align-items-center gap-2 py-2"
+                      (click)="pauseProject(project, $event)">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="6" y="4" width="4" height="16"></rect>
+                        <rect x="14" y="4" width="4" height="16"></rect>
+                      </svg>
+                      Pausar proyecto
+                    </button>
+                  </li>
+                  <li>
+                    <hr class="dropdown-divider">
+                  </li>
+                  <li>
+                    <button class="dropdown-item text-danger d-flex align-items-center gap-2 py-2 fw-medium"
+                      (click)="deleteProject(project, $event)">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="3 6 5 6 21 6"></polyline>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                        <line x1="10" y1="11" x2="10" y2="17"></line>
+                        <line x1="14" y1="11" x2="14" y2="17"></line>
+                      </svg>
+                      Eliminar
+                    </button>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Project Info -->
+            <div class="mb-4">
+              <p class="small text-muted mb-1"><span class="fw-medium text-dark">Cliente:</span> {{project.client}}</p>
+              <p class="small text-muted mb-0"><span class="fw-medium text-dark">Última modificación:</span>
+                {{project.lastModified}}</p>
+            </div>
+
+            <!-- Stepper -->
+            <div class="mt-auto">
+              <p class="small fw-bold text-dark mb-0">Fases del framework STYLE</p>
+
+              <div class="stepper-container w-100">
+                @for (phase of phases; track $index) {
+                <div class="step-item">
+                  @if ($index < phases.length - 1) { <div class="step-connector"
+                    [class.completed]="$index < project.currentPhase - 1">
+                </div>
+                }
+
+                <div class="step-circle" [class.completed]="$index < project.currentPhase - 1"
+                  [class.current]="$index === project.currentPhase - 1"
+                  [title]="getPhaseTooltip($index, project.currentPhase, phase)">
+                  @if ($index < project.currentPhase - 1) { <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"></polyline></svg>
+                    } @else {
+                    {{$index + 1}}
+                    }
+                </div>
+                <span class="step-label">{{phase}}</span>
+              </div>
+              }
+            </div>
+          </div>
+
+          <!-- Footer Info -->
+          <div class="d-flex justify-content-between align-items-center pt-3 mt-2 border-top border-light-subtle">
+            <span
+              class="badge bg-primary-subtle text-primary border-0 rounded-pill px-3 py-2 d-flex align-items-center gap-2">
+              @if (project.type === 'Nuevo') {
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="12" y1="18" x2="12" y2="12"></line>
+                <line x1="9" y1="15" x2="15" y2="15"></line>
+              </svg>
+              } @else {
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="1 4 1 10 7 10"></polyline>
+                <polyline points="23 20 23 14 17 14"></polyline>
+                <path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"></path>
+              </svg>
+              }
+              {{project.type}}
+            </span>
+
+            <button class="btn btn-primary btn-sm rounded-pill px-3 d-flex align-items-center gap-1 border-0 shadow-sm"
+              (click)="continuePhase(project, $event)" style="background-color: #2563EB;">
+              Continuar {{phases[project.currentPhase - 1]}}
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    }
+  </div>
+  }
+
+  <!-- Pagination / Cargar más -->
+  @if (!isLoading && filteredProjects.length > visibleCount) {
+  <div class="d-flex justify-content-center mt-2 mb-5">
+    <button (click)="loadMore()"
+      class="btn btn-outline-primary rounded-pill px-5 py-2 fw-medium d-flex align-items-center gap-2 hover-elevate">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="6 9 12 15 18 9"></polyline>
+      </svg>
+      Cargar más proyectos
+    </button>
+  </div>
+  }
+</div>
+</div>
+
+<!-- Modal para Crear/Rediseñar Proyecto -->
+<app-modal [isOpen]="isCreateModalOpen"
+  [title]="newProject.tipo === 'nuevo' ? 'Crear Nuevo Proyecto' : 'Registrar Rediseño'" size="medium"
+  (closeEvent)="closeCreateModal()">
+
+  <div modal-body>
+    <form (ngSubmit)="submitCreateProject()" #projectForm="ngForm" class="d-flex flex-column gap-3 mt-2">
+
+      <!-- Nombre del Proyecto -->
+      <div class="form-group">
+        <label for="projectName" class="form-label fw-medium text-dark">Nombre del Proyecto <span
+            class="text-danger">*</span></label>
+        <input type="text" id="projectName" name="projectName"
+          class="form-control form-control-lg bg-light border-0 shadow-none px-3" placeholder="Ej: E-commerce Nike"
+          [(ngModel)]="newProject.nombre" required autofocus>
+        <div class="form-text text-muted small mt-1">Este nombre se usará en todas las fases del framework.</div>
+      </div>
+
+    </form>
+  </div>
+
+  <div modal-footer class="d-flex justify-content-end gap-2 mt-4">
+    <button type="button" class="btn btn-light rounded-pill px-4" (click)="closeCreateModal()"
+      [disabled]="isSubmitting">
+      Cancelar
+    </button>
+    <button type="button" class="btn btn-primary rounded-pill px-4 d-flex align-items-center gap-2"
+      style="background-color: #2563EB;" (click)="submitCreateProject()"
+      [disabled]="!newProject.nombre.trim() || isSubmitting">
+      @if (isSubmitting) {
+      <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+      <span role="status">Creando...</span>
+      } @else {
+      Crear Proyecto
+      }
+    </button>
+  </div>
+</app-modal>
+
+<!-- Modal para Editar Proyecto -->
+<app-modal [isOpen]="isEditModalOpen" title="Editar Proyecto" size="medium" (closeEvent)="closeEditModal()">
+
+  <div modal-body style="min-height: 400px;">
+    <form (ngSubmit)="submitEditProject()" #editForm="ngForm" class="d-flex flex-column gap-3 mt-2">
+
+      <!-- Nombre del Proyecto -->
+      <div class="form-group">
+        <label for="editProjectName" class="form-label fw-medium text-dark">Nombre del Proyecto <span
+            class="text-danger">*</span></label>
+        <input type="text" id="editProjectName" name="editProjectName"
+          class="form-control form-control-lg bg-light border-0 shadow-none px-3" [(ngModel)]="editingProject.nombre"
+          required autofocus>
+      </div>
+
+      <!-- Cliente -->
+      <div class="form-group">
+        <label for="editCliente" class="form-label fw-medium text-dark">Cliente (Opcional)</label>
+
+        @if (!isCreatingClient) {
+        <div class="d-flex gap-2 align-items-center">
+          <div class="dropdown flex-grow-1">
+            <button
+              class="btn form-select bg-light border-0 shadow-none px-3 text-start d-flex justify-content-between align-items-center w-100"
+              type="button" data-bs-toggle="dropdown" aria-expanded="false" (click)="clientSearchTerm = ''">
+              <span>{{ getClientName(editingProject.cliente_id) }}</span>
+            </button>
+
+            <div class="dropdown-menu w-100 p-2 shadow border-0 mt-1" style="max-height: 250px; overflow-y: auto;">
+              <div class="px-1 pb-2 mb-2 border-bottom">
+                <div class="position-relative">
+                  <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-2 text-muted"
+                    style="margin-top: 1px;"></i>
+                  <input type="text" class="form-control form-control-sm bg-light border-0 shadow-none ps-4"
+                    placeholder="Buscar..." [(ngModel)]="clientSearchTerm" name="clientSearch"
+                    (click)="$event.stopPropagation()" autofocus>
+                </div>
+              </div>
+              @for (client of filteredClientsList; track client.id) {
+              <button class="dropdown-item py-2" type="button" (click)="selectClient(client.id)">{{ client.nombre
+                }}</button>
+              }
+              @if (filteredClientsList.length === 0) {
+              <div class="px-3 py-2 text-muted small text-center">No se encontraron clientes</div>
+              }
+            </div>
+          </div>
+
+          <button class="btn btn-primary rounded px-3 py-2 d-flex align-items-center justify-content-center"
+            type="button" style="aspect-ratio: 1; height: 38px;" (click)="openCreateClient()"
+            title="Crear nuevo cliente">
+            <i class="bi bi-plus-lg"></i>
+          </button>
+        </div>
+        } @else {
+        <div class="p-3 bg-white border rounded shadow-sm mt-1">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <span class="fw-bold text-primary small">Crear Nuevo Cliente</span>
+            <button type="button" class="btn-close" style="font-size: 0.6rem;"
+              (click)="cancelClientCreation()"></button>
+          </div>
+          <div class="mb-2">
+            <input type="text" class="form-control form-control-sm bg-light border-0 shadow-none"
+              placeholder="Nombre de la empresa *" [(ngModel)]="newClientData.nombre" name="newClientName" required>
+          </div>
+          <div class="mb-3">
+            <input type="email" class="form-control form-control-sm bg-light border-0 shadow-none"
+              placeholder="Correo de contacto (Opcional)" [(ngModel)]="newClientData.contacto_correo"
+              name="newClientEmail">
+          </div>
+          <div class="d-flex justify-content-end">
+            <button type="button" class="btn btn-sm btn-primary px-3 rounded-pill" (click)="createNewClientInline()"
+              [disabled]="!newClientData.nombre.trim() || isSubmittingClient">
+              @if (isSubmittingClient) {
+              <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+              } @else {
+              Guardar y Seleccionar
+              }
+            </button>
+          </div>
+        </div>
+        }
+      </div>
+
+      <div class="row g-3">
+        <!-- Plataforma -->
+        <div class="col-md-6 form-group">
+          <label for="editPlataforma" class="form-label fw-medium text-dark">Plataforma (Opcional)</label>
+          <input type="text" id="editPlataforma" name="editPlataforma"
+            class="form-control bg-light border-0 shadow-none px-3" placeholder="Ej: Web, iOS"
+            [(ngModel)]="editingProject.plataforma">
+        </div>
+
+        <!-- Nivel de Diseño -->
+        <div class="col-md-6 form-group">
+          <label for="editNivelDiseno" class="form-label fw-medium text-dark">Nivel de Diseño</label>
+          <select id="editNivelDiseno" name="editNivelDiseno"
+            class="form-select bg-light border-0 shadow-none px-3 cursor-pointer"
+            [(ngModel)]="editingProject.nivel_diseno_objetivo">
+            <option value="bajo">Bajo</option>
+            <option value="medio">Medio</option>
+            <option value="alto">Alto</option>
+          </select>
+        </div>
+      </div>
+
+    </form>
+  </div>
+
+  <div modal-footer class="d-flex justify-content-end gap-2 mt-4">
+    <button type="button" class="btn btn-light rounded-pill px-4" (click)="closeEditModal()" [disabled]="isSubmitting">
+      Cancelar
+    </button>
+    <button type="button" class="btn btn-primary rounded-pill px-4 d-flex align-items-center gap-2"
+      style="background-color: #2563EB;" (click)="submitEditProject()"
+      [disabled]="!editingProject.nombre.trim() || isSubmitting">
+      @if (isSubmitting) {
+      <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+      <span role="status">Guardando...</span>
+      } @else {
+      Guardar Cambios
+      }
+    </button>
+  </div>
+</app-modal>

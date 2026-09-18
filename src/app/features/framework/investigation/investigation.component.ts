@@ -1,6 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule, ActivatedRoute } from '@angular/router';
+import { RouterModule, ActivatedRoute, Router } from '@angular/router';
 import { Subject, forkJoin, of } from 'rxjs';
 import { catchError, debounceTime } from 'rxjs/operators';
 import { Phase } from '../../../shared/components/stepper/stepper.component';
@@ -36,6 +36,7 @@ export class InvestigationComponent implements OnInit {
   private projectService = inject(ProjectService);
   private investigationService = inject(InvestigationService);
   private route = inject(ActivatedRoute);
+  private router = inject(Router);
 
   isLoading = true;
   error = false;
@@ -90,6 +91,7 @@ export class InvestigationComponent implements OnInit {
   currentProjectId: number = 0;
   isSaving: boolean = false;
   saveSuccess: boolean = false;
+  isCompleting: boolean = false;
 
   ngOnInit(): void {
     // Setup autosave
@@ -211,6 +213,29 @@ export class InvestigationComponent implements OnInit {
       error: (err) => {
         console.error('Error al guardar', err);
         this.isSaving = false;
+      }
+    });
+  }
+
+  completePhase(): void {
+    if (!this.currentProjectId) return;
+    
+    if (!this.problema.trim() || !this.objetivo.trim()) {
+      alert('Por favor completa al menos el Problema y el Objetivo antes de continuar.');
+      return;
+    }
+
+    this.isCompleting = true;
+    this.projectService.updateProject(this.currentProjectId, { fase_actual_id: 2 }).subscribe({
+      next: () => {
+        this.isCompleting = false;
+        this.isModalOpen = false;
+        this.router.navigate(['/framework/projects', this.currentProjectId, 'diseno_conceptual']);
+      },
+      error: (err) => {
+        console.error('Error al avanzar fase', err);
+        this.isCompleting = false;
+        alert('Ocurrió un error al intentar avanzar de fase.');
       }
     });
   }

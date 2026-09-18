@@ -1,0 +1,276 @@
+// Variables locales
+$transition-base: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+$shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+$shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+$shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+$primary-color: #0d6efd;
+
+// Contenedor principal
+.projects-container {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+// Search bar
+.search-bar {
+  background-color: #ffffff;
+  transition: $transition-base;
+  
+  &:focus-within {
+    box-shadow: 0 0 0 3px rgba($primary-color, 0.25) !important;
+    border-color: $primary-color !important;
+  }
+
+  input {
+    &::placeholder {
+      color: #94a3b8;
+    }
+  }
+}
+
+// Botones y Elementos interactivos
+.hover-elevate {
+  transition: $transition-base;
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: $shadow-md !important;
+  }
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.hover-primary {
+  transition: $transition-base;
+  &:hover {
+    color: $primary-color !important;
+  }
+}
+
+.hover-bg-light {
+  transition: $transition-base;
+  &:hover {
+    background-color: #f1f5f9 !important;
+  }
+}
+
+// Tarjetas KPI
+.kpi-card {
+  transition: $transition-base;
+  
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: $shadow-md !important;
+    
+    .icon-wrapper {
+      transform: scale(1.1);
+    }
+  }
+
+  .icon-wrapper {
+    transition: $transition-base;
+    width: 48px;
+    height: 48px;
+  }
+}
+
+// Tarjetas de Proyecto
+.project-card {
+  transition: $transition-base;
+  cursor: pointer;
+  border: 1px solid #f1f5f9 !important;
+  
+  &:hover {
+    transform: translateY(-4px) scale(1.01);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01) !important;
+    border-color: rgba($primary-color, 0.1) !important;
+  }
+}
+
+// Utilidades Bootstrap extendidas
+.bg-primary-subtle { background-color: #eff6ff !important; }
+.bg-success-subtle { background-color: #dcfce7 !important; }
+.text-success { color: #16a34a !important; }
+.bg-danger-subtle { background-color: #fee2e2 !important; }
+.bg-info-subtle { background-color: #cff4fc !important; }
+.bg-secondary-subtle { background-color: #f1f5f9 !important; }
+
+.cursor-pointer { cursor: pointer; }
+
+// Badges
+.badge {
+  font-weight: 500;
+  letter-spacing: 0.3px;
+}
+
+// Custom Colors for Image matching
+.bg-purple-subtle { background-color: #f3e8ff !important; }
+.text-purple { color: #a855f7 !important; }
+.bg-orange-subtle { background-color: #ffedd5 !important; }
+.text-orange { color: #ea580c !important; }
+
+.icon-box {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  svg {
+    width: 26px;
+    height: 26px;
+  }
+}
+
+// Stepper
+.stepper-container {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  position: relative;
+  margin-top: 16px;
+  margin-bottom: 24px;
+}
+
+.step-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+  flex: 1;
+}
+
+.step-circle {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  background-color: white;
+  border: 2px solid #e2e8f0;
+  color: #94a3b8;
+  margin-bottom: 8px;
+  
+  &.completed {
+    background-color: #22c55e;
+    border-color: #22c55e;
+    color: white;
+  }
+  
+  &.current {
+    background-color: #3b82f6;
+    border-color: #3b82f6;
+    color: white;
+  }
+}
+
+.step-label {
+  font-size: 10px;
+  color: #64748b;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.step-connector {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  width: 100%;
+  height: 2px;
+  background-color: #e2e8f0;
+  z-index: 1;
+  
+  &.completed {
+    background-color: #22c55e;
+  }
+}
+
+// Custom Colors for Image matching
+.bg-purple-subtle { background-color: #f3e8ff !important; }
+.text-purple { color: #a855f7 !important; }
+.bg-orange-subtle { background-color: #ffedd5 !important; }
+.text-orange { color: #f97316 !important; }
+
+.icon-box {
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  svg {
+    width: 28px;
+    height: 28px;
+  }
+}
+
+// Stepper
+.stepper-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  margin-top: 10px;
+  margin-bottom: 24px;
+}
+
+.step-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+  flex: 1;
+}
+
+.step-circle {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 600;
+  background-color: white;
+  border: 2px solid #e2e8f0;
+  color: #94a3b8;
+  margin-bottom: 6px;
+  
+  &.completed {
+    background-color: #22c55e;
+    border-color: #22c55e;
+    color: white;
+  }
+  
+  &.current {
+    background-color: #3b82f6;
+    border-color: #3b82f6;
+    color: white;
+  }
+}
+
+.step-label {
+  font-size: 10px;
+  color: #64748b;
+  text-align: center;
+  max-width: 55px;
+  line-height: 1.2;
+}
+
+.step-connector {
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  width: 100%;
+  height: 2px;
+  background-color: #e2e8f0;
+  z-index: 1;
+  
+  &.completed {
+    background-color: #22c55e;
+  }
+}

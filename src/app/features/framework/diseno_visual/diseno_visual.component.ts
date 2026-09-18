@@ -1,11 +1,12 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { DisenoVisualHeaderComponent, Phase } from './components/diseno-visual-header/diseno-visual-header.component';
 import { DisenoVisualLibraryComponent } from './components/diseno-visual-library/diseno-visual-library.component';
 import { DisenoVisualPreviewComponent } from './components/diseno-visual-preview/diseno-visual-preview.component';
 import { ModalComponent } from '../../../shared/components/modal/modal.component';
 import { ProjectService } from '../../../core/services/project.service';
+import { DisenoVisualService } from './services/diseno-visual.service';
 
 @Component({
   selector: 'app-diseno-visual',
@@ -22,12 +23,15 @@ import { ProjectService } from '../../../core/services/project.service';
 })
 export class DisenoVisualComponent implements OnInit {
   private route = inject(ActivatedRoute);
+  private router = inject(Router);
   private projectService = inject(ProjectService);
+  private disenoVisualService = inject(DisenoVisualService);
 
   isPreviewModalOpen = false;
   project: any = null;
   phases: Phase[] = [];
   currentProjectId: number = 0;
+  isCompleting: boolean = false;
 
   ngOnInit() {
     this.route.paramMap.subscribe(params => {
@@ -68,5 +72,32 @@ export class DisenoVisualComponent implements OnInit {
 
   closePreviewModal() {
     this.isPreviewModalOpen = false;
+  }
+
+  completePhase(): void {
+    if (!this.currentProjectId) return;
+
+    // Validación básica: Al menos un color y una tipografía definidos
+    const colors = this.disenoVisualService.colores();
+    const typos = this.disenoVisualService.tipografias();
+    
+    if (colors.length === 0 || typos.length === 0) {
+      alert('Por favor agrega al menos un color y una tipografía a tu biblioteca de estilos antes de continuar.');
+      return;
+    }
+
+    this.isCompleting = true;
+    this.projectService.updateProject(this.currentProjectId, { fase_actual_id: 4 }).subscribe({
+      next: () => {
+        this.isCompleting = false;
+        this.isPreviewModalOpen = false;
+        this.router.navigate(['/framework/projects', this.currentProjectId, 'detallado']);
+      },
+      error: (err) => {
+        console.error('Error al avanzar fase', err);
+        this.isCompleting = false;
+        alert('Ocurrió un error al intentar avanzar de fase.');
+      }
+    });
   }
 }

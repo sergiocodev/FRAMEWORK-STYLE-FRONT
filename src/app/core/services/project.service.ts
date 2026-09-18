@@ -15,5 +15,7 @@ export class ProjectService {
     return this.http.get<ProyectoResponse>(`${this.apiUrl}/${id}`);
   }
 
-  // Future CRUD methods can be added here
+  updateProject(id: number, data: any): Observable<ProyectoResponse> {
+    return this.http.put<ProyectoResponse>(`${this.apiUrl}/${id}`, data);
+  }
 }

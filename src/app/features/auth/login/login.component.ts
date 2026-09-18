@@ -5,6 +5,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { ApiService } from '../../../core/services/api.service';
 import { Router, RouterLink } from '@angular/router';
 import { GoogleSigninButtonModule, SocialAuthService, SocialUser } from '@abacritt/angularx-social-login';
+import { AuthStateService } from '../../../core/services/auth-state.service';
 
 @Component({
   selector: 'app-login',
@@ -18,6 +19,7 @@ export class LoginComponent implements OnInit {
   private apiService = inject(ApiService);
   private router = inject(Router);
   private authService = inject(SocialAuthService);
+  private authState = inject(AuthStateService);
 
   loginForm: FormGroup = this.fb.group({
     username: ['', [Validators.required]],
@@ -42,8 +44,9 @@ export class LoginComponent implements OnInit {
     this.apiService.post<any>('auth/google', { token: token }).subscribe({
       next: (response) => {
         localStorage.setItem('access_token', response.access_token);
+        this.authState.loadUserProfile();
         this.isLoading = false;
-        this.router.navigate(['/dashboard']);
+        this.router.navigate(['/inicio']);
       },
       error: (err) => {
         this.isLoading = false;
@@ -71,8 +74,9 @@ export class LoginComponent implements OnInit {
     this.apiService.post<any>('auth/login', formData.toString(), headers).subscribe({
       next: (response) => {
         localStorage.setItem('access_token', response.access_token);
+        this.authState.loadUserProfile();
         this.isLoading = false;
-        this.router.navigate(['/dashboard']);
+        this.router.navigate(['/inicio']);
       },
       error: (err) => {
         this.isLoading = false;

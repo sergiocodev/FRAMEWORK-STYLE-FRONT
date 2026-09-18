@@ -1,12 +1,27 @@
 <div class="diseno-detallado-container min-vh-100 bg-light p-4" style="background-color: #F8FAFC !important;">
   
   <!-- Header -->
-  <div class="mb-4">
-    <div class="d-flex align-items-center gap-2">
-      <h3 class="fw-bold mb-0 text-dark">Fase 4: Diseño Detallado</h3>
-      <span class="text-secondary h5 mb-0">(Integración)</span>
+  <div class="mb-4 d-flex justify-content-between align-items-start">
+    <div>
+      <div class="d-flex align-items-center gap-2">
+        <h3 class="fw-bold mb-0 text-dark">Fase 4: Diseño Detallado</h3>
+        <span class="text-secondary h5 mb-0">(Integración)</span>
+      </div>
+      <p class="text-secondary mt-1">Vincula la estructura con los estilos utilizando herramientas externas de diseño (Figma, Penpot, etc.).</p>
     </div>
-    <p class="text-secondary mt-1">Vincula la estructura con los estilos utilizando herramientas externas de diseño (Figma, Penpot, etc.).</p>
+    <button
+      class="btn btn-success d-flex align-items-center gap-2 shadow-sm rounded-3 px-3 py-2 transition-all"
+      style="font-weight: 500;" (click)="completePhase()" [disabled]="isCompleting">
+      @if (isCompleting) {
+        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+      } @else {
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+      }
+      Aprobar y Continuar a Fase 5
+    </button>
   </div>
 
   <div class="row g-4">

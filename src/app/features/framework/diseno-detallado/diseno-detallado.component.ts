@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { DisenoDetalladoService, Fase4Pantalla, DisenoDetalladoArchivo } from '../services/diseno-detallado.service';
+import { ProjectService } from '../../../core/services/project.service';
 
 interface AiAlert {
   id: string;
@@ -29,6 +31,7 @@ interface ChecklistItem {
 export class DisenoDetalladoComponent implements OnInit {
 
   projectId = 1;
+  isCompleting = false;
   screens: Fase4Pantalla[] = [];
   selectedScreenId: string = '';
 
@@ -43,10 +46,21 @@ export class DisenoDetalladoComponent implements OnInit {
   isDragging = false;
   searchQuery: string = '';
 
-  constructor(private disenoService: DisenoDetalladoService) {}
+  constructor(
+    private disenoService: DisenoDetalladoService,
+    private projectService: ProjectService,
+    private route: ActivatedRoute,
+    private router: Router
+  ) {}
 
   ngOnInit() {
-    this.loadScreens();
+    this.route.paramMap.subscribe(params => {
+      const idParam = params.get('id');
+      if (idParam) {
+        this.projectId = Number(idParam);
+      }
+      this.loadScreens();
+    });
   }
   
   loadScreens() {
@@ -265,5 +279,29 @@ export class DisenoDetalladoComponent implements OnInit {
         error: (err) => console.error('Error clearing design', err)
       });
     }
+  }
+
+  completePhase(): void {
+    if (!this.projectId) return;
+
+    // Validación básica: Al menos una pantalla con diseño (imagen)
+    const hasDesigns = this.screens.some(s => !!s.image);
+    if (!hasDesigns) {
+      alert('Por favor sube al menos el diseño detallado de una pantalla antes de continuar.');
+      return;
+    }
+
+    this.isCompleting = true;
+    this.projectService.updateProject(this.projectId, { fase_actual_id: 5 }).subscribe({
+      next: () => {
+        this.isCompleting = false;
+        this.router.navigate(['/framework/projects', this.projectId, 'evaluacion']);
+      },
+      error: (err) => {
+        console.error('Error al avanzar fase', err);
+        this.isCompleting = false;
+        alert('Ocurrió un error al intentar avanzar de fase.');
+      }
+    });
   }
 }

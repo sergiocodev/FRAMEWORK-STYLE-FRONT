@@ -34,12 +34,21 @@
 
         <!-- Right Panel: Inventory & Tools -->
         <div class="col-12 col-xl-4 d-flex flex-column h-100 pb-2 overflow-auto custom-scrollbar pe-2">
-          <!-- Espaciador para alinear con la barra de herramientas del canvas (solo en escritorio) -->
-          <div class="mb-3 px-1 d-none d-xl-block" style="visibility: hidden;">
-            <div class="d-flex align-items-center gap-2 mb-1">
-              <h4 class="fw-bold mb-0">Fase 2: Diseño Conceptual</h4>
-            </div>
-            <p class="small mb-0">Define el mapa de navegación y la jerarquía de contenidos, sin colores aún.</p>
+          <!-- Espaciador y Botón Avanzar -->
+          <div class="mb-3 px-1 d-flex justify-content-end align-items-center" style="min-height: 50px;">
+            <button
+              class="btn btn-success d-flex align-items-center gap-2 shadow-sm rounded-3 px-3 transition-all"
+              style="font-weight: 500;" (click)="completePhase()" [disabled]="isCompleting">
+              @if (isCompleting) {
+                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+              } @else {
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+              }
+              Aprobar y Continuar a Fase 3
+            </button>
           </div>
           
           <app-diseno-inventory [projectId]="projectId"></app-diseno-inventory>

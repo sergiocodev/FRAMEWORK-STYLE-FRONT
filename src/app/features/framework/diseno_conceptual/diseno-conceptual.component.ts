@@ -1,6 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule, ActivatedRoute } from '@angular/router';
+import { RouterModule, ActivatedRoute, Router } from '@angular/router';
 import { forkJoin, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { Phase } from '../../../shared/components/stepper/stepper.component';
@@ -12,6 +12,7 @@ import { DisenoWireframesComponent } from './components/diseno-wireframes/diseno
 import { DragDropModule } from '@angular/cdk/drag-drop';
 
 import { ProjectService } from '../../../core/services/project.service';
+import { DisenoConceptualService } from '../services/diseno-conceptual.service';
 
 @Component({
   selector: 'app-diseno-conceptual',
@@ -30,7 +31,9 @@ import { ProjectService } from '../../../core/services/project.service';
 })
 export class DisenoConceptualComponent implements OnInit {
   private projectService = inject(ProjectService);
+  private disenoConceptualService = inject(DisenoConceptualService);
   private route = inject(ActivatedRoute);
+  private router = inject(Router);
 
   isLoading = true;
   error = false;
@@ -38,6 +41,7 @@ export class DisenoConceptualComponent implements OnInit {
   project: any = {};
   phases: Phase[] = [];
   projectId!: number;
+  isCompleting: boolean = false;
 
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
@@ -92,6 +96,40 @@ export class DisenoConceptualComponent implements OnInit {
           { number: 5, name: 'Evaluación Estética', subtext: 'Validación y ajustes', status: 'upcoming' }
         ];
         this.isLoading = false;
+      }
+    });
+  }
+
+  completePhase(): void {
+    if (!this.projectId) return;
+
+    this.isCompleting = true;
+    
+    // Validación básica: Al menos un nodo creado
+    this.disenoConceptualService.getNodos(this.projectId).subscribe({
+      next: (nodos) => {
+        if (!nodos || nodos.length === 0) {
+          alert('Por favor agrega al menos una pantalla (nodo) en el mapa conceptual antes de continuar.');
+          this.isCompleting = false;
+          return;
+        }
+
+        // Si pasa validación, continuar
+        this.projectService.updateProject(this.projectId, { fase_actual_id: 3 }).subscribe({
+          next: () => {
+            this.isCompleting = false;
+            this.router.navigate(['/framework/projects', this.projectId, 'visual']);
+          },
+          error: (err) => {
+            console.error('Error al avanzar fase', err);
+            this.isCompleting = false;
+            alert('Ocurrió un error al intentar avanzar de fase.');
+          }
+        });
+      },
+      error: () => {
+        alert('No se pudo validar el mapa conceptual. Intenta nuevamente.');
+        this.isCompleting = false;
       }
     });
   }
