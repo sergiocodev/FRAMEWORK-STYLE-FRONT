@@ -1,187 +1,64 @@
-.investigation-header {
-  background-color: var(--app-surface-bg);
-  border-bottom: 1px solid var(--bs-border-color);
-  transition: all 0.3s ease;
-  
-  // Glassmorphism effect if supported
-  @supports (backdrop-filter: blur(16px)) {
-    background-color: color-mix(in srgb, var(--app-surface-bg) 85%, transparent);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-  }
+.header-icon-container {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: var(--app-primary-soft-bg);
+  color: var(--bs-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: inset 0 0 0 1px rgba(var(--bs-primary-rgb), 0.1);
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
 
-
-
-  .header-icon-container {
-    width: 52px;
-    height: 52px;
-    border-radius: 14px;
-    background: var(--app-primary-soft-bg);
-    color: var(--bs-primary);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    box-shadow: inset 0 0 0 1px rgba(var(--bs-primary-rgb), 0.1);
-    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
-
-    &:hover {
-      transform: scale(1.05) translateY(-2px);
-      box-shadow: inset 0 0 0 1px rgba(var(--bs-primary-rgb), 0.2), 0 8px 16px -4px rgba(var(--bs-primary-rgb), 0.15);
-      
-      svg {
-        transform: scale(1.1);
-      }
-    }
+  &:hover {
+    transform: scale(1.05) translateY(-2px);
+    box-shadow: inset 0 0 0 1px rgba(var(--bs-primary-rgb), 0.2), 0 8px 16px -4px rgba(var(--bs-primary-rgb), 0.15);
     
     svg {
-      transition: transform 0.3s ease;
+      transform: scale(1.1);
     }
   }
-
-  .project-title {
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: var(--bs-emphasis-color);
-    letter-spacing: -0.02em;
+  
+  svg {
+    transition: transform 0.3s ease;
   }
+}
 
-  .project-badge {
-    // using styles.scss global badge-status if preferred, or custom:
-    background: var(--app-status-active-bg, var(--app-primary-soft-bg));
-    color: var(--app-status-active, var(--bs-primary));
-    border: 1px solid color-mix(in srgb, var(--app-status-active, var(--bs-primary)) 20%, transparent);
-    font-size: 0.7rem;
-    font-weight: 600;
-    padding: 0.35em 0.8em;
-    border-radius: 20px;
-    transition: all 0.2s ease;
-    letter-spacing: 0.02em;
+// Segmented Progress Bar
+.header-progress-bar {
+  width: 100%;
+  height: 3px;
+  background-color: transparent;
+  gap: 3px; 
+  padding: 0 4px;
+  margin-bottom: -1px; // Align to border bottom
+
+  .progress-segment {
+    border-radius: 4px 4px 0 0;
+    transition: background-color 0.4s ease;
+    background-color: var(--bs-border-color); // default empty
     
-    &:hover {
-      background: color-mix(in srgb, var(--app-status-active, var(--bs-primary)) 20%, transparent);
+    &.segment-completed {
+      background-color: var(--bs-primary);
     }
-  }
-
-  .project-meta {
-    color: var(--bs-secondary-color);
-    font-size: 0.85rem;
-    font-weight: 500;
-    
-    .text-secondary-emphasis {
-      color: var(--bs-body-color);
-    }
-
-    .separator {
-      color: var(--bs-tertiary-color);
-      margin: 0 0.5rem;
-      opacity: 0.6;
-    }
-  }
-
-  // Buttons
-  .btn-custom-outline {
-    background: var(--app-surface-bg);
-    color: var(--bs-body-color);
-    border: 1px solid var(--bs-border-color);
-    font-weight: 500;
-    border-radius: 10px;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    
-    &:hover {
-      background: var(--app-hover-bg);
-      border-color: var(--bs-secondary-color);
-      transform: translateY(-1px);
-      box-shadow: var(--app-shadow-sm);
-    }
-    
-    &:active {
-      transform: translateY(0);
-    }
-  }
-
-  .btn-custom-primary {
-    background: var(--app-gradient-primary);
-    color: #fff;
-    border: none;
-    font-weight: 600;
-    border-radius: 10px;
-    box-shadow: 0 4px 12px -2px rgba(var(--bs-primary-rgb), 0.3);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-    overflow: hidden;
-    
-    &::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: linear-gradient(rgba(255,255,255,0.15), transparent);
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
-
-    &:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 16px -2px rgba(var(--bs-primary-rgb), 0.4);
-      color: #fff; // keep white
+    &.segment-active {
+      background-color: var(--bs-primary);
+      position: relative;
+      overflow: hidden;
       
       &::after {
-        opacity: 1;
-      }
-      
-      svg {
-        transform: translateX(3px);
-      }
-    }
-    
-    &:active {
-      transform: translateY(0);
-      box-shadow: 0 2px 8px -2px rgba(var(--bs-primary-rgb), 0.4);
-    }
-    
-    svg {
-      transition: transform 0.2s ease;
-    }
-  }
-
-  // Segmented Progress Bar
-  .header-progress-bar {
-    width: 100%;
-    height: 3px;
-    background-color: transparent;
-    gap: 3px; 
-    padding: 0 4px;
-    margin-bottom: -1px; // Align to border bottom
-
-    .progress-segment {
-      border-radius: 4px 4px 0 0;
-      transition: background-color 0.4s ease;
-      background-color: var(--bs-border-color); // default empty
-      
-      &.segment-completed {
-        background-color: var(--bs-primary);
-      }
-      &.segment-active {
-        background-color: var(--bs-primary);
-        position: relative;
-        overflow: hidden;
-        
-        &::after {
-          content: '';
-          position: absolute;
-          top: 0; left: 0; right: 0; bottom: 0;
-          background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
-          animation: shimmer 2s infinite;
-        }
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
+        animation: shimmer 2s infinite;
       }
     }
   }
+}
 
-  @keyframes shimmer {
-    0% { transform: translateX(-100%); }
-    100% { transform: translateX(100%); }
-  }
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
 }

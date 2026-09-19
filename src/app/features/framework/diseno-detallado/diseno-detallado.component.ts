@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { DisenoDetalladoService, Fase4Pantalla, DisenoDetalladoArchivo } from '../services/diseno-detallado.service';
 import { ProjectService } from '../../../core/services/project.service';
+import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 
 interface AiAlert {
   id: string;
@@ -24,7 +25,7 @@ interface ChecklistItem {
 @Component({
   selector: 'app-diseno-detallado',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, PageHeaderComponent],
   templateUrl: './diseno-detallado.component.html',
   styleUrls: ['./diseno-detallado.component.scss']
 })
@@ -32,6 +33,17 @@ export class DisenoDetalladoComponent implements OnInit {
 
   projectId = 1;
   isCompleting = false;
+  project: any = {};
+  phases: any[] = [];
+  headerBreadcrumbs: any[] = [];
+  
+  get formattedStatus(): string {
+    const status = this.project?.status;
+    if (!status) return 'En progreso';
+    const formatted = status.replace(/_/g, ' ');
+    return formatted.charAt(0).toUpperCase() + formatted.slice(1).toLowerCase();
+  }
+  
   screens: Fase4Pantalla[] = [];
   selectedScreenId: string = '';
 
@@ -59,10 +71,42 @@ export class DisenoDetalladoComponent implements OnInit {
       if (idParam) {
         this.projectId = Number(idParam);
       }
+      this.fetchProject(this.projectId);
       this.loadScreens();
     });
   }
   
+  fetchProject(id: number) {
+    this.projectService.getProjectById(id).subscribe({
+      next: (data: any) => {
+        this.project = {
+          title: data.nombre,
+          status: data.estado,
+          type: data.tipo,
+          client: data.cliente?.nombre || 'Sin cliente asignado'
+        };
+
+        this.headerBreadcrumbs = [
+          { label: 'Inicio', url: '/' },
+          { label: 'Proyectos', url: '/projects' },
+          { label: this.project.title, active: true }
+        ];
+
+        const currentPhaseId = data.fase_actual_id || 4;
+        this.phases = [
+          { number: 1, name: 'Investigación', subtext: 'Entradas del proyecto', status: currentPhaseId > 1 ? 'completed' : (currentPhaseId === 1 ? 'active' : 'upcoming') },
+          { number: 2, name: 'Diseño Conceptual', subtext: 'Estructura y flujo', status: currentPhaseId > 2 ? 'completed' : (currentPhaseId === 2 ? 'active' : 'upcoming') },
+          { number: 3, name: 'Diseño Visual', subtext: 'Estilo y componentes', status: currentPhaseId > 3 ? 'completed' : (currentPhaseId === 3 ? 'active' : 'upcoming') },
+          { number: 4, name: 'Diseño Detallado', subtext: 'Prototipo de alta fidelidad', status: currentPhaseId > 4 ? 'completed' : (currentPhaseId === 4 ? 'active' : 'upcoming') },
+          { number: 5, name: 'Evaluación Estética', subtext: 'Validación y ajustes', status: currentPhaseId > 5 ? 'completed' : (currentPhaseId === 5 ? 'active' : 'upcoming') }
+        ];
+      },
+      error: (err: any) => {
+        console.error('Error fetching project data:', err);
+      }
+    });
+  }
+
   loadScreens() {
     this.disenoService.getScreens(this.projectId).subscribe({
       next: (data) => {

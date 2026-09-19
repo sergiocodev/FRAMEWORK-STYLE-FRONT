@@ -1,9 +1,21 @@
-<header class="investigation-header sticky-top z-3">
-  <div class="investigation-header-top d-flex flex-wrap align-items-center justify-content-between gap-4 px-4 py-3">
+<!-- Segmented Progress Bar -->
+<div class="header-progress-bar d-flex w-100 mb-2">
+  <div *ngFor="let phase of phases" 
+       class="progress-segment flex-fill"
+       [ngClass]="{
+         'segment-completed': phase.status === 'completed',
+         'segment-active': phase.status === 'active',
+         'segment-upcoming': phase.status === 'upcoming'
+       }"
+       [title]="phase.name">
+  </div>
+</div>
 
-    <!-- Project Info (Left) -->
+<!-- Phase Header / Stepper -->
+<div class="container-fluid mb-1">
+  <div class="bg-white rounded p-3 shadow-sm border border-light">
     <div class="d-flex align-items-center gap-3">
-      <div class="header-icon-container">
+      <div class="header-icon-container" style="background-color: rgba(37, 99, 235, 0.1); color: #2563EB; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; border-radius: 12px;">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
           stroke-linecap="round" stroke-linejoin="round">
           <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
@@ -11,64 +23,13 @@
         </svg>
       </div>
       <div>
-        <div class="d-flex align-items-center gap-2 mb-1">
-          <h4 class="project-title mb-0">{{ project?.title || project?.nombre || 'Nuevo Proyecto de Investigación' }}</h4>
-          <span class="project-badge status-active">{{ formattedStatus }}</span>
+        <h4 class="mb-1 fw-bold d-flex align-items-center gap-2">
+          Fase 1: Investigación
+        </h4>
+        <div class="text-muted" style="font-size: 0.9rem;">
+          <span class="fw-medium text-secondary-emphasis">Cliente:</span> <span class="opacity-75 me-2">{{ project?.client || 'Cliente Interno' }}</span> | 
+          <span class="ms-2">Define y estructura toda la información inicial del proyecto.</span>
         </div>
-        <p class="project-meta mb-0">
-          <span class="fw-medium text-secondary-emphasis">Tipo:</span> <span class="opacity-75">{{ project?.type || 'Estudio de mercado' }}</span> 
-          <span class="separator">|</span> 
-          <span class="fw-medium text-secondary-emphasis">Cliente:</span> <span class="opacity-75">{{ project?.client || 'Cliente Interno' }}</span>
-        </p>
-      </div>
-    </div>
-
-    <!-- Actions (Right) -->
-    <div class="d-flex align-items-center gap-3">
-      <!-- Auto-save indicator -->
-      <div class="d-flex align-items-center gap-2 text-secondary me-3" style="font-size: 0.85rem;">
-        @if (isSaving) {
-          <span class="spinner-border spinner-border-sm text-primary" role="status"></span>
-          <span>Guardando...</span>
-        } @else if (saveSuccess) {
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-          <span class="text-success">Guardado en la nube</span>
-        } @else {
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
-          <span>Todos los cambios guardados</span>
-        }
-      </div>
-      <button class="btn btn-custom-primary d-flex align-items-center gap-2 px-4 py-2">
-        <span>Siguiente: Fase 2</span>
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-          stroke-linecap="round" stroke-linejoin="round">
-          <line x1="5" y1="12" x2="19" y2="12"></line>
-          <polyline points="12 5 19 12 12 19"></polyline>
-        </svg>
-      </button>
-    </div>
-  </div>
-  <!-- Segmented Progress Bar -->
-  <div class="header-progress-bar d-flex">
-    <div *ngFor="let phase of phases" 
-         class="progress-segment flex-fill"
-         [ngClass]="{
-           'segment-completed': phase.status === 'completed',
-           'segment-active': phase.status === 'active',
-           'segment-upcoming': phase.status === 'upcoming'
-         }"
-         [title]="phase.name">
-    </div>
-  </div>
-</header>
-
-<!-- Phase Header / Stepper -->
-<div class="container-fluid mt-3 mb-1">
-  <div class="bg-white rounded p-3 shadow-sm border border-light">
-    <div class="d-flex align-items-center">
-      <div>
-        <h4 class="mb-1 fw-bold">Fase 1: Investigación</h4>
-        <div class="text-muted">Define y estructura toda la información inicial del proyecto.</div>
       </div>
     </div>
   </div>

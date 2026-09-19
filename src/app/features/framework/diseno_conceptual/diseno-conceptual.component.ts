@@ -8,6 +8,7 @@ import { Phase } from '../../../shared/components/stepper/stepper.component';
 import { DisenoHeaderComponent } from './components/diseno-header/diseno-header.component';
 import { DisenoCanvasComponent } from './components/diseno-canvas/diseno-canvas.component';
 import { DisenoInventoryComponent } from './components/diseno-inventory/diseno-inventory.component';
+import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { DisenoWireframesComponent } from './components/diseno-wireframes/diseno-wireframes.component';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 
@@ -24,7 +25,8 @@ import { DisenoConceptualService } from '../services/diseno-conceptual.service';
     DisenoHeaderComponent,
     DisenoCanvasComponent,
     DisenoInventoryComponent,
-    DisenoWireframesComponent
+    DisenoWireframesComponent,
+    PageHeaderComponent
   ],
   templateUrl: './diseno-conceptual.component.html',
   styleUrls: ['./diseno-conceptual.component.scss']
@@ -42,6 +44,15 @@ export class DisenoConceptualComponent implements OnInit {
   phases: Phase[] = [];
   projectId!: number;
   isCompleting: boolean = false;
+  
+  headerBreadcrumbs: any[] = [];
+  
+  get formattedStatus(): string {
+    const status = this.project?.status;
+    if (!status) return 'En progreso';
+    const formatted = status.replace(/_/g, ' ');
+    return formatted.charAt(0).toUpperCase() + formatted.slice(1).toLowerCase();
+  }
 
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
@@ -69,14 +80,20 @@ export class DisenoConceptualComponent implements OnInit {
           client: projectData.cliente?.nombre || 'Sin cliente asignado'
         };
 
-        this.phases = [
-          { number: 1, name: 'Investigación', subtext: 'Entradas del proyecto', status: 'completed' },
-          { number: 2, name: 'Diseño Conceptual', subtext: 'Estructura y flujo', status: 'active' },
-          { number: 3, name: 'Diseño Visual', subtext: 'Estilo y componentes', status: 'upcoming' },
-          { number: 4, name: 'Diseño Detallado', subtext: 'Prototipo de alta fidelidad', status: 'upcoming' },
-          { number: 5, name: 'Evaluación Estética', subtext: 'Validación y ajustes', status: 'upcoming' }
+        this.headerBreadcrumbs = [
+          { label: 'Inicio', url: '/' },
+          { label: 'Proyectos', url: '/projects' },
+          { label: this.project.title, active: true }
         ];
 
+        const currentPhaseId = projectData?.fase_actual_id || 1;
+        this.phases = [
+          { number: 1, name: 'Investigación', subtext: 'Entradas del proyecto', status: currentPhaseId > 1 ? 'completed' : (currentPhaseId === 1 ? 'active' : 'upcoming') },
+          { number: 2, name: 'Diseño Conceptual', subtext: 'Estructura y flujo', status: currentPhaseId > 2 ? 'completed' : (currentPhaseId === 2 ? 'active' : 'upcoming') },
+          { number: 3, name: 'Diseño Visual', subtext: 'Estilo y componentes', status: currentPhaseId > 3 ? 'completed' : (currentPhaseId === 3 ? 'active' : 'upcoming') },
+          { number: 4, name: 'Diseño Detallado', subtext: 'Prototipo de alta fidelidad', status: currentPhaseId > 4 ? 'completed' : (currentPhaseId === 4 ? 'active' : 'upcoming') },
+          { number: 5, name: 'Evaluación Estética', subtext: 'Validación y ajustes', status: currentPhaseId > 5 ? 'completed' : (currentPhaseId === 5 ? 'active' : 'upcoming') }
+        ];
         this.isLoading = false;
       },
       error: (err) => {
@@ -88,6 +105,13 @@ export class DisenoConceptualComponent implements OnInit {
           type: 'Web',
           client: 'Colegio San Martín'
         };
+        
+        this.headerBreadcrumbs = [
+          { label: 'Inicio', url: '/' },
+          { label: 'Proyectos', url: '/projects' },
+          { label: this.project.title, active: true }
+        ];
+
         this.phases = [
           { number: 1, name: 'Investigación', subtext: 'Entradas del proyecto', status: 'completed' },
           { number: 2, name: 'Diseño Conceptual', subtext: 'Estructura y flujo', status: 'active' },

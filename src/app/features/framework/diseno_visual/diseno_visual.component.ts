@@ -5,6 +5,7 @@ import { DisenoVisualHeaderComponent, Phase } from './components/diseno-visual-h
 import { DisenoVisualLibraryComponent } from './components/diseno-visual-library/diseno-visual-library.component';
 import { DisenoVisualPreviewComponent } from './components/diseno-visual-preview/diseno-visual-preview.component';
 import { ModalComponent } from '../../../shared/components/modal/modal.component';
+import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { ProjectService } from '../../../core/services/project.service';
 import { DisenoVisualService } from './services/diseno-visual.service';
 
@@ -16,7 +17,8 @@ import { DisenoVisualService } from './services/diseno-visual.service';
     DisenoVisualHeaderComponent,
     DisenoVisualLibraryComponent,
     DisenoVisualPreviewComponent,
-    ModalComponent
+    ModalComponent,
+    PageHeaderComponent
   ],
   templateUrl: './diseno_visual.component.html',
   styleUrls: ['./diseno_visual.component.scss']
@@ -32,6 +34,15 @@ export class DisenoVisualComponent implements OnInit {
   phases: Phase[] = [];
   currentProjectId: number = 0;
   isCompleting: boolean = false;
+
+  headerBreadcrumbs: any[] = [];
+  
+  get formattedStatus(): string {
+    const status = this.project?.status;
+    if (!status) return 'En progreso';
+    const formatted = status.replace(/_/g, ' ');
+    return formatted.charAt(0).toUpperCase() + formatted.slice(1).toLowerCase();
+  }
 
   ngOnInit() {
     this.route.paramMap.subscribe(params => {
@@ -50,6 +61,12 @@ export class DisenoVisualComponent implements OnInit {
           type: data.tipo,
           client: data.cliente?.nombre || 'Sin cliente asignado'
         };
+
+        this.headerBreadcrumbs = [
+          { label: 'Inicio', url: '/' },
+          { label: 'Proyectos', url: '/projects' },
+          { label: this.project.title, active: true }
+        ];
 
         const currentPhaseId = data.fase_actual_id || 1;
         this.phases = [

@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router, NavigationEnd } from '@angular/router';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { filter, Subscription } from 'rxjs';
 
 export interface MenuItem {
   label: string;
@@ -23,9 +24,49 @@ export interface MenuSection {
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.scss']
 })
-export class SidebarComponent {
+export class SidebarComponent implements OnInit, OnDestroy {
+  currentProjectId = 1;
+  private routerSub!: Subscription;
 
-  constructor(private sanitizer: DomSanitizer) { }
+  constructor(private sanitizer: DomSanitizer, private router: Router) { }
+
+  ngOnInit() {
+    this.routerSub = this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe((event: any) => {
+      this.extractProjectId(event.urlAfterRedirects);
+    });
+    // Check initial URL
+    this.extractProjectId(this.router.url);
+  }
+
+  ngOnDestroy() {
+    if (this.routerSub) {
+      this.routerSub.unsubscribe();
+    }
+  }
+
+  private extractProjectId(url: string) {
+    const match = url.match(/\/framework\/projects\/(\d+)/);
+    if (match) {
+      const id = parseInt(match[1], 10);
+      if (id !== this.currentProjectId) {
+        this.currentProjectId = id;
+        this.updateProjectLinks();
+      }
+    }
+  }
+
+  private updateProjectLinks() {
+    const frameworkSection = this.mainSections.find(s => s.title === 'FRAMEWORK STYLE');
+    if (frameworkSection) {
+      frameworkSection.items[0].link = `/framework/projects/${this.currentProjectId}/investigation`;
+      frameworkSection.items[1].link = `/framework/projects/${this.currentProjectId}/diseno_conceptual`;
+      frameworkSection.items[2].link = `/framework/projects/${this.currentProjectId}/visual`;
+      frameworkSection.items[3].link = `/framework/projects/${this.currentProjectId}/detallado`;
+      frameworkSection.items[4].link = `/framework/projects/${this.currentProjectId}/evaluacion`;
+    }
+  }
 
   getSafeIcon(svgContent?: string): SafeHtml {
     if (!svgContent) return '';
@@ -39,8 +80,6 @@ export class SidebarComponent {
       items: [
         { label: 'Inicio', link: '/inicio', iconSvg: '<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline>' },
         { label: 'Proyectos', link: '/projects', iconSvg: '<path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>' },
-        /*{ label: 'Compartido', link: '/shared', iconSvg: '<path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path><polyline points="16 6 12 2 8 6"></polyline><line x1="12" y1="2" x2="12" y2="15"></line>' },*/
-        /*{ label: 'Biblioteca', link: '/library', iconSvg: '<path d="M6 2h9l5 5v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z"></path><path d="M4 6v14a2 2 0 0 0 2 2h11"></path>' }*/
       ]
     },
     {
@@ -58,9 +97,9 @@ export class SidebarComponent {
 
   footerSection: MenuSection = {
     items: [
-      /*{ label: 'Ayuda', link: '/help', iconSvg: '<circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line>' },*/
       { label: 'Salir', link: '/login', iconSvg: '<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line>' }
     ]
   };
 
 }
+

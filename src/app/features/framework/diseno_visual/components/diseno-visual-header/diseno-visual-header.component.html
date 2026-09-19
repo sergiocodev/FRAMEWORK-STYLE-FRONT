@@ -1,32 +1,5 @@
-<!-- Top Header -->
-<div class="d-flex justify-content-between align-items-center mb-4">
-  <div class="d-flex align-items-center gap-3">
-    <div class="d-flex align-items-center justify-content-center bg-white rounded shadow-sm"
-      style="width: 40px; height: 40px;">
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="text-primary"
-        viewBox="0 0 16 16">
-        <path
-          d="M8.211 2.047a.5.5 0 0 0-.422 0l-7.5 3.5a.5.5 0 0 0 .025.917l7.5 3a.5.5 0 0 0 .372 0L14 7.14V13a1 1 0 0 0-1 1v2h3v-2a2 2 0 0 0-2-2V6.739l.686-.275a.5.5 0 0 0 .025-.917z" />
-        <path
-          d="M4.176 9.032a.5.5 0 0 0-.656.327l-.5 1.7a.5.5 0 0 0 .294.605l4.5 1.8a.5.5 0 0 0 .372 0l4.5-1.8a.5.5 0 0 0 .294-.605l-.5-1.7a.5.5 0 0 0-.656-.327L8 10.466z" />
-      </svg>
-    </div>
-    <div>
-      <div class="d-flex align-items-center gap-2">
-        <h5 class="mb-0 fw-bold">{{project?.title || 'Cargando...'}}</h5>
-        <span class="badge bg-primary-blue rounded-pill px-3 fw-normal" *ngIf="project">{{formattedStatus}}</span>
-      </div>
-      <div class="text-muted small mt-1">
-        Cliente: {{project?.client || 'Sin cliente'}} <span class="mx-2">|</span> Tipo: {{project?.type || 'No definido'}}
-      </div>
-    </div>
-  </div>
-  <div class="d-flex gap-2">
-  </div>
-</div>
-
 <!-- Segmented Progress Bar -->
-<div class="header-progress-bar d-flex">
+<div class="header-progress-bar d-flex w-100 mb-2">
   <div *ngFor="let phase of phases" 
        class="progress-segment flex-fill"
        [ngClass]="{
@@ -37,13 +10,27 @@
        [title]="phase.name">
   </div>
 </div>
-<!-- Phase Header / Stepper -->
-<div class="bg-white rounded p-4 mb-4 shadow-sm border border-light">
-  <div class="d-flex align-items-center mb-3">
 
-    <div>
-      <h4 class="mb-1 fw-bold">Fase 3: Diseño Visual</h4>
-      <div class="text-muted">Construye la Guía Visual que se usará en el prototipado.</div>
+<!-- Phase Header / Stepper -->
+<div class="container-fluid mb-1">
+  <div class="bg-white rounded p-3 shadow-sm border border-light">
+    <div class="d-flex align-items-center gap-3">
+      <div class="header-icon-container" style="background-color: rgba(37, 99, 235, 0.1); color: #2563EB; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; border-radius: 12px;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+          <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
+        </svg>
+      </div>
+      <div>
+        <h4 class="mb-1 fw-bold d-flex align-items-center gap-2">
+          Fase 3: Diseño Visual
+        </h4>
+        <div class="text-muted" style="font-size: 0.9rem;">
+          <span class="fw-medium text-secondary-emphasis">Cliente:</span> <span class="opacity-75 me-2">{{ project?.client || 'Cliente Interno' }}</span> | 
+          <span class="ms-2">Estilos, tipografías y componentes visuales.</span>
+        </div>
+      </div>
     </div>
   </div>
 </div>

@@ -11,6 +11,7 @@ import { InvestigationUsersComponent } from './components/investigation-users/in
 import { InvestigationResourcesComponent } from './components/investigation-resources/investigation-resources.component';
 import { InvestigationPreviewComponent } from './components/investigation-preview/investigation-preview.component';
 import { ModalComponent } from '../../../shared/components/modal/modal.component';
+import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 
 import { ProjectService } from '../../../core/services/project.service';
 import { InvestigationService } from '../services/investigation.service';
@@ -27,7 +28,8 @@ import { InvestigationService } from '../services/investigation.service';
     InvestigationUsersComponent,
     InvestigationResourcesComponent,
     InvestigationPreviewComponent,
-    ModalComponent
+    ModalComponent,
+    PageHeaderComponent
   ],
   templateUrl: './investigation.component.html',
   styleUrls: ['./investigation.component.scss']
@@ -43,6 +45,14 @@ export class InvestigationComponent implements OnInit {
 
   project: any = {};
   phases: Phase[] = [];
+  headerBreadcrumbs: any[] = [];
+  
+  get formattedStatus(): string {
+    const status = this.project?.status;
+    if (!status) return 'En progreso';
+    const formatted = status.replace(/_/g, ' ');
+    return formatted.charAt(0).toUpperCase() + formatted.slice(1).toLowerCase();
+  }
   
   // Phase 1 Data States (with auto-save hooks)
   private _problema: string = '';
@@ -122,7 +132,6 @@ export class InvestigationComponent implements OnInit {
       recursosList: this.investigationService.getRecursos(projectId).pipe(catchError(() => of([])))
     }).subscribe({
       next: (data: any) => {
-        // Map Project
         this.project = {
           title: data.project.nombre,
           status: data.project.estado,
@@ -130,12 +139,19 @@ export class InvestigationComponent implements OnInit {
           client: data.project.cliente?.nombre || 'Sin cliente asignado'
         };
 
+        this.headerBreadcrumbs = [
+          { label: 'Inicio', url: '/' },
+          { label: 'Proyectos', url: '/projects' },
+          { label: this.project.title, active: true }
+        ];
+
+        const currentPhaseId = data.project?.fase_actual_id || 1;
         this.phases = [
-          { number: 1, name: 'Investigación', subtext: 'Entradas del proyecto', status: data.project.fase_actual_id >= 1 ? 'active' : 'upcoming' },
-          { number: 2, name: 'Diseño Conceptual', subtext: 'Estructura y flujo', status: data.project.fase_actual_id >= 2 ? (data.project.fase_actual_id === 2 ? 'active' : 'completed') : 'upcoming' },
-          { number: 3, name: 'Diseño Visual', subtext: 'Estilo y componentes', status: data.project.fase_actual_id >= 3 ? (data.project.fase_actual_id === 3 ? 'active' : 'completed') : 'upcoming' },
-          { number: 4, name: 'Diseño Detallado', subtext: 'Prototipo de alta fidelidad', status: data.project.fase_actual_id >= 4 ? (data.project.fase_actual_id === 4 ? 'active' : 'completed') : 'upcoming' },
-          { number: 5, name: 'Evaluación Estética', subtext: 'Validación y ajustes', status: data.project.fase_actual_id >= 5 ? (data.project.fase_actual_id === 5 ? 'active' : 'completed') : 'upcoming' }
+          { number: 1, name: 'Investigación', subtext: 'Entradas del proyecto', status: currentPhaseId > 1 ? 'completed' : (currentPhaseId === 1 ? 'active' : 'upcoming') },
+          { number: 2, name: 'Diseño Conceptual', subtext: 'Estructura y flujo', status: currentPhaseId > 2 ? 'completed' : (currentPhaseId === 2 ? 'active' : 'upcoming') },
+          { number: 3, name: 'Diseño Visual', subtext: 'Estilo y componentes', status: currentPhaseId > 3 ? 'completed' : (currentPhaseId === 3 ? 'active' : 'upcoming') },
+          { number: 4, name: 'Diseño Detallado', subtext: 'Prototipo de alta fidelidad', status: currentPhaseId > 4 ? 'completed' : (currentPhaseId === 4 ? 'active' : 'upcoming') },
+          { number: 5, name: 'Evaluación Estética', subtext: 'Validación y ajustes', status: currentPhaseId > 5 ? 'completed' : (currentPhaseId === 5 ? 'active' : 'upcoming') }
         ];
 
         // Map Informe

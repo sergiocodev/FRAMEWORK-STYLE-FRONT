@@ -5,6 +5,7 @@ import { RouterModule, Router } from '@angular/router';
 import { ProjectsService, ProyectoResponse } from './projects.service';
 import { ClientsService, ClientResponse } from './clients.service';
 import { ModalComponent } from '../../shared/components/modal/modal.component';
+import { PageHeaderComponent } from '../../shared/components/page-header/page-header.component';
 
 export interface Project {
   id: string;
@@ -25,7 +26,7 @@ export interface Project {
 @Component({
   selector: 'app-projects',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, ModalComponent],
+  imports: [CommonModule, FormsModule, RouterModule, ModalComponent, PageHeaderComponent],
   templateUrl: './projects.component.html',
   styleUrl: './projects.component.scss'
 })
@@ -33,6 +34,11 @@ export class ProjectsComponent implements OnInit {
   private projectsService = inject(ProjectsService);
   private clientsService = inject(ClientsService);
   private router = inject(Router);
+
+  headerBreadcrumbs = [
+    { label: 'Inicio', url: '#' },
+    { label: 'Gestor de Proyectos', active: true }
+  ];
 
   // KPIs will be calculated dynamically based on data
   kpis = [

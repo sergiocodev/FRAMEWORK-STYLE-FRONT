@@ -1,4 +1,4 @@
-import { Component, OnInit, computed, effect, inject, signal } from '@angular/core';
+import { Component, OnInit, computed, effect, inject, signal, Input } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -12,7 +12,7 @@ import { DisenoVisualService, ColorItem, TypographyItem, DisenoVisualConfig } fr
   styleUrls: ['./diseno-visual-library.component.scss']
 })
 export class DisenoVisualLibraryComponent implements OnInit {
-  proyectoId = 1;
+  @Input() proyectoId!: number;
 
   colores: any;
   tipografias: any;
