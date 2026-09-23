@@ -41,7 +41,7 @@ export class DisenoHeaderComponent {
               name: a.nombre,
               role: a.etiqueta || 'General', 
               tag: a.etiqueta || 'General',
-              photoUrl: 'https://i.pravatar.cc/150?img=' + (a.id || 11),
+              photoUrl: a.avatar_url || 'https://i.pravatar.cc/150?img=11',
               needs: a.necesidades ? a.necesidades.map((n: any) => n.descripcion) : []
             })),
             recursosList: (data.recursosList || []).map((r: any) => {

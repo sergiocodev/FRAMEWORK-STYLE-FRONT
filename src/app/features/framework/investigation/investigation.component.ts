@@ -171,7 +171,7 @@ export class InvestigationComponent implements OnInit {
           name: a.nombre,
           role: a.nombre, 
           tag: a.etiqueta || 'General',
-          photoUrl: 'https://i.pravatar.cc/150?img=11',
+          photoUrl: a.avatar_url || 'https://i.pravatar.cc/150?img=11',
           needs: a.necesidades ? a.necesidades.map((n: any) => n.descripcion) : []
         }));
 
@@ -225,6 +225,7 @@ export class InvestigationComponent implements OnInit {
     const arquetiposPayload = this.usuarios.map(u => ({
       nombre: u.name || 'Usuario',
       etiqueta: u.tag || 'General',
+      avatar_url: u.photoUrl,
       orden: 0,
       necesidades: (u.needs || []).map((n: string, i: number) => ({ descripcion: n || 'Necesidad', orden: i }))
     }));
