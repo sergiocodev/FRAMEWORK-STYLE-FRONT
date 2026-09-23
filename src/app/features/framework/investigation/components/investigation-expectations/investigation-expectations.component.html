@@ -1,65 +1,65 @@
-<div class="card expectations-card border-0 p-4">
+<div class="expectations-card bg-white rounded-4 shadow-sm border p-4 mb-3 flex-shrink-0">
   <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-4">
     <div class="card-header-content w-100">
       <div class="d-flex align-items-center gap-3 mb-2">
-        <div class="icon-container">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-            stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="10"></circle>
-            <line x1="12" y1="8" x2="12" y2="12"></line>
-            <line x1="12" y1="16" x2="12.01" y2="16"></line>
-          </svg>
-        </div>
-        <h6 class="card-title fw-bold mb-0">3. Expectativas y Referencias</h6>
+        <h6 class="card-title fw-bold mb-0">Expectativas y Referencias</h6>
       </div>
       <p class="card-description mb-0">
         Define qué espera el cliente del diseño y adjunta enlaces de inspiración o interfaces actuales a mejorar.
       </p>
     </div>
   </div>
-  
+
   <div class="mb-4">
     <label class="form-label fw-medium mb-2" style="font-size: 0.95rem;">Expectativas del Cliente</label>
     <div class="textarea-wrapper">
-      <textarea class="form-control custom-textarea" rows="3"
-        placeholder="Ej. Diseño minimalista, elegante, moderno..."
-        [ngModel]="expectativas"
-        (ngModelChange)="onExpectativasChange($event)"></textarea>
+      <textarea class="form-control custom-textarea" rows="3" placeholder="Ej. Diseño minimalista, elegante, moderno..."
+        [ngModel]="expectativas" (ngModelChange)="onExpectativasChange($event)"></textarea>
     </div>
   </div>
 
   <div class="mb-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
       <label class="form-label fw-medium mb-0" style="font-size: 0.95rem;">Referencias (Inspiración)</label>
-      <button (click)="addReferencia()" class="btn btn-custom-soft-primary btn-sm d-flex align-items-center gap-2 px-3 py-2">
+      <input type="file" #fileInput (change)="onFileSelected($event)" accept="image/*" class="d-none">
+      <button (click)="fileInput.click()"
+        class="btn btn-custom-soft-primary btn-sm d-flex align-items-center gap-2 px-3 py-2">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
           stroke-linecap="round" stroke-linejoin="round">
-          <line x1="12" y1="5" x2="12" y2="19"></line>
-          <line x1="5" y1="12" x2="19" y2="12"></line>
+          <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+          <circle cx="8.5" cy="8.5" r="1.5"></circle>
+          <polyline points="21 15 16 10 5 21"></polyline>
         </svg>
-        <span style="font-size: 0.85rem;">Añadir enlace</span>
+        <span style="font-size: 0.85rem;">Añadir imagen</span>
       </button>
     </div>
-    
+
     <div *ngIf="referencias.length === 0" class="text-secondary small fst-italic mb-3">
       No hay referencias añadidas.
     </div>
 
     <div class="d-flex flex-column gap-3">
-      <div *ngFor="let ref of referencias; let i = index" class="d-flex gap-3 align-items-center">
-        <div class="textarea-wrapper flex-grow-1 d-flex gap-3">
-          <input type="text" class="form-control custom-input w-50" placeholder="URL (ej. dribbble.com/...)" 
-                 [(ngModel)]="ref.url" (ngModelChange)="onReferenciaChange()">
-          <input type="text" class="form-control custom-input w-50" placeholder="Notas sobre qué rescatar" 
-                 [(ngModel)]="ref.notas" (ngModelChange)="onReferenciaChange()">
+      <div *ngFor="let ref of referencias; let i = index" class="p-3 border rounded-3 bg-light">
+        <div class="d-flex gap-3 align-items-start mb-3">
+          <div class="textarea-wrapper flex-grow-1 d-flex gap-3">
+            <input type="text" class="form-control custom-input w-50"
+              placeholder="URL de la imagen (o selecciona un archivo)" [(ngModel)]="ref.url"
+              (ngModelChange)="onReferenciaChange()">
+            <input type="text" class="form-control custom-input w-50" placeholder="Notas sobre qué rescatar"
+              [(ngModel)]="ref.notas" (ngModelChange)="onReferenciaChange()">
+          </div>
+          <button class="btn btn-icon-danger flex-shrink-0" (click)="removeReferencia(i)" title="Eliminar">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 6h18"></path>
+              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+            </svg>
+          </button>
         </div>
-        <button class="btn btn-icon-danger flex-shrink-0" (click)="removeReferencia(i)" title="Eliminar">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" 
-            stroke-linecap="round" stroke-linejoin="round">
-            <path d="M3 6h18"></path>
-            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-          </svg>
-        </button>
+        <div *ngIf="ref.url" class="text-center bg-white rounded-3 p-2 border">
+          <img [src]="getImageUrl(ref.url)" alt="Referencia" style="max-height: 250px; object-fit: contain;"
+            class="rounded-2 img-fluid">
+        </div>
       </div>
     </div>
   </div>
@@ -68,8 +68,7 @@
     <label class="form-label fw-medium mb-2" style="font-size: 0.95rem;">Análisis de Situación Actual</label>
     <div class="textarea-wrapper">
       <textarea class="form-control custom-textarea" rows="3"
-        placeholder="Si es un rediseño, indica qué funciona y qué está fallando actualmente."
-        [ngModel]="analisisActual"
+        placeholder="Si es un rediseño, indica qué funciona y qué está fallando actualmente." [ngModel]="analisisActual"
         (ngModelChange)="onAnalisisActualChange($event)"></textarea>
     </div>
   </div>

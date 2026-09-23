@@ -3,6 +3,7 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DisenoVisualService, ColorItem, TypographyItem, DisenoVisualConfig } from '../../services/diseno-visual.service';
+import { InvestigationService } from '../../../services/investigation.service';
 
 @Component({
   selector: 'app-diseno-visual-library',
@@ -19,6 +20,9 @@ export class DisenoVisualLibraryComponent implements OnInit {
   tipografiasPreview = signal<TypographyItem[] | null>(null);
   config: any;
   iconosPersonales: any;
+
+  identidadMarca: any = null;
+  private investigationService = inject(InvestigationService);
 
   LIBRERIA_PREVIEWS: Record<string, { name: string, token: string, svg: SafeHtml }[]> = {};
 
@@ -161,8 +165,14 @@ export class DisenoVisualLibraryComponent implements OnInit {
 
   cargarDatos() {
     this.disenoVisualService.cargarDisenoVisualCompleto(this.proyectoId).subscribe();
+    this.investigationService.getInforme(this.proyectoId).subscribe({
+      next: (informe: any) => {
+        if (informe && informe.identidad_marca) {
+          this.identidadMarca = informe.identidad_marca;
+        }
+      }
+    });
   }
-
   // Color Management
   abrirModalColor(color?: ColorItem) {
     if (color) {

@@ -99,3 +99,63 @@
     color: var(--bs-secondary-color);
   }
 }
+
+// Sidebar Navigation
+.sidebar-nav {
+  position: sticky;
+  top: 1rem;
+  
+  .nav-item {
+    padding: 0.85rem 1rem;
+    border-radius: 12px;
+    color: var(--bs-secondary-color);
+    font-weight: 500;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+
+    &:hover {
+      background-color: var(--bs-secondary-bg);
+      color: var(--bs-heading-color);
+    }
+
+    &.active {
+      background-color: #f3e8ff; // Soft purple background
+      color: #7c3aed; // Primary purple
+      font-weight: 600;
+
+      .icon-container {
+        color: #7c3aed;
+      }
+    }
+    
+    .icon-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: inherit;
+    }
+  }
+}
+
+.content-area {
+  min-height: 500px;
+}
+
+// Animations
+.animation-fade-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

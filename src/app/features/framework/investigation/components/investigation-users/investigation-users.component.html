@@ -1,23 +1,14 @@
-<div class="card users-card border-0 p-4">
+<div class="users-card bg-white rounded-4 shadow-sm border p-4 mb-3 flex-shrink-0">
   <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-4">
     <div class="card-header-content">
       <div class="d-flex align-items-center gap-3 mb-2">
-        <div class="icon-container">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-            stroke-linecap="round" stroke-linejoin="round">
-            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-            <circle cx="9" cy="7" r="4"></circle>
-            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-          </svg>
-        </div>
-        <h6 class="card-title fw-bold mb-0">2. Usuarios</h6>
+        <h6 class="card-title fw-bold mb-0">Usuarios</h6>
       </div>
       <p class="card-description mb-0">
         Define los perfiles de usuarios (arquetipos) y sus principales necesidades.
       </p>
     </div>
-    
+
     <button (click)="addUser()" class="btn btn-custom-soft-primary d-flex align-items-center gap-2 px-3 py-2">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
         stroke-linecap="round" stroke-linejoin="round">
@@ -31,7 +22,7 @@
   <div class="row g-4 mt-1">
     <!-- Arquetipos Cards -->
     <div class="col-12 col-md-6 col-lg-4" *ngFor="let user of usuarios; let i = index">
-      <app-user-archetype-card [user]="user" (userChange)="emitChanges()" (remove)="removeUser(i)">
+      <app-user-archetype-card [user]="user" (userChange)="updateUser(user)" (remove)="removeUser(i)">
       </app-user-archetype-card>
     </div>
   </div>

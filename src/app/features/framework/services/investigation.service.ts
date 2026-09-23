@@ -29,9 +29,35 @@ export class InvestigationService {
     return this.http.get<ArchivoResponse[]>(`${this.getBaseUrl(projectId)}/recursos`);
   }
 
+  uploadRecurso(projectId: number, file: File): Observable<ArchivoResponse> {
+    const formData = new FormData();
+    formData.append('file', file);
+    return this.http.post<ArchivoResponse>(`${this.getBaseUrl(projectId)}/recursos`, formData);
+  }
+
+  deleteRecurso(projectId: number, fileId: number): Observable<any> {
+    return this.http.delete(`${this.getBaseUrl(projectId)}/recursos/${fileId}`);
+  }
+
   updateInforme(projectId: number, data: any): Observable<InvestigacionInformeResponse> {
     return this.http.put<InvestigacionInformeResponse>(`${this.getBaseUrl(projectId)}/informe`, data);
   }
 
-  // Future CRUD methods (POST, DELETE) can go here
+  uploadReferencia(projectId: number, file: File): Observable<{url: string}> {
+    const formData = new FormData();
+    formData.append('file', file);
+    return this.http.post<{url: string}>(`${this.getBaseUrl(projectId)}/referencias/upload`, formData);
+  }
+
+  createArquetipo(projectId: number, data: any): Observable<ArquetipoUsuarioResponse> {
+    return this.http.post<ArquetipoUsuarioResponse>(`${this.getBaseUrl(projectId)}/arquetipos`, data);
+  }
+
+  updateArquetipo(projectId: number, arquetipoId: number, data: any): Observable<ArquetipoUsuarioResponse> {
+    return this.http.put<ArquetipoUsuarioResponse>(`${this.getBaseUrl(projectId)}/arquetipos/${arquetipoId}`, data);
+  }
+
+  deleteArquetipo(projectId: number, arquetipoId: number): Observable<any> {
+    return this.http.delete(`${this.getBaseUrl(projectId)}/arquetipos/${arquetipoId}`);
+  }
 }

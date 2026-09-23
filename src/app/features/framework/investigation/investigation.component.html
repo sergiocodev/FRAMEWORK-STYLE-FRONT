@@ -109,31 +109,73 @@
 
         <div class="row g-4 pb-2 flex-grow-1 overflow-auto custom-scrollbar">
 
-          <!-- 1. Necesidad -->
-          <div class="col-12 col-xl-6 d-flex flex-column">
-            <app-investigation-necessity class="flex-grow-1 d-flex flex-column" [(problema)]="problema"
+          <!-- Sidebar Navigation -->
+          <div class="col-12 col-md-4 col-xl-3">
+            <div class="sidebar-nav bg-white p-3 rounded-4 shadow-sm border">
+              <h6 class="text-uppercase text-muted fw-bold mb-3 px-2" style="font-size: 0.75rem; letter-spacing: 0.5px;">Secciones</h6>
+              
+              <div class="d-flex flex-column gap-1">
+                <div class="nav-item" [class.active]="activeSection === 'necesidad'" (click)="setActiveSection('necesidad')">
+                  <div class="icon-container">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                  </div>
+                  <span>Necesidad</span>
+                </div>
+                
+                <div class="nav-item" [class.active]="activeSection === 'expectativas'" (click)="setActiveSection('expectativas')">
+                  <div class="icon-container">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                  </div>
+                  <span>Expectativas</span>
+                </div>
+                
+                <div class="nav-item" [class.active]="activeSection === 'usuarios'" (click)="setActiveSection('usuarios')">
+                  <div class="icon-container">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                  </div>
+                  <span>Usuarios</span>
+                </div>
+                
+                <div class="nav-item" [class.active]="activeSection === 'recursos'" (click)="setActiveSection('recursos')">
+                  <div class="icon-container">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg>
+                  </div>
+                  <span>Recursos</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Content Area -->
+          <div class="col-12 col-md-8 col-xl-9 content-area d-flex flex-column">
+            
+            <!-- 1. Necesidad -->
+            @if (activeSection === 'necesidad') {
+            <app-investigation-necessity class="flex-grow-1 d-flex flex-column h-100 bg-white rounded-4 shadow-sm border p-3 p-md-4 animation-fade-in" [(problema)]="problema"
               [(objetivo)]="objetivo" [(producto)]="producto">
             </app-investigation-necessity>
-          </div>
+            }
 
-          <!-- 2. Expectativas y Referencias -->
-          <div class="col-12 col-xl-6 d-flex flex-column">
-            <app-investigation-expectations class="flex-grow-1 d-flex flex-column" [(expectativas)]="expectativas"
-              [(referencias)]="referencias" [(analisisActual)]="analisisActual">
+            <!-- 2. Expectativas y Referencias -->
+            @if (activeSection === 'expectativas') {
+            <app-investigation-expectations class="flex-grow-1 d-flex flex-column h-100 bg-white rounded-4 shadow-sm border p-3 p-md-4 animation-fade-in" [(expectativas)]="expectativas"
+              [(referencias)]="referencias" [(analisisActual)]="analisisActual" [projectId]="currentProjectId">
             </app-investigation-expectations>
-          </div>
+            }
 
-          <!-- 3. Usuarios -->
-          <div class="col-12 col-xl-6 d-flex flex-column">
-            <app-investigation-users class="flex-grow-1 d-flex flex-column" [(usuarios)]="usuarios">
+            <!-- 3. Usuarios -->
+            @if (activeSection === 'usuarios') {
+            <app-investigation-users class="flex-grow-1 d-flex flex-column h-100 bg-white rounded-4 shadow-sm border p-3 p-md-4 animation-fade-in" [(usuarios)]="usuarios" [projectId]="currentProjectId">
             </app-investigation-users>
-          </div>
+            }
 
-          <!-- 4. Recursos -->
-          <div class="col-12 col-xl-6 d-flex flex-column">
-            <app-investigation-resources class="flex-grow-1 d-flex flex-column" [(recursos)]="recursos"
-              [(restricciones)]="restricciones" [(identidadMarca)]="identidadMarca">
+            <!-- 4. Recursos -->
+            @if (activeSection === 'recursos') {
+            <app-investigation-resources class="flex-grow-1 d-flex flex-column h-100 bg-white rounded-4 shadow-sm border p-3 p-md-4 animation-fade-in" [(recursos)]="recursos"
+              [(restricciones)]="restricciones" [(identidadMarca)]="identidadMarca" [projectId]="currentProjectId">
             </app-investigation-resources>
+            }
+
           </div>
 
         </div>

@@ -94,6 +94,9 @@ export class InvestigationComponent implements OnInit {
 
   // Mobile Tabs State (Removido ya que usamos Modal)
   
+  // Sidebar State
+  activeSection: 'necesidad' | 'expectativas' | 'usuarios' | 'recursos' = 'necesidad';
+
   // Modal State
   isModalOpen: boolean = false;
 
@@ -165,13 +168,18 @@ export class InvestigationComponent implements OnInit {
         this.identidadMarca = data.informe.identidad_marca || { tieneManual: false, colores: '', notas: '' };
 
         // Map Arquetipos
-        this.usuarios = data.arquetipos.map((a: any) => ({
-          name: a.nombre,
-          role: a.nombre, 
-          tag: a.etiqueta || 'General',
-          photoUrl: 'https://i.pravatar.cc/150?img=11',
-          needs: a.necesidades ? a.necesidades.map((n: any) => n.descripcion) : []
-        }));
+        this.usuarios = data.arquetipos.map((a: any) => {
+          const partes = a.nombre ? a.nombre.split('|') : [''];
+          const role = partes[0].trim();
+          const name = partes.length > 1 ? partes[1].trim() : role;
+          return {
+            id: a.id,
+            name: name,
+            role: role, 
+            tag: a.etiqueta || 'General',
+            needs: a.necesidades ? a.necesidades.map((n: any) => n.descripcion) : []
+          };
+        });
 
         // Map Recursos
         this.recursos = data.recursosList.map((r: any) => {
@@ -181,6 +189,7 @@ export class InvestigationComponent implements OnInit {
           const sizeMB = r.tamano_bytes ? (r.tamano_bytes / (1024 * 1024)).toFixed(1) + ' MB' : 'Desconocido';
 
           return {
+            id: r.id,
             name: r.nombre_original,
             size: sizeMB,
             type: type
@@ -201,6 +210,10 @@ export class InvestigationComponent implements OnInit {
     if (!this.isLoading) {
       this.saveSubject.next();
     }
+  }
+
+  setActiveSection(section: 'necesidad' | 'expectativas' | 'usuarios' | 'recursos'): void {
+    this.activeSection = section;
   }
 
   saveChanges(): void {

@@ -45,6 +45,11 @@ export const routes: Routes = [
         loadComponent: () => import('./features/framework/diseno-detallado/diseno-detallado.component').then(m => m.DisenoDetalladoComponent),
         canActivate: [phaseGuard],
         data: { phase: 4 }
+      },
+      {
+        path: 'framework/projects/:id/assessment',
+        loadComponent: () => import('./features/framework/assessment/assessment.component').then(m => m.AssessmentComponent),
+        data: { phase: 5 }
       }
     ]
   }

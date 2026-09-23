@@ -1,32 +1,5 @@
 .expectations-card {
-  background-color: var(--app-surface-bg);
-  box-shadow: var(--app-shadow-sm);
-  border-radius: 1.25rem; // 20px
-  transition: box-shadow 0.3s ease, transform 0.3s ease;
   position: relative;
-  overflow: hidden;
-
-  // Subtle gradient top border
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: var(--app-gradient-primary);
-    opacity: 0.8;
-    transition: opacity 0.3s ease;
-  }
-
-  &:hover {
-    box-shadow: var(--app-shadow-md);
-    transform: translateY(-2px);
-    
-    &::before {
-      opacity: 1;
-    }
-  }
 
   .icon-container {
     width: 40px;
@@ -65,18 +38,18 @@
     font-weight: 600;
     border-radius: 10px;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    
+
     &:hover {
       background: var(--bs-primary);
       color: #fff;
       transform: translateY(-2px);
       box-shadow: 0 4px 12px -2px rgba(var(--bs-primary-rgb), 0.3);
-      
+
       svg {
         transform: rotate(90deg);
       }
     }
-    
+
     &:active {
       transform: translateY(0);
       box-shadow: 0 2px 8px -2px rgba(var(--bs-primary-rgb), 0.3);
@@ -89,8 +62,9 @@
 
   .textarea-wrapper {
     position: relative;
-    
-    .custom-textarea, .custom-input {
+
+    .custom-textarea,
+    .custom-input {
       background-color: var(--bs-tertiary-bg);
       border: 1px solid var(--bs-border-color);
       color: var(--bs-body-color);
@@ -99,7 +73,7 @@
       font-size: 0.95rem;
       resize: none;
       transition: all 0.2s ease-in-out;
-      box-shadow: inset 0 1px 2px rgba(0,0,0,0.02);
+      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.02);
 
       &::placeholder {
         color: var(--bs-tertiary-color);

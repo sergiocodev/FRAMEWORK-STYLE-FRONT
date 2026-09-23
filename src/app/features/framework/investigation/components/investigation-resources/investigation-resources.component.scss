@@ -1,33 +1,6 @@
 .resources-card {
-  background-color: var(--app-surface-bg);
-  box-shadow: var(--app-shadow-sm);
-  border-radius: 1.25rem; // 20px
-  transition: box-shadow 0.3s ease, transform 0.3s ease;
   position: relative;
-  overflow: hidden;
   margin-bottom: 1.5rem;
-
-  // Subtle gradient top border
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: var(--app-gradient-primary);
-    opacity: 0.8;
-    transition: opacity 0.3s ease;
-  }
-
-  &:hover {
-    box-shadow: var(--app-shadow-md);
-    transform: translateY(-2px);
-    
-    &::before {
-      opacity: 1;
-    }
-  }
 
   .card-header-content {
     max-width: 80%;
@@ -76,7 +49,7 @@
     &:hover {
       background: var(--app-hover-bg);
       border-color: var(--bs-secondary-color);
-      
+
       .upload-icon-circle {
         transform: scale(1.05);
         background: rgba(var(--bs-primary-rgb), 0.15);
@@ -86,7 +59,7 @@
     &.is-dragging {
       background: var(--app-primary-soft-bg);
       border-color: var(--bs-primary);
-      
+
       .upload-icon-circle {
         background: var(--bs-primary);
         color: #fff;
@@ -151,10 +124,12 @@
         background: rgba(var(--bs-danger-rgb), 0.1);
         color: var(--bs-danger);
       }
+
       &.image {
         background: rgba(var(--bs-secondary-rgb), 0.1);
         color: var(--bs-secondary);
       }
+
       &.zip {
         background: rgba(var(--bs-warning-rgb), 0.12);
         color: var(--bs-warning);

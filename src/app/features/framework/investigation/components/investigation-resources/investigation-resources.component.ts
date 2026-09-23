@@ -1,6 +1,7 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { InvestigationService } from '../../../services/investigation.service';
 
 @Component({
   selector: 'app-investigation-resources',
@@ -10,6 +11,9 @@ import { FormsModule } from '@angular/forms';
   styleUrls: ['./investigation-resources.component.scss']
 })
 export class InvestigationResourcesComponent {
+  private investigationService = inject(InvestigationService);
+
+  @Input() projectId!: number;
   @Input() recursos: any[] = [];
   @Output() recursosChange = new EventEmitter<any[]>();
 
@@ -61,6 +65,11 @@ export class InvestigationResourcesComponent {
   }
 
   private handleFiles(files: FileList) {
+    if (!this.projectId) {
+      console.warn('No projectId provided, cannot upload files.');
+      return;
+    }
+
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
       const type = file.name.endsWith('.pdf') ? 'pdf' : 
@@ -68,20 +77,58 @@ export class InvestigationResourcesComponent {
                    
       const sizeMB = (file.size / (1024 * 1024)).toFixed(1) + ' MB';
 
-      this.recursos.push({
+      // Añadimos el archivo temporalmente (podríamos ponerle un estado de 'cargando')
+      const newRecurso = {
         name: file.name,
         size: sizeMB,
         type: type,
-        file: file
+        file: file,
+        id: null // Se llenará cuando responda el backend
+      };
+      
+      this.recursos.push(newRecurso);
+      this.emitRecursosChange();
+
+      // Subimos físicamente
+      this.investigationService.uploadRecurso(this.projectId, file).subscribe({
+        next: (response: any) => {
+          newRecurso.id = response.id; // Guardamos el ID real de la base de datos
+          this.emitRecursosChange();
+        },
+        error: (err) => {
+          console.error('Error uploading recurso:', err);
+          // Opcional: removerlo si falla
+          this.recursos = this.recursos.filter(r => r !== newRecurso);
+          this.emitRecursosChange();
+          alert('Hubo un error al subir el archivo: ' + file.name);
+        }
       });
     }
-    
-    this.recursos = [...this.recursos];
-    this.recursosChange.emit(this.recursos);
   }
 
   removeFile(index: number) {
-    this.recursos.splice(index, 1);
+    const fileToRemove = this.recursos[index];
+    
+    // Si tiene un ID real, lo eliminamos del backend
+    if (fileToRemove.id && this.projectId) {
+      this.investigationService.deleteRecurso(this.projectId, fileToRemove.id).subscribe({
+        next: () => {
+          this.recursos.splice(index, 1);
+          this.emitRecursosChange();
+        },
+        error: (err) => {
+          console.error('Error deleting recurso:', err);
+          alert('No se pudo eliminar el archivo del servidor.');
+        }
+      });
+    } else {
+      // Si no tiene ID (aún no ha subido o hubo error), solo lo removemos localmente
+      this.recursos.splice(index, 1);
+      this.emitRecursosChange();
+    }
+  }
+
+  private emitRecursosChange() {
     this.recursos = [...this.recursos];
     this.recursosChange.emit(this.recursos);
   }
