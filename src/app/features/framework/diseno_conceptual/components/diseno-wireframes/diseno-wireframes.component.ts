@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { DisenoConceptualService } from '../../../services/diseno-conceptual.service';
 import { Wireframe } from '../../../../../models/diseno-conceptual.model';
 
+import { Router } from '@angular/router';
+
 @Component({
   selector: 'app-diseno-wireframes',
   standalone: true,
@@ -13,6 +15,7 @@ import { Wireframe } from '../../../../../models/diseno-conceptual.model';
 export class DisenoWireframesComponent implements OnInit {
   @Input() projectId!: number;
   private disenoService = inject(DisenoConceptualService);
+  private router = inject(Router);
   
   wireframes: Wireframe[] = [];
   isDragging = false;
@@ -21,6 +24,10 @@ export class DisenoWireframesComponent implements OnInit {
     if (this.projectId) {
       this.loadWireframes();
     }
+  }
+
+  scrollToChecklists() {
+    this.router.navigate(['/framework/projects', this.projectId, 'diseno_conceptual', 'checklists']);
   }
 
   loadWireframes() {

@@ -43,6 +43,10 @@ export class DisenoDetalladoService {
     return this.http.post<any>(`${this.apiUrl}/api/proyectos/${proyectoId}/fase4-pantallas`, data);
   }
 
+  updateScreen(proyectoId: number, nodoId: number, data: { nombre: string }): Observable<any> {
+    return this.http.put<any>(`${this.apiUrl}/api/proyectos/${proyectoId}/fase4-pantallas/${nodoId}`, data);
+  }
+
   deleteScreen(proyectoId: number, nodoId: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}/api/proyectos/${proyectoId}/fase4-pantallas/${nodoId}`);
   }

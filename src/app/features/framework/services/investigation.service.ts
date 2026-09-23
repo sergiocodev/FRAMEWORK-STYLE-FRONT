@@ -33,5 +33,9 @@ export class InvestigationService {
     return this.http.put<InvestigacionInformeResponse>(`${this.getBaseUrl(projectId)}/informe`, data);
   }
 
+  syncArquetipos(projectId: number, data: any[]): Observable<ArquetipoUsuarioResponse[]> {
+    return this.http.put<ArquetipoUsuarioResponse[]>(`${this.getBaseUrl(projectId)}/arquetipos/bulk`, data);
+  }
+
   // Future CRUD methods (POST, DELETE) can go here
 }

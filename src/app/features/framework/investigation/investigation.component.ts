@@ -79,7 +79,9 @@ export class InvestigationComponent implements OnInit {
   get analisisActual() { return this._analisisActual; }
   set analisisActual(v) { this._analisisActual = v; this.triggerAutoSave(); }
   
-  usuarios: any[] = []; // Currently not handled by simple autosave payload
+  private _usuarios: any[] = [];
+  get usuarios() { return this._usuarios; }
+  set usuarios(v) { this._usuarios = v; this.triggerAutoSave(); }
   recursos: any[] = [];
   
   private _restricciones: string = '';
@@ -159,7 +161,7 @@ export class InvestigationComponent implements OnInit {
         this.objetivo = data.informe.objetivo || '';
         this.producto = data.informe.producto || '';
         this.expectativas = data.informe.expectativas || '';
-        this.referencias = data.informe.referencias || [];
+        this.referencias = data.informe.referencias?.items || [];
         this.analisisActual = data.informe.analisis_actual || '';
         this.restricciones = data.informe.restricciones || '';
         this.identidadMarca = data.informe.identidad_marca || { tieneManual: false, colores: '', notas: '' };
@@ -209,25 +211,43 @@ export class InvestigationComponent implements OnInit {
     this.isSaving = true;
     this.saveSuccess = false;
     
-    const payload = {
+    const informePayload = {
       problema: this.problema,
       objetivo: this.objetivo,
       producto: this.producto,
       expectativas: this.expectativas,
-      referencias: this.referencias,
+      referencias: { items: this.referencias },
       analisis_actual: this.analisisActual,
       restricciones: this.restricciones,
       identidad_marca: this.identidadMarca
     };
+
+    const arquetiposPayload = this.usuarios.map(u => ({
+      nombre: u.name || 'Usuario',
+      etiqueta: u.tag || 'General',
+      orden: 0,
+      necesidades: (u.needs || []).map((n: string, i: number) => ({ descripcion: n || 'Necesidad', orden: i }))
+    }));
     
-    this.investigationService.updateInforme(this.currentProjectId, payload).subscribe({
+    // Check if forkJoin is available, if not, use an array of Observables
+    // But since forkJoin is imported from rxjs usually, let's assume it or we can chain it.
+    // To avoid missing import errors, let's chain them with concatMap or just simple subscribe nesting.
+    this.investigationService.updateInforme(this.currentProjectId, informePayload).subscribe({
       next: () => {
-        this.isSaving = false;
-        this.saveSuccess = true;
-        setTimeout(() => this.saveSuccess = false, 3000);
+        this.investigationService.syncArquetipos(this.currentProjectId!, arquetiposPayload).subscribe({
+          next: () => {
+            this.isSaving = false;
+            this.saveSuccess = true;
+            setTimeout(() => this.saveSuccess = false, 3000);
+          },
+          error: (err) => {
+            console.error('Error al guardar arquetipos', err);
+            this.isSaving = false;
+          }
+        });
       },
       error: (err) => {
-        console.error('Error al guardar', err);
+        console.error('Error al guardar informe', err);
         this.isSaving = false;
       }
     });
