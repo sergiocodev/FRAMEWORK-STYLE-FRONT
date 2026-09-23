@@ -1,23 +1,5 @@
 <div class="d-flex flex-column" [class.h-100]="!isFullscreen" [class.position-fixed]="isFullscreen" [class.top-0]="isFullscreen" [class.start-0]="isFullscreen" [class.w-100]="isFullscreen" [class.vh-100]="isFullscreen" [style.z-index]="isFullscreen ? 9999 : 'auto'" [class.bg-light]="isFullscreen" [class.p-3]="isFullscreen">
-  <!-- Header of Canvas -->
-  @if (!isFullscreen) {
-  <div class="mb-3 px-1 flex-shrink-0 d-flex justify-content-between align-items-center">
-    <div>
-      <div class="d-flex align-items-center gap-2 mb-1">
-        <h4 class="fw-bold mb-0 text-dark">Fase 2: Diseño Conceptual <span class="text-secondary fs-5 fw-normal">(Estructura)</span></h4>
-      </div>
-      <p class="text-secondary small mb-0">Define el mapa de navegación y la jerarquía de contenidos, sin colores aún.</p>
-    </div>
-    <button class="btn btn-primary d-flex align-items-center gap-2 rounded-pill px-4 shadow-sm" (click)="scrollToChecklists()">
-      Siguiente (Checklists)
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <polyline points="13 17 18 12 13 7"></polyline>
-        <polyline points="6 17 11 12 6 7"></polyline>
-      </svg>
-    </button>
-  </div>
-  }
-
+  <!-- Redundant header removed -->
   <!-- Toolbar -->
   <div class="bg-white rounded-4 border p-2 flex-shrink-0 d-flex justify-content-between align-items-center"
        [ngClass]="isFullscreen ? 'position-fixed shadow-lg' : 'mb-3 shadow-sm'"

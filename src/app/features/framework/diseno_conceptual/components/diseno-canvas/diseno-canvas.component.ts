@@ -151,10 +151,6 @@ export class DisenoCanvasComponent implements OnInit {
       error: (err: any) => console.error('Error cargando conexiones', err)
     });
   }
-  scrollToChecklists() {
-    this.router.navigate(['/framework/projects', this.projectId, 'diseno_conceptual', 'checklists']);
-  }
-
   onDrop(event: CdkDragDrop<any>, nodo: NodoPantalla) {
     if (event.previousContainer !== event.container) {
       const itemToMove = event.item.data as ContenidoItem;

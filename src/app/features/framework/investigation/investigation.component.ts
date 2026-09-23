@@ -20,8 +20,8 @@ import { InvestigationService } from '../services/investigation.service';
   selector: 'app-investigation',
   standalone: true,
   imports: [
-    CommonModule, 
-    RouterModule, 
+    CommonModule,
+    RouterModule,
     InvestigationHeaderComponent,
     InvestigationNecessityComponent,
     InvestigationExpectationsComponent,
@@ -46,14 +46,14 @@ export class InvestigationComponent implements OnInit {
   project: any = {};
   phases: Phase[] = [];
   headerBreadcrumbs: any[] = [];
-  
+
   get formattedStatus(): string {
     const status = this.project?.status;
     if (!status) return 'En progreso';
     const formatted = status.replace(/_/g, ' ');
     return formatted.charAt(0).toUpperCase() + formatted.slice(1).toLowerCase();
   }
-  
+
   // Phase 1 Data States (with auto-save hooks)
   private _problema: string = '';
   get problema() { return this._problema; }
@@ -66,7 +66,7 @@ export class InvestigationComponent implements OnInit {
   private _producto: string = '';
   get producto() { return this._producto; }
   set producto(v) { this._producto = v; this.triggerAutoSave(); }
-  
+
   private _expectativas: string = '';
   get expectativas() { return this._expectativas; }
   set expectativas(v) { this._expectativas = v; this.triggerAutoSave(); }
@@ -78,10 +78,10 @@ export class InvestigationComponent implements OnInit {
   private _analisisActual: string = '';
   get analisisActual() { return this._analisisActual; }
   set analisisActual(v) { this._analisisActual = v; this.triggerAutoSave(); }
-  
+
   usuarios: any[] = []; // Currently not handled by simple autosave payload
   recursos: any[] = [];
-  
+
   private _restricciones: string = '';
   get restricciones() { return this._restricciones; }
   set restricciones(v) { this._restricciones = v; this.triggerAutoSave(); }
@@ -93,7 +93,7 @@ export class InvestigationComponent implements OnInit {
   private saveSubject = new Subject<void>();
 
   // Mobile Tabs State (Removido ya que usamos Modal)
-  
+
   // Sidebar State
   activeSection: 'necesidad' | 'expectativas' | 'usuarios' | 'recursos' = 'necesidad';
 
@@ -175,7 +175,7 @@ export class InvestigationComponent implements OnInit {
           return {
             id: a.id,
             name: name,
-            role: role, 
+            role: role,
             tag: a.etiqueta || 'General',
             needs: a.necesidades ? a.necesidades.map((n: any) => n.descripcion) : []
           };
@@ -183,9 +183,9 @@ export class InvestigationComponent implements OnInit {
 
         // Map Recursos
         this.recursos = data.recursosList.map((r: any) => {
-          const type = r.nombre_original.endsWith('.pdf') ? 'pdf' : 
-                       (r.nombre_original.endsWith('.zip') ? 'zip' : 'image');
-                       
+          const type = r.nombre_original.endsWith('.pdf') ? 'pdf' :
+            (r.nombre_original.endsWith('.zip') ? 'zip' : 'image');
+
           const sizeMB = r.tamano_bytes ? (r.tamano_bytes / (1024 * 1024)).toFixed(1) + ' MB' : 'Desconocido';
 
           return {
@@ -218,10 +218,10 @@ export class InvestigationComponent implements OnInit {
 
   saveChanges(): void {
     if (!this.currentProjectId) return;
-    
+
     this.isSaving = true;
     this.saveSuccess = false;
-    
+
     const payload = {
       problema: this.problema,
       objetivo: this.objetivo,
@@ -232,7 +232,7 @@ export class InvestigationComponent implements OnInit {
       restricciones: this.restricciones,
       identidad_marca: this.identidadMarca
     };
-    
+
     this.investigationService.updateInforme(this.currentProjectId, payload).subscribe({
       next: () => {
         this.isSaving = false;
@@ -248,7 +248,7 @@ export class InvestigationComponent implements OnInit {
 
   completePhase(): void {
     if (!this.currentProjectId) return;
-    
+
     if (!this.problema.trim() || !this.objetivo.trim()) {
       alert('Por favor completa al menos el Problema y el Objetivo antes de continuar.');
       return;

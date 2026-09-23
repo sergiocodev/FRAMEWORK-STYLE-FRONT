@@ -97,6 +97,10 @@ export class DisenoConceptualService {
     return this.http.get<DisenoConceptualChecklistItem[]>(`${this.getBaseUrl(projectId)}/checklist`);
   }
 
+  regenerateProjectChecklist(projectId: number): Observable<DisenoConceptualChecklistItem[]> {
+    return this.http.post<DisenoConceptualChecklistItem[]>(`${this.getBaseUrl(projectId)}/checklist/regenerate`, {});
+  }
+
   createProjectChecklistItem(projectId: number, item: DisenoConceptualChecklistItem): Observable<DisenoConceptualChecklistItem> {
     return this.http.post<DisenoConceptualChecklistItem>(`${this.getBaseUrl(projectId)}/checklist`, item);
   }

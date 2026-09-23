@@ -2,10 +2,10 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
-import { 
-  InvestigacionInformeResponse, 
-  ArquetipoUsuarioResponse, 
-  ArchivoResponse 
+import {
+  InvestigacionInformeResponse,
+  ArquetipoUsuarioResponse,
+  ArchivoResponse
 } from '../../../models/investigation.model';
 
 @Injectable({
@@ -43,10 +43,10 @@ export class InvestigationService {
     return this.http.put<InvestigacionInformeResponse>(`${this.getBaseUrl(projectId)}/informe`, data);
   }
 
-  uploadReferencia(projectId: number, file: File): Observable<{url: string}> {
+  uploadReferencia(projectId: number, file: File): Observable<{ url: string }> {
     const formData = new FormData();
     formData.append('file', file);
-    return this.http.post<{url: string}>(`${this.getBaseUrl(projectId)}/referencias/upload`, formData);
+    return this.http.post<{ url: string }>(`${this.getBaseUrl(projectId)}/referencias/upload`, formData);
   }
 
   createArquetipo(projectId: number, data: any): Observable<ArquetipoUsuarioResponse> {

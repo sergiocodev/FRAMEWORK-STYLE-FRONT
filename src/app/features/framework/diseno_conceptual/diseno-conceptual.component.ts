@@ -74,6 +74,7 @@ export class DisenoConceptualComponent implements OnInit {
     this.projectService.getProjectById(projectId).subscribe({
       next: (projectData: any) => {
         this.project = {
+          id: projectData.id,
           title: projectData.nombre,
           status: projectData.estado,
           type: projectData.tipo,

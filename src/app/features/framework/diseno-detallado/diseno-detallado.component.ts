@@ -57,6 +57,8 @@ export class DisenoDetalladoComponent implements OnInit {
   isSidebarOpen = true;
   isDragging = false;
   searchQuery: string = '';
+  editingScreenId: string | null = null;
+  editingTitle: string = '';
 
   constructor(
     private disenoService: DisenoDetalladoService,
@@ -236,6 +238,40 @@ export class DisenoDetalladoComponent implements OnInit {
       },
       error: (err) => console.error('Error deleting screen', err)
     });
+  }
+
+  // --- Title Editing Logic ---
+  startEditing(screen: Fase4Pantalla, event: Event) {
+    event.stopPropagation();
+    this.editingScreenId = screen.id;
+    this.editingTitle = screen.title;
+  }
+
+  cancelEdit(event: Event) {
+    event.stopPropagation();
+    this.editingScreenId = null;
+    this.editingTitle = '';
+  }
+
+  saveEdit(screen: Fase4Pantalla, event: Event) {
+    event.stopPropagation();
+    if (!this.editingTitle || this.editingTitle.trim() === '') {
+      this.cancelEdit(event);
+      return;
+    }
+    
+    if (this.editingTitle !== screen.title) {
+      const newTitle = this.editingTitle.trim();
+      this.disenoService.updateScreen(this.projectId, screen._dbId, { nombre: newTitle }).subscribe({
+        next: (updated) => {
+          screen.title = newTitle;
+          this.editingScreenId = null;
+        },
+        error: (err) => console.error('Error updating screen title', err)
+      });
+    } else {
+      this.editingScreenId = null;
+    }
   }
 
   // --- File Upload Logic ---

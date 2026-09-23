@@ -14,23 +14,102 @@
 <!-- Phase Header / Stepper -->
 <div class="container-fluid mb-1">
   <div class="bg-white rounded p-3 shadow-sm border border-light">
-    <div class="d-flex align-items-center gap-3">
-      <div class="header-icon-container" style="background-color: rgba(37, 99, 235, 0.1); color: #2563EB; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; border-radius: 12px;">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-          stroke-linecap="round" stroke-linejoin="round">
-          <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
-          <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
-        </svg>
+    <div class="d-flex align-items-center justify-content-between">
+      
+      <!-- Left side: Title and context -->
+      <div class="d-flex align-items-center gap-3">
+        <div class="header-icon-container" style="background-color: rgba(37, 99, 235, 0.1); color: #2563EB; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; border-radius: 12px;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+            <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
+          </svg>
+        </div>
+        <div>
+          <h4 class="mb-1 fw-bold d-flex align-items-center gap-2">
+            Fase 2: Diseño Conceptual
+          </h4>
+          <div class="text-muted" style="font-size: 0.9rem;">
+            <span class="fw-medium text-secondary-emphasis">Cliente:</span> <span class="opacity-75 me-2">{{ project?.client || 'Cliente Interno' }}</span> | 
+            <span class="ms-2">Estructura y flujo visual de las pantallas y componentes.</span>
+          </div>
+        </div>
       </div>
+      
+      <!-- Right side: Phase 1 Document Action -->
       <div>
-        <h4 class="mb-1 fw-bold d-flex align-items-center gap-2">
-          Fase 2: Diseño Conceptual
-        </h4>
-        <div class="text-muted" style="font-size: 0.9rem;">
-          <span class="fw-medium text-secondary-emphasis">Cliente:</span> <span class="opacity-75 me-2">{{ project?.client || 'Cliente Interno' }}</span> | 
-          <span class="ms-2">Estructura y flujo visual de las pantallas y componentes.</span>
+        <button class="btn btn-outline-primary d-flex align-items-center gap-2 rounded-pill px-3 shadow-sm transition-all hover-scale" (click)="openPhase1Preview()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="16" y1="13" x2="8" y2="13"></line>
+            <line x1="16" y1="17" x2="8" y2="17"></line>
+            <polyline points="10 9 9 9 8 9"></polyline>
+          </svg>
+          <span class="fw-medium">Ver requisitos (Fase 1)</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Modal Previa Fase 1 -->
+@if (showPhase1Preview) {
+  <div class="modal fade show d-block" style="background-color: rgba(15, 23, 42, 0.4); backdrop-filter: blur(8px);" tabindex="-1" (click)="closePhase1Preview()">
+    <div class="modal-dialog modal-dialog-centered modal-xl" (click)="$event.stopPropagation()">
+      <div class="modal-content border-0 shadow-lg overflow-hidden rounded-4">
+        <div class="modal-header border-bottom bg-white px-4 py-3">
+          <h5 class="modal-title fw-bold text-dark d-flex align-items-center gap-2">
+            <div class="bg-primary bg-opacity-10 text-primary p-2 rounded-3 d-flex align-items-center justify-content-center">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+            </div>
+            Documento de Expectativas - Fase 1
+          </h5>
+          <button type="button" class="btn-close" (click)="closePhase1Preview()"></button>
+        </div>
+        <div class="modal-body p-0" style="height: 70vh; background-color: #f1f5f9;">
+          <!-- Investigation Preview Component -->
+          @if (isLoadingPhase1) {
+            <div class="w-100 h-100 d-flex flex-column align-items-center justify-content-center">
+              <div class="spinner-border text-primary mb-3" role="status">
+                <span class="visually-hidden">Cargando...</span>
+              </div>
+              <span class="text-secondary fw-medium">Cargando documento...</span>
+            </div>
+          } @else if (phase1Data.informe) {
+            <app-investigation-preview
+              class="w-100 h-100 d-block overflow-auto"
+              [project]="project"
+              [problema]="phase1Data.informe?.problema || ''"
+              [objetivo]="phase1Data.informe?.objetivo || ''"
+              [producto]="phase1Data.informe?.producto || ''"
+              [expectativas]="phase1Data.informe?.expectativas || ''"
+              [referencias]="phase1Data.informe?.referencias?.items || []"
+              [analisisActual]="phase1Data.informe?.analisis_actual || ''"
+              [usuarios]="phase1Data.arquetipos || []"
+              [recursos]="phase1Data.recursosList || []"
+              [restricciones]="phase1Data.informe?.restricciones || ''"
+              [identidadMarca]="phase1Data.informe?.identidad_marca || { tieneManual: false, colores: '', notas: '' }"
+            ></app-investigation-preview>
+          } @else {
+            <div class="w-100 h-100 d-flex flex-column align-items-center justify-content-center text-secondary">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="mb-3"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+              <span>No se encontró información de la Fase 1.</span>
+            </div>
+          }
+        </div>
+        <div class="modal-footer bg-white border-top px-4 py-3">
+          <div class="alert alert-primary bg-primary bg-opacity-10 text-primary border-0 d-flex align-items-center gap-2 mb-0 me-auto px-3 py-2" style="font-size: 0.85rem;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+            Previsualización en vivo desde la Fase 1
+          </div>
+          <button type="button" class="btn btn-light border fw-medium" (click)="closePhase1Preview()">Cerrar previsualización</button>
+          <button type="button" class="btn btn-primary d-flex align-items-center gap-2 fw-medium shadow-sm">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            Descargar Documento
+          </button>
         </div>
       </div>
     </div>
   </div>
-</div>
+}
