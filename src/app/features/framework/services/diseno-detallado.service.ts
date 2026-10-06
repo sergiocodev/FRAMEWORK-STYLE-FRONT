@@ -25,6 +25,7 @@ export interface DisenoDetalladoArchivo {
   estado: string;
   archivo_url?: string;
   alertas: any[];
+  checklist?: any[];
 }
 
 @Injectable({

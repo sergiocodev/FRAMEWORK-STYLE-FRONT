@@ -74,4 +74,5 @@ export interface Wireframe {
   checklist_items?: WireframeChecklistItem[];
   base64Data?: string;
   fileName?: string;
+  archivo_url?: string;
 }

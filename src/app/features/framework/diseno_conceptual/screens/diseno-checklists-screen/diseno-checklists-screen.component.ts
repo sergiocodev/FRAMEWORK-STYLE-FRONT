@@ -1,3 +1,4 @@
+import { environment } from '../../../../../../environments/environment';
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -37,14 +38,9 @@ export class DisenoChecklistsScreenComponent implements OnInit {
   loadWireframes() {
     this.disenoService.getWireframes(this.projectId).subscribe({
       next: (data: Wireframe[]) => {
-        this.wireframes = data.map(w => {
-          const cacheStr = localStorage.getItem(`wf_cache_${w.id}`);
-          if (cacheStr) {
-            try {
-              const cache = JSON.parse(cacheStr);
-              w.base64Data = cache.base64Data;
-              w.fileName = cache.fileName;
-            } catch(e) {}
+        this.wireframes = data.map((w: any) => {
+          if (w.archivo_url) {
+            w.base64Data = environment.apiUrl + w.archivo_url;
           }
           return w;
         });

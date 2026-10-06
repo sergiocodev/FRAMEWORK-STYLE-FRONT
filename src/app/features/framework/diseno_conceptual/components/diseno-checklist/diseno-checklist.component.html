@@ -36,3 +36,17 @@
     }
   </div>
 </div>
+
+
+@if (showConfirmModal) {
+  <div class="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center" style="background-color: rgba(0,0,0,0.5); z-index: 1050;">
+    <div class="bg-white rounded-4 shadow-lg p-4" style="max-width: 400px; width: 90%;">
+      <h5 class="fw-bold mb-3 text-dark">Confirmación</h5>
+      <p class="text-secondary mb-4">¿Estás seguro de regenerar el checklist? Esto borrará tu progreso actual y generará uno nuevo basado en la investigación general del sistema.</p>
+      <div class="d-flex justify-content-end gap-2">
+        <button class="btn btn-light rounded-pill px-4 fw-medium" (click)="closeConfirmModal()">Cancelar</button>
+        <button class="btn btn-primary rounded-pill px-4 fw-medium" (click)="confirmRegenerate()">Aceptar</button>
+      </div>
+    </div>
+  </div>
+}

@@ -1,3 +1,4 @@
+import { environment } from '../../../../../../environments/environment';
 import { Component, Input, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DisenoConceptualService } from '../../../services/diseno-conceptual.service';
@@ -34,13 +35,13 @@ export class DisenoWireframesComponent implements OnInit {
     this.disenoService.getWireframes(this.projectId).subscribe({
       next: (data: Wireframe[]) => {
         this.wireframes = data.map(w => {
-          const cacheStr = localStorage.getItem(`wf_cache_${w.id}`);
-          if (cacheStr) {
-            try {
-              const cache = JSON.parse(cacheStr);
-              w.base64Data = cache.base64Data;
-              w.fileName = cache.fileName;
-            } catch(e) {}
+          // Now we use the real URL from backend!
+          if (w.archivo_url) {
+            
+             
+            // If backend is on 8000, we should prepend the backend URL. The DisenoConceptualService has apiUrl. We can just use environment.apiUrl.
+            
+            w.base64Data = w.archivo_url;
           }
           return w;
         });
@@ -81,54 +82,25 @@ export class DisenoWireframesComponent implements OnInit {
     event.target.value = '';
   }
 
+  showErrorModal = false;
+  errorMessage = '';
+
+  closeErrorModal() {
+    this.showErrorModal = false;
+  }
+
   private handleFiles(files: FileList) {
-    // Procesar cada archivo seleccionado
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
+      if (!file.type.startsWith('image/')) continue;
       
-      // Validar que solo sea imagen
-      if (!file.type.startsWith('image/')) {
-        alert(`El archivo "${file.name}" no es una imagen y ha sido ignorado.`);
-        continue;
-      }
-      
-      const reader = new FileReader();
-      
-      reader.onload = (e: any) => {
-        // Here we'd ideally upload the file first and get an archivo_id
-        // For now, we mock the archivo_id as 1 to satisfy the backend
-        const dummyArchivoId = 1;
-        
-        const newWireframe: Wireframe = {
-          archivo_id: dummyArchivoId,
-          version: '1.0',
-          fileName: file.name,
-          base64Data: e.target.result
-        };
-        
-        this.disenoService.createWireframe(this.projectId, newWireframe).subscribe({
-          next: (res) => {
-            // Keep base64 locally to show the image if backend doesn't store it yet
-            res.base64Data = newWireframe.base64Data;
-            res.fileName = newWireframe.fileName;
-            this.wireframes.push(res);
-            
-            // Guardar en cache temporal para la pantalla de validación
-            const cacheKey = `wf_cache_${res.id}`;
-            try {
-              localStorage.setItem(cacheKey, JSON.stringify({
-                base64Data: res.base64Data,
-                fileName: res.fileName
-              }));
-            } catch(e) { console.error('Cache limit exceeded'); }
-          },
-          error: (err) => {
-            console.error('Error guardando wireframe en backend', err);
-          }
-        });
-      };
-      
-      reader.readAsDataURL(file);
+      this.disenoService.createWireframe(this.projectId, file as any).subscribe({
+        next: (res: any) => {
+          if (res.archivo_url) res.base64Data = environment.apiUrl + res.archivo_url;
+          this.wireframes.push(res);
+        },
+        error: (err: any) => console.error('Error guardando wireframe en backend', err)
+      });
     }
   }
 

@@ -75,7 +75,7 @@
   <div class="row g-4">
     
     <!-- Left Column: Pantallas -->
-    <div [ngClass]="isSidebarOpen ? 'col-12 col-xl-3' : 'col-auto'">
+    <div [ngClass]="isSidebarOpen ? 'col-12 col-xl-3' : 'col-auto'" class="align-self-start" style="position: sticky; top: 1.5rem; z-index: 5;">
       @if (isSidebarOpen) {
         <div class="d-flex flex-column h-100 transition-all">
           <div class="d-flex align-items-center justify-content-between mb-3">
@@ -102,7 +102,7 @@
           @for (screen of filteredScreens; track screen.id; let i = $index) {
             <div class="p-3 bg-white rounded-3 border cursor-pointer transition-all hover-shadow-sm d-flex align-items-center justify-content-between group"
                  [ngClass]="{'border-primary shadow-sm': selectedScreenId === screen.id}"
-                 (click)="selectedScreenId = screen.id">
+                 (click)="selectScreen(screen.id)">
               
               <div class="d-flex align-items-center gap-3">
                 <div class="bg-light p-2 rounded text-primary">
@@ -177,7 +177,7 @@
     </div>
 
     <!-- Middle Column: Vista Previa -->
-    <div class="col-12" [ngClass]="isSidebarOpen ? 'col-xl-5' : 'col-xl-7 flex-grow-1'">
+    <div class="col-12 align-self-start" [ngClass]="isSidebarOpen ? 'col-xl-5' : 'col-xl-7 flex-grow-1'" style="position: sticky; top: 1.5rem; height: calc(100vh - 3rem); z-index: 5;">
       <div class="bg-white rounded-4 shadow-sm border p-4 h-100 d-flex flex-column">
         <div class="d-flex align-items-center justify-content-between mb-3">
           <h6 class="fw-bold text-dark mb-0">Vista previa del diseño: {{ currentScreen?.title || 'Ninguna pantalla seleccionada' }}</h6>
@@ -256,7 +256,7 @@
           @for (item of checklists; track item.id) {
             <div class="d-flex align-items-start gap-3">
               <div class="form-check mt-1">
-                <input class="form-check-input cursor-pointer border-success bg-success bg-opacity-25" type="checkbox" [checked]="item.checked" (change)="toggleCheck(item)">
+                <input class="form-check-input cursor-pointer shadow-none" [ngClass]="item.checked ? 'bg-success border-success' : 'border-secondary'" type="checkbox" [checked]="item.checked" (change)="toggleCheck(item)">
               </div>
               <label class="form-check-label w-100 cursor-pointer user-select-none fw-medium text-dark" style="font-size: 0.85rem;" (click)="toggleCheck(item)">
                 {{ item.label }}
@@ -286,7 +286,7 @@
         <div class="d-flex align-items-center justify-content-between mb-3">
           <div class="d-flex align-items-center gap-2">
             <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center fw-bold" style="width: 24px; height: 24px; font-size: 0.65rem;">IA</div>
-            <h6 class="fw-bold mb-0 text-dark">Alertas inteligentes (IA)</h6>
+            <h6 class="fw-bold mb-0 text-dark">Alertas inteligentes</h6>
           </div>
           <a href="#" class="small text-primary text-decoration-none fw-medium">Ver todas</a>
         </div>
@@ -304,19 +304,23 @@
                       <svg class="text-danger mt-1 flex-shrink-0" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
                       <p class="text-danger fw-medium small mb-0" style="font-size: 0.8rem;">{{ alert.message }}</p>
                     } @else {
-                      <svg class="text-warning mt-1 flex-shrink-0" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
-                      <p class="text-warning fw-medium small mb-0" style="font-size: 0.8rem;">{{ alert.message }}</p>
+                      <svg class="mt-1 flex-shrink-0" style="color: #c2410c;" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                      <p class="fw-medium small mb-0" style="color: #c2410c; font-size: 0.8rem;">{{ alert.message }}</p>
                     }
                   </div>
                   <div class="ps-4">
+                    @if (alert.detected) {
                     <div class="d-flex justify-content-between align-items-center mb-1">
                       <span class="small text-secondary" style="font-size: 0.7rem;">Detectado:</span>
                       <span class="small fw-bold text-dark" style="font-size: 0.75rem;">{{ alert.detected }}</span>
                     </div>
+                    }
+                    @if (alert.expected) {
                     <div class="d-flex justify-content-between align-items-center mb-3">
                       <span class="small text-secondary" style="font-size: 0.7rem;">Esperado:</span>
-                      <span class="small fw-bold" [ngClass]="alert.type === 'error' ? 'text-danger' : 'text-warning'" style="font-size: 0.75rem;">{{ alert.expected }}</span>
+                      <span class="small fw-bold" [ngClass]="alert.type === 'error' ? 'text-danger' : ''" [style.color]="alert.type !== 'error' ? '#c2410c' : null" style="font-size: 0.75rem;">{{ alert.expected }}</span>
                     </div>
+                    }
                   </div>
                 </div>
               </div>

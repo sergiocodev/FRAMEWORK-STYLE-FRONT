@@ -45,19 +45,28 @@ export class DisenoChecklistComponent implements OnInit {
 
   isRegenerating = false;
 
+  showConfirmModal = false;
+
   regenerateChecklist() {
-    if(confirm('¿Estás seguro de regenerar el checklist? Esto borrará tu progreso actual y generará uno nuevo basado en la Fase 1.')) {
-      this.isRegenerating = true;
-      this.disenoService.regenerateProjectChecklist(this.projectId).subscribe({
-        next: (data) => {
-          this.checklist = data;
-          this.isRegenerating = false;
-        },
-        error: (err) => {
-          console.error('Error regenerando checklist', err);
-          this.isRegenerating = false;
-        }
-      });
-    }
+    this.showConfirmModal = true;
+  }
+
+  closeConfirmModal() {
+    this.showConfirmModal = false;
+  }
+
+  confirmRegenerate() {
+    this.showConfirmModal = false;
+    this.isRegenerating = true;
+    this.disenoService.regenerateProjectChecklist(this.projectId).subscribe({
+      next: (data) => {
+        this.checklist = data;
+        this.isRegenerating = false;
+      },
+      error: (err) => {
+        console.error('Error regenerando checklist', err);
+        this.isRegenerating = false;
+      }
+    });
   }
 }

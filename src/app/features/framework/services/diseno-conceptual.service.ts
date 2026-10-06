@@ -84,8 +84,10 @@ export class DisenoConceptualService {
     return this.http.get<Wireframe[]>(`${this.getBaseUrl(projectId)}/wireframes`);
   }
 
-  createWireframe(projectId: number, wireframe: Wireframe): Observable<Wireframe> {
-    return this.http.post<Wireframe>(`${this.getBaseUrl(projectId)}/wireframes`, wireframe);
+  createWireframe(projectId: number, file: File): Observable<Wireframe> {
+    const formData = new FormData();
+    formData.append('file', file);
+    return this.http.post<Wireframe>(`${this.getBaseUrl(projectId)}/wireframes`, formData);
   }
 
   deleteWireframe(projectId: number, wireframeId: number): Observable<any> {

@@ -1,3 +1,4 @@
+import { environment } from '../../../../environments/environment';
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -146,11 +147,11 @@ export class DisenoDetalladoComponent implements OnInit {
     this.disenoService.getDesign(this.projectId, screen._dbId).subscribe({
       next: (design) => {
         if (design && design.archivo_url) {
-          screen.image = design.archivo_url;
+          screen.image = environment.apiUrl + (design.archivo_url.startsWith('/') ? '' : '/') + design.archivo_url;
           screen.status = design.estado === 'verificado' ? 'Verificada' : 'En revisión';
           
           if (design.alertas && design.alertas.length > 0) {
-            screen.alerts = design.alertas.map(a => ({
+            screen.alerts = design.alertas.map((a: any) => ({
               id: a.id.toString(),
               type: a.tipo as 'error' | 'warning' | 'info',
               element: a.elemento,
@@ -161,10 +162,19 @@ export class DisenoDetalladoComponent implements OnInit {
           } else {
             screen.alerts = [];
           }
+          
+          if (design.checklist && design.checklist.length > 0) {
+            this.checklists = design.checklist.map((c: any) => ({
+              id: c.id.toString(),
+              label: c.pregunta,
+              checked: c.estado === 'aprobado' || c.estado === 'aceptado'
+            }));
+          }
         }
       },
       error: (err) => {
-        // Normal if no design exists yet
+        // Reset checklist to empty if no design exists
+        this.checklists = [];
         if (err.status !== 404) console.error('Error loading design', err);
       }
     });
@@ -326,7 +336,7 @@ export class DisenoDetalladoComponent implements OnInit {
         
         // Cargar alertas de la IA
         if (design.alertas && design.alertas.length > 0) {
-          screen.alerts = design.alertas.map(a => ({
+          screen.alerts = design.alertas.map((a: any) => ({
             id: a.id.toString(),
             type: a.tipo as 'error' | 'warning' | 'info',
             element: a.elemento,
@@ -336,6 +346,14 @@ export class DisenoDetalladoComponent implements OnInit {
           }));
         } else {
            screen.alerts = [];
+        }
+        
+        if (design.checklist && design.checklist.length > 0) {
+          this.checklists = design.checklist.map((c: any) => ({
+            id: c.id.toString(),
+            label: c.pregunta,
+            checked: c.estado === 'aprobado' || c.estado === 'aceptado'
+          }));
         }
       },
       error: (err) => {
