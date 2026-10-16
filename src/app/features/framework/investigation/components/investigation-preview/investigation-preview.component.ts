@@ -106,14 +106,24 @@ export class InvestigationPreviewComponent implements OnChanges {
 
     if (this.referencias && this.referencias.length > 0) {
       md += `<ul class="text-secondary mb-0 mt-2 d-flex flex-column gap-3" style="font-size: 0.85rem; line-height: 1.5; list-style-type: none; padding-left: 0;">`;
-      for (const ref of this.referencias) {
+      for (const rawRef of this.referencias) {
+        const ref = typeof rawRef === 'string' ? { url: rawRef, notas: '' } : (rawRef || { url: '', notas: '' });
+        const isImage = ref.url && (ref.url.startsWith('http') || ref.url.includes('/uploads/') || /\.(png|jpe?g|gif|webp|svg)$/i.test(ref.url));
         const fullUrl = this.getImageUrl(ref.url);
-        md += `<li class="border p-2 rounded-2 bg-light">
-          <div class="text-center bg-white rounded-2 mb-2 p-1 border" style="min-height: 50px;">
-            <img src="${fullUrl}" alt="Referencia" style="max-height: 200px; object-fit: contain;" class="img-fluid rounded-1">
-          </div>
-          <p class="mb-0 text-dark" style="font-size: 0.8rem;"><strong>Notas:</strong> ${ref.notas || 'Sin notas'}</p>
-        </li>`;
+        
+        md += `<li class="border p-2 rounded-2 bg-light">`;
+        if (isImage) {
+          md += `
+            <div class="text-center bg-white rounded-2 mb-2 p-1 border" style="min-height: 50px;">
+              <img src="${fullUrl}" alt="Referencia" style="max-height: 200px; object-fit: contain;" class="img-fluid rounded-1">
+            </div>`;
+        } else if (ref.url) {
+          md += `<p class="mb-1 text-dark"><strong>Referencia:</strong> ${ref.url}</p>`;
+        }
+        if (ref.notas) {
+          md += `<p class="mb-0 text-dark" style="font-size: 0.8rem;"><strong>Notas:</strong> ${ref.notas}</p>`;
+        }
+        md += `</li>`;
       }
       md += `</ul>`;
     } else {

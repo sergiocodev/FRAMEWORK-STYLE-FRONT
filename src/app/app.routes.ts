@@ -47,9 +47,15 @@ export const routes: Routes = [
         data: { phase: 4 }
       },
       {
-        path: 'framework/projects/:id/assessment',
+        path: 'framework/projects/:id/evaluacion',
         loadComponent: () => import('./features/framework/assessment/assessment.component').then(m => m.AssessmentComponent),
+        canActivate: [phaseGuard],
         data: { phase: 5 }
+      },
+      {
+        path: 'framework/projects/:id/assessment',
+        redirectTo: 'framework/projects/:id/evaluacion',
+        pathMatch: 'full'
       }
     ]
   }

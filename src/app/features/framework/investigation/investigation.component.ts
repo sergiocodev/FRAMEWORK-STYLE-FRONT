@@ -162,7 +162,10 @@ export class InvestigationComponent implements OnInit {
         this.objetivo = data.informe.objetivo || '';
         this.producto = data.informe.producto || '';
         this.expectativas = data.informe.expectativas || '';
-        this.referencias = data.informe.referencias || [];
+        const rawRefs = data.informe.referencias || [];
+        this.referencias = Array.isArray(rawRefs)
+          ? rawRefs.map((r: any) => typeof r === 'string' ? { url: r, notas: '' } : (r || { url: '', notas: '' }))
+          : [];
         this.analisisActual = data.informe.analisis_actual || '';
         this.restricciones = data.informe.restricciones || '';
         this.identidadMarca = data.informe.identidad_marca || { tieneManual: false, colores: '', notas: '' };

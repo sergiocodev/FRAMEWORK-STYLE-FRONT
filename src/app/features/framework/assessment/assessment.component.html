@@ -1,309 +1,716 @@
-<div class="assessment-dashboard">
-  <!-- Header Section -->
-  <header class="header">
-    <div class="header-left">
-      <div class="app-logo">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-graduation-cap"><path d="M21.42 10.922a2 2 0 0 0-.019-3.838L12.83 4.33a2 2 0 0 0-1.66 0L2.6 7.08a2 2 0 0 0 0 3.832l8.57 3.698a2 2 0 0 0 1.66 0z"/><path d="M22 10v6"/><path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"/></svg>
+<div class="assessment-dashboard min-vh-100 bg-light d-flex flex-column" style="background-color: #F8FAFC !important;">
+  <!-- Toast Notification -->
+  @if (toastMessage) {
+    <div class="custom-toast animate-slide-in">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20 6 9 17l-5-5" />
+      </svg>
+      <span>{{ toastMessage }}</span>
+    </div>
+  }
+
+  <!-- Page Header & Attached Progress Bar -->
+  <div class="header-nav-wrapper">
+    <app-page-header 
+      [title]="project?.title || project?.nombre || 'Evaluación Estética'" 
+      [breadcrumbs]="headerBreadcrumbs"
+      [showSearch]="false">
+      
+      <div header-badges class="d-flex align-items-center gap-2">
+        <span class="badge rounded-pill text-success bg-success-subtle border-0 px-3 py-1 fw-medium" style="font-size: 0.75rem;">
+          {{ formattedStatus }}
+        </span>
+        <span class="badge rounded-pill text-secondary bg-secondary-subtle border-0 px-3 py-1 fw-medium" style="font-size: 0.75rem;">
+          {{ project?.type || project?.tipo || 'Web' }}
+        </span>
       </div>
-      <div class="header-info">
-        <div class="title-wrapper">
-          <h1>Plataforma Educativa</h1>
-          <span class="badge badge-info">En proceso</span>
+
+      <!-- Right Side Actions -->
+      <div class="d-flex align-items-center gap-3">
+        <button class="btn btn-outline-secondary d-flex align-items-center gap-2 px-3 py-2 border shadow-sm rounded-3" (click)="exportReport()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+            class="lucide lucide-download">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="7 10 12 15 17 10" />
+            <line x1="12" x2="12" y1="15" y2="3" />
+          </svg>
+          <span>Exportar Informe</span>
+        </button>
+      </div>
+    </app-page-header>
+
+    <!-- Segmented Progress Bar directly at the bottom edge -->
+    <div class="header-progress-bar d-flex w-100">
+      @for (phase of phases; track phase.number) {
+        <div class="progress-segment flex-fill"
+             [ngClass]="{
+               'segment-completed': phase.status === 'completed',
+               'segment-active': phase.status === 'active',
+               'segment-upcoming': phase.status === 'upcoming'
+             }"
+             [title]="phase.name">
         </div>
-        <p class="subtitle">Cliente: Colegio San Martín | Última modificación: 12 sep 2025, 10:24 a. m.</p>
-      </div>
+      }
     </div>
-    <button class="btn btn-outline">
-      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-download"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
-      Exportar Informe
-    </button>
-  </header>
+  </div>
 
-  <!-- Stepper -->
-  <div class="stepper">
-    <div class="step completed">
-      <div class="step-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>
-      <div class="step-text">
-        <span class="step-title">Investigación</span>
-        <span class="step-status">Completada</span>
-      </div>
-    </div>
-    <div class="step-divider"></div>
-    <div class="step completed">
-      <div class="step-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>
-      <div class="step-text">
-        <span class="step-title">Diseño Conceptual</span>
-        <span class="step-status">Completada</span>
-      </div>
-    </div>
-    <div class="step-divider"></div>
-    <div class="step completed">
-      <div class="step-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>
-      <div class="step-text">
-        <span class="step-title">Diseño Visual</span>
-        <span class="step-status">Completada</span>
-      </div>
-    </div>
-    <div class="step-divider"></div>
-    <div class="step completed">
-      <div class="step-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>
-      <div class="step-text">
-        <span class="step-title">Diseño Detallado</span>
-        <span class="step-status">Completada</span>
-      </div>
-    </div>
-    <div class="step-divider"></div>
-    <div class="step active">
-      <div class="step-icon">5</div>
-      <div class="step-text">
-        <span class="step-title">Evaluación Estética</span>
-        <span class="step-status">En progreso</span>
+  <!-- Phase Header / Stepper -->
+  <div class="container-fluid px-4 mb-3">
+    <div class="bg-white rounded p-3 shadow-sm border border-light">
+      <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+        <div class="d-flex align-items-center gap-3">
+          <div class="header-icon-container" style="background-color: rgba(37, 99, 235, 0.1); color: #2563EB; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; border-radius: 12px;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+              <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
+            </svg>
+          </div>
+          <div>
+            <h4 class="mb-1 fw-bold d-flex align-items-center gap-2">
+              Fase 5: Evaluación Estética
+            </h4>
+            <div class="text-muted" style="font-size: 0.9rem;">
+              <span class="fw-medium text-secondary-emphasis">Cliente:</span> <span class="opacity-75 me-2">{{ project?.client || project?.cliente?.nombre || 'Cliente Interno' }}</span> | 
+              <span class="ms-2">Aplica métodos de evaluación heurística, psicométrica (VisAWI) y certifica las interfaces de la Fase 4.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Header Actions: Sync Fase 4 & AI Audit -->
+        <div class="d-flex align-items-center gap-2 flex-wrap">
+          <button class="btn btn-outline-primary d-flex align-items-center gap-2 shadow-sm"
+                  [disabled]="isSyncingFase4 || isAuditingIa"
+                  (click)="syncWithFase4()"
+                  title="Importa alertas y no conformidades de la Fase 4 directamente a la matriz de hallazgos">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" [class.spin]="isSyncingFase4">
+              <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+            </svg>
+            <span>{{ isSyncingFase4 ? 'Sincronizando...' : 'Sincronizar Fase 4' }}</span>
+          </button>
+
+          <button class="btn btn-primary d-flex align-items-center gap-2 shadow-sm text-white"
+                  [disabled]="isAuditingIa || isSyncingFase4"
+                  (click)="runAiAudit()"
+                  style="background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); border: none;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" [class.spin]="isAuditingIa">
+              <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/>
+              <path d="M5 3v4M3 5h4M19 17v4M17 19h4"/>
+            </svg>
+            <span>{{ isAuditingIa ? 'Auditoría IA en proceso...' : 'Auditoría Estética con IA' }}</span>
+          </button>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- Page Title -->
-  <div class="page-header">
-    <h2>Fase 5: Evaluación Estética <span class="muted">(El Centro de Pruebas)</span></h2>
-    <p>Aplica métodos de evaluación y registra los hallazgos de la interfaz.</p>
+  <div class="container-fluid px-4 flex-grow-1 pb-4">
+
+  <!-- Score Global de Madurez Estética STYLE -->
+  <div class="score-banner-card mb-4 p-3 rounded-4 bg-white border shadow-sm d-flex flex-wrap align-items-center justify-content-between gap-3">
+    <div class="d-flex align-items-center gap-3">
+      <div class="score-badge-circle" [ngClass]="(assessment?.score_estetico || 0) >= 80 ? 'score-high' : ((assessment?.score_estetico || 0) >= 60 ? 'score-mid' : 'score-low')">
+        <span class="score-number">{{ assessment?.score_estetico || 0 }}</span>
+        <span class="score-scale">/100</span>
+      </div>
+      <div>
+        <div class="d-flex align-items-center gap-2">
+          <h4 class="mb-0 fw-bold fs-6">Score Global de Calidad Estética STYLE</h4>
+          <span class="badge rounded-pill" [ngClass]="(assessment?.score_estetico || 0) >= 80 ? 'bg-success' : ((assessment?.score_estetico || 0) >= 60 ? 'bg-warning text-dark' : 'bg-danger')">
+            {{ assessment?.nivel_madurez || 'En Evaluación' }}
+          </span>
+        </div>
+        <p class="text-secondary small mb-0 mt-1">
+          Ponderación: 35% Heurística Gestalt + 35% Psicométrico VisAWI + 30% Resolución de Hallazgos Hi-Fi.
+        </p>
+      </div>
+    </div>
+
+    <div class="d-flex align-items-center gap-4 text-center">
+      <div>
+        <span class="d-block fw-bold fs-6 text-primary">{{ gestaltCompletedCount }}/{{ assessment?.checklist?.length || 0 }}</span>
+        <span class="text-muted small">Gestalt OK</span>
+      </div>
+      <div class="border-start ps-3">
+        <span class="d-block fw-bold fs-6 text-info">{{ averageVisawi }}/5.0</span>
+        <span class="text-muted small">VisAWI Prom.</span>
+      </div>
+      <div class="border-start ps-3">
+        <span class="d-block fw-bold fs-6" [ngClass]="criticalFindingsCount > 0 ? 'text-danger' : 'text-success'">
+          {{ criticalFindingsCount }}
+        </span>
+        <span class="text-muted small">Críticos Pend.</span>
+      </div>
+    </div>
   </div>
+
+  <!-- Carrusel de Inspección de Prototipos de Fase 4 -->
+  @if (pantallasFase4.length > 0) {
+    <div class="fase4-screens-strip mb-4 p-3 bg-white border rounded-4 shadow-sm">
+      <div class="d-flex align-items-center justify-content-between mb-2">
+        <div class="d-flex align-items-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-primary">
+            <rect width="18" height="18" x="3" y="3" rx="2"/><path d="m9 9 6 6m0-6-6 6"/>
+          </svg>
+          <span class="fw-bold small text-dark">Prototipos Evaluados de la Fase 4 ({{ pantallasFase4.length }} pantallas)</span>
+        </div>
+        <div class="d-flex gap-2">
+          <button class="btn btn-sm btn-light border py-0 px-2 small" 
+                  [class.active]="selectedScreenFilter === 'todas'"
+                  (click)="filterByScreen('todas')">
+            Ver todas en matriz
+          </button>
+        </div>
+      </div>
+
+      <div class="d-flex gap-3 overflow-auto py-2 screen-cards-container">
+        @for (p of pantallasFase4; track p.id) {
+          <div class="screen-preview-card border rounded-3 p-2 bg-light d-flex flex-column gap-2"
+               [class.border-primary]="selectedScreenFilter === p.nodo_id"
+               style="min-width: 170px; max-width: 170px; cursor: pointer;"
+               (click)="inspectScreen(p)">
+            <div class="screen-thumb-box bg-white border rounded text-center overflow-hidden position-relative" style="height: 105px;">
+              @if (p.archivo_url) {
+                <img [src]="getImageUrl(p.archivo_url)" [alt]="p.nombre_pantalla" class="w-100 h-100 object-fit-cover">
+              } @else {
+                <div class="w-100 h-100 d-flex flex-column align-items-center justify-content-center text-muted small p-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>
+                  </svg>
+                  <span>Sin imagen</span>
+                </div>
+              }
+              @if (p.total_alertas > 0) {
+                <span class="position-absolute top-0 end-0 badge bg-danger m-1 shadow-sm" title="Alertas de diseño">
+                  {{ p.total_alertas }} alerta{{ p.total_alertas > 1 ? 's' : '' }}
+                </span>
+              }
+            </div>
+            <div class="screen-card-info">
+              <span class="d-block fw-semibold text-truncate small text-dark" [title]="p.nombre_pantalla">{{ p.nombre_pantalla }}</span>
+              <span class="badge badge-subtle mt-1" [ngClass]="p.estado_diseno === 'verificado' ? 'text-bg-success' : 'text-bg-warning'">
+                {{ p.estado_diseno === 'verificado' ? 'Verificado' : 'En Revisión' }}
+              </span>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  }
+
 
   <!-- Main Content Grid -->
   <div class="dashboard-grid">
     <!-- Left Column -->
     <div class="col-left">
       <div class="card">
-        <div class="card-header">
-          <div class="card-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><path d="m9 15 2 2 4-4"/></svg></div>
-          <div class="card-title-content">
-            <h3>Método de Evaluación</h3>
+        <div class="card-header cursor-pointer" (click)="toggleMethodDropdown($event)" style="cursor: pointer;">
+          <div class="card-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+              fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />
+              <polyline points="14 2 14 8 20 8" />
+              <path d="m9 15 2 2 4-4" />
+            </svg>
+          </div>
+          <div class="card-title-content flex-grow-1">
+            <h3 class="d-flex align-items-center justify-content-between">
+              <span>Método de Evaluación</span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                class="text-muted transition-transform"
+                [style.transform]="isMethodDropdownOpen ? 'rotate(180deg)' : 'none'">
+                <path d="m6 9 6 6 6-6" />
+              </svg>
+            </h3>
             <p>Selecciona el método que deseas aplicar.</p>
           </div>
         </div>
-        <div class="dropdown-menu">
-          <div class="dropdown-header">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><path d="m9 15 2 2 4-4"/></svg>
-            Revisión Heurística (Checklist)
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="chevron"><path d="m6 9 6 6 6-6"/></svg>
+
+        <div class="method-dropdown-container">
+          <div class="method-select-btn" (click)="toggleMethodDropdown($event)">
+            <div class="btn-content">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-primary">
+                <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />
+                <polyline points="14 2 14 8 20 8" />
+                <path d="m9 15 2 2 4-4" />
+              </svg>
+              <span class="fw-medium">{{ assessment?.metodo_seleccionado || 'Revisión Heurística (Checklist)' }}</span>
+            </div>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="chevron"
+              [style.transform]="isMethodDropdownOpen ? 'rotate(180deg)' : 'none'">
+              <path d="m6 9 6 6 6-6" />
+            </svg>
           </div>
-          <div class="dropdown-list">
-            <div class="dropdown-item selected">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><path d="m9 15 2 2 4-4"/></svg>
-              <span>Revisión Heurística (Checklist)</span>
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="check"><path d="M20 6 9 17l-5-5"/></svg>
+
+          @if (isMethodDropdownOpen) {
+            <div class="method-dropdown-menu">
+              @for (method of availableMethods; track method.id) {
+                <div class="method-dropdown-option" 
+                     [class.selected]="assessment?.metodo_seleccionado === method.name"
+                     (click)="selectMethod(method.name); $event.stopPropagation()">
+                  <div class="option-left">
+                    @if (method.id === 'm1') {
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" /><polyline points="14 2 14 8 20 8" /><path d="m9 15 2 2 4-4" /></svg>
+                    } @else if (method.id === 'm2') {
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" /></svg>
+                    } @else if (method.id === 'm3') {
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2" /><line x1="3" x2="21" y1="9" y2="9" /><line x1="9" x2="9" y1="21" y2="9" /></svg>
+                    } @else {
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20a8 8 0 1 0 0-16 8 8 0 0 0 0 16Z" /><path d="M12 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z" /></svg>
+                    }
+                    <span>{{ method.name }}</span>
+                  </div>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="check">
+                    <path d="M20 6 9 17l-5-5" />
+                  </svg>
+                </div>
+              }
             </div>
-            <div class="dropdown-item">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-              <span>Cuestionario VisAWI (Psicométrico)</span>
-            </div>
-            <div class="dropdown-item">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><line x1="3" x2="21" y1="9" y2="9"/><line x1="9" x2="9" y1="21" y2="9"/></svg>
-              <span>Prueba A/B</span>
-            </div>
-            <div class="dropdown-item">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20a8 8 0 1 0 0-16 8 8 0 0 0 0 16Z"/><path d="M12 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/><path d="M12 2v2"/><path d="M12 22v-2"/><path d="m17 20.66-1-1.73"/><path d="M11 10.27 7 3.34"/><path d="m20.66 17-1.73-1"/><path d="m3.34 7 1.73 1"/><path d="M14 12h8"/><path d="M2 12h2"/><path d="m20.66 7-1.73 1"/><path d="m3.34 17 1.73-1"/><path d="m17 3.34-1 1.73"/><path d="m11 13.73-4 6.93"/></svg>
-              <span>Análisis de Mapas de Calor</span>
-            </div>
-          </div>
+          }
         </div>
       </div>
 
-      <div class="card card-checklist">
-        <div class="card-header">
-          <div class="card-icon star"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
-          <div class="card-title-content">
-            <h3>Revisión Heurística - Principios de Gestalt</h3>
-            <p>Evalúa la interfaz según los principios de Gestalt.</p>
+      <!-- Checklist Card: Auditoría Heurística Profesional Gestalt -->
+      <div class="card card-checklist professional-heuristic-card">
+        <div class="card-header space-between flex-wrap gap-2">
+          <div class="d-flex align-items-center gap-3">
+            <div class="card-icon star">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polygon
+                  points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+              </svg>
+            </div>
+            <div class="card-title-content">
+              <h3>Revisión Heurística - Principios de Gestalt</h3>
+              <p>Auditoría perceptiva de interfaces basada en psicología visual y reglas de diseño.</p>
+            </div>
+          </div>
+
+          <!-- Mini Pills de Resumen -->
+          <div class="heuristic-summary-pills d-flex align-items-center gap-1 flex-wrap">
+            <span class="pill-stat pill-cumple" title="Cumple totalmente">
+              <span class="dot-indicator"></span> {{ gestaltCompletedCount }} OK
+            </span>
+            <span class="pill-stat pill-parcial" title="Cumple parcialmente / Requiere ajustes">
+              <span class="dot-indicator"></span> {{ gestaltPartialCount }} Obs.
+            </span>
+            <span class="pill-stat pill-nocumple" title="No cumple / Defecto">
+              <span class="dot-indicator"></span> {{ gestaltFailedCount }} Falla
+            </span>
+            @if (gestaltNAcount > 0) {
+              <span class="pill-stat pill-na" title="No aplica">
+                {{ gestaltNAcount }} N/A
+              </span>
+            }
           </div>
         </div>
-        <div class="checklist">
-          <div class="check-item active">
-            <div class="checkbox checked"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>
-            <div class="check-content">
-              <h4>Proximidad</h4>
-              <p>Los elementos relacionados se agrupan visualmente.</p>
-            </div>
-            <span class="badge badge-success">Cumple</span>
+
+        <!-- Scope selector / active screen badge -->
+        <div class="heuristic-scope-bar px-3 py-2 bg-light border-bottom d-flex align-items-center justify-content-between text-muted small">
+          <div class="d-flex align-items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="3" rx="2"/><line x1="3" x2="21" y1="9" y2="9"/><line x1="9" x2="9" y1="21" y2="9"/></svg>
+            <span>Ámbito de auditoría:</span>
+            <span class="fw-semibold text-dark">
+              {{ selectedScreenFilter === 'todas' ? 'Proyecto General (Global)' : 'Pantalla Filtrada' }}
+            </span>
           </div>
-          <div class="check-item active">
-            <div class="checkbox checked"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>
-            <div class="check-content">
-              <h4>Similitud</h4>
-              <p>Los elementos similares se perciben como un grupo.</p>
+          <span class="text-primary small fw-medium">Ponderación: 35% del Score STYLE</span>
+        </div>
+
+        <!-- Checklist Items List -->
+        <div class="checklist professional-checklist p-2 d-flex flex-column gap-3">
+          @for (item of assessment?.checklist; track item.id) {
+            <div class="heuristic-item-card border rounded-3 p-3 bg-white shadow-xs transition-all"
+                 [class.border-success-subtle]="item.estado === 'cumple'"
+                 [class.border-warning-subtle]="item.estado === 'parcial'"
+                 [class.border-danger-subtle]="item.estado === 'no_cumple'">
+              
+              <!-- Item Header & Description -->
+              <div class="d-flex align-items-start justify-content-between gap-3 flex-wrap">
+                <div class="flex-grow-1">
+                  <div class="d-flex align-items-center gap-2 flex-wrap mb-1">
+                    <span class="badge bg-light text-secondary border font-monospace" style="font-size: 0.75rem;">{{ item.id | uppercase }}</span>
+                    <h4 class="mb-0 fw-bold fs-6 text-dark">{{ item.titulo }}</h4>
+                    @if (item.evaluado_por_ia) {
+                      <span class="badge bg-primary-subtle text-primary border border-primary-subtle d-inline-flex align-items-center gap-1" style="font-size: 0.7rem;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
+                        Gemini IA
+                      </span>
+                    }
+                  </div>
+                  <p class="text-muted small mb-0">{{ item.descripcion }}</p>
+                </div>
+
+                <!-- 4-State Gradual Rating Control -->
+                <div class="heuristic-rating-segmented">
+                  <button type="button" class="btn-segment segment-cumple" 
+                          [class.active]="item.estado === 'cumple' || (!item.estado && item.cumple)"
+                          (click)="setHeuristicState(item, 'cumple', $event)"
+                          title="Cumple plenamente (100% de puntos)">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                    <span>Cumple</span>
+                  </button>
+                  <button type="button" class="btn-segment segment-parcial" 
+                          [class.active]="item.estado === 'parcial'"
+                          (click)="setHeuristicState(item, 'parcial', $event)"
+                          title="Cumple parcialmente (50% de puntos - requiere ajustes)">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                    <span>Parcial</span>
+                  </button>
+                  <button type="button" class="btn-segment segment-nocumple" 
+                          [class.active]="item.estado === 'no_cumple' || (!item.estado && !item.cumple)"
+                          (click)="setHeuristicState(item, 'no_cumple', $event)"
+                          title="No cumple (0% de puntos - defecto estético)">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    <span>No cumple</span>
+                  </button>
+                  <button type="button" class="btn-segment segment-na" 
+                          [class.active]="item.estado === 'no_aplica'"
+                          (click)="setHeuristicState(item, 'no_aplica', $event)"
+                          title="No aplica a este diseño (se excluye)">
+                    <span>N/A</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Quick Action Row: Accordion Toggle & Convert to Finding -->
+              <div class="d-flex align-items-center justify-content-between pt-2 mt-2 border-top flex-wrap gap-2">
+                <button type="button" class="btn btn-sm btn-link text-decoration-none p-0 d-inline-flex align-items-center gap-1 text-secondary small fw-medium"
+                        (click)="toggleHeuristicAccordion(item.id, $event)">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                       class="transition-transform" [style.transform]="isHeuristicExpanded(item.id) ? 'rotate(180deg)' : 'none'">
+                    <polyline points="6 9 12 15 18 9"/>
+                  </svg>
+                  <span>{{ isHeuristicExpanded(item.id) ? 'Ocultar sub-criterios y notas' : 'Ver sub-criterios y notas (' + (item.subcriterios?.length || 0) + ')' }}</span>
+                </button>
+
+                <div class="d-flex align-items-center gap-2">
+                  @if (item.observacion && !isHeuristicExpanded(item.id)) {
+                    <span class="badge bg-light text-muted border text-truncate" style="max-width: 180px;" [title]="item.observacion">
+                      Nota: {{ item.observacion }}
+                    </span>
+                  }
+                  <button type="button" class="btn btn-sm btn-outline-danger btn-convert-finding d-inline-flex align-items-center gap-1 py-1 px-2"
+                          (click)="convertHeuristicToFinding(item, $event)"
+                          title="Crear un hallazgo en la matriz a partir de esta heurística">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+                    <span>Convertir a Hallazgo</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Accordion Drawer: Sub-criterios & Observaciones -->
+              @if (isHeuristicExpanded(item.id)) {
+                <div class="heuristic-drawer mt-3 pt-3 border-top bg-light-subtle rounded-2 p-2">
+                  <!-- Subcriterios Técnicos -->
+                  <div class="mb-3">
+                    <span class="d-block fw-semibold text-dark small mb-2 d-flex align-items-center gap-1">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                      Sub-criterios de Verificación Objetiva:
+                    </span>
+                    <div class="subcriterios-list d-flex flex-column gap-1">
+                      @for (sub of item.subcriterios; track sub.id) {
+                        <label class="subcriterio-row d-flex align-items-center gap-2 p-1 rounded cursor-pointer"
+                               (click)="toggleSubcriterio(item, sub, $event)"
+                               style="cursor: pointer;">
+                          <input type="checkbox" class="form-check-input mt-0" [checked]="sub.cumple" (click)="$event.stopPropagation(); toggleSubcriterio(item, sub, $event)">
+                          <span class="small" [class.text-muted]="!sub.cumple" [class.text-dark]="sub.cumple">{{ sub.titulo }}</span>
+                        </label>
+                      }
+                    </div>
+                  </div>
+
+                  <!-- Observaciones y Notas del Evaluador / IA -->
+                  <div class="heuristic-notes-section">
+                    <div class="d-flex align-items-center justify-content-between mb-1">
+                      <span class="fw-semibold text-dark small d-flex align-items-center gap-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                        Observaciones y Evidencia del Evaluador:
+                      </span>
+                      @if (editingObservacionId !== item.id) {
+                        <button type="button" class="btn btn-sm btn-link text-primary text-decoration-none p-0 small fw-medium"
+                                (click)="startEditObservacion(item, $event)">
+                          Editar nota
+                        </button>
+                      }
+                    </div>
+
+                    @if (editingObservacionId === item.id) {
+                      <div class="edit-note-box d-flex flex-column gap-2 mt-1">
+                        <textarea class="form-control form-control-sm" rows="2" [(ngModel)]="tempObservacionText" placeholder="Escribe el razonamiento técnico o evidencia visual encontrada..."></textarea>
+                        <div class="d-flex justify-content-end gap-2">
+                          <button type="button" class="btn btn-sm btn-outline-secondary py-0 px-2 small" (click)="cancelEditObservacion($event)">Cancelar</button>
+                          <button type="button" class="btn btn-sm btn-primary py-0 px-2 small" (click)="saveHeuristicObservacion(item, $event)">Guardar</button>
+                        </div>
+                      </div>
+                    } @else {
+                      <div class="observation-view-box p-2 bg-white border rounded small text-secondary">
+                        @if (item.observacion?.trim()) {
+                          <p class="mb-0 text-dark">{{ item.observacion }}</p>
+                        } @else {
+                          <span class="text-muted fst-italic">Sin observaciones registradas. Haz clic en "Editar nota" para documentar detalles de esta heurística.</span>
+                        }
+                      </div>
+                    }
+                  </div>
+                </div>
+              }
             </div>
-            <span class="badge badge-success">Cumple</span>
-          </div>
-          <div class="check-item">
-            <div class="checkbox"></div>
-            <div class="check-content">
-              <h4>Continuidad</h4>
-              <p>El ojo sigue un flujo visual natural.</p>
-            </div>
-            <span class="badge badge-pending">Pendiente</span>
-          </div>
-          <div class="check-item">
-            <div class="checkbox"></div>
-            <div class="check-content">
-              <h4>Cierre</h4>
-              <p>La información se percibe como una forma completa.</p>
-            </div>
-            <span class="badge badge-pending">Pendiente</span>
-          </div>
-          <div class="check-item active">
-            <div class="checkbox checked"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>
-            <div class="check-content">
-              <h4>Figura - Fondo</h4>
-              <p>Se distingue claramente el contenido del fondo.</p>
-            </div>
-            <span class="badge badge-success">Cumple</span>
-          </div>
+          }
         </div>
       </div>
     </div>
 
-    <!-- Middle Column -->
+    <!-- Middle Column: Resultados de VisAWI Profesional -->
     <div class="col-middle">
-      <div class="card h-100 flex-card">
-        <div class="card-header space-between">
+      <div class="card h-100 flex-card professional-visawi-card">
+        <div class="card-header space-between flex-wrap gap-2">
           <div class="title-group">
-            <div class="card-icon star-blue"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
+            <div class="card-icon star-blue">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round">
+                <polygon
+                  points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+              </svg>
+            </div>
             <div class="card-title-content">
-              <h3>Resultados de VisAWI</h3>
-              <p>Comparativa de la evaluación de usuarios.</p>
+              <div class="d-flex align-items-center gap-2">
+                <h3 class="mb-0">Resultados de VisAWI</h3>
+                <span class="badge rounded-pill" [ngClass]="getMetricLevel(averageVisawi).badgeClass" style="font-size: 0.7rem;">
+                  {{ getMetricLevel(averageVisawi).label }}
+                </span>
+              </div>
+              <p>Evaluación psicométrica de usuarios (Moshagen & Thielsch) vs. Benchmark.</p>
             </div>
           </div>
-          <div class="survey-status">
-            <span class="status-text"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Encuesta completada</span>
-            <span class="status-count">12/12 respuestas</span>
+
+          <div class="header-action-group d-flex align-items-center gap-2">
+            <button class="btn btn-outline-secondary btn-sm d-inline-flex align-items-center gap-1" (click)="openPreviewSurveyModal()" title="Ver la encuesta tal como la ve el usuario">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+              <span>Vista previa</span>
+            </button>
+            <button class="btn btn-outline-primary btn-sm d-inline-flex align-items-center gap-1" (click)="openVisawiModal()" title="Calibrar puntajes y metas de benchmark">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="4" y1="21" y2="14"/><line x1="4" x2="4" y1="10" y2="3"/><line x1="12" x2="12" y1="21" y2="12"/><line x1="12" x2="12" y1="8" y2="3"/><line x1="20" x2="20" y1="21" y2="16"/><line x1="20" x2="20" y1="12" y2="3"/><line x1="2" x2="6" y1="14" y2="14"/><line x1="10" x2="14" y1="8" y2="8"/><line x1="18" x2="22" y1="16" y2="16"/></svg>
+              <span>Ajustar métricas</span>
+            </button>
           </div>
         </div>
 
-        <div class="url-bar">
-          <input type="text" value="https://style-eval.com/survey/abc123" readonly>
-          <button class="btn btn-outline-primary">
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
-            Copiar enlace
-          </button>
+        <!-- Sample Quality & Reliability Bar -->
+        <div class="visawi-reliability-bar px-3 py-2 bg-light border-bottom d-flex align-items-center justify-content-between flex-wrap gap-2 text-muted small">
+          <div class="d-flex align-items-center gap-3">
+            <span class="d-flex align-items-center gap-1 text-success fw-medium">
+              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              {{ assessment?.respuestas_completadas || 30 }}/{{ assessment?.total_respuestas || 30 }} Respuestas (100%)
+            </span>
+            <span class="d-flex align-items-center gap-1">
+              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              Tiempo medio: 2.4 min
+            </span>
+            <span class="d-flex align-items-center gap-1">
+              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              Consenso: 88% (Alta fiabilidad)
+            </span>
+          </div>
+          <span class="text-primary fw-medium">Ponderación: 35% STYLE</span>
         </div>
 
-        <div class="radar-chart-container">
-          <svg viewBox="0 0 400 350" class="radar-chart">
-            <!-- Background Polygons -->
-            <polygon points="200,60 314,142 270,274 130,274 86,142" fill="none" stroke="#e2e8f0" stroke-width="1.5"/>
-            <polygon points="200,85 291,151 256,257 144,257 109,151" fill="none" stroke="#e2e8f0" stroke-width="1.5"/>
-            <polygon points="200,110 268,160 242,239 158,239 132,160" fill="none" stroke="#e2e8f0" stroke-width="1.5"/>
-            <polygon points="200,135 245,168 228,222 172,222 155,168" fill="none" stroke="#e2e8f0" stroke-width="1.5"/>
-            <polygon points="200,160 222,176 214,204 186,204 178,176" fill="none" stroke="#e2e8f0" stroke-width="1.5"/>
-            
-            <!-- Axis lines -->
-            <line x1="200" y1="185" x2="200" y2="60" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="4"/>
-            <line x1="200" y1="185" x2="314" y2="142" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="4"/>
-            <line x1="200" y1="185" x2="270" y2="274" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="4"/>
-            <line x1="200" y1="185" x2="130" y2="274" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="4"/>
-            <line x1="200" y1="185" x2="86" y2="142" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="4"/>
+        <!-- Survey URL sharing bar -->
+        <div class="url-bar p-3 border-bottom">
+          <div class="input-group">
+            <span class="input-group-text bg-white border-end-0 text-muted">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" x2="22" y1="12" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+            </span>
+            <input type="text" class="form-control border-start-0" [value]="assessment?.encuesta_url || 'https://style-eval.com/survey/proy-02'" readonly>
+            <button class="btn btn-outline-primary" (click)="copySurveyUrl()">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="14" height="14" x="8" y="8" rx="2" ry="2" /><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" /></svg>
+              Copiar enlace
+            </button>
+          </div>
+        </div>
 
-            <!-- Axis Labels & Values -->
-            <text x="200" y="40" text-anchor="middle" class="chart-label">Claridad</text>
-            <text x="200" y="55" text-anchor="middle" class="chart-value">4.6<tspan class="chart-total"> / 5</tspan></text>
+        <!-- Radar Chart Container with 2 Layers (Actual vs Benchmark) -->
+        <div class="radar-chart-container position-relative">
+          <svg viewBox="0 0 400 360" class="radar-chart">
+            <!-- Background Polygons (Scale 1 to 7 - Rhombus/Diamonds) -->
+            <polygon points="200,60 325,185 200,310 75,185" fill="none" stroke="#e2e8f0" stroke-width="1.5" />
+            <polygon points="200,78 307,185 200,292 93,185" fill="none" stroke="#e2e8f0" stroke-width="1.2" />
+            <polygon points="200,96 289,185 200,274 111,185" fill="none" stroke="#e2e8f0" stroke-width="1.2" />
+            <polygon points="200,114 271,185 200,256 129,185" fill="none" stroke="#e2e8f0" stroke-width="1.2" />
+            <polygon points="200,131 254,185 200,239 146,185" fill="none" stroke="#e2e8f0" stroke-width="1.2" />
+            <polygon points="200,149 236,185 200,221 164,185" fill="none" stroke="#e2e8f0" stroke-width="1.2" />
+            <polygon points="200,167 218,185 200,203 182,185" fill="none" stroke="#e2e8f0" stroke-width="1.2" />
 
-            <text x="340" y="140" text-anchor="middle" class="chart-label">Simetría</text>
-            <text x="340" y="155" text-anchor="middle" class="chart-value">4.2<tspan class="chart-total"> / 5</tspan></text>
+            <!-- Axis lines for 4 dimensions -->
+            <line x1="200" y1="60" x2="200" y2="310" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="4" />
+            <line x1="75" y1="185" x2="325" y2="185" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="4" />
 
-            <text x="290" y="295" text-anchor="middle" class="chart-label">Jerarquía</text>
-            <text x="290" y="310" text-anchor="middle" class="chart-value">4.1<tspan class="chart-total"> / 5</tspan></text>
+            <!-- Dynamic Axis Labels & Values (Current vs Target) - 4 Subscales from VISAWIdev.xlsx -->
+            <!-- Top: Simplicidad -->
+            <text x="200" y="38" text-anchor="middle" class="chart-label fw-bold">{{ assessment?.visawi_metricas?.[0]?.dimension || 'Simplicidad' }}</text>
+            <text x="200" y="53" text-anchor="middle" class="chart-value">{{ assessment?.visawi_metricas?.[0]?.puntaje || 5.8 }} <tspan fill="#d97706" font-size="0.75em">(Meta: {{ assessment?.visawi_metricas?.[0]?.target || 6.0 }})</tspan></text>
 
-            <text x="110" y="295" text-anchor="middle" class="chart-label">Consistencia</text>
-            <text x="110" y="310" text-anchor="middle" class="chart-value">4.4<tspan class="chart-total"> / 5</tspan></text>
+            <!-- Right: Claridad -->
+            <text x="335" y="180" text-anchor="start" class="chart-label fw-bold">{{ assessment?.visawi_metricas?.[1]?.dimension || 'Claridad' }}</text>
+            <text x="335" y="195" text-anchor="start" class="chart-value">{{ assessment?.visawi_metricas?.[1]?.puntaje || 6.1 }} <tspan fill="#d97706" font-size="0.75em">(Meta: {{ assessment?.visawi_metricas?.[1]?.target || 6.0 }})</tspan></text>
 
-            <text x="60" y="140" text-anchor="middle" class="chart-label">Estética general</text>
-            <text x="60" y="155" text-anchor="middle" class="chart-value">4.3<tspan class="chart-total"> / 5</tspan></text>
+            <!-- Bottom: Diversidad -->
+            <text x="200" y="332" text-anchor="middle" class="chart-label fw-bold">{{ assessment?.visawi_metricas?.[2]?.dimension || 'Diversidad' }}</text>
+            <text x="200" y="347" text-anchor="middle" class="chart-value">{{ assessment?.visawi_metricas?.[2]?.puntaje || 5.2 }} <tspan fill="#d97706" font-size="0.75em">(Meta: {{ assessment?.visawi_metricas?.[2]?.target || 5.5 }})</tspan></text>
 
-            <!-- Numbers inside the chart -->
-            <text x="195" y="155" text-anchor="end" class="chart-scale">1</text>
-            <text x="195" y="130" text-anchor="end" class="chart-scale">2</text>
-            <text x="195" y="105" text-anchor="end" class="chart-scale">3</text>
-            <text x="195" y="80" text-anchor="end" class="chart-scale">4</text>
-            
-            <!-- Data Polygon -->
-            <!-- 
-              Values out of 5, mapped from center (200,185) to outer edge.
-              Outer edge R = 125 (from 185 to 60)
-              Factor = R/5 = 25
-              
-              Claridad: 4.6 * 25 = 115 -> (200, 185 - 115) = (200, 70)
-              Simetría: 4.2 * 25 = 105 -> angle 72 deg
-                dx = 105 * sin(72) = 105 * 0.951 = 99.8
-                dy = 105 * cos(72) = 105 * 0.309 = 32.4
-                (200+99.8, 185-32.4) = (299.8, 152.6)
-              Jerarquía: 4.1 * 25 = 102.5 -> angle 144 deg
-                dx = 102.5 * sin(144) = 102.5 * 0.587 = 60.2
-                dy = 102.5 * cos(144) = 102.5 * -0.809 = -82.9
-                (200+60.2, 185 - (-82.9)) = (260.2, 267.9)
-              Consistencia: 4.4 * 25 = 110 -> angle 216 deg
-                dx = 110 * sin(216) = 110 * -0.587 = -64.6
-                dy = 110 * cos(216) = 110 * -0.809 = -89
-                (200-64.6, 185 - (-89)) = (135.4, 274)
-              Estética: 4.3 * 25 = 107.5 -> angle 288 deg
-                dx = 107.5 * sin(288) = 107.5 * -0.951 = -102.2
-                dy = 107.5 * cos(288) = 107.5 * 0.309 = 33.2
-                (200-102.2, 185 - 33.2) = (97.8, 151.8)
-            -->
-            <polygon points="200,70 299.8,152.6 260.2,267.9 135.4,274 97.8,151.8" fill="rgba(37, 99, 235, 0.15)" stroke="#2563eb" stroke-width="2"/>
-            
-            <!-- Data Points -->
-            <circle cx="200" cy="70" r="4" fill="#2563eb"/>
-            <circle cx="299.8" cy="152.6" r="4" fill="#2563eb"/>
-            <circle cx="260.2" cy="267.9" r="4" fill="#2563eb"/>
-            <circle cx="135.4" cy="274" r="4" fill="#2563eb"/>
-            <circle cx="97.8" cy="151.8" r="4" fill="#2563eb"/>
+            <!-- Left: Armonía -->
+            <text x="65" y="180" text-anchor="end" class="chart-label fw-bold">{{ assessment?.visawi_metricas?.[3]?.dimension || 'Armonía' }}</text>
+            <text x="65" y="195" text-anchor="end" class="chart-value">{{ assessment?.visawi_metricas?.[3]?.puntaje || 5.9 }} <tspan fill="#d97706" font-size="0.75em">(Meta: {{ assessment?.visawi_metricas?.[3]?.target || 6.0 }})</tspan></text>
+
+            <!-- Numbers inside the chart (Scale 1 to 7) -->
+            <text x="195" y="170" text-anchor="end" class="chart-scale">1</text>
+            <text x="195" y="152" text-anchor="end" class="chart-scale">2</text>
+            <text x="195" y="134" text-anchor="end" class="chart-scale">3</text>
+            <text x="195" y="117" text-anchor="end" class="chart-scale">4</text>
+            <text x="195" y="99" text-anchor="end" class="chart-scale">5</text>
+            <text x="195" y="81" text-anchor="end" class="chart-scale">6</text>
+            <text x="195" y="63" text-anchor="end" class="chart-scale">7</text>
+
+            <!-- Layer 1: Benchmark / Target Polygon (Dashed Amber) -->
+            <polygon [attr.points]="radarBenchmarkPolygonPoints" fill="rgba(245, 158, 11, 0.08)" stroke="#f59e0b" stroke-width="2" stroke-dasharray="5 3" />
+            @for (p of radarBenchmarkDataPoints; track p.label) {
+              <circle [attr.cx]="p.x" [attr.cy]="p.y" r="3.5" fill="#f59e0b" />
+            }
+
+            <!-- Layer 2: Actual Score Polygon (Solid Blue) -->
+            <polygon [attr.points]="radarPolygonPoints" fill="rgba(37, 99, 235, 0.2)" stroke="#2563eb" stroke-width="2.5" />
+            @for (p of radarDataPoints; track p.label) {
+              <circle [attr.cx]="p.x" [attr.cy]="p.y" r="4.5" fill="#2563eb" />
+            }
           </svg>
+
+          <!-- Radar Legend -->
+          <div class="radar-legend d-flex align-items-center justify-content-center gap-4 py-2 border-top bg-light-subtle small">
+            <span class="d-inline-flex align-items-center gap-2 fw-medium text-primary">
+              <span class="legend-box actual-box"></span>
+              Puntaje Actual (Prom: {{ averageVisawi }}/7.0)
+            </span>
+            <span class="d-inline-flex align-items-center gap-2 fw-medium text-warning-emphasis">
+              <span class="legend-box target-box"></span>
+              Meta Benchmark (Prom: {{ averageBenchmark }}/7.0)
+            </span>
+          </div>
         </div>
 
-        <div class="divider"></div>
+        <div class="divider my-0"></div>
 
-        <div class="results-summary">
-          <div class="card-header summary-header">
-            <div class="card-icon summary-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" x2="8" y1="13" y2="13"/><line x1="16" x2="8" y1="17" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></div>
-            <h3>Resumen de resultados</h3>
+        <!-- Results Summary with Semantic Qualitative Levels (Scale 1 to 7) -->
+        <div class="results-summary p-3">
+          <div class="d-flex align-items-center justify-content-between mb-3">
+            <div class="d-flex align-items-center gap-2">
+              <div class="card-icon summary-icon" style="width: 28px; height: 28px;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" /><line x1="16" x2="8" y1="13" y2="13" /><line x1="16" x2="8" y1="17" y2="17" /></svg>
+              </div>
+              <h4 class="fs-6 fw-bold mb-0">Desglose de Subescalas (Promedio: {{ averageVisawi }}/7.0)</h4>
+            </div>
+            <button class="btn btn-sm btn-link text-decoration-none p-0 small fw-medium" (click)="toggleVisawiQuestions()">
+              {{ isVisawiQuestionsOpen ? 'Ocultar reactivos' : 'Ver reactivos oficiales (18)' }}
+            </button>
           </div>
 
-          <div class="progress-grid">
-            <div class="progress-item">
-              <div class="progress-label">
-                <span>Claridad</span>
-                <span class="progress-val">4.6</span>
+          <!-- Official Questions Accordion from VISAWIdev.xlsx -->
+          @if (isVisawiQuestionsOpen) {
+            <div class="visawi-questions-accordion mb-3 p-3 bg-light rounded-3 border">
+              <div class="d-flex align-items-center justify-content-between mb-2">
+                <span class="fw-bold text-dark small">Subescalas y Reactivos Oficiales (Moshagen & Thielsch, 2010):</span>
+                <span class="badge bg-secondary-subtle text-secondary border">18 Ítems • Escala 1-7</span>
               </div>
-              <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 92%"></div></div>
-            </div>
-            <div class="progress-item">
-              <div class="progress-label">
-                <span>Consistencia</span>
-                <span class="progress-val">4.4</span>
+              <div class="d-flex flex-column gap-2 small">
+                @for (dim of visawiDimensions; track dim.name) {
+                  <div class="p-2 bg-white rounded border">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                      <strong class="text-primary">{{ dim.name }}:</strong>
+                      <span class="badge bg-light text-muted border">{{ dim.itemsCount }} ítems</span>
+                    </div>
+                    <p class="text-secondary small mb-2 fst-italic">{{ dim.descripcion }}</p>
+                    <ul class="list-unstyled mb-0 ps-2 border-start border-2 border-primary-subtle d-flex flex-column gap-1">
+                      @for (it of getItemsByDimension(dim.name); track it.id) {
+                        <li class="d-flex align-items-start gap-1 text-muted" style="font-size: 0.73rem;">
+                          <span class="fw-bold text-dark">#{{ it.id }}:</span>
+                          <span>{{ it.pregunta }}</span>
+                          @if (it.inverso) {
+                            <span class="badge bg-warning-subtle text-warning-emphasis border" style="font-size: 0.65rem;">Inverso</span>
+                          }
+                        </li>
+                      }
+                    </ul>
+                  </div>
+                }
               </div>
-              <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 88%"></div></div>
             </div>
-            <div class="progress-item">
-              <div class="progress-label">
-                <span>Simetría</span>
-                <span class="progress-val">4.2</span>
+          }
+
+          <!-- Progress Grid with Semantic Colors and Benchmark Indicators (Scale 1 to 7) -->
+          <div class="progress-grid d-flex flex-column gap-3">
+            @for (m of assessment?.visawi_metricas; track m.dimension) {
+              <div class="progress-item p-2 rounded-2 border bg-white shadow-xs">
+                <div class="progress-label d-flex align-items-center justify-content-between mb-1">
+                  <div class="d-flex align-items-center gap-2">
+                    <span class="fw-semibold text-dark">{{ m.dimension }}</span>
+                    <span class="badge rounded-pill" [ngClass]="getMetricLevel(m.puntaje).badgeClass" style="font-size: 0.68rem;">
+                      {{ getMetricLevel(m.puntaje).label }}
+                    </span>
+                  </div>
+                  <div class="d-flex align-items-center gap-2">
+                    <span class="text-muted small">Meta: {{ m.target || 6.0 }}</span>
+                    <span class="fw-bold fs-6 text-dark">{{ m.puntaje }} <span class="text-muted small" style="font-size: 0.72rem;">/ 7.0</span></span>
+                  </div>
+                </div>
+                <div class="progress-bar-bg position-relative" style="height: 8px; border-radius: 4px; background: #e2e8f0;">
+                  <!-- Target marker line (Scale 1 to 7) -->
+                  <div class="target-marker position-absolute top-0 bottom-0"
+                       [style.left.%]="((m.target || 6.0) / 7) * 100"
+                       title="Meta Benchmark"></div>
+                  <!-- Progress fill with level-specific color -->
+                  <div class="progress-bar-fill h-100 rounded-2 transition-all"
+                       [ngClass]="getMetricLevel(m.puntaje).barClass"
+                       [style.width.%]="(m.puntaje / 7) * 100"></div>
+                </div>
               </div>
-              <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 84%"></div></div>
-            </div>
-            <div class="progress-item">
-              <div class="progress-label">
-                <span>Estética general</span>
-                <span class="progress-val">4.3</span>
-              </div>
-              <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 86%"></div></div>
-            </div>
-            <div class="progress-item">
-              <div class="progress-label">
-                <span>Jerarquía</span>
-                <span class="progress-val">4.1</span>
-              </div>
-              <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 82%"></div></div>
-            </div>
+            }
           </div>
+
+          <!-- Critical Bottleneck & Actionable Recommendation Banner -->
+          @if (lowestVisawiMetric) {
+            <div class="visawi-diagnosis-card mt-3 p-3 rounded-3 border border-warning-subtle bg-warning-subtle d-flex flex-column gap-2">
+              <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                <div class="d-flex align-items-center gap-2">
+                  <span class="diagnosis-badge bg-warning text-dark fw-bold rounded px-2 py-0 small">
+                    Foco de Mejora Detectado
+                  </span>
+                  <span class="fw-bold text-dark small">
+                    {{ lowestVisawiMetric.dimension }} ({{ lowestVisawiMetric.puntaje }}/7.0)
+                  </span>
+                  @if (lowestVisawiMetric.gap > 0) {
+                    <span class="text-danger small fw-semibold">
+                      Brecha: -{{ lowestVisawiMetric.gap }} pts vs Meta
+                    </span>
+                  }
+                </div>
+                <button type="button" class="btn btn-sm btn-outline-danger btn-convert-finding py-1 px-2"
+                        (click)="convertVisawiToFinding(lowestVisawiMetric, $event)"
+                        title="Crear un hallazgo en la matriz a partir de esta subescala baja">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+                  <span>Convertir a Hallazgo</span>
+                </button>
+              </div>
+              <p class="mb-0 text-secondary small">
+                <strong>Recomendación UI/UX:</strong> {{ lowestVisawiMetric.recommendation }}
+              </p>
+            </div>
+          }
         </div>
       </div>
     </div>
@@ -313,101 +720,594 @@
       <div class="card">
         <div class="card-header space-between">
           <div class="title-group">
-            <div class="card-icon matrix-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><path d="m9 12 2 2 4-4"/></svg></div>
+            <div class="card-icon matrix-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round">
+                <rect width="18" height="18" x="3" y="3" rx="2" ry="2" />
+                <path d="m9 12 2 2 4-4" />
+              </svg>
+            </div>
             <div class="card-title-content">
               <h3>Matriz de Hallazgos</h3>
-              <p>Registra los problemas encontrados durante la evaluación.</p>
+              <p>Registra y resuelve los problemas detectados en la interfaz.</p>
             </div>
           </div>
-          <button class="btn btn-primary btn-sm">
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" x2="12" y1="5" y2="19"/><line x1="5" x2="19" y1="12" y2="12"/></svg>
+          <button class="btn btn-primary btn-sm" (click)="openAddFindingModal()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="12" x2="12" y1="5" y2="19" />
+              <line x1="5" x2="19" y1="12" y2="12" />
+            </svg>
             Agregar hallazgo
+          </button>
+        </div>
+
+        <!-- Filter Chips Bar -->
+        <div class="findings-filter-bar">
+          <button class="filter-chip" [class.active]="findingsFilter === 'todos'" (click)="findingsFilter = 'todos'">
+            Todos ({{ assessment?.hallazgos?.length || 0 }})
+          </button>
+          <button class="filter-chip chip-critical" [class.active]="findingsFilter === 'criticos'" (click)="findingsFilter = 'criticos'">
+            Críticos ({{ criticalFindingsCount }})
+          </button>
+          <button class="filter-chip chip-pending" [class.active]="findingsFilter === 'pendientes'" (click)="findingsFilter = 'pendientes'">
+            Pendientes
+          </button>
+          <button class="filter-chip chip-resolved" [class.active]="findingsFilter === 'resueltos'" (click)="findingsFilter = 'resueltos'">
+            Resueltos
           </button>
         </div>
 
         <table class="findings-table">
           <thead>
             <tr>
+              <th style="width: 105px;">Estado</th>
               <th>Problema</th>
               <th>Severidad</th>
               <th>Fase de origen</th>
-              <th>Acciones</th>
+              <th style="width: 45px; text-align: center;">Acciones</th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td class="prob-text">El botón principal no destaca suficientemente.</td>
-              <td><span class="badge-status mayor">Mayor</span></td>
-              <td class="fase-text">Fase 3<br><span class="muted-text">(Diseño Visual)</span></td>
-              <td class="actions-td"><button class="btn-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button></td>
-            </tr>
-            <tr>
-              <td class="prob-text">La jerarquía de títulos genera confusión en la lectura.</td>
-              <td><span class="badge-status critico">Crítico</span></td>
-              <td class="fase-text">Fase 2<br><span class="muted-text">(Diseño Conceptual)</span></td>
-              <td class="actions-td"><button class="btn-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button></td>
-            </tr>
-            <tr>
-              <td class="prob-text">Espaciado entre secciones inconsistente.</td>
-              <td><span class="badge-status menor">Menor</span></td>
-              <td class="fase-text">Fase 4<br><span class="muted-text">(Diseño Detallado)</span></td>
-              <td class="actions-td"><button class="btn-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button></td>
-            </tr>
-            <tr>
-              <td class="prob-text">Iconos con estilo mixto (lineal y relleno).</td>
-              <td><span class="badge-status mayor">Mayor</span></td>
-              <td class="fase-text">Fase 3<br><span class="muted-text">(Diseño Visual)</span></td>
-              <td class="actions-td"><button class="btn-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button></td>
-            </tr>
-            <tr>
-              <td class="prob-text">Texto secundario con bajo contraste.</td>
-              <td><span class="badge-status menor">Menor</span></td>
-              <td class="fase-text">Fase 4<br><span class="muted-text">(Diseño Detallado)</span></td>
-              <td class="actions-td"><button class="btn-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button></td>
-            </tr>
+            @for (h of filteredFindings; track h.id) {
+              <tr [class.row-resolved]="h.resuelto">
+                <td>
+                  <button class="status-toggle-badge" [class.resolved]="h.resuelto" (click)="toggleFindingResolved(h, $event)" 
+                          [title]="h.resuelto ? 'Marcar como pendiente' : 'Marcar como resuelto'">
+                    @if (h.resuelto) {
+                      <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                      <span>Resuelto</span>
+                    } @else {
+                      <span class="status-dot-pending"></span>
+                      <span>Pendiente</span>
+                    }
+                  </button>
+                </td>
+                <td class="prob-text" [class.strikethrough]="h.resuelto">
+                  {{ h.problema }}
+                </td>
+                <td>
+                  <span class="badge-status" [ngClass]="h.severidad">
+                    {{ h.severidad | titlecase }}
+                  </span>
+                </td>
+                <td class="fase-text">
+                  Fase {{ h.fase_origen }}<br>
+                  <span class="muted-text">({{ h.fase_origen_nombre }})</span>
+                </td>
+                <td class="actions-td" style="position: relative;">
+                  <button class="btn-icon" (click)="toggleActionMenu(h.id, $event)">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <circle cx="12" cy="12" r="1" />
+                      <circle cx="12" cy="5" r="1" />
+                      <circle cx="12" cy="19" r="1" />
+                    </svg>
+                  </button>
+
+                  @if (activeActionRowId === h.id) {
+                    <div class="table-action-menu" (click)="$event.stopPropagation()">
+                      <button class="action-menu-item" (click)="openEditFindingModal(h)">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
+                        Editar
+                      </button>
+                      <button class="action-menu-item" (click)="toggleFindingResolved(h, $event)">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                        {{ h.resuelto ? 'Reabrir' : 'Resolver' }}
+                      </button>
+                      <button class="action-menu-item text-danger" (click)="deleteFinding(h.id)">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                        Eliminar
+                      </button>
+                    </div>
+                  }
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="5" class="text-center py-4 text-muted">
+                  No hay hallazgos para el filtro seleccionado.
+                </td>
+              </tr>
+            }
           </tbody>
         </table>
       </div>
 
+      <!-- Conclusion Card -->
       <div class="card conclusion-card">
         <div class="card-header">
-          <div class="card-icon conclusion-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
-          <h3>Conclusión</h3>
+          <div class="card-icon conclusion-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+              viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+              <polyline points="22 4 12 14.01 9 11.01" />
+            </svg>
+          </div>
+          <h3>Conclusión y Cierre</h3>
         </div>
 
-        <div class="approval-box">
+        <div class="approval-box" [ngClass]="criticalFindingsCount > 0 ? 'box-warning' : 'box-success'">
           <div class="approval-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+            @if (criticalFindingsCount > 0) {
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
+                <line x1="12" y1="9" x2="12" y2="13" />
+                <line x1="12" y1="17" x2="12.01" y2="17" />
+              </svg>
+            } @else {
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 6 9 17l-5-5" />
+              </svg>
+            }
           </div>
           <div class="approval-text">
-            <h4>Aprobado</h4>
-            <p>La interfaz cumple con los criterios de evaluación estética.</p>
+            <h4>{{ criticalFindingsCount > 0 ? 'Requiere Ajustes' : (assessment?.conclusion_estado || 'Aprobado') }}</h4>
+            <p>{{ criticalFindingsCount > 0 ? 'Se detectaron hallazgos críticos pendientes de resolver antes de la aprobación.' : (assessment?.conclusion_texto || 'La interfaz cumple con los criterios de evaluación estética satisfactoriamente.') }}</p>
           </div>
         </div>
 
         <div class="justification">
-          <h5>Justificación</h5>
+          <h5>Justificación del Dictamen</h5>
           <ul class="justification-list">
-            <li>
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="check-green"><path d="M20 6 9 17l-5-5"/></svg>
-              La mayoría de los principios de Gestalt se cumplen (4 de 5).
-            </li>
-            <li>
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="check-green"><path d="M20 6 9 17l-5-5"/></svg>
-              Los resultados del cuestionario VisAWI muestran una puntuación promedio de 4.3/5.
-            </li>
-            <li>
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="check-green"><path d="M20 6 9 17l-5-5"/></svg>
-              No se identifican hallazgos críticos que afecten la experiencia del usuario.
-            </li>
+            @for (just of assessment?.justificaciones; track $index) {
+              <li>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                  class="check-green">
+                  <path d="M20 6 9 17l-5-5" />
+                </svg>
+                {{ just }}
+              </li>
+            }
           </ul>
         </div>
-        
+
+        <!-- Botón para Finalizar Proyecto -->
+        <div class="conclusion-cta-container">
+          @if (project?.estado === 'completado') {
+            <div class="project-finalized-card">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/>
+                <path d="m9 12 2 2 4-4"/>
+              </svg>
+              <span>¡Proyecto Finalizado con Éxito en el Framework STYLE!</span>
+            </div>
+          } @else {
+            <button class="btn btn-primary btn-finalize" 
+                    [disabled]="criticalFindingsCount > 0 || isFinalizingProject"
+                    (click)="finalizeProject()">
+              @if (isFinalizingProject) {
+                <span>Finalizando...</span>
+              } @else {
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                  <polyline points="22 4 12 14.01 9 11.01" />
+                </svg>
+                <span>Aprobar Evaluación y Finalizar Proyecto</span>
+              }
+            </button>
+            @if (criticalFindingsCount > 0) {
+              <p class="finalize-hint">
+                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                Debes resolver {{ criticalFindingsCount }} hallazgo(s) crítico(s) para poder finalizar el proyecto.
+              </p>
+            }
+          }
+        </div>
+
         <div class="conclusion-footer">
-          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-          Última evaluación: 12 sep 2025, 04:32 p. m.
+          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10" />
+            <polyline points="12 6 12 12 16 14" />
+          </svg>
+          Última evaluación: {{ (assessment?.actualizado_en || assessment?.creado_en) | date:'dd MMM yyyy, hh:mm a' }}
         </div>
       </div>
     </div>
+  </div>
+
+  <!-- Modal: Agregar Hallazgo -->
+  @if (isAddModalOpen) {
+    <div class="modal-backdrop" (click)="closeAddFindingModal()">
+      <div class="modal-card" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h3>Registrar Hallazgo</h3>
+          <button class="btn-close" (click)="closeAddFindingModal()">&times;</button>
+        </div>
+
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Descripción del problema:</label>
+            <textarea class="form-control" rows="3" [(ngModel)]="newFinding.problema" 
+                      placeholder="Ej. El contraste de texto secundario no cumple con accesibilidad WCAG..."></textarea>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Severidad:</label>
+              <select class="form-control" [(ngModel)]="newFinding.severidad">
+                <option value="menor">Menor</option>
+                <option value="mayor">Mayor</option>
+                <option value="critico">Crítico</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Fase de Origen:</label>
+              <select class="form-control" [ngModel]="newFinding.fase_origen" (ngModelChange)="onFaseChange($event, 'new')">
+                <option [ngValue]="1">Fase 1 (Investigación)</option>
+                <option [ngValue]="2">Fase 2 (Diseño Conceptual)</option>
+                <option [ngValue]="3">Fase 3 (Diseño Visual)</option>
+                <option [ngValue]="4">Fase 4 (Diseño Detallado)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button class="btn btn-outline" (click)="closeAddFindingModal()" [disabled]="isSaving">Cancelar</button>
+          <button class="btn btn-primary" (click)="saveFinding()" [disabled]="isSaving">
+            @if (isSaving) {
+              <span>Guardando...</span>
+            } @else {
+              <span>Guardar Hallazgo</span>
+            }
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Modal: Editar Hallazgo -->
+  @if (isEditModalOpen) {
+    <div class="modal-backdrop" (click)="closeEditFindingModal()">
+      <div class="modal-card" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h3>Editar Hallazgo</h3>
+          <button class="btn-close" (click)="closeEditFindingModal()">&times;</button>
+        </div>
+
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Descripción del problema:</label>
+            <textarea class="form-control" rows="3" [(ngModel)]="editingFinding.problema"></textarea>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Severidad:</label>
+              <select class="form-control" [(ngModel)]="editingFinding.severidad">
+                <option value="menor">Menor</option>
+                <option value="mayor">Mayor</option>
+                <option value="critico">Crítico</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Fase de Origen:</label>
+              <select class="form-control" [ngModel]="editingFinding.fase_origen" (ngModelChange)="onFaseChange($event, 'edit')">
+                <option [ngValue]="1">Fase 1 (Investigación)</option>
+                <option [ngValue]="2">Fase 2 (Diseño Conceptual)</option>
+                <option [ngValue]="3">Fase 3 (Diseño Visual)</option>
+                <option [ngValue]="4">Fase 4 (Diseño Detallado)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-check-box">
+            <label class="custom-checkbox-label">
+              <input type="checkbox" [(ngModel)]="editingFinding.resuelto">
+              <span>Marcar este problema como resuelto</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button class="btn btn-outline" (click)="closeEditFindingModal()" [disabled]="isSaving">Cancelar</button>
+          <button class="btn btn-primary" (click)="saveEditFinding()" [disabled]="isSaving">
+            @if (isSaving) {
+              <span>Guardando...</span>
+            } @else {
+              <span>Guardar Cambios</span>
+            }
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Modal: Ajustar Métricas VisAWI -->
+  @if (isVisawiModalOpen) {
+    <div class="modal-backdrop" (click)="closeVisawiModal()">
+      <div class="modal-card modal-lg" (click)="$event.stopPropagation()" style="max-width: 680px;">
+        <div class="modal-header">
+          <div>
+            <h3 class="mb-0">Ajustar Métricas y Metas VisAWI</h3>
+            <p class="text-muted small mb-0">Calibración psicométrica y objetivos de diseño estético</p>
+          </div>
+          <button class="btn-close" (click)="closeVisawiModal()">&times;</button>
+        </div>
+
+        <div class="modal-body">
+          <p class="modal-intro mb-3">Modifica las puntuaciones psicométricas promedio (escala 1.0 a 7.0 del instrumento oficial VisAWI) observadas en las encuestas y define la meta deseada (Benchmark Target) para actualizar el gráfico Radar bidimensional.</p>
+
+          <div class="metric-sliders-list d-flex flex-column gap-3">
+            @for (m of tempVisawiMetrics; track m.dimension) {
+              <div class="metric-slider-card p-3 rounded-3 border bg-light">
+                <div class="d-flex align-items-center justify-content-between mb-1">
+                  <strong class="text-dark fs-6">{{ m.dimension }}</strong>
+                  <span class="badge rounded-pill" [ngClass]="getMetricLevel(m.puntaje).badgeClass">
+                    {{ getMetricLevel(m.puntaje).label }}
+                  </span>
+                </div>
+                @if (m.reactivo) {
+                  <p class="text-secondary small mb-2 fst-italic">"{{ m.reactivo }}"</p>
+                }
+                
+                <div class="row g-3">
+                  <!-- Puntaje Actual -->
+                  <div class="col-md-6">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                      <span class="small fw-semibold text-primary">Puntaje Actual (Muestra):</span>
+                      <span class="fw-bold text-primary">{{ m.puntaje }} / 7.0</span>
+                    </div>
+                    <input type="range" class="form-range slider-actual" min="1.0" max="7.0" step="0.1" [(ngModel)]="m.puntaje">
+                  </div>
+                  <!-- Benchmark Target -->
+                  <div class="col-md-6">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                      <span class="small fw-semibold text-warning-emphasis">Meta Benchmark:</span>
+                      <span class="fw-bold text-warning-emphasis">{{ m.target || 6.0 }} / 7.0</span>
+                    </div>
+                    <input type="range" class="form-range slider-target" min="1.0" max="7.0" step="0.1" [(ngModel)]="m.target">
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button class="btn btn-outline" (click)="closeVisawiModal()" [disabled]="isSaving">Cancelar</button>
+          <button class="btn btn-primary" (click)="saveVisawiMetrics()" [disabled]="isSaving">
+            @if (isSaving) {
+              <span>Guardando...</span>
+            } @else {
+              <span>Guardar Métricas y Metas</span>
+            }
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Modal: Vista Previa de Encuesta Psicométrica VisAWI Oficial (18 Ítems) -->
+  @if (isPreviewSurveyModalOpen) {
+    <div class="modal-backdrop" (click)="closePreviewSurveyModal()">
+      <div class="modal-card modal-lg" (click)="$event.stopPropagation()" style="max-width: 860px; max-height: 90vh;">
+        <div class="modal-header d-flex justify-content-between align-items-center">
+          <div class="d-flex align-items-center gap-2">
+            <div class="card-icon star-blue" style="width: 36px; height: 36px;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+              </svg>
+            </div>
+            <div>
+              <h3 class="mb-0 fs-5">Encuesta Psicométrica VisAWI Oficial (Vista Participante)</h3>
+              <p class="text-muted small mb-0">Visual Aesthetics of Websites Inventory • Escala Likert de 7 Puntos (VISAWIdev.xlsx)</p>
+            </div>
+          </div>
+          <button class="btn-close" (click)="closePreviewSurveyModal()">&times;</button>
+        </div>
+
+        <div class="modal-body p-4" style="overflow-y: auto; max-height: calc(90vh - 140px);">
+          <!-- Top alert with instrument context -->
+          <div class="alert alert-info border-info-subtle bg-info-subtle d-flex align-items-start gap-2 mb-3 py-2 px-3 small">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-info-emphasis flex-shrink-0 mt-1"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+            <div>
+              <strong>Simulador del instrumento de investigación:</strong> Contiene los 18 ítems validados distribuidos en las 4 subescalas canónicas (Simplicidad, Claridad, Diversidad y Armonía). Cada usuario califica en escala Likert del 1 al 7.
+            </div>
+          </div>
+
+          <!-- Switcher: Completo (18 ítems) vs Resumen (4 Subescalas) -->
+          <div class="d-flex align-items-center justify-content-between mb-3 pb-2 border-bottom">
+            <div class="btn-group btn-group-sm">
+              <button type="button" class="btn" [class.btn-primary]="previewSurveyMode === 'completo'" [class.btn-outline-primary]="previewSurveyMode !== 'completo'" (click)="previewSurveyMode = 'completo'">
+                Cuestionario Completo (18 Ítems)
+              </button>
+              <button type="button" class="btn" [class.btn-primary]="previewSurveyMode === 'dimensiones'" [class.btn-outline-primary]="previewSurveyMode !== 'dimensiones'" (click)="previewSurveyMode = 'dimensiones'">
+                Vista por Subescalas (4)
+              </button>
+            </div>
+            <span class="text-muted small">Escala: 1 (Totalmente en desacuerdo) a 7 (Totalmente de acuerdo)</span>
+          </div>
+
+          <!-- Mode A: Cuestionario Completo de 18 Ítems organizados por Subescala -->
+          @if (previewSurveyMode === 'completo') {
+            <div class="survey-dimensions-container d-flex flex-column gap-4">
+              @for (dim of visawiDimensions; track dim.name) {
+                <div class="dimension-block border rounded-3 p-3 bg-light-subtle">
+                  <div class="dimension-block-header d-flex align-items-center justify-content-between mb-2">
+                    <div>
+                      <h4 class="fs-6 fw-bold text-primary mb-0">{{ dim.name | uppercase }}</h4>
+                      <p class="text-muted small mb-0 fst-italic">{{ dim.descripcion }}</p>
+                    </div>
+                    <span class="badge bg-primary text-white">{{ dim.itemsCount }} preguntas</span>
+                  </div>
+
+                  <div class="d-flex flex-column gap-3 mt-3">
+                    @for (it of getItemsByDimension(dim.name); track it.id) {
+                      <div class="survey-question-card p-3 rounded-2 border bg-white shadow-xs">
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                          <div class="d-flex align-items-center gap-2">
+                            <span class="badge bg-secondary-subtle text-secondary border fw-semibold">Ítem {{ it.id }}</span>
+                            @if (it.inverso) {
+                              <span class="badge bg-warning-subtle text-warning-emphasis border" style="font-size: 0.65rem;" title="Este ítem se codifica de forma inversa en el análisis estadístico">Ítem Inverso</span>
+                            }
+                          </div>
+                          <span class="text-muted small" style="font-size: 0.72rem;">Likert 1-7</span>
+                        </div>
+
+                        <h5 class="survey-question-text fw-medium fs-6 text-dark mb-3">
+                          "{{ it.pregunta }}"
+                        </h5>
+
+                        <!-- 7 Likert Radio Options -->
+                        <div class="likert-scale-options d-flex justify-content-between align-items-center gap-1 flex-wrap">
+                          @for (opt of likertScale7; track opt.value) {
+                            <label class="likert-option flex-grow-1 text-center py-2 px-1 rounded-2 border cursor-pointer"
+                                   [class.selected]="previewItemAnswers[it.id] === opt.value"
+                                   [title]="opt.label">
+                              <input type="radio" class="d-none" [name]="'item_' + it.id" [value]="opt.value" [(ngModel)]="previewItemAnswers[it.id]">
+                              <span class="d-block fw-bold fs-6">{{ opt.value }}</span>
+                              <span class="likert-caption d-block text-muted" style="font-size: 0.65rem; line-height: 1.1;">{{ opt.short }}</span>
+                            </label>
+                          }
+                        </div>
+                      </div>
+                    }
+                  </div>
+                </div>
+              }
+            </div>
+          }
+
+          <!-- Mode B: Vista Agregada por las 4 Subescalas -->
+          @if (previewSurveyMode === 'dimensiones') {
+            <div class="survey-questions-list d-flex flex-column gap-3">
+              @for (m of assessment?.visawi_metricas; track m.dimension; let idx = $index) {
+                <div class="survey-question-card p-3 rounded-3 border bg-white shadow-xs">
+                  <div class="d-flex align-items-center justify-content-between mb-2">
+                    <span class="badge bg-primary-subtle text-primary border border-primary-subtle fw-semibold">
+                      Subescala {{ idx + 1 }}: {{ m.dimension }}
+                    </span>
+                    <span class="badge rounded-pill" [ngClass]="getMetricLevel(m.puntaje).badgeClass">
+                      Promedio: {{ m.puntaje }} / 7.0
+                    </span>
+                  </div>
+                  
+                  <h5 class="survey-question-text fw-medium fs-6 text-dark mb-3">
+                    "{{ m.reactivo || 'Evaluación del principio psicométrico en la interfaz.' }}"
+                  </h5>
+
+                  <div class="likert-scale-options d-flex justify-content-between align-items-center gap-1 flex-wrap">
+                    @for (opt of likertScale7; track opt.value) {
+                      <label class="likert-option flex-grow-1 text-center py-2 px-1 rounded-2 border cursor-pointer"
+                             [class.selected]="previewAnswers[m.dimension] === opt.value"
+                             [title]="opt.label">
+                        <input type="radio" class="d-none" [name]="'survey_' + m.dimension" [value]="opt.value" [(ngModel)]="previewAnswers[m.dimension]">
+                        <span class="d-block fw-bold fs-6">{{ opt.value }}</span>
+                        <span class="likert-caption d-block text-muted" style="font-size: 0.65rem; line-height: 1.1;">{{ opt.short }}</span>
+                      </label>
+                    }
+                  </div>
+                </div>
+              }
+            </div>
+          }
+        </div>
+
+        <div class="modal-footer d-flex justify-content-between align-items-center">
+          <span class="text-muted small">Enlace público de recolección: <code>{{ assessment?.encuesta_url || 'https://style-eval.com/survey/proy-02' }}</code></span>
+          <button class="btn btn-primary" (click)="closePreviewSurveyModal()">Entendido / Cerrar</button>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Modal: Inspección de Pantalla Hi-Fi de Fase 4 -->
+  @if (isScreenModalOpen && selectedPantalla) {
+    <div class="modal-backdrop" (click)="closeScreenModal()">
+      <div class="modal-card modal-lg" (click)="$event.stopPropagation()" style="max-width: 850px;">
+        <div class="modal-header d-flex justify-content-between align-items-center">
+          <div>
+            <h3 class="mb-0">{{ selectedPantalla.nombre_pantalla }}</h3>
+            <span class="badge mt-1" [ngClass]="selectedPantalla.estado_diseno === 'verificado' ? 'bg-success' : 'bg-warning text-dark'">
+              Estado: {{ selectedPantalla.estado_diseno === 'verificado' ? 'Verificado en Fase 4' : 'En Revisión' }}
+            </span>
+          </div>
+          <button class="btn-close" (click)="closeScreenModal()">&times;</button>
+        </div>
+
+        <div class="modal-body p-3">
+          <div class="row g-3">
+            <div class="col-md-7 text-center">
+              <div class="border rounded-3 p-2 bg-light d-flex align-items-center justify-content-center" style="min-height: 380px; max-height: 480px; overflow: hidden;">
+                @if (selectedPantalla.archivo_url) {
+                  <img [src]="getImageUrl(selectedPantalla.archivo_url)" [alt]="selectedPantalla.nombre_pantalla" class="img-fluid rounded" style="max-height: 450px; object-fit: contain;">
+                } @else {
+                  <p class="text-muted">No hay archivo gráfico cargado aún para esta pantalla.</p>
+                }
+              </div>
+            </div>
+
+            <div class="col-md-5 d-flex flex-column gap-3">
+              <div class="card p-3 border rounded-3 bg-white shadow-none">
+                <h5 class="fw-bold fs-6 mb-2">Alertas Visuales Detectadas</h5>
+                @if (selectedPantalla.alertas.length > 0) {
+                  <div class="d-flex flex-column gap-2" style="max-height: 300px; overflow-y: auto;">
+                    @for (al of selectedPantalla.alertas; track al.id) {
+                      <div class="p-2 border rounded-2" [ngClass]="al.tipo === 'error' ? 'bg-danger-subtle border-danger' : (al.tipo === 'warning' ? 'bg-warning-subtle border-warning' : 'bg-info-subtle border-info')">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                          <strong class="small">{{ al.elemento }}</strong>
+                          <span class="badge" [ngClass]="al.tipo === 'error' ? 'bg-danger' : (al.tipo === 'warning' ? 'bg-warning text-dark' : 'bg-info')">
+                            {{ al.tipo | uppercase }}
+                          </span>
+                        </div>
+                        <p class="small mb-1 text-dark">{{ al.mensaje }}</p>
+                        @if (al.detectado || al.esperado) {
+                          <div class="text-muted" style="font-size: 0.75rem;">
+                            <span>Detectado: <code>{{ al.detectado || 'N/A' }}</code></span> |
+                            <span>Esperado: <code>{{ al.esperado || 'N/A' }}</code></span>
+                          </div>
+                        }
+                      </div>
+                    }
+                  </div>
+                } @else {
+                  <p class="text-success small mb-0">✓ No se detectaron alertas o discrepancias visuales en esta pantalla.</p>
+                }
+              </div>
+
+              <div class="d-flex gap-2 mt-auto">
+                <button class="btn btn-outline-primary btn-sm flex-grow-1" (click)="filterByScreen(selectedPantalla.nodo_id); closeScreenModal()">
+                  Filtrar hallazgos de esta pantalla
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button class="btn btn-secondary btn-sm" (click)="closeScreenModal()">Cerrar</button>
+        </div>
+      </div>
+    </div>
+  }
   </div>
 </div>
