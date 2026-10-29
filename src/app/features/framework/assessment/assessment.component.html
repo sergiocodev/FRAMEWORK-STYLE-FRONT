@@ -79,27 +79,16 @@
           </div>
         </div>
 
-        <!-- Header Actions: Sync Fase 4 & AI Audit -->
+        <!-- Header Actions: Sync Fase 4 -->
         <div class="d-flex align-items-center gap-2 flex-wrap">
           <button class="btn btn-outline-primary d-flex align-items-center gap-2 shadow-sm"
-                  [disabled]="isSyncingFase4 || isAuditingIa"
+                  [disabled]="isSyncingFase4"
                   (click)="syncWithFase4()"
                   title="Importa alertas y no conformidades de la Fase 4 directamente a la matriz de hallazgos">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" [class.spin]="isSyncingFase4">
               <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
             </svg>
             <span>{{ isSyncingFase4 ? 'Sincronizando...' : 'Sincronizar Fase 4' }}</span>
-          </button>
-
-          <button class="btn btn-primary d-flex align-items-center gap-2 shadow-sm text-white"
-                  [disabled]="isAuditingIa || isSyncingFase4"
-                  (click)="runAiAudit()"
-                  style="background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); border: none;">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" [class.spin]="isAuditingIa">
-              <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/>
-              <path d="M5 3v4M3 5h4M19 17v4M17 19h4"/>
-            </svg>
-            <span>{{ isAuditingIa ? 'Auditoría IA en proceso...' : 'Auditoría Estética con IA' }}</span>
           </button>
         </div>
       </div>
@@ -337,12 +326,6 @@
                   <div class="d-flex align-items-center gap-2 flex-wrap mb-1">
                     <span class="badge bg-light text-secondary border font-monospace" style="font-size: 0.75rem;">{{ item.id | uppercase }}</span>
                     <h4 class="mb-0 fw-bold fs-6 text-dark">{{ item.titulo }}</h4>
-                    @if (item.evaluado_por_ia) {
-                      <span class="badge bg-primary-subtle text-primary border border-primary-subtle d-inline-flex align-items-center gap-1" style="font-size: 0.7rem;">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
-                        Gemini IA
-                      </span>
-                    }
                   </div>
                   <p class="text-muted small mb-0">{{ item.descripcion }}</p>
                 </div>
@@ -426,7 +409,7 @@
                     </div>
                   </div>
 
-                  <!-- Observaciones y Notas del Evaluador / IA -->
+                  <!-- Observaciones y Notas del Evaluador -->
                   <div class="heuristic-notes-section">
                     <div class="d-flex align-items-center justify-content-between mb-1">
                       <span class="fw-semibold text-dark small d-flex align-items-center gap-1">

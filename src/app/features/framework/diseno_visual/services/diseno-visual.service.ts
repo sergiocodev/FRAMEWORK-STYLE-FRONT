@@ -55,6 +55,45 @@ export interface DisenoVisualCompleto {
   iconos: IconItem[];
 }
 
+export interface MSSBOAOptimizeRequest {
+  base_hex: string;
+  harmony_type?: string;
+  mode?: string;
+  wcag_target?: string;
+  population_size?: number;
+  max_iterations?: number;
+  seed?: number;
+}
+
+export interface MSSBOAOptimizedColor {
+  hex_code: string;
+  nombre: string;
+  token_name: string;
+  uso: string;
+  orden: number;
+}
+
+export interface MSSBOAAestheticMetrics {
+  contrast_score: number;
+  harmony_score: number;
+  diversity_score: number;
+  fitness_score: number;
+  min_contrast: number;
+  wcag_compliant: boolean;
+  harmony_template: string;
+  theme_mode: string;
+}
+
+export interface MSSBOAOptimizeResponse {
+  colores: MSSBOAOptimizedColor[];
+  metrics: MSSBOAAestheticMetrics;
+  iterations: number;
+  population_size: number;
+  execution_time_ms: number;
+  convergence_history: number[];
+}
+
+
 @Injectable({
   providedIn: 'root'
 })
@@ -178,4 +217,18 @@ export class DisenoVisualService {
       })
     );
   }
+
+  // ---- MSSBOA Optimizer (Bio-inspired Aesthetic Color Harmony) ----
+  optimizarConMSSBOA(request: MSSBOAOptimizeRequest): Observable<MSSBOAOptimizeResponse> {
+    return this.http.post<MSSBOAOptimizeResponse>(`${this.apiUrl}/optimizador/mssboa`, request);
+  }
+
+  reemplazarColoresBatch(proyectoId: number, colores: ColorItem[]): Observable<ColorItem[]> {
+    return this.http.post<ColorItem[]>(`${this.apiUrl}/${proyectoId}/colores/batch`, colores).pipe(
+      tap(res => {
+        this.colores.set(res);
+      })
+    );
+  }
 }
+

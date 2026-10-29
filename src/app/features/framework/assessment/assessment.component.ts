@@ -162,7 +162,6 @@ export class AssessmentComponent implements OnInit {
   selectedPantalla: PantallaFase4Item | null = null;
   isScreenModalOpen: boolean = false;
   isSyncingFase4: boolean = false;
-  isAuditingIa: boolean = false;
   selectedScreenFilter: number | 'todas' = 'todas';
 
   // Heuristic State & Accordion
@@ -817,7 +816,7 @@ export class AssessmentComponent implements OnInit {
     return list.filter(h => h.severidad === 'critico' && !h.resuelto).length;
   }
 
-  // --- Integración con Fase 4 & Auditoría IA ---
+  // --- Integración con Fase 4 ---
   getImageUrl(path?: string): string {
     if (!path) return '';
     if (path.startsWith('http://') || path.startsWith('https://')) return path;
@@ -879,22 +878,6 @@ export class AssessmentComponent implements OnInit {
         console.error('Error al sincronizar con Fase 4:', err);
         this.isSyncingFase4 = false;
         alert('Ocurrió un error al sincronizar con los resultados de Fase 4.');
-      }
-    });
-  }
-
-  runAiAudit(): void {
-    this.isAuditingIa = true;
-    this.assessmentService.auditarConIa(this.projectId).subscribe({
-      next: (data) => {
-        this.assessment = data.evaluacion;
-        this.isAuditingIa = false;
-        this.showToast('¡Auditoría visual con IA completada exitosamente!');
-      },
-      error: (err) => {
-        console.error('Error en auditoría IA:', err);
-        this.isAuditingIa = false;
-        alert('Hubo un error al ejecutar la auditoría visual con IA.');
       }
     });
   }

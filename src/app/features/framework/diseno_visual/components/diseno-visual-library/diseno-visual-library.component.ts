@@ -2,7 +2,14 @@ import { Component, OnInit, computed, effect, inject, signal, Input } from '@ang
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { DisenoVisualService, ColorItem, TypographyItem, DisenoVisualConfig } from '../../services/diseno-visual.service';
+import { 
+  DisenoVisualService, 
+  ColorItem, 
+  TypographyItem, 
+  DisenoVisualConfig,
+  MSSBOAOptimizeResponse,
+  MSSBOAOptimizeRequest
+} from '../../services/diseno-visual.service';
 import { InvestigationService } from '../../../services/investigation.service';
 
 @Component({
@@ -45,12 +52,28 @@ export class DisenoVisualLibraryComponent implements OnInit {
   colorToFix: ColorItem | null = null;
   suggestedHex: string = '';
 
-  // Harmony Generator state
-  showHarmonyModal = false;
-  harmonyBaseColor: ColorItem | null = null;
-  harmonyType: string = 'Analogous';
-  harmonyTypes = ['Analogous', 'Complementary', 'Triadic', 'Monochromatic', 'TonalScale'];
-  harmonyPreview: { hex: string, role: string }[] = [];
+  // MSSBOA Optimizer State
+  showMssboaModal = false;
+  mssboaIsOptimizing = false;
+  mssboaBaseHex = '#2563EB';
+  mssboaHarmonyType = 'Complementary';
+  mssboaHarmonyTypes = [
+    { id: 'Complementary', label: 'Complementaria (Equilibrio opuesto)' },
+    { id: 'Analogous', label: 'Análoga (Armonía vecina serena)' },
+    { id: 'Triadic', label: 'Triádica (3 colores dinámicos)' },
+    { id: 'SplitComplementary', label: 'Complementaria Dividida (Contraste fino)' },
+    { id: 'Tetradic', label: 'Tetrádica (Doble complementaria rica)' },
+    { id: 'Matsuda_V', label: 'Plantilla Matsuda Tipo V (Doble foco)' },
+    { id: 'Matsuda_Y', label: 'Plantilla Matsuda Tipo Y (Tríada extendida)' }
+  ];
+  mssboaThemeMode: string = 'light';
+  mssboaWcagTarget: string = 'AA';
+  mssboaPopulationSize: number = 30;
+  mssboaIterations: number = 50;
+  mssboaResult: MSSBOAOptimizeResponse | null = null;
+  mssboaApplyMode: 'replace' | 'append' = 'replace';
+  mssboaFeedbackMessage: string = '';
+
 
   sanitizer = inject(DomSanitizer);
   uploadedIcons: { name: string, token: string, svg: SafeHtml }[] = [];
@@ -830,113 +853,97 @@ export class DisenoVisualLibraryComponent implements OnInit {
     }
   }
 
-  // Harmony Generator Logic
-  abrirModalArmonias() {
-    this.showHarmonyModal = true;
-    this.harmonyType = 'Analogous';
-    const mainColor = this.colores().find((c: ColorItem) => c.uso === 'Principal');
-    this.harmonyBaseColor = mainColor || (this.colores().length > 0 ? this.colores()[0] : null);
-    this.generarArmoniaPreview();
-  }
+  // ========================================================
+  // MSSBOA Bio-inspired Aesthetic & Chromatic Optimization
+  // ========================================================
+  abrirModalMSSBOA() {
+    this.showMssboaModal = true;
+    this.mssboaFeedbackMessage = '';
 
-  cerrarModalArmonias() {
-    this.showHarmonyModal = false;
-  }
-
-  onHarmonyBaseChange() {
-    this.generarArmoniaPreview();
-  }
-
-  onHarmonyTypeChange() {
-    this.generarArmoniaPreview();
-  }
-
-  generarArmoniaPreview() {
-    if (!this.harmonyBaseColor) {
-      this.harmonyPreview = [];
-      return;
+    // Auto-detect base color from brand investigation or primary color
+    if (this.identidadMarca?.colores && Array.isArray(this.identidadMarca.colores) && this.identidadMarca.colores.length > 0) {
+      const brandCol = this.identidadMarca.colores[0];
+      this.mssboaBaseHex = (typeof brandCol === 'string' ? brandCol : (brandCol.hex || brandCol.codigo)) || '#2563EB';
+    } else {
+      const primaryCol = this.colores().find((c: ColorItem) => c.uso === 'Principal');
+      this.mssboaBaseHex = primaryCol?.hex_code || (this.colores().length > 0 ? this.colores()[0].hex_code : '#2563EB');
     }
-    const hsl = this.hexToHsl(this.harmonyBaseColor.hex_code);
-    if (!hsl) return;
 
-    let h = hsl.h;
-    let s = hsl.s;
-    let l = hsl.l;
-
-    this.harmonyPreview = [];
-
-    if (this.harmonyType === 'Monochromatic') {
-      this.harmonyPreview = [
-        { hex: this.hslToHex(h, s, Math.min(1, Math.max(0, l - 0.3))), role: 'Más Oscuro' },
-        { hex: this.hslToHex(h, s, Math.min(1, Math.max(0, l - 0.15))), role: 'Oscuro' },
-        { hex: this.harmonyBaseColor.hex_code, role: 'Base' },
-        { hex: this.hslToHex(h, s, Math.min(1, Math.max(0, l + 0.15))), role: 'Claro' },
-        { hex: this.hslToHex(h, s, Math.min(1, Math.max(0, l + 0.3))), role: 'Más Claro' }
-      ];
-    } else if (this.harmonyType === 'Analogous') {
-      this.harmonyPreview = [
-        { hex: this.hslToHex((h - 0.0833 + 1) % 1, s, l), role: 'Análogo Izq' },
-        { hex: this.harmonyBaseColor.hex_code, role: 'Base' },
-        { hex: this.hslToHex((h + 0.0833) % 1, s, l), role: 'Análogo Der' }
-      ];
-    } else if (this.harmonyType === 'Complementary') {
-      this.harmonyPreview = [
-        { hex: this.harmonyBaseColor.hex_code, role: 'Base' },
-        { hex: this.hslToHex((h + 0.5) % 1, s, l), role: 'Complementario' }
-      ];
-    } else if (this.harmonyType === 'Triadic') {
-      this.harmonyPreview = [
-        { hex: this.harmonyBaseColor.hex_code, role: 'Base' },
-        { hex: this.hslToHex((h + 0.333) % 1, s, l), role: 'Triada 1' },
-        { hex: this.hslToHex((h + 0.666) % 1, s, l), role: 'Triada 2' }
-      ];
-    } else if (this.harmonyType === 'TonalScale') {
-      const scale = [];
-      const lightSteps = [50, 100, 200, 300, 400];
-      const darkSteps = [600, 700, 800, 900];
-
-      // Lighter (Hue shifts slightly negative)
-      for (let i = 0; i < lightSteps.length; i++) {
-        let newL = l + (0.97 - l) * ((5 - i) / 5);
-        let newH = (h - 0.015 * (5 - i)) % 1;
-        if (newH < 0) newH += 1;
-        scale.push({ hex: this.hslToHex(newH, s, newL), role: lightSteps[i].toString() });
-      }
-
-      // Base 500
-      scale.push({ hex: this.harmonyBaseColor.hex_code, role: '500 (Base)' });
-
-      // Darker (Hue shifts slightly positive)
-      for (let i = 0; i < darkSteps.length; i++) {
-        let ratio = (i + 1) / darkSteps.length;
-        let newL = l - (l - 0.10) * ratio;
-        let newH = (h + 0.015 * (i + 1)) % 1;
-        scale.push({ hex: this.hslToHex(newH, s, newL), role: darkSteps[i].toString() });
-      }
-      this.harmonyPreview = scale;
+    if (!this.mssboaResult) {
+      this.ejecutarMSSBOA();
     }
   }
 
-  guardarPaletaArmonica() {
-    this.harmonyPreview.forEach((item, index) => {
-      if (item.hex === this.harmonyBaseColor?.hex_code) return; // Skip base
+  cerrarModalMSSBOA() {
+    this.showMssboaModal = false;
+  }
 
-      const roleName = this.harmonyType === 'TonalScale' ? item.role : `${index + 1}`;
-      const usoVal = this.harmonyType === 'TonalScale' ? 'Personalizado' : 'Personalizado';
+  ejecutarMSSBOA() {
+    this.mssboaIsOptimizing = true;
+    this.mssboaFeedbackMessage = '';
 
-      const nuevoColor: ColorItem = {
-        proyecto_id: this.proyectoId,
-        nombre: this.harmonyType === 'TonalScale' ? `${this.harmonyBaseColor?.nombre} ${item.role}` : `Variante ${this.harmonyType} ${index + 1}`,
-        token_name: `color.${this.harmonyBaseColor?.token_name?.replace('color.', '') || 'base'}.${roleName.replace(' (Base)', '')}`,
-        hex_code: item.hex,
-        uso: usoVal,
-        orden: this.colores().length + index
-      };
+    const req: MSSBOAOptimizeRequest = {
+      base_hex: this.mssboaBaseHex,
+      harmony_type: this.mssboaHarmonyType,
+      mode: this.mssboaThemeMode,
+      wcag_target: this.mssboaWcagTarget,
+      population_size: this.mssboaPopulationSize,
+      max_iterations: this.mssboaIterations
+    };
 
-      this.disenoVisualService.agregarColor(nuevoColor).subscribe();
+    this.disenoVisualService.optimizarConMSSBOA(req).subscribe({
+      next: (res) => {
+        this.mssboaResult = res;
+        this.mssboaIsOptimizing = false;
+      },
+      error: (err) => {
+        console.error('Error optimizando paleta con MSSBOA:', err);
+        this.mssboaIsOptimizing = false;
+        this.mssboaFeedbackMessage = 'Ocurrió un error al ejecutar el algoritmo MSSBOA.';
+      }
     });
+  }
 
-    this.cerrarModalArmonias();
+  aplicarPaletaMSSBOA() {
+    if (!this.mssboaResult || !this.mssboaResult.colores) return;
+
+    const nuevosColores: ColorItem[] = this.mssboaResult.colores.map((c, idx) => ({
+      proyecto_id: this.proyectoId,
+      hex_code: c.hex_code,
+      nombre: c.nombre,
+      token_name: c.token_name,
+      uso: c.uso,
+      orden: idx
+    }));
+
+    if (this.mssboaApplyMode === 'replace') {
+      this.disenoVisualService.reemplazarColoresBatch(this.proyectoId, nuevosColores).subscribe({
+        next: () => {
+          this.mssboaFeedbackMessage = '¡Paleta cromática optimizada con MSSBOA aplicada con éxito al Design System!';
+          setTimeout(() => {
+            this.cerrarModalMSSBOA();
+          }, 1200);
+        },
+        error: (err) => {
+          console.error('Error aplicando paleta MSSBOA:', err);
+          this.mssboaFeedbackMessage = 'Error al persistir los colores en el servidor.';
+        }
+      });
+    } else {
+      // Append mode
+      nuevosColores.forEach(col => {
+        this.disenoVisualService.agregarColor(col).subscribe();
+      });
+      this.mssboaFeedbackMessage = '¡Nuevos tokens optimizados agregados al Design System!';
+      setTimeout(() => {
+        this.cerrarModalMSSBOA();
+      }, 1200);
+    }
+  }
+
+  onSelectMSSBOABase(hex: string) {
+    this.mssboaBaseHex = hex;
+    this.ejecutarMSSBOA();
   }
 
   // Computed signal to calculate the Contrast Matrix
