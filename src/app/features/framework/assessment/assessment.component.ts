@@ -16,6 +16,15 @@ import {
   HallazgoCreateRequest,
   PantallaFase4Item
 } from '../../../models/assessment.model';
+import {
+  GestaltTdaResponse,
+  DiagramPoint,
+  SimplexVertex,
+  SimplexEdge,
+  SimplexCycle,
+  HeuristicScore,
+  HallazgoSugerido
+} from '../../../models/gestalt-tda.model';
 import { PageHeaderComponent, BreadcrumbItem } from '../../../shared/components/page-header/page-header.component';
 
 
@@ -169,6 +178,17 @@ export class AssessmentComponent implements OnInit {
   heuristicScreenFilter: number | 'todas' = 'todas';
   editingObservacionId: string | null = null;
   tempObservacionText: string = '';
+
+  // Gestalt TDA (Homología Persistente - Chen et al., 2025)
+  isTdaModalOpen: boolean = false;
+  isLoadingTda: boolean = false;
+  isApplyingTda: boolean = false;
+  tdaResult: GestaltTdaResponse | null = null;
+  selectedTdaScreenId: number | null = null;
+  showVrEdges: boolean = true;
+  showH1Cycles: boolean = true;
+  showContinuation: boolean = true;
+  activeTdaDiagramTab: '0pd' | '1pd' = '0pd';
 
   // Close menus on clicking outside
   @HostListener('document:click', ['$event'])
@@ -880,6 +900,118 @@ export class AssessmentComponent implements OnInit {
         alert('Ocurrió un error al sincronizar con los resultados de Fase 4.');
       }
     });
+  }
+
+  // --- Gestalt Topological Data Analysis (TDA) ---
+
+  openTdaModal(pantalla?: PantallaFase4Item): void {
+    this.isTdaModalOpen = true;
+    if (pantalla) {
+      this.selectedTdaScreenId = pantalla.id;
+    } else if (this.pantallasFase4.length > 0) {
+      this.selectedTdaScreenId = this.pantallasFase4[0].id;
+    } else {
+      this.selectedTdaScreenId = null;
+    }
+    this.runTdaAnalysis(this.selectedTdaScreenId);
+  }
+
+  closeTdaModal(): void {
+    this.isTdaModalOpen = false;
+  }
+
+  onTdaScreenChange(screenIdStr: string): void {
+    const screenId = screenIdStr ? parseInt(screenIdStr, 10) : null;
+    this.selectedTdaScreenId = screenId;
+    this.runTdaAnalysis(screenId);
+  }
+
+  runTdaAnalysis(pantallaId?: number | null): void {
+    this.isLoadingTda = true;
+    this.assessmentService.getGestaltTda(this.projectId, pantallaId).subscribe({
+      next: (res) => {
+        this.tdaResult = res;
+        this.isLoadingTda = false;
+      },
+      error: (err) => {
+        console.error('Error al ejecutar TDA Gestalt:', err);
+        this.isLoadingTda = false;
+        this.showToast('No se pudo completar el análisis topológico.');
+      }
+    });
+  }
+
+  applyTdaToAssessment(): void {
+    if (!this.tdaResult) return;
+    this.isApplyingTda = true;
+    this.assessmentService.applyGestaltTda(this.projectId, {
+      pantalla_id: this.selectedTdaScreenId,
+      actualizar_checklist: true,
+      crear_hallazgos: true
+    }).subscribe({
+      next: (res) => {
+        this.isApplyingTda = false;
+        if (res.evaluacion) {
+          this.assessment = res.evaluacion;
+        }
+        this.showToast(res.mensaje || '¡Resultados de TDA aplicados al checklist y hallazgos!');
+        this.closeTdaModal();
+      },
+      error: (err) => {
+        console.error('Error al aplicar resultados TDA:', err);
+        this.isApplyingTda = false;
+        alert('Ocurrió un error al aplicar las calificaciones topológicas.');
+      }
+    });
+  }
+
+  addTdaFindingToMatrix(hs: HallazgoSugerido): void {
+    const nuevoReq: HallazgoCreateRequest = {
+      problema: hs.problema,
+      severidad: hs.severidad,
+      fase_origen: hs.fase_origen,
+      fase_origen_nombre: hs.fase_origen_nombre
+    };
+
+    this.assessmentService.addFinding(this.projectId, nuevoReq).subscribe({
+      next: (created) => {
+        if (!this.assessment!.hallazgos) {
+          this.assessment!.hallazgos = [];
+        }
+        this.assessment!.hallazgos.unshift(created);
+        this.showToast(`Hallazgo de ${hs.heuristica_id.toUpperCase()} agregado a la matriz.`);
+      },
+      error: (err) => {
+        console.error('Error al agregar hallazgo TDA:', err);
+        this.showToast('No se pudo agregar el hallazgo a la matriz.');
+      }
+    });
+  }
+
+  getVertexById(id: number): SimplexVertex | undefined {
+    return this.tdaResult?.vertices.find(v => v.id === id);
+  }
+
+  getSvgLineCoords(edge: SimplexEdge): { x1: number; y1: number; x2: number; y2: number } | null {
+    const v1 = this.getVertexById(edge.source);
+    const v2 = this.getVertexById(edge.target);
+    if (!v1 || !v2) return null;
+    return {
+      x1: v1.x * 100,
+      y1: v1.y * 100,
+      x2: v2.x * 100,
+      y2: v2.y * 100
+    };
+  }
+
+  getCyclePointsSvg(cycle: SimplexCycle): string {
+    return cycle.vertices
+      .map(id => {
+        const v = this.getVertexById(id);
+        return v ? `${v.x * 100},${v.y * 100}` : '';
+      })
+      .filter(p => !!p)
+      .join(' ');
   }
 }
 

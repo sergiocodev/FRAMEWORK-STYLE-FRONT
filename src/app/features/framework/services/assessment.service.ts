@@ -7,6 +7,7 @@ import {
   Hallazgo,
   HallazgoCreateRequest
 } from '../../../models/assessment.model';
+import { GestaltTdaResponse, TdaApplyRequest } from '../../../models/gestalt-tda.model';
 
 @Injectable({
   providedIn: 'root'
@@ -64,7 +65,15 @@ export class AssessmentService {
     return this.http.post<EvaluacionEsteticaResponse>(`${this.getBaseUrl(projectId)}/sync-fase4`, {});
   }
 
-  auditarConIa(projectId: number): Observable<{ resultado: any; evaluacion: EvaluacionEsteticaResponse }> {
-    return this.http.post<{ resultado: any; evaluacion: EvaluacionEsteticaResponse }>(`${this.getBaseUrl(projectId)}/auditar-ia`, {});
+  getGestaltTda(projectId: number, pantallaId?: number | null): Observable<GestaltTdaResponse> {
+    const query = pantallaId ? `?pantalla_id=${pantallaId}` : '';
+    return this.http.get<GestaltTdaResponse>(`${this.getBaseUrl(projectId)}/gestalt-tda${query}`);
+  }
+
+  applyGestaltTda(projectId: number, request: TdaApplyRequest): Observable<{ success: boolean; mensaje: string; score_gestalt_global: number; evaluacion: EvaluacionEsteticaResponse }> {
+    return this.http.post<{ success: boolean; mensaje: string; score_gestalt_global: number; evaluacion: EvaluacionEsteticaResponse }>(
+      `${this.getBaseUrl(projectId)}/gestalt-tda/aplicar`,
+      request
+    );
   }
 }
