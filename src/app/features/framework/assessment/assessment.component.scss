@@ -23,12 +23,12 @@
   &:hover {
     transform: scale(1.05) translateY(-2px);
     box-shadow: inset 0 0 0 1px rgba(37, 99, 235, 0.2), 0 8px 16px -4px rgba(37, 99, 235, 0.15);
-    
+
     svg {
       transform: scale(1.1);
     }
   }
-  
+
   svg {
     transition: transform 0.3s ease;
   }
@@ -49,7 +49,7 @@ app-page-header {
   width: 100%;
   height: 4px;
   background-color: #ffffff;
-  gap: 3px; 
+  gap: 3px;
   padding: 0 4px;
   margin-top: -4px;
   position: relative;
@@ -59,23 +59,28 @@ app-page-header {
     border-radius: 4px 4px 0 0;
     transition: background-color 0.4s ease;
     background-color: #e2e8f0;
-    
+
     &.segment-completed {
       background-color: #2563eb;
     }
+
     &.segment-active {
       background-color: #2563eb;
       position: relative;
       overflow: hidden;
-      
+
       &::after {
         content: '';
         position: absolute;
-        top: 0; left: 0; right: 0; bottom: 0;
-        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
         animation: shimmer 2s infinite;
       }
     }
+
     &.segment-upcoming {
       background-color: rgba(0, 0, 0, 0.08);
     }
@@ -83,8 +88,13 @@ app-page-header {
 }
 
 @keyframes shimmer {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(100%); }
+  0% {
+    transform: translateX(-100%);
+  }
+
+  100% {
+    transform: translateX(100%);
+  }
 }
 
 /* Variables */
@@ -394,12 +404,16 @@ p {
   }
 }
 
-/* Main Grid */
+/* Main Grid (2-Column Balance: Matriz de Hallazgos & Conclusión) */
 .dashboard-grid {
   display: grid;
-  grid-template-columns: 1fr 1.3fr 1.5fr;
-  gap: 20px;
+  grid-template-columns: 1.45fr 1fr;
+  gap: 24px;
   align-items: start;
+
+  @media (max-width: 1100px) {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* Cards */
@@ -492,127 +506,28 @@ p {
   }
 }
 
-/* Left Column - Dropdown & Checklist */
-/* Left Column - Method Dropdown & Checklist */
-.method-dropdown-container {
-  position: relative;
-  width: 100%;
-  margin-top: 14px;
-
-  .method-select-btn {
-    padding: 12px 16px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    font-size: 14px;
-    font-weight: 500;
-    border: 1.5px solid $border-color;
-    border-radius: $radius-md;
-    cursor: pointer;
-    background-color: #ffffff;
-    color: #1e293b;
+/* Sub-Navigation Tabs de Métodos de Evaluación */
+.eval-nav-tabs {
+  .eval-nav-tab {
     transition: all 0.2s ease;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
 
-    &:hover {
-      border-color: $primary;
-      background-color: #f8fafc;
+    &:hover:not(.active) {
+      background-color: #f1f5f9;
+      color: #1e293b;
     }
 
-    .btn-content {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .chevron {
-      color: $text-muted;
-      transition: transform 0.2s ease;
-    }
-  }
-
-  .method-dropdown-menu {
-    position: absolute;
-    top: calc(100% + 6px);
-    left: 0;
-    right: 0;
-    background-color: #ffffff;
-    border: 1px solid $border-color;
-    border-radius: $radius-lg;
-    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
-    z-index: 1050;
-    padding: 6px;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    animation: fadeInDown 0.18s ease-out;
-
-    .method-dropdown-option {
-      padding: 10px 14px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-radius: $radius-sm;
-      font-size: 13.5px;
-      cursor: pointer;
-      color: $text-main;
-      transition: all 0.15s ease;
-
-      .option-left {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-
-        svg {
-          color: $text-muted;
-        }
-      }
-
-      .check {
-        color: $primary;
-        opacity: 0;
-      }
-
-      &:hover:not(.selected) {
-        background-color: #f1f5f9;
-        color: $primary;
-
-        .option-left svg {
-          color: $primary;
-        }
-      }
-
-      &.selected {
-        background-color: $primary-light;
-        color: $primary;
-        font-weight: 600;
-
-        .option-left svg {
-          color: $primary;
-        }
-
-        .check {
-          opacity: 1;
-        }
-      }
+    &.active {
+      box-shadow: 0 1px 3px rgba(37, 99, 235, 0.15);
     }
   }
 }
 
-@keyframes fadeInDown {
-  from {
-    opacity: 0;
-    transform: translateY(-6px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
+/* Left Column - Checklist */
 .card-checklist {
-  margin-top: 20px;
+  margin-top: 0;
 }
 
 .checklist {
@@ -919,7 +834,7 @@ p {
 
   tr.row-resolved {
     background-color: #fbfcfe;
-    
+
     td {
       opacity: 0.75;
     }
@@ -1152,6 +1067,7 @@ p {
     h4 {
       color: #b45309;
     }
+
     p {
       color: #92400e;
     }
@@ -1186,6 +1102,7 @@ p {
     transform: translateY(20px);
     opacity: 0;
   }
+
   to {
     transform: translateY(0);
     opacity: 1;
@@ -1260,6 +1177,7 @@ p {
     transform: scale(0.96);
     opacity: 0;
   }
+
   to {
     transform: scale(1);
     opacity: 1;
@@ -1518,9 +1436,11 @@ p {
 
 .screen-cards-container {
   scrollbar-width: thin;
+
   &::-webkit-scrollbar {
     height: 6px;
   }
+
   &::-webkit-scrollbar-thumb {
     background: #cbd5e1;
     border-radius: 4px;
@@ -1550,8 +1470,13 @@ p {
 }
 
 @keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .spin {
@@ -1581,21 +1506,30 @@ p {
         background: #ecfdf5;
         color: #065f46;
         border-color: #a7f3d0;
-        .dot-indicator { background: #10b981; }
+
+        .dot-indicator {
+          background: #10b981;
+        }
       }
 
       &.pill-parcial {
         background: #fffbeb;
         color: #92400e;
         border-color: #fde68a;
-        .dot-indicator { background: #f59e0b; }
+
+        .dot-indicator {
+          background: #f59e0b;
+        }
       }
 
       &.pill-nocumple {
         background: #fef2f2;
         color: #991b1b;
         border-color: #fecaca;
-        .dot-indicator { background: #ef4444; }
+
+        .dot-indicator {
+          background: #ef4444;
+        }
       }
 
       &.pill-na {
@@ -1883,6 +1817,7 @@ p {
 
   li {
     transition: background-color 0.15s ease;
+
     &:hover {
       background-color: #f8fafc !important;
     }
@@ -1978,6 +1913,7 @@ p {
     opacity: 0;
     transform: scale(0.97);
   }
+
   to {
     opacity: 1;
     transform: scale(1);
@@ -1993,13 +1929,16 @@ p {
     circle {
       cursor: pointer;
       transition: r 0.15s ease, filter 0.15s ease;
+
       &:hover {
         r: 2.2;
         filter: drop-shadow(0 0 4px #38bdf8);
       }
     }
+
     line {
       transition: stroke-width 0.15s ease;
+
       &:hover {
         stroke-width: 1.2;
       }
@@ -2015,6 +1954,7 @@ p {
     circle {
       cursor: pointer;
       transition: transform 0.15s ease, r 0.15s ease;
+
       &:hover {
         r: 6.5;
         stroke: #0f172a;
@@ -2027,5 +1967,437 @@ p {
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
 }
 
+// ==============================================================================
+// REDISEÑO EJECUTIVO Y DASHBOARD PREMIUM FASE 5
+// ==============================================================================
 
-
+.executive-hero {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05);
+  position: relative;
+}
+
+.executive-dial {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  flex-shrink: 0;
+  border: 3.5px solid;
+  transition: transform 0.2s ease;
+
+  &:hover {
+    transform: scale(1.03);
+  }
+
+  &.dial-platinum {
+    background: #f0f9ff;
+    border-color: #0284c7;
+    color: #0f172a;
+    .dial-max { color: #0284c7; }
+  }
+
+  &.dial-gold {
+    background: #fffbeb;
+    border-color: #f59e0b;
+    color: #0f172a;
+    .dial-max { color: #d97706; }
+  }
+
+  &.dial-silver {
+    background: #f8fafc;
+    border-color: #94a3b8;
+    color: #0f172a;
+    .dial-max { color: #64748b; }
+  }
+
+  &.dial-bronze {
+    background: #fef2f2;
+    border-color: #ef4444;
+    color: #0f172a;
+    .dial-max { color: #dc2626; }
+  }
+
+  .dial-value {
+    font-size: 1.75rem;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    color: #0f172a;
+  }
+
+  .dial-max {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+}
+
+.metric-pill-card {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 14px 18px;
+  transition: all 0.25s ease;
+
+  &:hover {
+    background: #ffffff;
+    border-color: #cbd5e1;
+    box-shadow: 0 4px 12px -2px rgba(15, 23, 42, 0.06);
+    transform: translateY(-2px);
+  }
+}
+
+.governance-alert-box {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+
+  &.alert-locked {
+    border-color: #fecaca;
+    background: #fef2f2;
+  }
+
+  &.alert-certified {
+    border-color: #a7f3d0;
+    background: #ecfdf5;
+  }
+}
+
+// Tarjetas Ejecutivas de los 4 Pilares
+.pillar-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 20px;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: #e2e8f0;
+    transition: height 0.2s ease, background 0.2s ease;
+  }
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 32px -8px rgba(15, 23, 42, 0.08), 0 4px 12px -2px rgba(15, 23, 42, 0.04);
+    border-color: #cbd5e1;
+
+    &::before {
+      height: 5px;
+    }
+  }
+
+  &.pillar-gestalt {
+    &:hover {
+      border-color: #bfdbfe;
+    }
+
+    &::before {
+      background: linear-gradient(90deg, #2563eb, #3b82f6);
+    }
+
+    .pillar-icon-box {
+      background: #eff6ff;
+      color: #2563eb;
+    }
+  }
+
+  &.pillar-tda {
+    &:hover {
+      border-color: #ddd6fe;
+    }
+
+    &::before {
+      background: linear-gradient(90deg, #7c3aed, #a855f7);
+    }
+
+    .pillar-icon-box {
+      background: #f5f3ff;
+      color: #7c3aed;
+    }
+  }
+
+  &.pillar-visawi {
+    &:hover {
+      border-color: #fef08a;
+    }
+
+    &::before {
+      background: linear-gradient(90deg, #d97706, #f59e0b);
+    }
+
+    .pillar-icon-box {
+      background: #fffbeb;
+      color: #d97706;
+    }
+  }
+
+  &.pillar-calista {
+    &:hover {
+      border-color: #a7f3d0;
+    }
+
+    &::before {
+      background: linear-gradient(90deg, #059669, #10b981);
+    }
+
+    .pillar-icon-box {
+      background: #ecfdf5;
+      color: #059669;
+    }
+  }
+}
+
+.pillar-icon-box {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+
+// Galería de Prototipos de Fase 4
+.prototype-card {
+  width: 175px;
+  flex-shrink: 0;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #ffffff;
+  transition: all 0.25s ease;
+  cursor: pointer;
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px -5px rgba(15, 23, 42, 0.1);
+    border-color: #2563eb;
+
+    .proto-img {
+      transform: scale(1.04);
+    }
+  }
+
+  .proto-thumb {
+    height: 110px;
+    background: #f1f5f9;
+    overflow: hidden;
+    position: relative;
+
+    .proto-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+  }
+
+  &.proto-active {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+  }
+}
+
+// Hub Central de Hallazgos (SaaS Table)
+.findings-hub-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 18px;
+  box-shadow: 0 4px 16px -2px rgba(15, 23, 42, 0.04);
+  overflow: hidden;
+}
+
+.search-input-pill {
+  border-radius: 9999px;
+  padding-left: 36px;
+  font-size: 0.85rem;
+  background-color: #f8fafc;
+  border-color: #e2e8f0;
+  transition: all 0.2s ease;
+
+  &:focus {
+    background-color: #ffffff;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+  }
+}
+
+.table-modern {
+  margin-bottom: 0;
+
+  thead th {
+    background-color: #f8fafc;
+    color: #64748b;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 12px 16px;
+    border-bottom: 1px solid #e2e8f0;
+  }
+
+  tbody tr {
+    transition: background-color 0.15s ease;
+
+    &:hover {
+      background-color: #f8fafc;
+    }
+
+    &.row-resolved {
+      opacity: 0.75;
+      background-color: #fafbfc;
+    }
+  }
+
+  tbody td {
+    padding: 14px 16px;
+    vertical-align: middle;
+    border-bottom: 1px solid #f1f5f9;
+  }
+}
+
+.pulse-critical {
+  animation: pulseCrit 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulseCrit {
+
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.8;
+    transform: scale(1.04);
+  }
+}
+
+.badge-severidad {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 9999px;
+
+  &.critico {
+    background-color: #fee2e2;
+    color: #b91c1c;
+    border: 1px solid #fca5a5;
+  }
+
+  &.mayor {
+    background-color: #fef3c7;
+    color: #b45309;
+    border: 1px solid #fde68a;
+  }
+
+  &.menor {
+    background-color: #e0f2fe;
+    color: #0369a1;
+    border: 1px solid #bae6fd;
+  }
+}
+
+.toggle-status-btn {
+  border: 1px solid transparent;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &.status-resuelto {
+    background-color: #ecfdf5;
+    color: #059669;
+    border-color: #a7f3d0;
+
+    &:hover {
+      background-color: #d1fae5;
+    }
+  }
+
+  &.status-pendiente {
+    background-color: #fef2f2;
+    color: #dc2626;
+    border-color: #fecaca;
+
+    &:hover {
+      background-color: #fee2e2;
+    }
+  }
+}
+
+// Dictamen y Cierre Ejecutivo
+.certification-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 18px;
+  box-shadow: 0 4px 16px -2px rgba(15, 23, 42, 0.04);
+}
+
+.decision-box {
+  border-radius: 14px;
+  padding: 16px;
+
+  &.decision-approved {
+    background: #ecfdf5;
+    border: 1px solid #a7f3d0;
+    color: #065f46;
+  }
+
+  &.decision-blocked {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #991b1b;
+  }
+}
+
+.btn-finalize-cta {
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  color: #ffffff;
+  border: none;
+  border-radius: 12px;
+  padding: 12px 20px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+  transition: all 0.25s ease;
+
+  &:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.45);
+    background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+    color: #ffffff;
+  }
+
+  &:disabled {
+    background: #94a3b8;
+    box-shadow: none;
+    cursor: not-allowed;
+    opacity: 0.7;
+  }
+}

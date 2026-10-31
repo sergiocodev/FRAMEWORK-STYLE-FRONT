@@ -78,6 +78,7 @@ export interface EvaluacionEsteticaResponse {
   score_estetico?: number;
   nivel_madurez?: string;
   pantallas_fase4?: PantallaFase4Item[];
+  calista_metricas?: any;
 }
 
 export interface HallazgoCreateRequest {
@@ -92,6 +93,79 @@ export interface VisawiQuestionnaireItem {
   dimension: string;
   pregunta: string;
   inverso?: boolean;
+}
+
+// -------------------------------------------------------------
+// MODELO CALISTA (Delitzas et al., 2023)
+// -------------------------------------------------------------
+export interface CalistaDimensiones {
+  score_estetico?: number | null;
+  categoria?: 'Baja' | 'Media' | 'Alta' | 'Pendiente' | string;
+  color_hex?: string;
+  porcentaje?: number | null;
+  balance_visual?: number | null;
+  armonia_color?: number | null;
+  complejidad_espacio?: number | null;
+}
+
+export interface CalistaHallazgoSugerido {
+  problema: string;
+  severidad: 'critico' | 'mayor' | 'menor';
+  fase_origen: number;
+  fase_origen_nombre: string;
+  sugerencia: string;
+}
+
+export interface CalistaPantallaResult {
+  pantalla_id: number;
+  pantalla_nombre: string;
+  imagen_url?: string | null;
+  tiene_imagen?: boolean;
+  score_estetico?: number | null;
+  categoria: 'Baja' | 'Media' | 'Alta' | 'Pendiente' | string;
+  color_hex: string;
+  porcentaje?: number | null;
+  aprobado?: boolean | null;
+  diagnostico: string;
+  dimensiones?: CalistaDimensiones | null;
+  recomendaciones: string[];
+  hallazgo_sugerido?: CalistaHallazgoSugerido | null;
+}
+
+export interface CalistaModeloInfo {
+  id: string;
+  nombre: string;
+  arquitectura: string;
+  descripcion: string;
+  es_recomendado: boolean;
+  es_valido: boolean;
+  parametros?: number | null;
+}
+
+export interface CalistaEvaluacionResponse {
+  proyecto_id: number;
+  score_global: number;
+  categoria_global: 'Baja' | 'Media' | 'Alta' | 'Pendiente' | string;
+  color_global: string;
+  porcentaje_global: number;
+  total_pantallas: number;
+  pantallas_evaluadas_count?: number;
+  pantallas_pendientes_count?: number;
+  aprobadas_count: number;
+  requieren_ajustes_count: number;
+  pantallas: CalistaPantallaResult[];
+  pantalla_seleccionada?: CalistaPantallaResult | null;
+  fecha_analisis?: string;
+  modelo_activo?: string;
+  modelos_disponibles?: CalistaModeloInfo[];
+}
+
+export interface CalistaApplyRequest {
+  pantalla_id: number;
+  problema: string;
+  severidad: 'critico' | 'mayor' | 'menor';
+  fase_origen: number;
+  fase_origen_nombre: string;
 }
 
 

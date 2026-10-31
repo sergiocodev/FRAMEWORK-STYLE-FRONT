@@ -1,0 +1,170 @@
+.assessment-container {
+  background-color: #f8fafc;
+}
+
+.score-banner-card {
+  border-color: #e2e8f0;
+}
+
+.score-badge-circle {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+
+  .score-number {
+    font-size: 1.25rem;
+    font-weight: 800;
+    line-height: 1;
+  }
+
+  .score-scale {
+    font-size: 0.65rem;
+    opacity: 0.85;
+    font-weight: 500;
+  }
+}
+
+.eval-nav-tab {
+  font-weight: 500;
+  color: #64748b;
+  border: 1px solid transparent;
+  transition: all 0.2s ease-in-out;
+
+  &:hover {
+    color: #1e293b;
+    background-color: #f1f5f9;
+  }
+
+  &.active {
+    color: #2563eb;
+    background-color: #eff6ff;
+    border-color: #bfdbfe;
+    font-weight: 600;
+  }
+}
+
+.viewer-canvas-wrapper {
+  background: radial-gradient(circle, #334155 10%, #0f172a 90%);
+}
+
+.screen-preview-img {
+  transition: transform 0.2s ease, width 0.2s ease;
+
+  &.viewer-contain {
+    max-height: 520px;
+    max-width: 100%;
+    object-fit: contain;
+  }
+
+  &.viewer-width {
+    width: 100%;
+    height: auto;
+  }
+}
+
+.score-display-box {
+  background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+  border: 1px solid #e2e8f0;
+}
+
+.semaforo-bar {
+  height: 12px;
+  background-color: #e2e8f0;
+  display: flex;
+  position: relative;
+
+  .zone {
+    height: 100%;
+  }
+
+  .zone-baja {
+    width: 33.33%;
+    background-color: #ef4444;
+  }
+
+  .zone-media {
+    width: 33.33%;
+    background-color: #f59e0b;
+  }
+
+  .zone-alta {
+    width: 33.34%;
+    background-color: #10b981;
+  }
+}
+
+.score-pointer {
+  position: absolute;
+  top: -4px;
+  transform: translateX(-50%);
+  transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+
+  .pointer-pin {
+    width: 20px;
+    height: 20px;
+    background-color: #0f172a;
+    border: 3px solid #ffffff;
+    border-radius: 50%;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  }
+}
+
+.badge-calista-alta {
+  background-color: #10b981;
+  color: #ffffff;
+}
+
+.badge-calista-media {
+  background-color: #f59e0b;
+  color: #ffffff;
+}
+
+.badge-calista-baja {
+  background-color: #ef4444;
+  color: #ffffff;
+}
+
+.badge-calista-pendiente {
+  background-color: #94a3b8;
+  color: #ffffff;
+}
+
+.empty-state-canvas {
+  background: radial-gradient(circle, #334155 10%, #0f172a 90%);
+  min-height: 480px;
+}
+
+.empty-state-card {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  max-width: 520px;
+  width: 90%;
+}
+
+.empty-state-icon-circle {
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.spin-icon {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}

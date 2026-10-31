@@ -5,7 +5,10 @@ import { environment } from '../../../../environments/environment';
 import {
   EvaluacionEsteticaResponse,
   Hallazgo,
-  HallazgoCreateRequest
+  HallazgoCreateRequest,
+  CalistaEvaluacionResponse,
+  CalistaApplyRequest,
+  CalistaModeloInfo
 } from '../../../models/assessment.model';
 import { GestaltTdaResponse, TdaApplyRequest } from '../../../models/gestalt-tda.model';
 
@@ -73,6 +76,33 @@ export class AssessmentService {
   applyGestaltTda(projectId: number, request: TdaApplyRequest): Observable<{ success: boolean; mensaje: string; score_gestalt_global: number; evaluacion: EvaluacionEsteticaResponse }> {
     return this.http.post<{ success: boolean; mensaje: string; score_gestalt_global: number; evaluacion: EvaluacionEsteticaResponse }>(
       `${this.getBaseUrl(projectId)}/gestalt-tda/aplicar`,
+      request
+    );
+  }
+
+  getCalista(projectId: number, pantallaId?: number | null, modeloId?: string | null): Observable<CalistaEvaluacionResponse> {
+    const params = new URLSearchParams();
+    if (pantallaId) params.append('pantalla_id', pantallaId.toString());
+    if (modeloId) params.append('modelo_id', modeloId);
+    const query = params.toString() ? `?${params.toString()}` : '';
+    return this.http.get<CalistaEvaluacionResponse>(`${this.getBaseUrl(projectId)}/calista${query}`);
+  }
+
+  analizarCalista(projectId: number, pantallaId?: number | null, modeloId?: string | null): Observable<CalistaEvaluacionResponse> {
+    const params = new URLSearchParams();
+    if (pantallaId) params.append('pantalla_id', pantallaId.toString());
+    if (modeloId) params.append('modelo_id', modeloId);
+    const query = params.toString() ? `?${params.toString()}` : '';
+    return this.http.post<CalistaEvaluacionResponse>(`${this.getBaseUrl(projectId)}/calista/analizar${query}`, {});
+  }
+
+  getModelosCalista(projectId: number): Observable<CalistaModeloInfo[]> {
+    return this.http.get<CalistaModeloInfo[]>(`${this.getBaseUrl(projectId)}/calista/modelos`);
+  }
+
+  aplicarCalistaHallazgo(projectId: number, request: CalistaApplyRequest): Observable<{ success: boolean; mensaje: string; evaluacion: EvaluacionEsteticaResponse }> {
+    return this.http.post<{ success: boolean; mensaje: string; evaluacion: EvaluacionEsteticaResponse }>(
+      `${this.getBaseUrl(projectId)}/calista/aplicar`,
       request
     );
   }
