@@ -462,8 +462,8 @@ export class AssessmentComponent implements OnInit {
     // Búsqueda por texto si existe
     if (this.searchTerm && this.searchTerm.trim() !== '') {
       const term = this.searchTerm.toLowerCase().trim();
-      list = list.filter(h => 
-        h.problema.toLowerCase().includes(term) || 
+      list = list.filter(h =>
+        h.problema.toLowerCase().includes(term) ||
         h.fase_origen_nombre.toLowerCase().includes(term) ||
         h.severidad.toLowerCase().includes(term)
       );

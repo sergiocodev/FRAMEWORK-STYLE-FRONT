@@ -1,0 +1,332 @@
+.public-survey-wrapper {
+  min-height: 100vh;
+  background-color: #f1f5f9;
+  display: flex;
+  flex-direction: column;
+}
+
+.public-survey-header {
+  z-index: 1020;
+}
+
+.shadow-xs {
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+}
+
+// Card Superior de Datos del Evaluador (Full-width arriba de todo)
+.top-evaluator-card {
+  border: 1px solid #e2e8f0 !important;
+
+  @media (min-width: 992px) {
+    .border-end-lg {
+      border-right: 1px solid #e2e8f0;
+    }
+  }
+}
+
+// Visor de Pantalla Pegajoso (Sticky)
+.sticky-photo-card {
+  position: sticky;
+  top: 90px;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #e2e8f0 !important;
+
+  @media (max-width: 991px) {
+    position: relative;
+    top: 0;
+    margin-bottom: 16px;
+  }
+
+  .screen-canvas-box {
+    flex: 1 1 auto;
+    overflow: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    background-color: #0f172a;
+    background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1.2px, transparent 1.2px);
+    background-size: 18px 18px;
+    height: 520px;
+    max-height: 540px;
+
+    @media (max-width: 991px) {
+      height: 380px;
+    }
+
+    .screen-canvas-img {
+      display: block;
+      margin: 0 auto;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: all 0.2s ease;
+      cursor: zoom-in;
+
+      &.img-contain {
+        max-height: 480px;
+        max-width: 100%;
+        object-fit: contain;
+
+        @media (max-width: 991px) {
+          max-height: 340px;
+        }
+      }
+
+      &.img-width {
+        width: 100%;
+        max-width: 100%;
+        height: auto;
+      }
+
+      &:hover {
+        transform: scale(1.01);
+      }
+    }
+  }
+}
+
+// Miniaturas de Pantallas
+.screen-mini-btn {
+  transition: all 0.15s ease;
+  &:hover {
+    border-color: #2563eb !important;
+  }
+}
+
+// Card Contenedor de Pestañas / Stepper
+.dimension-stepper-card {
+  border: 1px solid #e2e8f0 !important;
+  overflow: hidden;
+}
+
+// Pestañas / Stepper Horizontales de Dimensiones (Grid exacto de 4 columnas contenidas)
+.dimension-stepper-tabs {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+  width: 100%;
+
+  @media (max-width: 576px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .stepper-tab-btn {
+    width: 100%;
+    min-width: 0; // Evita que hijos flex desborden la celda del grid
+    box-sizing: border-box;
+    border: 1.5px solid transparent;
+    border-radius: 10px;
+    padding: 7px 6px;
+    gap: 6px;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    background-color: #f8fafc;
+    border-color: #e2e8f0;
+
+    .step-num-badge {
+      width: 20px;
+      height: 20px;
+      min-width: 20px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.72rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .tab-name {
+      font-size: 0.80rem;
+      font-weight: 600;
+      min-width: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .tab-count-badge {
+      font-size: 0.65rem;
+      padding: 2px 5px;
+      border-radius: 8px;
+      flex-shrink: 0;
+      line-height: 1.2;
+    }
+
+    .bg-white-20 {
+      background-color: rgba(255, 255, 255, 0.25);
+    }
+
+    &:hover {
+      background-color: #f1f5f9;
+      border-color: #cbd5e1;
+    }
+
+    &.btn-primary {
+      background: #2563eb !important;
+      border-color: #2563eb !important;
+      color: #ffffff !important;
+      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25);
+
+      .tab-name {
+        color: #ffffff;
+      }
+    }
+  }
+}
+
+// Card de la Dimensión Activa
+.dimension-active-card {
+  border: 1px solid #e2e8f0 !important;
+  animation: slideFadeIn 0.25s ease-out;
+}
+
+@keyframes slideFadeIn {
+  from {
+    opacity: 0.4;
+    transform: translateX(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+// Tarjeta de Reactivo
+.public-question-card {
+  border: 1.5px solid #e2e8f0;
+  background-color: #ffffff;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
+
+  &:hover {
+    border-color: #cbd5e1;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+  }
+}
+
+// Cuadrícula de Escala Likert de 1 a 7 (Exactamente 7 columnas uniformes)
+.likert-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 5px;
+  width: 100%;
+
+  .likert-box {
+    background: #f8fafc;
+    border: 1.5px solid #e2e8f0;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    min-width: 0;
+    width: 100%;
+    user-select: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 8px 3px 6px 3px;
+    height: 100%;
+    min-height: 84px;
+
+    &:hover {
+      background: #f1f5f9;
+      border-color: #cbd5e1;
+      transform: translateY(-2px);
+    }
+
+    &.selected {
+      background: #eff6ff;
+      border-color: #2563eb;
+      color: #1d4ed8;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
+
+      .likert-short-lbl {
+        color: #2563eb !important;
+        font-weight: 700;
+      }
+    }
+
+    .likert-short-lbl {
+      font-size: 0.60rem;
+      line-height: 1.15;
+      text-align: center;
+      word-break: normal;
+    }
+  }
+}
+
+// Pantalla de Éxito
+.submission-success-card {
+  animation: fadeInSuccess 0.3s ease-out;
+}
+
+@keyframes fadeInSuccess {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.transition-all {
+  transition: all 0.2s ease-in-out;
+}
+
+// Substep Buttons de Preguntas (#1..#5)
+.question-substep-btn {
+  font-size: 0.72rem;
+  border: 1px solid #e2e8f0;
+  &:hover {
+    border-color: #2563eb;
+  }
+}
+
+// Single Question Viewport
+.single-question-viewport {
+  animation: fadeInQuestion 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+  min-height: 210px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+@keyframes fadeInQuestion {
+  from {
+    opacity: 0.4;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Compact Mode Rows
+.compact-question-row {
+  transition: all 0.15s ease;
+  border: 1px solid #e2e8f0;
+  &:hover {
+    background-color: #f8fafc !important;
+    border-color: #cbd5e1;
+  }
+}
+
+.compact-likert-btn {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  border: 1px solid #e2e8f0;
+  transition: all 0.15s ease;
+
+  &:hover {
+    border-color: #2563eb;
+    transform: translateY(-1px);
+  }
+}

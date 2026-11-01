@@ -10,6 +10,10 @@ export const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   {
+    path: 'survey/visawi/:projectId',
+    loadComponent: () => import('./features/public-survey/public-visawi-survey.component').then(m => m.PublicVisawiSurveyComponent)
+  },
+  {
     path: '',
     component: MainLayoutComponent,
     children: [

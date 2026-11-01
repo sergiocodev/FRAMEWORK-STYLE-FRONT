@@ -79,6 +79,7 @@ export interface EvaluacionEsteticaResponse {
   nivel_madurez?: string;
   pantallas_fase4?: PantallaFase4Item[];
   calista_metricas?: any;
+  visawi_encuestas?: VisawiEncuestaResponse[];
 }
 
 export interface HallazgoCreateRequest {
@@ -94,6 +95,72 @@ export interface VisawiQuestionnaireItem {
   pregunta: string;
   inverso?: boolean;
 }
+
+export interface VisawiEncuestaResponse {
+  id: number;
+  evaluacion_id: number;
+  evaluador_nombre: string;
+  evaluador_rol: string;
+  respuestas: Record<string, number>;
+  score_simplicidad: number;
+  score_claridad: number;
+  score_diversidad: number;
+  score_armonia: number;
+  score_global: number;
+  creado_en?: string;
+}
+
+export interface VisawiEncuestaRespuestaInput {
+  evaluador_nombre?: string;
+  evaluador_rol?: string;
+  respuestas: Record<number, number>;
+  reiniciar_muestra?: boolean;
+}
+
+// Interfaces para Encuesta Pública VisAWI Desatendida (Opción B)
+export interface VisawiPublicScreenItem {
+  id: number;
+  nombre_pantalla: string;
+  archivo_url?: string;
+  estado_diseno?: string;
+}
+
+export interface VisawiPublicDimensionInfo {
+  nombre: string;
+  descripcion: string;
+  items_count: number;
+}
+
+export interface VisawiPublicLikertOption {
+  valor: number;
+  etiqueta: string;
+  corta: string;
+}
+
+export interface VisawiPublicSurveyInfo {
+  proyecto_id: number;
+  proyecto_nombre: string;
+  proyecto_tipo?: string;
+  pantallas: VisawiPublicScreenItem[];
+  dimensiones: VisawiPublicDimensionInfo[];
+  items: VisawiQuestionnaireItem[];
+  escala: VisawiPublicLikertOption[];
+}
+
+export interface VisawiPublicSubmissionResponse {
+  success: boolean;
+  mensaje: string;
+  encuesta_id: number;
+  evaluador_nombre: string;
+  evaluador_rol: string;
+  score_simplicidad: number;
+  score_claridad: number;
+  score_diversidad: number;
+  score_armonia: number;
+  score_global: number;
+  total_evaluaciones_proyecto: number;
+}
+
 
 // -------------------------------------------------------------
 // MODELO CALISTA (Delitzas et al., 2023)

@@ -1,68 +1,29 @@
 <div class="visawi-page-container d-flex flex-column min-vh-100 bg-light">
   <!-- Top Page Header -->
-  <app-page-header
-    [title]="project?.title || 'Evaluación Psicométrica VisAWI'"
-    [breadcrumbs]="headerBreadcrumbs"
+  <app-page-header [title]="project?.title || 'Evaluación Psicométrica VisAWI'" [breadcrumbs]="headerBreadcrumbs"
     [showSearch]="false">
-    
+
     <div header-badges class="d-flex align-items-center gap-2">
-      <span class="badge rounded-pill text-primary bg-primary-subtle border-0 px-3 py-1 fw-medium" style="font-size: 0.75rem;">
+      <span class="badge rounded-pill text-primary bg-primary-subtle border-0 px-3 py-1 fw-medium"
+        style="font-size: 0.75rem;">
         Fase 5: Métodos de Evaluación
       </span>
-      <span class="badge rounded-pill text-success bg-success-subtle border-0 px-3 py-1 fw-medium" style="font-size: 0.75rem;">
+      <span class="badge rounded-pill text-success bg-success-subtle border-0 px-3 py-1 fw-medium"
+        style="font-size: 0.75rem;">
         {{ formattedStatus }}
       </span>
-    </div>
-    
-    <div header-actions class="d-flex align-items-center gap-2">
-      <a [routerLink]="['/framework/projects', projectId, 'evaluacion']" class="btn btn-outline-secondary d-flex align-items-center gap-2 px-3 py-2 bg-white text-dark shadow-xs border rounded-3 text-decoration-none">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <line x1="19" y1="12" x2="5" y2="12"></line>
-          <polyline points="12 19 5 12 12 5"></polyline>
-        </svg>
-        <span>Volver a Evaluación</span>
-      </a>
-
-      <button class="btn btn-outline-secondary d-flex align-items-center gap-2 px-3 py-2 bg-white shadow-xs border rounded-3"
-              (click)="openPreviewSurveyModal()"
-              title="Ver el cuestionario psicométrico oficial tal como lo responden los participantes">
-        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/>
-          <circle cx="12" cy="12" r="3"/>
-        </svg>
-        <span>Simulador de Encuesta</span>
-      </button>
-
-      <button class="btn btn-primary d-flex align-items-center gap-2 px-3 py-2 text-white shadow-sm rounded-3"
-              (click)="openVisawiModal()"
-              style="background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%); border: none;">
-        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <line x1="4" x2="4" y1="21" y2="14"/>
-          <line x1="4" x2="4" y1="10" y2="3"/>
-          <line x1="12" x2="12" y1="21" y2="12"/>
-          <line x1="12" x2="12" y1="8" y2="3"/>
-          <line x1="20" x2="20" y1="21" y2="16"/>
-          <line x1="20" x2="20" y1="12" y2="3"/>
-          <line x1="2" x2="6" y1="14" y2="14"/>
-          <line x1="10" x2="14" y1="8" y2="8"/>
-          <line x1="18" x2="22" y1="16" y2="16"/>
-        </svg>
-        <span>Ajustar Métricas / Metas</span>
-      </button>
     </div>
   </app-page-header>
 
   <!-- Segmented Progress Bar -->
   <div class="header-progress-bar d-flex w-100 mb-2">
     @for (phase of phases; track phase.number) {
-      <div class="progress-segment flex-fill"
-           [ngClass]="{
+    <div class="progress-segment flex-fill" [ngClass]="{
              'segment-completed': phase.status === 'completed',
              'segment-active': phase.status === 'active',
              'segment-upcoming': phase.status === 'upcoming'
-           }"
-           [title]="phase.name">
-      </div>
+           }" [title]="phase.name">
+    </div>
     }
   </div>
 
@@ -71,9 +32,12 @@
     <div class="bg-white rounded-4 p-3 shadow-sm border border-light">
       <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
         <div class="d-flex align-items-center gap-3">
-          <div class="header-icon-container" style="background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); color: white; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; border-radius: 12px;">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+          <div class="header-icon-container"
+            style="background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); color: white; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; border-radius: 12px;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon
+                points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
             </svg>
           </div>
           <div>
@@ -81,27 +45,47 @@
               <h4 class="mb-0 fw-bold d-flex align-items-center gap-2">
                 Fase 5: Evaluación Psicométrica VisAWI
               </h4>
-              <span class="badge bg-primary-subtle text-primary border border-primary-subtle" style="font-size: 0.72rem;">
+              <span class="badge bg-primary-subtle text-primary border border-primary-subtle"
+                style="font-size: 0.72rem;">
                 Moshagen & Thielsch (2010)
               </span>
             </div>
             <div class="text-muted small mt-1">
-              <span class="fw-medium text-secondary-emphasis">Cliente:</span> <span class="opacity-75 me-2">{{ project?.client || 'Cliente Interno' }}</span> | 
-              <span class="ms-1">Inventario psicométrico de estética visual de sitios web validado en 4 subescalas: Simplicidad, Claridad, Diversidad y Armonía.</span>
+              <span class="fw-medium text-secondary-emphasis">Cliente:</span> <span class="opacity-75 me-2">{{
+                project?.client || 'Cliente Interno' }}</span> |
+              <span class="ms-1">Inventario psicométrico de estética visual validado en 4 subescalas: Simplicidad,
+                Claridad, Diversidad y Armonía</span>
             </div>
           </div>
         </div>
 
-        <!-- Share URL bar -->
+        <!-- Share URL bar (Opción B: Evaluación Pública Desatendida) -->
         <div class="d-flex align-items-center gap-2 flex-wrap">
-          <div class="input-group input-group-sm" style="max-width: 380px;">
-            <span class="input-group-text bg-light border-end-0 text-muted">
-              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" x2="22" y1="12" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          <div class="input-group input-group-sm shadow-xs" style="max-width: 440px;">
+            <span class="input-group-text bg-white border-end-0 text-success fw-semibold" title="Enlace Público Activo">
+              <span class="spinner-grow spinner-grow-sm text-success me-1" style="width: 8px; height: 8px;"
+                role="status"></span>
+              Público
             </span>
-            <input type="text" class="form-control border-start-0 small" [value]="assessment?.encuesta_url || 'https://style-eval.com/survey/proj-' + projectId" readonly>
-            <button class="btn btn-outline-primary" (click)="copySurveyUrl()" title="Copiar enlace público de recolección">
-              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="14" height="14" x="8" y="8" rx="2" ry="2" /><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" /></svg>
+            <input type="text" class="form-control border-start-0 small bg-light" [value]="publicSurveyUrl" readonly>
+            <button class="btn btn-outline-primary d-flex align-items-center gap-1" (click)="copySurveyUrl()"
+              title="Copiar enlace público para compartir por WhatsApp/Email">
+              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2">
+                <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
+                <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
+              </svg>
               <span>Copiar</span>
+            </button>
+            <button class="btn btn-primary text-white d-flex align-items-center gap-1" (click)="openPublicSurvey()"
+              title="Abrir formulario público en nueva pestaña">
+              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                <polyline points="15 3 21 3 21 9" />
+                <line x1="10" y1="14" x2="21" y2="3" />
+              </svg>
+              <span>Abrir</span>
             </button>
           </div>
         </div>
@@ -109,28 +93,52 @@
 
       <!-- Navigation Tabs de Métodos de Evaluación Fase 5 -->
       <div class="eval-nav-tabs mt-3 pt-3 border-top d-flex align-items-center gap-2">
-        <a [routerLink]="['/framework/projects', projectId, 'evaluacion']" 
-           class="eval-nav-tab btn btn-sm py-1 px-3 rounded-pill text-decoration-none text-muted">
-          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="me-1"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+        <a [routerLink]="['/framework/projects', projectId, 'evaluacion']"
+          class="eval-nav-tab btn btn-sm py-1 px-3 rounded-pill text-decoration-none text-muted">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" class="me-1">
+            <rect width="7" height="9" x="3" y="3" rx="1" />
+            <rect width="7" height="5" x="14" y="3" rx="1" />
+            <rect width="7" height="9" x="14" y="12" rx="1" />
+            <rect width="7" height="5" x="3" y="16" rx="1" />
+          </svg>
           Resumen General
         </a>
         <a [routerLink]="['/framework/projects', projectId, 'evaluacion', 'revision-heuristica']"
-           class="eval-nav-tab btn btn-sm py-1 px-3 rounded-pill text-decoration-none text-muted">
-          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="me-1"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" /></svg>
+          class="eval-nav-tab btn btn-sm py-1 px-3 rounded-pill text-decoration-none text-muted">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" class="me-1">
+            <polygon
+              points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+          </svg>
           Revisión Heurística
         </a>
         <a [routerLink]="['/framework/projects', projectId, 'evaluacion', 'topologia-gestalt']"
-           class="eval-nav-tab btn btn-sm py-1 px-3 rounded-pill text-decoration-none text-muted">
-          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="me-1"><circle cx="6" cy="6" r="3"/><circle cx="18" cy="18" r="3"/><circle cx="18" cy="6" r="3"/><line x1="8.5" y1="7.5" x2="15.5" y2="16.5"/></svg>
+          class="eval-nav-tab btn btn-sm py-1 px-3 rounded-pill text-decoration-none text-muted">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" class="me-1">
+            <circle cx="6" cy="6" r="3" />
+            <circle cx="18" cy="18" r="3" />
+            <circle cx="18" cy="6" r="3" />
+            <line x1="8.5" y1="7.5" x2="15.5" y2="16.5" />
+          </svg>
           Topología Gestalt (TDA)
         </a>
-        <a class="eval-nav-tab btn btn-sm py-1 px-3 rounded-pill text-decoration-none active text-primary fw-semibold bg-primary-subtle border border-primary-subtle">
-          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="me-1"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" /></svg>
+        <a
+          class="eval-nav-tab btn btn-sm py-1 px-3 rounded-pill text-decoration-none active text-primary fw-semibold bg-primary-subtle border border-primary-subtle">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" class="me-1">
+            <polygon
+              points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+          </svg>
           Psicométrico VisAWI
         </a>
         <a [routerLink]="['/framework/projects', projectId, 'evaluacion', 'calista']"
-           class="eval-nav-tab btn btn-sm py-1 px-3 rounded-pill text-decoration-none text-muted">
-          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="me-1"><path d="M12 20a8 8 0 1 0 0-16 8 8 0 0 0 0 16Z"/></svg>
+          class="eval-nav-tab btn btn-sm py-1 px-3 rounded-pill text-decoration-none text-muted">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" class="me-1">
+            <path d="M12 20a8 8 0 1 0 0-16 8 8 0 0 0 0 16Z" />
+          </svg>
           Modelo Calista (AI)
         </a>
       </div>
@@ -153,35 +161,50 @@
               <div>
                 <div class="d-flex align-items-center gap-2">
                   <h4 class="mb-0 fw-bold fs-5 text-dark">Puntaje Global VisAWI</h4>
-                  <span class="badge rounded-pill" [ngClass]="getMetricLevel(averageVisawi).badgeClass" style="font-size: 0.75rem;">
+                  <span class="badge rounded-pill" [ngClass]="getMetricLevel(averageVisawi).badgeClass"
+                    style="font-size: 0.75rem;">
                     {{ getMetricLevel(averageVisawi).label }}
                   </span>
                 </div>
                 <p class="text-muted small mb-0 mt-1">
-                  Promedio de las 4 subescalas psicométricas observadas en participantes vs. Meta Benchmark de {{ averageBenchmark }}/7.0.
+                  Promedio de las 4 subescalas psicométricas calculadas vs. Meta Benchmark de {{ averageBenchmark
+                  }}/7.0.
                 </p>
               </div>
             </div>
 
             <div class="text-end">
               <span class="d-block small text-muted">Meta Benchmark</span>
-              <span class="fw-bold fs-5 text-warning-emphasis">{{ averageBenchmark }} <small class="text-muted fs-6">/ 7.0</small></span>
+              <span class="fw-bold fs-5 text-warning-emphasis">{{ averageBenchmark }} <small class="text-muted fs-6">/
+                  7.0</small></span>
             </div>
           </div>
 
           <!-- Quality & Reliability indicators -->
-          <div class="p-3 bg-light rounded-3 border d-flex align-items-center justify-content-between flex-wrap gap-2 text-muted small">
+          <div
+            class="p-3 bg-light rounded-3 border d-flex align-items-center justify-content-between flex-wrap gap-2 text-muted small">
             <span class="d-flex align-items-center gap-1 text-success fw-medium">
-              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-              {{ assessment?.respuestas_completadas || 30 }}/{{ assessment?.total_respuestas || 30 }} Respuestas (100% Muestra)
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2.5">
+                <polyline points="20 6 9 17 4 12" />
+              </svg>
+              {{ assessment?.visawi_encuestas?.length || assessment?.respuestas_completadas || 0 }} Evaluaciones
+              Guardadas en BD
             </span>
             <span class="d-flex align-items-center gap-1">
-              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-              Tiempo promedio: 2.4 min
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10" />
+                <polyline points="12 6 12 12 16 14" />
+              </svg>
+              Escala Oficial: Likert 1 a 7
             </span>
             <span class="d-flex align-items-center gap-1">
-              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-              Consenso: 88% (Alfa Cronbach α = 0.88)
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+              </svg>
+              Confiabilidad: 18 reactivos validados
             </span>
             <span class="text-primary fw-semibold">Ponderación: 35% en Score STYLE</span>
           </div>
@@ -193,23 +216,41 @@
         <div class="card h-100 p-4 border-0 shadow-sm rounded-4 bg-white d-flex flex-column justify-content-between">
           <div>
             <div class="d-flex align-items-center justify-content-between mb-2">
-              <h5 class="fw-bold fs-6 text-dark mb-0">Instrumento Científico Oficial</h5>
-              <span class="badge bg-secondary-subtle text-secondary border">18 Reactivos Likert 1-7</span>
+              <h5 class="fw-bold fs-6 text-dark mb-0">Cuestionario Psicométrico Activo</h5>
+              <span class="badge bg-success-subtle text-success border border-success-subtle">Guardado en MySQL</span>
             </div>
             <p class="text-muted small mb-3">
-              Basado en el marco psicométrico de <em>Moshagen & Thielsch (2010)</em>, el inventario VisAWI mide la percepción estética en cuatro constructos latentes correlacionados.
+              Basado en <em>Moshagen & Thielsch (2010)</em>. Cada evaluación enviada se guarda como registro individual
+              y recalcula automáticamente los promedios y el radar.
             </p>
           </div>
 
           <div class="d-flex align-items-center gap-2">
-            <button class="btn btn-outline-secondary btn-sm flex-fill d-flex align-items-center justify-content-center gap-2 py-2"
-                    (click)="openPreviewSurveyModal()">
-              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
-              <span>Simular Encuesta</span>
+            <button
+              class="btn btn-primary btn-sm flex-fill d-flex align-items-center justify-content-center gap-2 py-2 text-white border-0 shadow-xs"
+              (click)="openSurveyModal()" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2">
+                <path d="M12 20h9" />
+                <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+              </svg>
+              <span>Responder Cuestionario</span>
             </button>
-            <button class="btn btn-outline-primary btn-sm flex-fill d-flex align-items-center justify-content-center gap-2 py-2"
-                    (click)="openVisawiModal()">
-              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" x2="4" y1="21" y2="14"/><line x1="4" x2="4" y1="10" y2="3"/><line x1="12" x2="12" y1="21" y2="12"/><line x1="12" x2="12" y1="8" y2="3"/><line x1="20" x2="20" y1="21" y2="16"/><line x1="20" x2="20" y1="12" y2="3"/><line x1="2" x2="6" y1="14" y2="14"/><line x1="10" x2="14" y1="8" y2="8"/><line x1="18" x2="22" y1="16" y2="16"/></svg>
+            <button
+              class="btn btn-outline-secondary btn-sm flex-fill d-flex align-items-center justify-content-center gap-2 py-2 bg-white"
+              (click)="openVisawiModal()">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2">
+                <line x1="4" x2="4" y1="21" y2="14" />
+                <line x1="4" x2="4" y1="10" y2="3" />
+                <line x1="12" x2="12" y1="21" y2="12" />
+                <line x1="12" x2="12" y1="8" y2="3" />
+                <line x1="20" x2="20" y1="21" y2="16" />
+                <line x1="20" x2="20" y1="12" y2="3" />
+                <line x1="2" x2="6" y1="14" y2="14" />
+                <line x1="10" x2="14" y1="8" y2="8" />
+                <line x1="18" x2="22" y1="16" y2="16" />
+              </svg>
               <span>Calibrar Metas</span>
             </button>
           </div>
@@ -228,8 +269,11 @@
               <h5 class="fw-bold fs-6 text-dark mb-0">Diagrama Radar Multidimensional</h5>
               <p class="text-muted small mb-0">Comparativa 2D: Percepción observada vs. Meta Benchmark</p>
             </div>
-            <button class="btn btn-sm btn-light border p-1 px-2" (click)="openVisawiModal()" title="Editar valores">
-              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
+            <button class="btn btn-sm btn-light border p-1 px-2" (click)="openVisawiModal()" title="Editar metas">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2">
+                <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
+              </svg>
             </button>
           </div>
 
@@ -251,20 +295,32 @@
 
               <!-- Dynamic Axis Labels & Values -->
               <!-- Top: Simplicidad -->
-              <text x="200" y="38" text-anchor="middle" class="chart-label fw-bold">{{ assessment?.visawi_metricas?.[0]?.dimension || 'Simplicidad' }}</text>
-              <text x="200" y="53" text-anchor="middle" class="chart-value">{{ assessment?.visawi_metricas?.[0]?.puntaje || 5.8 }} <tspan fill="#d97706" font-size="0.75em">(Meta: {{ assessment?.visawi_metricas?.[0]?.target || 6.0 }})</tspan></text>
+              <text x="200" y="38" text-anchor="middle" class="chart-label fw-bold">{{
+                assessment?.visawi_metricas?.[0]?.dimension || 'Simplicidad' }}</text>
+              <text x="200" y="53" text-anchor="middle" class="chart-value">{{ assessment?.visawi_metricas?.[0]?.puntaje
+                || 5.8 }} <tspan fill="#d97706" font-size="0.75em">(Meta: {{ assessment?.visawi_metricas?.[0]?.target ||
+                  6.0 }})</tspan></text>
 
               <!-- Right: Claridad -->
-              <text x="335" y="180" text-anchor="start" class="chart-label fw-bold">{{ assessment?.visawi_metricas?.[1]?.dimension || 'Claridad' }}</text>
-              <text x="335" y="195" text-anchor="start" class="chart-value">{{ assessment?.visawi_metricas?.[1]?.puntaje || 6.1 }} <tspan fill="#d97706" font-size="0.75em">(Meta: {{ assessment?.visawi_metricas?.[1]?.target || 6.0 }})</tspan></text>
+              <text x="335" y="180" text-anchor="start" class="chart-label fw-bold">{{
+                assessment?.visawi_metricas?.[1]?.dimension || 'Claridad' }}</text>
+              <text x="335" y="195" text-anchor="start" class="chart-value">{{ assessment?.visawi_metricas?.[1]?.puntaje
+                || 6.1 }} <tspan fill="#d97706" font-size="0.75em">(Meta: {{ assessment?.visawi_metricas?.[1]?.target ||
+                  6.0 }})</tspan></text>
 
               <!-- Bottom: Diversidad -->
-              <text x="200" y="332" text-anchor="middle" class="chart-label fw-bold">{{ assessment?.visawi_metricas?.[2]?.dimension || 'Diversidad' }}</text>
-              <text x="200" y="347" text-anchor="middle" class="chart-value">{{ assessment?.visawi_metricas?.[2]?.puntaje || 5.2 }} <tspan fill="#d97706" font-size="0.75em">(Meta: {{ assessment?.visawi_metricas?.[2]?.target || 5.5 }})</tspan></text>
+              <text x="200" y="332" text-anchor="middle" class="chart-label fw-bold">{{
+                assessment?.visawi_metricas?.[2]?.dimension || 'Diversidad' }}</text>
+              <text x="200" y="347" text-anchor="middle" class="chart-value">{{
+                assessment?.visawi_metricas?.[2]?.puntaje || 5.2 }} <tspan fill="#d97706" font-size="0.75em">(Meta: {{
+                  assessment?.visawi_metricas?.[2]?.target || 5.5 }})</tspan></text>
 
               <!-- Left: Armonía -->
-              <text x="65" y="180" text-anchor="end" class="chart-label fw-bold">{{ assessment?.visawi_metricas?.[3]?.dimension || 'Armonía' }}</text>
-              <text x="65" y="195" text-anchor="end" class="chart-value">{{ assessment?.visawi_metricas?.[3]?.puntaje || 5.9 }} <tspan fill="#d97706" font-size="0.75em">(Meta: {{ assessment?.visawi_metricas?.[3]?.target || 6.0 }})</tspan></text>
+              <text x="65" y="180" text-anchor="end" class="chart-label fw-bold">{{
+                assessment?.visawi_metricas?.[3]?.dimension || 'Armonía' }}</text>
+              <text x="65" y="195" text-anchor="end" class="chart-value">{{ assessment?.visawi_metricas?.[3]?.puntaje ||
+                5.9 }} <tspan fill="#d97706" font-size="0.75em">(Meta: {{ assessment?.visawi_metricas?.[3]?.target ||
+                  6.0 }})</tspan></text>
 
               <!-- Numbers inside the chart (Scale 1 to 7) -->
               <text x="195" y="170" text-anchor="end" class="chart-scale">1</text>
@@ -276,20 +332,23 @@
               <text x="195" y="63" text-anchor="end" class="chart-scale">7</text>
 
               <!-- Layer 1: Benchmark / Target Polygon (Dashed Amber) -->
-              <polygon [attr.points]="radarBenchmarkPolygonPoints" fill="rgba(245, 158, 11, 0.08)" stroke="#f59e0b" stroke-width="2" stroke-dasharray="5 3" />
+              <polygon [attr.points]="radarBenchmarkPolygonPoints" fill="rgba(245, 158, 11, 0.08)" stroke="#f59e0b"
+                stroke-width="2" stroke-dasharray="5 3" />
               @for (p of radarBenchmarkDataPoints; track p.label) {
-                <circle [attr.cx]="p.x" [attr.cy]="p.y" r="3.5" fill="#f59e0b" />
+              <circle [attr.cx]="p.x" [attr.cy]="p.y" r="3.5" fill="#f59e0b" />
               }
 
               <!-- Layer 2: Actual Score Polygon (Solid Blue) -->
-              <polygon [attr.points]="radarPolygonPoints" fill="rgba(37, 99, 235, 0.2)" stroke="#2563eb" stroke-width="2.5" />
+              <polygon [attr.points]="radarPolygonPoints" fill="rgba(37, 99, 235, 0.2)" stroke="#2563eb"
+                stroke-width="2.5" />
               @for (p of radarDataPoints; track p.label) {
-                <circle [attr.cx]="p.x" [attr.cy]="p.y" r="4.5" fill="#2563eb" />
+              <circle [attr.cx]="p.x" [attr.cy]="p.y" r="4.5" fill="#2563eb" />
               }
             </svg>
 
             <!-- Radar Legend -->
-            <div class="radar-legend d-flex align-items-center justify-content-center gap-4 py-2 border-top bg-light-subtle rounded-3 small">
+            <div
+              class="radar-legend d-flex align-items-center justify-content-center gap-4 py-2 border-top bg-light-subtle rounded-3 small">
               <span class="d-inline-flex align-items-center gap-2 fw-medium text-primary">
                 <span class="legend-box actual-box"></span>
                 Puntaje Actual (Promedio: {{ averageVisawi }}/7.0)
@@ -304,36 +363,41 @@
 
         <!-- Critical Bottleneck & Actionable Recommendation Banner -->
         @if (lowestVisawiMetric) {
-          <div class="visawi-diagnosis-card p-4 rounded-4 border border-warning-subtle bg-warning-subtle shadow-xs d-flex flex-column gap-3">
-            <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
-              <div class="d-flex align-items-center gap-2">
-                <span class="diagnosis-badge bg-warning text-dark fw-bold rounded px-2 py-1 small">
-                  Foco de Mejora Detectado
-                </span>
-                <span class="fw-bold text-dark fs-6">
-                  {{ lowestVisawiMetric.dimension }} ({{ lowestVisawiMetric.puntaje }}/7.0)
-                </span>
-              </div>
-              @if (lowestVisawiMetric.gap > 0) {
-                <span class="badge bg-danger text-white fw-semibold">
-                  Brecha: -{{ lowestVisawiMetric.gap }} pts vs Meta
-                </span>
-              }
+        <div
+          class="visawi-diagnosis-card p-4 rounded-4 border border-warning-subtle bg-warning-subtle shadow-xs d-flex flex-column gap-3">
+          <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+            <div class="d-flex align-items-center gap-2">
+              <span class="diagnosis-badge bg-warning text-dark fw-bold rounded px-2 py-1 small">
+                Foco de Mejora Detectado
+              </span>
+              <span class="fw-bold text-dark fs-6">
+                {{ lowestVisawiMetric.dimension }} ({{ lowestVisawiMetric.puntaje }}/7.0)
+              </span>
             </div>
-
-            <p class="mb-0 text-dark small" style="line-height: 1.5;">
-              <strong>Recomendación UI/UX:</strong> {{ lowestVisawiMetric.recommendation }}
-            </p>
-
-            <div class="d-flex justify-content-end">
-              <button type="button" class="btn btn-sm btn-outline-danger btn-convert-finding py-1 px-3 d-inline-flex align-items-center gap-2"
-                      (click)="convertVisawiToFinding(lowestVisawiMetric, $event)"
-                      title="Crear un hallazgo en la matriz de la Fase 5 a partir de esta subescala">
-                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
-                <span>Convertir a Hallazgo en Matriz</span>
-              </button>
-            </div>
+            @if (lowestVisawiMetric.gap > 0) {
+            <span class="badge bg-danger text-white fw-semibold">
+              Brecha: -{{ lowestVisawiMetric.gap }} pts vs Meta
+            </span>
+            }
           </div>
+
+          <p class="mb-0 text-dark small" style="line-height: 1.5;">
+            <strong>Recomendación UI/UX:</strong> {{ lowestVisawiMetric.recommendation }}
+          </p>
+
+          <div class="d-flex justify-content-end">
+            <button type="button"
+              class="btn btn-sm btn-outline-danger btn-convert-finding py-1 px-3 d-inline-flex align-items-center gap-2"
+              (click)="convertVisawiToFinding(lowestVisawiMetric, $event)"
+              title="Crear un hallazgo en la matriz de la Fase 5 a partir de esta subescala">
+              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2.5">
+                <path d="M12 5v14M5 12h14" />
+              </svg>
+              <span>Convertir a Hallazgo en Matriz</span>
+            </button>
+          </div>
+        </div>
         }
       </div>
 
@@ -342,8 +406,15 @@
         <div class="card p-4 border-0 shadow-sm rounded-4 bg-white mb-4">
           <div class="d-flex align-items-center justify-content-between mb-3">
             <div class="d-flex align-items-center gap-2">
-              <div class="card-icon summary-icon" style="width: 32px; height: 32px; background: rgba(37, 99, 235, 0.1); color: #2563eb; display: flex; align-items: center; justify-content: center; border-radius: 8px;">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" /><line x1="16" x2="8" y1="13" y2="13" /><line x1="16" x2="8" y1="17" y2="17" /></svg>
+              <div class="card-icon summary-icon"
+                style="width: 32px; height: 32px; background: rgba(37, 99, 235, 0.1); color: #2563eb; display: flex; align-items: center; justify-content: center; border-radius: 8px;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="2">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                  <polyline points="14 2 14 8 20 8" />
+                  <line x1="16" x2="8" y1="13" y2="13" />
+                  <line x1="16" x2="8" y1="17" y2="17" />
+                </svg>
               </div>
               <h5 class="fw-bold fs-6 text-dark mb-0">Desglose de Subescalas Psicométricas</h5>
             </div>
@@ -355,63 +426,241 @@
           <!-- 4 Subscales Cards -->
           <div class="d-flex flex-column gap-3">
             @for (m of assessment?.visawi_metricas; track m.dimension) {
-              <div class="subscale-card p-3 rounded-3 border bg-light-subtle shadow-xs">
-                <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-2">
-                  <div class="d-flex align-items-center gap-2">
-                    <span class="fw-bold text-dark fs-6">{{ m.dimension }}</span>
-                    <span class="badge rounded-pill" [ngClass]="getMetricLevel(m.puntaje).badgeClass" style="font-size: 0.72rem;">
-                      {{ getMetricLevel(m.puntaje).label }}
-                    </span>
-                  </div>
-                  <div class="d-flex align-items-center gap-3">
-                    <span class="text-muted small">Meta: <strong>{{ m.target || 6.0 }}</strong></span>
-                    <span class="fw-bold fs-5 text-dark">{{ m.puntaje }} <span class="text-muted small fs-6">/ 7.0</span></span>
-                    <button class="btn btn-sm btn-outline-danger py-0 px-2" style="font-size: 0.72rem;"
-                            (click)="convertVisawiToFinding({ dimension: m.dimension, puntaje: m.puntaje, recommendation: m.reactivo || 'Revisar subescala' }, $event)"
-                            title="Convertir esta dimensión en un hallazgo de diseño">
-                      + Hallazgo
-                    </button>
-                  </div>
+            <div class="subscale-card p-3 rounded-3 border bg-light-subtle shadow-xs">
+              <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-2">
+                <div class="d-flex align-items-center gap-2">
+                  <span class="fw-bold text-dark fs-6">{{ m.dimension }}</span>
+                  <span class="badge rounded-pill" [ngClass]="getMetricLevel(m.puntaje).badgeClass"
+                    style="font-size: 0.72rem;">
+                    {{ getMetricLevel(m.puntaje).label }}
+                  </span>
                 </div>
-
-                <!-- Progress Bar with Target Marker -->
-                <div class="progress-bar-bg position-relative mb-2" style="height: 10px; border-radius: 5px; background: #e2e8f0;">
-                  <!-- Target marker line (Scale 1 to 7) -->
-                  <div class="target-marker position-absolute top-0 bottom-0"
-                       [style.left.%]="((m.target || 6.0) / 7) * 100"
-                       title="Meta Benchmark: {{ m.target || 6.0 }}"></div>
-                  <!-- Progress fill with level-specific color -->
-                  <div class="progress-bar-fill h-100 rounded-2 transition-all"
-                       [ngClass]="getMetricLevel(m.puntaje).barClass"
-                       [style.width.%]="(m.puntaje / 7) * 100"></div>
+                <div class="d-flex align-items-center gap-3">
+                  <span class="text-muted small">Meta: <strong>{{ m.target || 6.0 }}</strong></span>
+                  <span class="fw-bold fs-5 text-dark">{{ m.puntaje }} <span class="text-muted small fs-6">/
+                      7.0</span></span>
+                  <button class="btn btn-sm btn-outline-danger py-0 px-2" style="font-size: 0.72rem;"
+                    (click)="convertVisawiToFinding({ dimension: m.dimension, puntaje: m.puntaje, recommendation: m.reactivo || 'Revisar subescala' }, $event)"
+                    title="Convertir esta dimensión en un hallazgo de diseño">
+                    + Hallazgo
+                  </button>
                 </div>
-
-                @if (m.reactivo) {
-                  <p class="text-secondary small mb-2 fst-italic">"{{ m.reactivo }}"</p>
-                }
-
-                <!-- Dimension Specific Official Items Accordion -->
-                @if (isVisawiQuestionsOpen) {
-                  <div class="dimension-items-box mt-2 p-2 bg-white rounded border">
-                    <div class="d-flex justify-content-between align-items-center mb-1">
-                      <span class="fw-semibold text-primary small">Reactivos oficiales (Moshagen & Thielsch):</span>
-                    </div>
-                    <ul class="list-unstyled mb-0 d-flex flex-column gap-1">
-                      @for (it of getItemsByDimension(m.dimension); track it.id) {
-                        <li class="d-flex align-items-start gap-1 text-muted" style="font-size: 0.75rem;">
-                          <span class="fw-bold text-dark">#{{ it.id }}:</span>
-                          <span>{{ it.pregunta }}</span>
-                          @if (it.inverso) {
-                            <span class="badge bg-warning-subtle text-warning-emphasis border" style="font-size: 0.65rem;">Inverso</span>
-                          }
-                        </li>
-                      }
-                    </ul>
-                  </div>
-                }
               </div>
+
+              <!-- Progress Bar with Target Marker -->
+              <div class="progress-bar-bg position-relative mb-2"
+                style="height: 10px; border-radius: 5px; background: #e2e8f0;">
+                <!-- Target marker line (Scale 1 to 7) -->
+                <div class="target-marker position-absolute top-0 bottom-0"
+                  [style.left.%]="((m.target || 6.0) / 7) * 100" title="Meta Benchmark: {{ m.target || 6.0 }}"></div>
+                <!-- Progress fill with level-specific color -->
+                <div class="progress-bar-fill h-100 rounded-2 transition-all"
+                  [ngClass]="getMetricLevel(m.puntaje).barClass" [style.width.%]="(m.puntaje / 7) * 100"></div>
+              </div>
+
+              @if (m.reactivo) {
+              <p class="text-secondary small mb-2 fst-italic">"{{ m.reactivo }}"</p>
+              }
+
+              <!-- Dimension Specific Official Items Accordion -->
+              @if (isVisawiQuestionsOpen) {
+              <div class="dimension-items-box mt-2 p-2 bg-white rounded border">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                  <span class="fw-semibold text-primary small">Reactivos oficiales (Moshagen & Thielsch):</span>
+                </div>
+                <ul class="list-unstyled mb-0 d-flex flex-column gap-1">
+                  @for (it of getItemsByDimension(m.dimension); track it.id) {
+                  <li class="d-flex align-items-start gap-1 text-muted" style="font-size: 0.75rem;">
+                    <span class="fw-bold text-dark">#{{ it.id }}:</span>
+                    <span>{{ it.pregunta }}</span>
+                    @if (it.inverso) {
+                    <span class="badge bg-warning-subtle text-warning-emphasis border"
+                      style="font-size: 0.65rem;">Inverso</span>
+                    }
+                  </li>
+                  }
+                </ul>
+              </div>
+              }
+            </div>
             }
           </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Historial de Evaluaciones VisAWI Registradas en Base de Datos (MySQL) -->
+    <div class="row g-4 mt-1">
+      <div class="col-12">
+        <div class="card p-4 border-0 shadow-sm rounded-4 bg-white">
+          <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-3 pb-3 border-bottom">
+            <div class="d-flex align-items-center gap-3">
+              <div class="card-icon"
+                style="width: 42px; height: 42px; background: rgba(16, 185, 129, 0.12); color: #059669; display: flex; align-items: center; justify-content: center; border-radius: 12px;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                  <polyline points="14 2 14 8 20 8" />
+                  <line x1="16" y1="13" x2="8" y2="13" />
+                  <line x1="16" y1="17" x2="8" y2="17" />
+                  <polyline points="10 9 9 9 8 9" />
+                </svg>
+              </div>
+              <div>
+                <h5 class="fw-bold fs-6 text-dark mb-0">Historial de Evaluaciones VisAWI Registradas</h5>
+                <p class="text-muted small mb-0">
+                  Respuestas de participantes guardadas. Los promedios se calculan automáticamente y actualizan el
+                  Radar.
+                </p>
+              </div>
+            </div>
+
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+              <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2 fw-medium">
+                {{ assessment?.visawi_encuestas?.length || 0 }} Evaluaciones Guardadas
+              </span>
+              <button class="btn btn-sm btn-outline-primary d-flex align-items-center gap-1 px-3 py-2 rounded-3"
+                (click)="copySurveyUrl()" title="Copiar enlace para que usuarios externos respondan">
+                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="2">
+                  <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+                  <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+                </svg>
+                <span>Copiar Link Público</span>
+              </button>
+              <button
+                class="btn btn-sm btn-primary d-flex align-items-center gap-2 px-3 py-2 rounded-3 text-white border-0"
+                (click)="openSurveyModal()" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="2">
+                  <line x1="12" y1="5" x2="12" y2="19" />
+                  <line x1="5" y1="12" x2="19" y2="12" />
+                </svg>
+                <span class="fw-semibold">Nueva Evaluación (Presencial)</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Table of Surveys -->
+          @if (assessment?.visawi_encuestas && assessment!.visawi_encuestas!.length > 0) {
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+              <thead class="table-light text-muted small">
+                <tr>
+                  <th scope="col" style="width: 60px;"># ID</th>
+                  <th scope="col">Participante Anónimo</th>
+                  <th scope="col">Fecha de Envío</th>
+                  <th scope="col" class="text-center">Simplicidad</th>
+                  <th scope="col" class="text-center">Claridad</th>
+                  <th scope="col" class="text-center">Diversidad</th>
+                  <th scope="col" class="text-center">Armonía</th>
+                  <th scope="col" class="text-center">Score Global</th>
+                  <th scope="col" class="text-end">Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (encuesta of assessment?.visawi_encuestas; track encuesta.id) {
+                <tr>
+                  <td class="text-muted small fw-bold">#{{ encuesta.id }}</td>
+                  <td>
+                    <div class="d-flex align-items-center gap-2">
+                      <div class="avatar-circle small bg-light text-muted border"
+                        style="width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none"
+                          stroke="currentColor" stroke-width="2">
+                          <rect width="18" height="11" x="3" y="11" rx="2" ry="2" />
+                          <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                        </svg>
+                      </div>
+                      <div>
+                        <div class="fw-bold text-dark">Participante Anónimo #{{ encuesta.id }}</div>
+                        <div class="text-muted small" style="font-size: 0.75rem;">Evaluación VisAWI Anónima</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="text-muted small">
+                    {{ encuesta.creado_en ? (encuesta.creado_en | date:'dd/MM/yyyy, hh:mm a') : 'Reciente' }}
+                  </td>
+                  <td class="text-center">
+                    <span class="badge px-2 py-1" [ngClass]="getMetricLevel(encuesta.score_simplicidad).badgeClass">
+                      {{ encuesta.score_simplicidad }} / 7.0
+                    </span>
+                  </td>
+                  <td class="text-center">
+                    <span class="badge px-2 py-1" [ngClass]="getMetricLevel(encuesta.score_claridad).badgeClass">
+                      {{ encuesta.score_claridad }} / 7.0
+                    </span>
+                  </td>
+                  <td class="text-center">
+                    <span class="badge px-2 py-1" [ngClass]="getMetricLevel(encuesta.score_diversidad).badgeClass">
+                      {{ encuesta.score_diversidad }} / 7.0
+                    </span>
+                  </td>
+                  <td class="text-center">
+                    <span class="badge px-2 py-1" [ngClass]="getMetricLevel(encuesta.score_armonia).badgeClass">
+                      {{ encuesta.score_armonia }} / 7.0
+                    </span>
+                  </td>
+                  <td class="text-center">
+                    <span class="fw-bold fs-6 text-dark">{{ encuesta.score_global }}</span>
+                    <span class="text-muted small" style="font-size: 0.72rem;">/ 7.0</span>
+                  </td>
+                  <td class="text-end">
+                    <div class="d-flex align-items-center justify-content-end gap-1">
+                      <button class="btn btn-sm btn-outline-primary py-1 px-2 d-inline-flex align-items-center gap-1"
+                        (click)="viewSurveyDetails(encuesta)" title="Ver respuestas individuales de los 18 ítems">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none"
+                          stroke="currentColor" stroke-width="2">
+                          <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
+                          <circle cx="12" cy="12" r="3" />
+                        </svg>
+                        <span>Detalle</span>
+                      </button>
+                      <button class="btn btn-sm btn-outline-danger py-1 px-2 d-inline-flex align-items-center gap-1"
+                        (click)="deleteSurvey(encuesta.id, $event)" [disabled]="isDeletingSurveyId === encuesta.id"
+                        title="Eliminar este registro de la base de datos">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none"
+                          stroke="currentColor" stroke-width="2">
+                          <path d="M3 6h18" />
+                          <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                          <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                        </svg>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+          } @else {
+          <div class="text-center py-5 px-3 bg-light rounded-3 border border-dashed">
+            <div class="mb-3 text-muted">
+              <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="1.5" class="opacity-50">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                <polyline points="14 2 14 8 20 8" />
+                <line x1="16" y1="13" x2="8" y2="13" />
+                <line x1="16" y1="17" x2="8" y2="17" />
+              </svg>
+            </div>
+            <h6 class="fw-bold text-dark mb-1">Aún no hay evaluaciones registradas</h6>
+            <p class="text-muted small mb-3" style="max-width: 520px; margin: 0 auto;">
+              Responde el cuestionario psicométrico oficial con las opiniones de tus evaluadores. Cada respuesta se
+              almacena y calcula los promedios del Radar en tiempo real.
+            </p>
+            <button
+              class="btn btn-primary d-inline-flex align-items-center gap-2 px-3 py-2 text-white rounded-3 border-0"
+              (click)="openSurveyModal()" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2">
+                <path d="M12 20h9" />
+                <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+              </svg>
+              <span class="fw-semibold">Registrar Primera Evaluación VisAWI</span>
+            </button>
+          </div>
+          }
         </div>
       </div>
     </div>
@@ -419,211 +668,557 @@
 
   <!-- Modal: Ajustar Métricas y Metas VisAWI -->
   @if (isVisawiModalOpen) {
-    <div class="modal-backdrop" (click)="closeVisawiModal()">
-      <div class="modal-card modal-lg" (click)="$event.stopPropagation()" style="max-width: 680px;">
-        <div class="modal-header">
-          <div>
-            <h3 class="mb-0 fs-5">Ajustar Métricas y Metas VisAWI</h3>
-            <p class="text-muted small mb-0">Calibración psicométrica y objetivos de diseño estético</p>
+  <div class="modal-backdrop" (click)="closeVisawiModal()">
+    <div class="modal-card modal-visawi-goals" (click)="$event.stopPropagation()">
+      <div class="modal-header py-3 px-4 bg-white border-bottom">
+        <div class="d-flex align-items-center gap-3">
+          <div class="card-icon"
+            style="width: 38px; height: 38px; background: rgba(245, 158, 11, 0.12); color: #d97706; display: flex; align-items: center; justify-content: center; border-radius: 10px;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2">
+              <path d="M12 20v-6M6 20V10M18 20V4" />
+            </svg>
           </div>
-          <button class="btn-close" (click)="closeVisawiModal()">&times;</button>
+          <div>
+            <h3 class="mb-0 fs-5 fw-bold text-dark">Calibrar Metas y Benchmarks VisAWI</h3>
+            <p class="text-muted small mb-0">Define los objetivos esperados (1.0 a 7.0) para ajustar el polígono del radar</p>
+          </div>
+        </div>
+        <button class="btn-close" (click)="closeVisawiModal()">&times;</button>
+      </div>
+
+      <div class="modal-body p-3 p-md-4">
+        <div class="alert alert-light border d-flex align-items-center gap-2 py-2 px-3 mb-3 text-muted small rounded-3">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2">
+            <circle cx="12" cy="12" r="10" />
+            <line x1="12" y1="16" x2="12" y2="12" />
+            <line x1="12" y1="8" x2="12.01" y2="8" />
+          </svg>
+          <span>Modifica las metas deseadas (Benchmark Target) para calibrar el polígono de referencia del gráfico Radar.</span>
         </div>
 
-        <div class="modal-body">
-          <p class="modal-intro mb-3">Modifica las puntuaciones psicométricas promedio (escala 1.0 a 7.0 del instrumento oficial VisAWI) observadas en las encuestas y define la meta deseada (Benchmark Target) para actualizar el gráfico Radar bidimensional.</p>
-
-          <div class="metric-sliders-list d-flex flex-column gap-3">
-            @for (m of tempVisawiMetrics; track m.dimension) {
-              <div class="metric-slider-card p-3 rounded-3 border bg-light">
+        <div class="row g-3">
+          @for (m of tempVisawiMetrics; track m.dimension) {
+          <div class="col-12 col-md-6">
+            <div class="metric-slider-card h-100 d-flex flex-column justify-content-between">
+              <div>
                 <div class="d-flex align-items-center justify-content-between mb-1">
                   <strong class="text-dark fs-6">{{ m.dimension }}</strong>
-                  <span class="badge rounded-pill" [ngClass]="getMetricLevel(m.puntaje).badgeClass">
+                  <span class="badge rounded-pill" [ngClass]="getMetricLevel(m.puntaje).badgeClass" style="font-size: 0.75rem;">
                     {{ getMetricLevel(m.puntaje).label }}
                   </span>
                 </div>
                 @if (m.reactivo) {
-                  <p class="text-secondary small mb-2 fst-italic">"{{ m.reactivo }}"</p>
+                <p class="text-secondary small mb-2 fst-italic text-truncate-2" [title]="m.reactivo">
+                  "{{ m.reactivo }}"
+                </p>
                 }
-                
-                <div class="row g-3">
-                  <!-- Puntaje Actual -->
-                  <div class="col-md-6">
-                    <div class="d-flex justify-content-between align-items-center mb-1">
-                      <span class="small fw-semibold text-primary">Puntaje Actual (Muestra):</span>
-                      <span class="fw-bold text-primary">{{ m.puntaje }} / 7.0</span>
-                    </div>
-                    <input type="range" class="form-range slider-actual" min="1.0" max="7.0" step="0.1" [(ngModel)]="m.puntaje">
+              </div>
+
+              <div class="d-flex flex-column gap-2 mt-2">
+                <!-- Puntaje Actual -->
+                <div class="slider-box">
+                  <div class="d-flex justify-content-between align-items-center mb-1">
+                    <span class="small fw-semibold text-primary d-flex align-items-center gap-1">
+                      <span class="rounded-circle d-inline-block bg-primary" style="width: 7px; height: 7px;"></span>
+                      Puntaje Actual:
+                    </span>
+                    <span class="badge bg-primary-subtle text-primary fw-bold">{{ m.puntaje }} / 7.0</span>
                   </div>
-                  <!-- Benchmark Target -->
-                  <div class="col-md-6">
-                    <div class="d-flex justify-content-between align-items-center mb-1">
-                      <span class="small fw-semibold text-warning-emphasis">Meta Benchmark:</span>
-                      <span class="fw-bold text-warning-emphasis">{{ m.target || 6.0 }} / 7.0</span>
-                    </div>
-                    <input type="range" class="form-range slider-target" min="1.0" max="7.0" step="0.1" [(ngModel)]="m.target">
+                  <input type="range" class="form-range slider-actual" min="1.0" max="7.0" step="0.1"
+                    [(ngModel)]="m.puntaje">
+                </div>
+
+                <!-- Benchmark Target -->
+                <div class="slider-box">
+                  <div class="d-flex justify-content-between align-items-center mb-1">
+                    <span class="small fw-semibold text-warning-emphasis d-flex align-items-center gap-1">
+                      <span class="rounded-circle d-inline-block bg-warning" style="width: 7px; height: 7px;"></span>
+                      Meta Benchmark:
+                    </span>
+                    <span class="badge bg-warning-subtle text-warning-emphasis fw-bold">{{ m.target || 6.0 }} / 7.0</span>
                   </div>
+                  <input type="range" class="form-range slider-target" min="1.0" max="7.0" step="0.1"
+                    [(ngModel)]="m.target">
                 </div>
               </div>
+            </div>
+          </div>
+          }
+        </div>
+      </div>
+
+      <div class="modal-footer py-3 px-4">
+        <button class="btn btn-outline-secondary px-3" (click)="closeVisawiModal()" [disabled]="isSaving">Cancelar</button>
+        <button class="btn btn-primary d-flex align-items-center gap-2 px-4" (click)="saveVisawiMetrics()" [disabled]="isSaving">
+          @if (isSaving) {
+          <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+          <span>Guardando...</span>
+          } @else {
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="20 6 9 17 4 12" />
+          </svg>
+          <span class="fw-semibold">Guardar Metas</span>
+          }
+        </button>
+      </div>
+    </div>
+  </div>
+  }
+
+  <!-- Modal: Responder Cuestionario Psicométrico VisAWI Oficial (18 Ítems) en 2 Columnas -->
+  @if (isSurveyModalOpen) {
+  <div class="modal-backdrop" (click)="closeSurveyModal()">
+    <div class="modal-card modal-visawi-split" (click)="$event.stopPropagation()">
+      <!-- Modal Header -->
+      <div class="modal-header d-flex justify-content-between align-items-center bg-white border-bottom py-3 px-4">
+        <div class="d-flex align-items-center gap-3">
+          <div class="card-icon star-blue"
+            style="width: 42px; height: 42px; background: rgba(16, 185, 129, 0.12); color: #059669; display: flex; align-items: center; justify-content: center; border-radius: 10px;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 20h9" />
+              <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+            </svg>
+          </div>
+          <div>
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+              <h4 class="mb-0 fs-5 fw-bold text-dark">Evaluación Psicométrica VisAWI Oficial</h4>
+              <span class="badge bg-success-subtle text-success border border-success-subtle fw-semibold">
+                18 Reactivos Likert (1 - 7)
+              </span>
+              @if (selectedScreen) {
+              <span class="badge bg-primary-subtle text-primary border border-primary-subtle">
+                Pantalla: {{ selectedScreen.nombre_pantalla }}
+              </span>
+              }
+            </div>
+            <p class="text-muted small mb-0">Inspecciona la pantalla de diseño visual a la izquierda y evalúa los 18
+              reactivos psicométricos a la derecha</p>
+          </div>
+        </div>
+        <button class="btn-close" (click)="closeSurveyModal()">&times;</button>
+      </div>
+
+      <!-- Modal Body en Dos Columnas -->
+      <div class="modal-body modal-split-body">
+        <!-- COLUMNA 1 (IZQUIERDA): IMAGEN / PANTALLA EN EVALUACIÓN -->
+        <div class="visawi-col-screen">
+          <!-- Barra de Control del Visor de Pantalla -->
+          <div class="screen-control-bar p-3 d-flex align-items-center justify-content-between gap-2 flex-wrap">
+            <div class="d-flex align-items-center gap-2 flex-grow-1" style="min-width: 220px; max-width: 320px;">
+              <div style="color: #2563eb; display: flex; align-items: center;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect width="18" height="18" x="3" y="3" rx="2" />
+                  <circle cx="9" cy="9" r="2" />
+                  <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" />
+                </svg>
+              </div>
+              @if (assessment?.pantallas_fase4 && assessment!.pantallas_fase4!.length > 1) {
+              <select class="form-select form-select-sm border bg-light fw-medium flex-grow-1"
+                [ngModel]="selectedScreenId" (ngModelChange)="onScreenChange($event)">
+                @for (scr of assessment?.pantallas_fase4; track scr.id) {
+                <option [value]="scr.id">{{ scr.nombre_pantalla }}</option>
+                }
+              </select>
+              } @else {
+              <span class="small fw-bold text-dark text-truncate"
+                [title]="selectedScreen?.nombre_pantalla || 'Diseño UI'">
+                {{ selectedScreen?.nombre_pantalla || 'Diseño UI de Fase 4' }}
+              </span>
+              }
+            </div>
+
+            <!-- Controles de Modo de Visualización -->
+            <div class="d-flex align-items-center gap-2">
+              @if (selectedScreen?.archivo_url) {
+              <div class="btn-group btn-group-sm">
+                <button type="button" class="btn btn-sm btn-outline-secondary py-1 px-2"
+                  [class.active]="screenViewerMode === 'contain'" (click)="setScreenViewerMode('contain')"
+                  title="Ajustar imagen completa al visor">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2">
+                    <rect width="18" height="18" x="3" y="3" rx="2" />
+                  </svg>
+                  <span class="d-none d-sm-inline ms-1" style="font-size: 0.72rem;">Ajustar</span>
+                </button>
+                <button type="button" class="btn btn-sm btn-outline-secondary py-1 px-2"
+                  [class.active]="screenViewerMode === 'width'" (click)="setScreenViewerMode('width')"
+                  title="Expandir al 100% del ancho">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2">
+                    <path d="m15 3 6 6-6 6" />
+                    <path d="m9 21-6-6 6-6" />
+                  </svg>
+                  <span class="d-none d-sm-inline ms-1" style="font-size: 0.72rem;">Ancho 100%</span>
+                </button>
+              </div>
+
+              <!-- Botón Zoom Pantalla Completa -->
+              <button type="button" class="btn btn-sm btn-outline-secondary py-1 px-2 d-flex align-items-center gap-1"
+                (click)="toggleScreenZoomModal(true)" title="Ver en pantalla completa">
+                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="2">
+                  <polyline points="15 3 21 3 21 9" />
+                  <polyline points="9 21 3 21 3 15" />
+                  <line x1="21" y1="3" x2="14" y2="10" />
+                  <line x1="3" y1="21" x2="10" y2="14" />
+                </svg>
+              </button>
+              }
+            </div>
+          </div>
+
+          <!-- Canvas / Viewport de la Imagen -->
+          <div class="visawi-screen-canvas">
+            @if (selectedScreen?.archivo_url) {
+            <div class="w-100 text-center">
+              <img [src]="getImageUrl(selectedScreen?.archivo_url)"
+                [alt]="selectedScreen?.nombre_pantalla || 'Pantalla en evaluación'"
+                class="visawi-screen-img rounded-3 shadow" [class.img-contain]="screenViewerMode === 'contain'"
+                [class.img-width]="screenViewerMode === 'width'" (click)="toggleScreenZoomModal(true)"
+                title="Haz clic para ver pantalla completa">
+            </div>
+            } @else {
+            <div class="text-center p-5 text-white-50">
+              <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="1.5" class="mb-3 opacity-50">
+                <rect width="18" height="18" x="3" y="3" rx="2" />
+                <circle cx="9" cy="9" r="2" />
+                <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" />
+              </svg>
+              <h6 class="text-white fw-bold mb-1">Sin captura gráfica cargada</h6>
+              <p class="small text-white-50 mb-0">Esta pantalla de Fase 4 no tiene archivo visual cargado.</p>
+            </div>
+            }
+          </div>
+
+          <!-- Barra Inferior de Miniaturas / Instrucción -->
+          <div class="screen-bottom-bar p-2">
+            @if (assessment?.pantallas_fase4 && assessment!.pantallas_fase4!.length > 1) {
+            <div class="d-flex align-items-center gap-2 overflow-auto py-1 px-1">
+              <span class="small text-muted fw-bold text-nowrap" style="font-size: 0.72rem;">Pantallas:</span>
+              @for (scr of assessment?.pantallas_fase4; track scr.id) {
+              <button type="button"
+                class="btn btn-sm p-1 rounded-2 border d-flex align-items-center gap-2 text-start screen-mini-btn"
+                [class.btn-primary]="selectedScreen?.id === scr.id" [class.btn-light]="selectedScreen?.id !== scr.id"
+                (click)="onScreenChange(scr.id)">
+                @if (scr.archivo_url) {
+                <img [src]="getImageUrl(scr.archivo_url)" class="rounded"
+                  style="width: 22px; height: 22px; object-fit: cover;">
+                }
+                <span class="small fw-semibold text-truncate" style="max-width: 100px; font-size: 0.7rem;">
+                  {{ scr.nombre_pantalla }}
+                </span>
+              </button>
+              }
+            </div>
+            } @else {
+            <div class="d-flex align-items-center gap-2 text-muted small px-2 py-1" style="font-size: 0.75rem;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10" />
+                <line x1="12" y1="16" x2="12" y2="12" />
+                <line x1="12" y1="8" x2="12.01" y2="8" />
+              </svg>
+              <span>Observa detenidamente la interfaz visual de la izquierda mientras respondes los reactivos a la
+                derecha.</span>
+            </div>
             }
           </div>
         </div>
 
-        <div class="modal-footer">
-          <button class="btn btn-outline-secondary" (click)="closeVisawiModal()" [disabled]="isSaving">Cancelar</button>
-          <button class="btn btn-primary" (click)="saveVisawiMetrics()" [disabled]="isSaving">
-            @if (isSaving) {
-              <span>Guardando...</span>
+        <!-- COLUMNA 2 (DERECHA): FORMULARIO Y PREGUNTAS VISAWI -->
+        <div class="visawi-col-questions">
+          <!-- Evaluator Anonymity & Role & Progress -->
+          <div class="p-3 bg-white rounded-3 border shadow-xs">
+            <div class="d-flex align-items-center justify-content-between mb-2">
+              <div class="d-flex align-items-center gap-2">
+                <span class="badge bg-success-subtle text-success border border-success-subtle fw-semibold">
+                  🔒 Evaluación 100% Anónima
+                </span>
+                <span class="small text-muted" style="font-size: 0.75rem;">No se registran nombres ni datos
+                  personales</span>
+              </div>
+            </div>
+
+            <div class="p-2 px-3 bg-light rounded-2 border mb-2">
+              <span class="text-muted small" style="font-size: 0.75rem;">
+                Cuestionario completamente anónimo. No se solicita ningún dato personal del participante para garantizar
+                la objetividad psicométrica.
+              </span>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="pt-2 border-top">
+              <div class="d-flex align-items-center justify-content-between mb-1">
+                <span class="small fw-semibold text-dark">Progreso de Respuesta:</span>
+                <span class="small fw-bold" [class.text-success]="totalAnsweredCount === 18"
+                  [class.text-muted]="totalAnsweredCount < 18">
+                  {{ totalAnsweredCount }} de 18 reactivos respondidos ({{ (totalAnsweredCount / 18 * 100) |
+                  number:'1.0-0' }}%)
+                </span>
+              </div>
+              <div class="progress" style="height: 6px; border-radius: 3px; background-color: #e2e8f0;">
+                <div class="progress-bar bg-success transition-all" [style.width.%]="(totalAnsweredCount / 18) * 100">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Real-time Live Calculation Score Strip -->
+          <div
+            class="live-scores-strip p-3 rounded-3 border d-flex align-items-center justify-content-between flex-wrap gap-2 shadow-xs"
+            style="background: #f0fdf4; border-color: #bbf7d0 !important;">
+            <div class="d-flex align-items-center gap-2">
+              <span class="badge bg-success text-white px-2 py-1 small">Cálculo en Vivo</span>
+              <span class="small text-muted">Ajustado con inversión psicométrica oficial:</span>
+            </div>
+            <div class="d-flex align-items-center gap-3 flex-wrap">
+              <span class="small text-dark">Simplicidad: <strong>{{ liveSurveySimplicidad ? (liveSurveySimplicidad +
+                  '/7.0') : '-' }}</strong></span>
+              <span class="small text-dark">Claridad: <strong>{{ liveSurveyClaridad ? (liveSurveyClaridad + '/7.0') :
+                  '-' }}</strong></span>
+              <span class="small text-dark">Diversidad: <strong>{{ liveSurveyDiversidad ? (liveSurveyDiversidad +
+                  '/7.0') : '-' }}</strong></span>
+              <span class="small text-dark">Armonía: <strong>{{ liveSurveyArmonia ? (liveSurveyArmonia + '/7.0') : '-'
+                  }}</strong></span>
+              <span class="badge bg-primary text-white fs-6 px-3 py-1">Score: {{ liveSurveyGlobal ? (liveSurveyGlobal +
+                ' / 7.0') : 'Pendiente' }}</span>
+            </div>
+          </div>
+
+          <!-- 18 Questions by Dimension -->
+          <div class="survey-dimensions-container d-flex flex-column gap-3">
+            @for (dim of visawiDimensions; track dim.name) {
+            <div class="dimension-block border rounded-3 p-3 bg-white shadow-xs">
+              <div class="dimension-block-header d-flex align-items-center justify-content-between mb-2">
+                <div>
+                  <h5 class="fs-6 fw-bold text-primary mb-0">{{ dim.name | uppercase }}</h5>
+                  <p class="text-muted small mb-0 fst-italic">{{ dim.descripcion }}</p>
+                </div>
+                <span class="badge bg-primary-subtle text-primary border border-primary-subtle">{{ dim.itemsCount }}
+                  preguntas</span>
+              </div>
+
+              <div class="d-flex flex-column gap-3 mt-3">
+                @for (it of getItemsByDimension(dim.name); track it.id) {
+                <div class="survey-question-card p-3 rounded-3 border bg-light-subtle shadow-xs">
+                  <div class="d-flex align-items-center justify-content-between mb-2">
+                    <div class="d-flex align-items-center gap-2">
+                      <span class="badge bg-secondary-subtle text-secondary border fw-semibold">Ítem #{{ it.id }}</span>
+                      @if (it.inverso) {
+                      <span class="badge bg-warning-subtle text-warning-emphasis border" style="font-size: 0.68rem;"
+                        title="Este ítem se codifica invertido: score = 8 - respuesta">
+                        Ítem Inverso (8 - valor)
+                      </span>
+                      }
+                    </div>
+                    <div>
+                      @if (surveyItemAnswers[it.id]) {
+                      <span class="badge bg-success-subtle text-success border border-success-subtle"
+                        style="font-size: 0.72rem;">
+                        Seleccionado: {{ surveyItemAnswers[it.id] }} / 7
+                      </span>
+                      } @else {
+                      <span class="badge bg-light text-muted border" style="font-size: 0.7rem;">
+                        Pendiente de responder
+                      </span>
+                      }
+                    </div>
+                  </div>
+
+                  <h5 class="survey-question-text fw-medium fs-6 text-dark mb-3">
+                    "{{ it.pregunta }}"
+                  </h5>
+
+                  <!-- 7 Likert Radio Options -->
+                  <div class="likert-scale-options d-flex justify-content-between align-items-center gap-1 flex-wrap">
+                    @for (opt of likertScale7; track opt.value) {
+                    <label class="likert-option flex-grow-1 text-center py-2 px-1 rounded-2 border cursor-pointer"
+                      [class.selected]="surveyItemAnswers[it.id] === opt.value" [title]="opt.label">
+                      <input type="radio" class="d-none" [name]="'survey_item_' + it.id" [value]="opt.value"
+                        [(ngModel)]="surveyItemAnswers[it.id]">
+                      <span class="likert-caption d-block text-muted" style="font-size: 0.65rem; line-height: 1.15;">
+                        {{ opt.label }}
+                      </span>
+                    </label>
+                    }
+                  </div>
+                </div>
+                }
+              </div>
+            </div>
+            }
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="modal-footer d-flex justify-content-between align-items-center bg-white border-top py-3 px-4">
+        <div class="d-flex align-items-center gap-2">
+          <span class="text-muted small">
+            {{ totalAnsweredCount }}/18 reactivos respondidos.
+          </span>
+          @if (totalAnsweredCount < 18) { <span class="badge bg-warning-subtle text-warning-emphasis border"
+            style="font-size: 0.72rem;">
+            Faltan {{ 18 - totalAnsweredCount }} reactivos por completar
+            </span>
             } @else {
-              <span>Guardar Métricas y Metas</span>
+            <span class="badge bg-success-subtle text-success border border-success-subtle" style="font-size: 0.72rem;">
+              ¡Todos los reactivos respondidos! Listo para guardar
+            </span>
+            }
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <button class="btn btn-outline-secondary" (click)="closeSurveyModal()" [disabled]="isSavingSurvey">
+            Cancelar
+          </button>
+          <button
+            class="btn btn-primary d-flex align-items-center gap-2 text-white px-4 py-2 border-0 rounded-3 shadow-sm"
+            (click)="submitSurvey()" [disabled]="isSavingSurvey || totalAnsweredCount < 18"
+            [title]="totalAnsweredCount < 18 ? 'Debes responder los 18 reactivos (' + totalAnsweredCount + '/18)' : 'Guardar evaluación en la base de datos'"
+            style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+            @if (isSavingSurvey) {
+            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+            <span>Guardando...</span>
+            } @else {
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2">
+              <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
+              <polyline points="17 21 17 13 7 13 7 21" />
+              <polyline points="7 3 7 8 15 8" />
+            </svg>
+            <span class="fw-semibold">Guardar Evaluación</span>
             }
           </button>
         </div>
       </div>
     </div>
+  </div>
   }
 
-  <!-- Modal: Simulador de Encuesta Psicométrica VisAWI Oficial (18 Ítems) -->
-  @if (isPreviewSurveyModalOpen) {
-    <div class="modal-backdrop" (click)="closePreviewSurveyModal()">
-      <div class="modal-card modal-lg" (click)="$event.stopPropagation()" style="max-width: 860px; max-height: 90vh;">
-        <div class="modal-header d-flex justify-content-between align-items-center">
-          <div class="d-flex align-items-center gap-2">
-            <div class="card-icon star-blue" style="width: 36px; height: 36px; background: rgba(37, 99, 235, 0.1); color: #2563eb; display: flex; align-items: center; justify-content: center; border-radius: 8px;">
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-              </svg>
-            </div>
-            <div>
-              <h3 class="mb-0 fs-5">Encuesta Psicométrica VisAWI Oficial (Vista Participante)</h3>
-              <p class="text-muted small mb-0">Visual Aesthetics of Websites Inventory • Escala Likert de 7 Puntos (VISAWIdev.xlsx)</p>
-            </div>
-          </div>
-          <button class="btn-close" (click)="closePreviewSurveyModal()">&times;</button>
+  <!-- Modal Zoom Pantalla Completa (Lightweight Viewer) -->
+  @if (isScreenZoomModalOpen && selectedScreen?.archivo_url) {
+  <div class="modal-backdrop" style="z-index: 10001;" (click)="toggleScreenZoomModal(false)">
+    <div class="modal-card screen-zoom-modal" (click)="$event.stopPropagation()">
+      <div class="screen-zoom-header p-3 d-flex align-items-center justify-content-between">
+        <div class="d-flex align-items-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="15 3 21 3 21 9" />
+            <polyline points="9 21 3 21 3 15" />
+            <line x1="21" y1="3" x2="14" y2="10" />
+            <line x1="3" y1="21" x2="10" y2="14" />
+          </svg>
+          <span class="fw-bold fs-6">{{ selectedScreen?.nombre_pantalla }}</span>
         </div>
-
-        <div class="modal-body p-4" style="overflow-y: auto; max-height: calc(90vh - 140px);">
-          <!-- Top alert with instrument context -->
-          <div class="alert alert-info border-info-subtle bg-info-subtle d-flex align-items-start gap-2 mb-3 py-2 px-3 small">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-info-emphasis flex-shrink-0 mt-1"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-            <div>
-              <strong>Simulador del instrumento de investigación:</strong> Contiene los 18 ítems validados distribuidos en las 4 subescalas canónicas (Simplicidad, Claridad, Diversidad y Armonía). Cada usuario califica en escala Likert del 1 al 7.
-            </div>
-          </div>
-
-          <!-- Switcher: Completo (18 ítems) vs Resumen (4 Subescalas) -->
-          <div class="d-flex align-items-center justify-content-between mb-3 pb-2 border-bottom">
-            <div class="btn-group btn-group-sm">
-              <button type="button" class="btn" [class.btn-primary]="previewSurveyMode === 'completo'" [class.btn-outline-primary]="previewSurveyMode !== 'completo'" (click)="previewSurveyMode = 'completo'">
-                Cuestionario Completo (18 Ítems)
-              </button>
-              <button type="button" class="btn" [class.btn-primary]="previewSurveyMode === 'dimensiones'" [class.btn-outline-primary]="previewSurveyMode !== 'dimensiones'" (click)="previewSurveyMode = 'dimensiones'">
-                Vista por Subescalas (4)
-              </button>
-            </div>
-            <span class="text-muted small">Escala: 1 (Totalmente en desacuerdo) a 7 (Totalmente de acuerdo)</span>
-          </div>
-
-          <!-- Mode A: Cuestionario Completo de 18 Ítems organizados por Subescala -->
-          @if (previewSurveyMode === 'completo') {
-            <div class="survey-dimensions-container d-flex flex-column gap-4">
-              @for (dim of visawiDimensions; track dim.name) {
-                <div class="dimension-block border rounded-3 p-3 bg-light-subtle">
-                  <div class="dimension-block-header d-flex align-items-center justify-content-between mb-2">
-                    <div>
-                      <h4 class="fs-6 fw-bold text-primary mb-0">{{ dim.name | uppercase }}</h4>
-                      <p class="text-muted small mb-0 fst-italic">{{ dim.descripcion }}</p>
-                    </div>
-                    <span class="badge bg-primary text-white">{{ dim.itemsCount }} preguntas</span>
-                  </div>
-
-                  <div class="d-flex flex-column gap-3 mt-3">
-                    @for (it of getItemsByDimension(dim.name); track it.id) {
-                      <div class="survey-question-card p-3 rounded-2 border bg-white shadow-xs">
-                        <div class="d-flex align-items-center justify-content-between mb-2">
-                          <div class="d-flex align-items-center gap-2">
-                            <span class="badge bg-secondary-subtle text-secondary border fw-semibold">Ítem {{ it.id }}</span>
-                            @if (it.inverso) {
-                              <span class="badge bg-warning-subtle text-warning-emphasis border" style="font-size: 0.65rem;" title="Este ítem se codifica de forma inversa en el análisis estadístico">Ítem Inverso</span>
-                            }
-                          </div>
-                          <span class="text-muted small" style="font-size: 0.72rem;">Likert 1-7</span>
-                        </div>
-
-                        <h5 class="survey-question-text fw-medium fs-6 text-dark mb-3">
-                          "{{ it.pregunta }}"
-                        </h5>
-
-                        <!-- 7 Likert Radio Options -->
-                        <div class="likert-scale-options d-flex justify-content-between align-items-center gap-1 flex-wrap">
-                          @for (opt of likertScale7; track opt.value) {
-                            <label class="likert-option flex-grow-1 text-center py-2 px-1 rounded-2 border cursor-pointer"
-                                   [class.selected]="previewItemAnswers[it.id] === opt.value"
-                                   [title]="opt.label">
-                              <input type="radio" class="d-none" [name]="'item_' + it.id" [value]="opt.value" [(ngModel)]="previewItemAnswers[it.id]">
-                              <span class="d-block fw-bold fs-6">{{ opt.value }}</span>
-                              <span class="likert-caption d-block text-muted" style="font-size: 0.65rem; line-height: 1.1;">{{ opt.short }}</span>
-                            </label>
-                          }
-                        </div>
-                      </div>
-                    }
-                  </div>
-                </div>
-              }
-            </div>
-          }
-
-          <!-- Mode B: Vista Agregada por las 4 Subescalas -->
-          @if (previewSurveyMode === 'dimensiones') {
-            <div class="survey-questions-list d-flex flex-column gap-3">
-              @for (m of assessment?.visawi_metricas; track m.dimension; let idx = $index) {
-                <div class="survey-question-card p-3 rounded-3 border bg-white shadow-xs">
-                  <div class="d-flex align-items-center justify-content-between mb-2">
-                    <span class="badge bg-primary-subtle text-primary border border-primary-subtle fw-semibold">
-                      Subescala {{ idx + 1 }}: {{ m.dimension }}
-                    </span>
-                    <span class="badge rounded-pill" [ngClass]="getMetricLevel(m.puntaje).badgeClass">
-                      Promedio: {{ m.puntaje }} / 7.0
-                    </span>
-                  </div>
-                  
-                  <h5 class="survey-question-text fw-medium fs-6 text-dark mb-3">
-                    "{{ m.reactivo || 'Evaluación del principio psicométrico en la interfaz.' }}"
-                  </h5>
-
-                  <div class="likert-scale-options d-flex justify-content-between align-items-center gap-1 flex-wrap">
-                    @for (opt of likertScale7; track opt.value) {
-                      <label class="likert-option flex-grow-1 text-center py-2 px-1 rounded-2 border cursor-pointer"
-                             [class.selected]="previewAnswers[m.dimension] === opt.value"
-                             [title]="opt.label">
-                        <input type="radio" class="d-none" [name]="'survey_' + m.dimension" [value]="opt.value" [(ngModel)]="previewAnswers[m.dimension]">
-                        <span class="d-block fw-bold fs-6">{{ opt.value }}</span>
-                        <span class="likert-caption d-block text-muted" style="font-size: 0.65rem; line-height: 1.1;">{{ opt.short }}</span>
-                      </label>
-                    }
-                  </div>
-                </div>
-              }
-            </div>
-          }
-        </div>
-
-        <div class="modal-footer d-flex justify-content-between align-items-center">
-          <span class="text-muted small">Enlace público de recolección: <code>{{ assessment?.encuesta_url || 'https://style-eval.com/survey/proj-' + projectId }}</code></span>
-          <button class="btn btn-primary" (click)="closePreviewSurveyModal()">Entendido / Cerrar</button>
-        </div>
+        <button class="btn-close btn-close-white" (click)="toggleScreenZoomModal(false)">&times;</button>
+      </div>
+      <div class="screen-zoom-body">
+        <img [src]="getImageUrl(selectedScreen?.archivo_url)" [alt]="selectedScreen?.nombre_pantalla">
       </div>
     </div>
+  </div>
+  }
+
+  <!-- Modal: Detalle de Respuestas de una Evaluación Registrada -->
+  @if (selectedSurveyDetails) {
+  <div class="modal-backdrop" (click)="closeSurveyDetails()">
+    <div class="modal-card modal-lg" (click)="$event.stopPropagation()" style="max-width: 820px; max-height: 90vh;">
+      <div class="modal-header d-flex justify-content-between align-items-center bg-white border-bottom">
+        <div class="d-flex align-items-center gap-3">
+          <div class="card-icon"
+            style="width: 40px; height: 40px; background: rgba(37, 99, 235, 0.1); color: #2563eb; display: flex; align-items: center; justify-content: center; border-radius: 10px;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10" />
+              <polyline points="12 6 12 12 14 14" />
+            </svg>
+          </div>
+          <div>
+            <h4 class="mb-0 fs-5 fw-bold text-dark">Detalle de Evaluación #{{ selectedSurveyDetails.id }}</h4>
+            <p class="text-muted small mb-0">Participante Anónimo • Registro Confidencial VisAWI</p>
+          </div>
+        </div>
+        <button class="btn-close" (click)="closeSurveyDetails()">&times;</button>
+      </div>
+
+      <div class="modal-body p-4" style="overflow-y: auto; max-height: calc(90vh - 140px);">
+        <!-- Dimension Scores Summary -->
+        <div class="row g-2 mb-4">
+          <div class="col-6 col-md-3">
+            <div class="p-3 rounded-3 border bg-light text-center">
+              <span class="text-muted small d-block">Simplicidad</span>
+              <span class="fs-5 fw-bold text-dark">{{ selectedSurveyDetails.score_simplicidad }}</span>
+              <span class="text-muted small">/ 7.0</span>
+            </div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="p-3 rounded-3 border bg-light text-center">
+              <span class="text-muted small d-block">Claridad</span>
+              <span class="fs-5 fw-bold text-dark">{{ selectedSurveyDetails.score_claridad }}</span>
+              <span class="text-muted small">/ 7.0</span>
+            </div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="p-3 rounded-3 border bg-light text-center">
+              <span class="text-muted small d-block">Diversidad</span>
+              <span class="fs-5 fw-bold text-dark">{{ selectedSurveyDetails.score_diversidad }}</span>
+              <span class="text-muted small">/ 7.0</span>
+            </div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="p-3 rounded-3 border bg-light text-center">
+              <span class="text-muted small d-block">Armonía</span>
+              <span class="fs-5 fw-bold text-dark">{{ selectedSurveyDetails.score_armonia }}</span>
+              <span class="text-muted small">/ 7.0</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- All 18 Items List with exact answers -->
+        <h6 class="fw-bold text-dark mb-2">Desglose de los 18 Reactivos Evaluados:</h6>
+        <div class="d-flex flex-column gap-2">
+          @for (item of visawiOfficialItems; track item.id) {
+          <div class="p-3 rounded-2 border bg-white d-flex align-items-center justify-content-between gap-3">
+            <div>
+              <div class="d-flex align-items-center gap-2 mb-1">
+                <span class="badge bg-secondary-subtle text-secondary small">#{{ item.id }} ({{ item.dimension
+                  }})</span>
+                @if (item.inverso) {
+                <span class="badge bg-warning-subtle text-warning-emphasis small">Inverso</span>
+                }
+              </div>
+              <div class="small text-dark fw-medium">"{{ item.pregunta }}"</div>
+            </div>
+            <div class="text-end flex-shrink-0">
+              <span class="badge bg-primary px-3 py-2 fs-6">
+                {{ selectedSurveyDetails.respuestas[item.id] || selectedSurveyDetails.respuestas['' + item.id] || '-' }}
+                / 7
+              </span>
+            </div>
+          </div>
+          }
+        </div>
+      </div>
+
+      <div class="modal-footer bg-light border-top">
+        <button class="btn btn-outline-secondary" (click)="closeSurveyDetails()">Cerrar</button>
+      </div>
+    </div>
+  </div>
   }
 
   <!-- Toast Notification -->
   @if (toastMessage) {
-    <div class="custom-toast">
-      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
-        stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M20 6 9 17l-5-5" />
-      </svg>
-      <span>{{ toastMessage }}</span>
-    </div>
+  <div class="custom-toast">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M20 6 9 17l-5-5" />
+    </svg>
+    <span>{{ toastMessage }}</span>
+  </div>
   }
 </div>

@@ -86,31 +86,6 @@
             </div>
           </div>
         </div>
-
-        <!-- Selector de Pantallas de Fase 4 -->
-        <div class="d-flex align-items-center gap-2 flex-wrap">
-          @if (pantallasFase4.length > 0) {
-            <div class="d-flex align-items-center gap-2 bg-light p-1 px-2 rounded-3 border">
-              <label class="small text-muted fw-semibold text-nowrap mb-0">Pantalla:</label>
-              <select class="form-select form-select-sm border-0 bg-transparent fw-medium" style="min-width: 220px;"
-                      [ngModel]="selectedTdaScreenId" (ngModelChange)="onTdaScreenChange($event)">
-                @for (p of pantallasFase4; track p.id) {
-                  <option [value]="p.id">{{ p.nombre_pantalla }}</option>
-                }
-              </select>
-            </div>
-          }
-
-          <button class="btn btn-outline-primary btn-sm d-flex align-items-center gap-1 shadow-xs"
-                  [disabled]="isLoadingTda"
-                  (click)="runTdaAnalysis(selectedTdaScreenId)"
-                  title="Recalcular análisis topológico para la pantalla actual">
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" [class.spin]="isLoadingTda">
-              <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
-            </svg>
-            <span>{{ isLoadingTda ? 'Calculando...' : 'Recalcular TDA' }}</span>
-          </button>
-        </div>
       </div>
 
       <!-- Navigation Tabs de Métodos de Evaluación Fase 5 -->
@@ -236,6 +211,40 @@
                   <span>Lazos H1</span>
                 </label>
               </div>
+            </div>
+
+            <!-- Selector de Pantallas y Botón Recalcular (Directamente arriba de la pantalla) -->
+            <div class="px-3 py-2 bg-light border-bottom d-flex align-items-center justify-content-between flex-wrap gap-2">
+              <div class="d-flex align-items-center gap-2 flex-grow-1" style="min-width: 200px;">
+                <label class="small text-muted fw-semibold text-nowrap mb-0 d-flex align-items-center gap-1" style="font-size: 0.75rem;">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect width="18" height="18" x="3" y="3" rx="2" />
+                    <circle cx="9" cy="9" r="2" />
+                    <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" />
+                  </svg>
+                  <span>Pantalla:</span>
+                </label>
+                @if (pantallasFase4.length > 0) {
+                  <select class="form-select form-select-sm border bg-white fw-medium flex-grow-1" style="max-width: 320px;"
+                          [ngModel]="selectedTdaScreenId" (ngModelChange)="onTdaScreenChange($event)">
+                    @for (p of pantallasFase4; track p.id) {
+                      <option [value]="p.id">{{ p.nombre_pantalla }}</option>
+                    }
+                  </select>
+                } @else {
+                  <span class="small fw-semibold text-dark">{{ tdaResult.pantalla_nombre || 'Pantalla Activa' }}</span>
+                }
+              </div>
+
+              <button class="btn btn-outline-primary btn-sm d-flex align-items-center gap-1 shadow-xs bg-white"
+                      [disabled]="isLoadingTda"
+                      (click)="runTdaAnalysis(selectedTdaScreenId)"
+                      title="Recalcular análisis topológico para la pantalla actual">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" [class.spin]="isLoadingTda">
+                  <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+                </svg>
+                <span>{{ isLoadingTda ? 'Calculando...' : 'Recalcular TDA' }}</span>
+              </button>
             </div>
 
             <!-- Canvas / Viewport con SVG Overlay -->

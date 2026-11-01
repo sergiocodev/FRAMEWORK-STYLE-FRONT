@@ -292,17 +292,17 @@
 
           <!-- Footer: Tira de Miniaturas para Selección Rápida -->
           @if (pantallasFase4.length > 0) {
-            <div class="card-footer bg-white border-top p-2">
+            <div class="card-footer bg-white border-top p-2.5 px-3">
               <div class="d-flex align-items-center justify-content-between mb-1 px-1">
                 <span class="small text-muted fw-semibold" style="font-size: 0.72rem;">Pantallas del Proyecto ({{ pantallasFase4.length }})</span>
                 <span class="small text-muted" style="font-size: 0.72rem;">Clic para cambiar</span>
               </div>
-              <div class="d-flex gap-2 overflow-auto py-1 screen-mini-thumbs">
+              <div class="d-flex gap-2 overflow-auto py-1 pb-2 screen-mini-thumbs">
                 @for (p of pantallasFase4; track p.id) {
-                  <div class="screen-mini-item d-flex align-items-center gap-2 p-1 px-2 border rounded-2"
+                  <div class="screen-mini-item d-flex align-items-center gap-2 p-1.5 px-2 border rounded-2"
                        [class.active]="activeScreen?.id === p.id"
                        (click)="setActiveScreen(p)"
-                       style="cursor: pointer; min-width: 130px; max-width: 150px;">
+                       style="cursor: pointer; min-width: 140px; max-width: 170px;">
                     <div class="mini-thumb bg-light border rounded overflow-hidden flex-shrink-0" style="width: 34px; height: 26px;">
                       @if (p.archivo_url) {
                         <img [src]="getImageUrl(p.archivo_url)" [alt]="p.nombre_pantalla" class="w-100 h-100 object-fit-cover">

@@ -8,7 +8,11 @@ import {
   HallazgoCreateRequest,
   CalistaEvaluacionResponse,
   CalistaApplyRequest,
-  CalistaModeloInfo
+  CalistaModeloInfo,
+  VisawiEncuestaResponse,
+  VisawiEncuestaRespuestaInput,
+  VisawiPublicSurveyInfo,
+  VisawiPublicSubmissionResponse
 } from '../../../models/assessment.model';
 import { GestaltTdaResponse, TdaApplyRequest } from '../../../models/gestalt-tda.model';
 
@@ -106,4 +110,26 @@ export class AssessmentService {
       request
     );
   }
+
+  submitVisawiSurvey(projectId: number, payload: VisawiEncuestaRespuestaInput): Observable<EvaluacionEsteticaResponse> {
+    return this.http.post<EvaluacionEsteticaResponse>(`${this.getBaseUrl(projectId)}/visawi/respuestas`, payload);
+  }
+
+  deleteVisawiSurvey(projectId: number, surveyId: number): Observable<EvaluacionEsteticaResponse> {
+    return this.http.delete<EvaluacionEsteticaResponse>(`${this.getBaseUrl(projectId)}/visawi/respuestas/${surveyId}`);
+  }
+
+  getVisawiSurveys(projectId: number): Observable<VisawiEncuestaResponse[]> {
+    return this.http.get<VisawiEncuestaResponse[]>(`${this.getBaseUrl(projectId)}/visawi/respuestas`);
+  }
+
+  // --- Encuesta Pública Desatendida (Opción B) ---
+  getPublicVisawiSurvey(projectId: number): Observable<VisawiPublicSurveyInfo> {
+    return this.http.get<VisawiPublicSurveyInfo>(`${environment.apiUrl}/api/v1/public/visawi-survey/${projectId}`);
+  }
+
+  submitPublicVisawiSurvey(projectId: number, payload: VisawiEncuestaRespuestaInput): Observable<VisawiPublicSubmissionResponse> {
+    return this.http.post<VisawiPublicSubmissionResponse>(`${environment.apiUrl}/api/v1/public/visawi-survey/${projectId}/respuestas`, payload);
+  }
 }
+
