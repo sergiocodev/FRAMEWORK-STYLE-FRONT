@@ -1,7 +1,7 @@
 @if (isLoading) {
   <div class="d-flex justify-content-center align-items-center min-vh-100 bg-light">
     <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
-      <span class="visually-hidden">Cargando...</span>
+      <span class="visually-hidden">Cargando diseño conceptual...</span>
     </div>
   </div>
 } @else if (error && !project?.title) {
@@ -17,10 +17,9 @@
     </div>
   </div>
 } @else {
-  <div class="diseno-container min-vh-100 bg-light d-flex flex-column"
-    style="background-color: #F8FAFC !important;">
+  <div class="diseno-container min-vh-100 bg-light d-flex flex-column" style="background-color: #F8FAFC !important;">
     
-    <!-- Page Header (Reusable Navigation) -->
+    <!-- Page Header (Navegación y Acciones Globales) -->
     <app-page-header 
       [title]="project.title || 'Diseño Conceptual'" 
       [breadcrumbs]="headerBreadcrumbs"
@@ -35,15 +34,17 @@
         </span>
       </div>
   
-      <!-- Right Side Actions -->
+      <!-- Botón Avanzar a Fase 3 -->
       <div class="d-flex align-items-center gap-3">
-        <button class="btn d-flex align-items-center gap-2 px-4 py-2" style="background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%); color: white; border: none; font-weight: 500; border-radius: 8px;" (click)="completePhase()" [disabled]="isCompleting">
+        <button class="btn d-flex align-items-center gap-2 px-4 py-2" 
+                style="background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%); color: white; border: none; font-weight: 500; border-radius: 8px;" 
+                (click)="completePhase()" 
+                [disabled]="isCompleting">
           @if (isCompleting) {
             <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
           }
-          <span>Siguiente: Fase 3</span>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-            stroke-linecap="round" stroke-linejoin="round">
+          <span>Siguiente: Fase 3 (Diseño Visual)</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <line x1="5" y1="12" x2="19" y2="12"></line>
             <polyline points="12 5 19 12 12 19"></polyline>
           </svg>
@@ -51,28 +52,1137 @@
       </div>
     </app-page-header>
 
-    <!-- Header Navbar -->
+    <!-- Header Stepper de Fases y Requisitos de Fase 1 -->
     <app-diseno-header [project]="project" [phases]="phases"></app-diseno-header>
 
-    <!-- Main Content -->
-    <div class="container-fluid py-4 flex-grow-1 d-flex flex-column overflow-hidden">
-      <div class="row g-4 h-100 flex-grow-1" cdkDropListGroup>
+    <!-- WORKSPACE PRINCIPAL -->
+    <div class="container-fluid py-3 flex-grow-1 d-flex flex-column">
 
-        <!-- Left Panel: Canvas -->
-        <div class="col-12 col-xl-8 d-flex flex-column h-100 pb-2">
-          <app-diseno-canvas class="h-100" [projectId]="projectId"></app-diseno-canvas>
-        </div>
-
-        <!-- Right Panel: Inventory & Tools -->
-        <div class="col-12 col-xl-4 d-flex flex-column h-100 pb-2 overflow-auto custom-scrollbar pe-2">
-          <!-- Espaciador y Botón Avanzar -->
-          <!-- Espaciador eliminado ya que el botón subió al header -->
+      <!-- BARRA DE CONTROL Y MÉTRICAS DE PRIORIZACIÓN -->
+      <div class="bg-white rounded-4 shadow-sm border p-3 mb-4">
+        <div class="row g-3 align-items-center">
           
-          <app-diseno-inventory [projectId]="projectId"></app-diseno-inventory>
-          <app-diseno-wireframes [projectId]="projectId"></app-diseno-wireframes>
-        </div>
+          <!-- Estadísticas Rápidas -->
+          <div class="col-12 col-xl-5 d-flex align-items-center gap-2 flex-wrap">
+            <div class="stat-pill bg-light border px-3 py-1 rounded-pill d-flex align-items-center gap-2">
+              <span class="text-secondary small fw-medium">Interfaces:</span>
+              <span class="badge bg-primary text-white rounded-pill">{{ totalScreensCount }}</span>
+            </div>
+            <div class="stat-pill bg-danger bg-opacity-10 border border-danger border-opacity-25 px-3 py-1 rounded-pill d-flex align-items-center gap-2">
+              <span class="text-danger small fw-bold">🔴 Alta (MVP):</span>
+              <span class="badge bg-danger text-white rounded-pill">{{ highPriorityCount }}</span>
+            </div>
+            <div class="stat-pill bg-warning bg-opacity-10 border border-warning border-opacity-25 px-3 py-1 rounded-pill d-flex align-items-center gap-2">
+              <span class="text-warning-emphasis small fw-bold">🟡 Media:</span>
+              <span class="badge bg-warning text-dark rounded-pill">{{ mediumPriorityCount }}</span>
+            </div>
+            <div class="stat-pill bg-success bg-opacity-10 border border-success border-opacity-25 px-3 py-1 rounded-pill d-flex align-items-center gap-2">
+              <span class="text-success small fw-bold">🟢 Baja:</span>
+              <span class="badge bg-success text-white rounded-pill">{{ lowPriorityCount }}</span>
+            </div>
+            <div class="stat-pill bg-primary bg-opacity-10 border border-primary border-opacity-25 px-3 py-1 rounded-pill d-flex align-items-center gap-2">
+              <span class="text-primary small fw-medium">🖼️ Wireframes:</span>
+              <span class="badge bg-primary text-white rounded-pill">{{ wireframesAttachedCount }}/{{ totalScreensCount }}</span>
+            </div>
+          </div>
 
+          <!-- Búsqueda y Filtro de Módulo -->
+          <div class="col-12 col-md-6 col-xl-3 d-flex gap-2">
+            <div class="position-relative flex-grow-1">
+              <svg class="position-absolute text-secondary" style="top: 9px; left: 10px;" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+              <input type="text" class="form-control form-control-sm bg-light border-0 ps-4 rounded-3" 
+                     placeholder="Buscar pantalla..." 
+                     [(ngModel)]="searchTerm" 
+                     (ngModelChange)="onSearchChange()">
+            </div>
+            <select class="form-select form-select-sm bg-light border-0 rounded-3 w-auto" 
+                    [(ngModel)]="selectedModuloFilter" 
+                    (ngModelChange)="onModuloFilterChange($event)">
+              <option value="todos">Todos los módulos</option>
+              @for (mod of dynamicModules; track mod) {
+                <option [value]="mod">{{ mod }}</option>
+              }
+            </select>
+          </div>
+
+          <!-- Acciones Principales y Switch de Vista -->
+          <div class="col-12 col-md-6 col-xl-4 d-flex align-items-center justify-content-xl-end gap-2">
+            
+            <!-- Botón + Nuevo Módulo -->
+            <button class="btn btn-outline-primary btn-sm d-flex align-items-center gap-2 rounded-3 px-3 py-2 fw-medium shadow-sm hover-scale" 
+                    (click)="showNewModuleModal = true" 
+                    title="Crear un nuevo módulo funcional para agrupar pantallas">
+              <span>📁</span>
+              <span>Nuevo Módulo</span>
+            </button>
+
+            <!-- Botón + Nueva Pantalla -->
+            <button class="btn btn-primary btn-sm d-flex align-items-center gap-2 rounded-3 px-3 py-2 fw-bold shadow-sm hover-scale" 
+                    (click)="openCreateScreenModal('alta')">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+              <span>Nueva Pantalla</span>
+            </button>
+
+            <!-- Switch Vista Kanban / Lista -->
+            <div class="btn-group btn-group-sm rounded-3 border bg-light p-1">
+              <button class="btn btn-sm rounded-2 border-0 px-2 py-1" 
+                      [ngClass]="currentView === 'kanban' ? 'bg-white shadow-sm fw-bold text-primary' : 'text-secondary'"
+                      (click)="currentView = 'kanban'" 
+                      title="Vista Tablero de Priorización">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="3" width="5" height="18" rx="1"></rect>
+                  <rect x="10" y="3" width="5" height="18" rx="1"></rect>
+                  <rect x="17" y="3" width="5" height="18" rx="1"></rect>
+                </svg>
+              </button>
+              <button class="btn btn-sm rounded-2 border-0 px-2 py-1" 
+                      [ngClass]="currentView === 'list' ? 'bg-white shadow-sm fw-bold text-primary' : 'text-secondary'"
+                      (click)="currentView = 'list'" 
+                      title="Vista Lista de Interfaces">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="8" y1="6" x2="21" y2="6"></line>
+                  <line x1="8" y1="12" x2="21" y2="12"></line>
+                  <line x1="8" y1="18" x2="21" y2="18"></line>
+                  <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                  <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                  <line x1="3" y1="18" x2="3.01" y2="18"></line>
+                </svg>
+              </button>
+            </div>
+
+          </div>
+
+        </div>
       </div>
+
+      <!-- BARRA DE NAVEGACIÓN Y FILTRO POR MÓDULOS (DINÁMICA) -->
+      <div class="d-flex align-items-center gap-2 mb-3 overflow-auto pb-1 custom-scrollbar">
+        <span class="text-secondary small fw-bold text-uppercase me-1" style="font-size: 0.72rem; letter-spacing: 0.5px;">Módulos:</span>
+        
+        <!-- Pill Todos -->
+        <button class="btn btn-sm rounded-pill px-3 py-1 d-flex align-items-center gap-2 fw-medium transition-all"
+                [ngClass]="selectedModuloFilter === 'todos' ? 'btn-primary text-white shadow-xs' : 'bg-white border text-secondary hover-bg-light'"
+                (click)="onModuloFilterChange('todos')">
+          <span>🌐 Todos</span>
+          <span class="badge rounded-pill" [ngClass]="selectedModuloFilter === 'todos' ? 'bg-white text-primary' : 'bg-light text-secondary'">
+            {{ totalScreensCount }}
+          </span>
+        </button>
+
+        <!-- Pills Módulos Dinámicos -->
+        @for (mod of dynamicModules; track mod) {
+          <div class="d-inline-flex align-items-center">
+            <button class="btn btn-sm rounded-pill px-3 py-1 d-flex align-items-center gap-2 fw-medium transition-all"
+                    [ngClass]="selectedModuloFilter === mod ? 'btn-primary text-white shadow-xs' : 'bg-white border text-secondary hover-bg-light'"
+                    (click)="onModuloFilterChange(mod)">
+              <span>📁 {{ mod }}</span>
+              <span class="badge rounded-pill" [ngClass]="selectedModuloFilter === mod ? 'bg-white text-primary' : 'bg-light text-secondary'">
+                {{ getModuleScreensCount(mod) }}
+              </span>
+            </button>
+            @if (getModuleScreensCount(mod) === 0) {
+              <button class="btn btn-sm btn-link text-danger p-0 ms-1"
+                      (click)="deleteModule(mod, $event)"
+                      title="Eliminar módulo vacío"
+                      style="font-size: 1rem; line-height: 1; text-decoration: none;">
+                &times;
+              </button>
+            }
+          </div>
+        }
+
+        <!-- Botón Crear Nuevo Módulo -->
+        <button class="btn btn-sm btn-outline-primary border-dashed rounded-pill px-3 py-1 d-flex align-items-center gap-1 hover-scale"
+                (click)="showNewModuleModal = true"
+                title="Crear un nuevo módulo funcional para el proyecto">
+          <span>+ Nuevo Módulo</span>
+        </button>
+      </div>
+
+      <!-- VISTA TABLERO DE PRIORIZACIÓN (KANBAN) -->
+      @if (currentView === 'kanban') {
+        <div class="kanban-board flex-grow-1" cdkDropListGroup>
+          <div class="row g-4 h-100 align-items-stretch">
+
+            <!-- ============================================== -->
+            <!-- COLUMNA 1: ALTA PRIORIDAD (MVP / ESENCIALES) -->
+            <!-- ============================================== -->
+            <div class="col-12 col-lg-4 d-flex flex-column">
+              <div class="kanban-column kanban-col-alta bg-white rounded-4 border shadow-sm p-3 d-flex flex-column h-100">
+                
+                <!-- Header de Columna -->
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                  <div class="d-flex align-items-center gap-2">
+                    <span class="badge rounded-pill bg-danger text-white px-3 py-1 fw-bold fs-7 shadow-sm">
+                      🔴 ALTA PRIORIDAD
+                    </span>
+                    <span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25 rounded-pill">
+                      MVP (Esenciales)
+                    </span>
+                  </div>
+                  <span class="fw-bold text-danger fs-6">{{ altaNodos.length }}</span>
+                </div>
+                <p class="small text-secondary mb-3" style="font-size: 0.78rem;">
+                  Interfaces críticas para el lanzamiento del producto y flujos clave de conversión.
+                </p>
+
+                <!-- Drop List Column -->
+                <div class="kanban-cards-container flex-grow-1 overflow-auto custom-scrollbar pe-1 d-flex flex-column gap-3"
+                     cdkDropList
+                     [cdkDropListData]="altaNodos"
+                     (cdkDropListDropped)="onCardDrop($event, 'alta')">
+                  
+                  @for (nodo of altaNodos; track nodo.id) {
+                    <!-- Screen Card -->
+                    <div class="screen-card bg-white rounded-4 border shadow-xs p-3 transition-all cursor-grab"
+                         cdkDrag>
+                      
+                      <!-- Card Header -->
+                      <div class="d-flex align-items-center justify-content-between mb-2">
+                        <div class="d-flex align-items-center gap-2">
+                          <span class="badge bg-light text-secondary border rounded-pill px-2 py-1 small">
+                            📁 {{ nodo.icono || 'General' }}
+                          </span>
+                        </div>
+                        <div class="dropdown">
+                          <button class="btn btn-sm btn-link text-secondary p-0" type="button" data-bs-toggle="dropdown" aria-expanded="false" (click)="$event.stopPropagation()">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                              <circle cx="12" cy="12" r="1"></circle>
+                              <circle cx="19" cy="12" r="1"></circle>
+                              <circle cx="5" cy="12" r="1"></circle>
+                            </svg>
+                          </button>
+                          <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-3 small">
+                            <li><button class="dropdown-item py-1" (click)="openEditScreenModal(nodo, $event)">✏️ Editar información</button></li>
+                            <li><hr class="dropdown-divider my-1"></li>
+                            <li><button class="dropdown-item py-1 text-danger" (click)="deleteScreen(nodo, $event)">🗑️ Eliminar pantalla</button></li>
+                          </ul>
+                        </div>
+                      </div>
+
+                      <!-- Nombre y Descripción -->
+                      <h6 class="fw-bold text-dark mb-1">{{ nodo.nombre }}</h6>
+                      <p class="small text-secondary mb-3 lh-sm" style="font-size: 0.78rem;">
+                        {{ nodo.descripcion || 'Sin descripción añadida.' }}
+                      </p>
+
+                      <!-- SECCIÓN DE WIREFRAME ASOCIADO -->
+                      @let wf = getWireframeForNode(nodo.id);
+                      @if (wf) {
+                        <!-- Wireframe Cargado con Thumbnail y Validación -->
+                        <div class="wf-preview-box rounded-3 border bg-light p-2 mb-2 position-relative overflow-hidden group">
+                          <div class="d-flex align-items-center gap-3">
+                            <div class="wf-thumbnail-wrap rounded border bg-white overflow-hidden shadow-xs" 
+                                 style="width: 70px; height: 70px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                              @if (wf.base64Data) {
+                                <img [src]="wf.base64Data" class="img-fluid" style="width: 100%; height: 100%; object-fit: contain;">
+                              } @else {
+                                <span class="text-secondary small">Wireframe</span>
+                              }
+                            </div>
+                            <div class="flex-grow-1 overflow-hidden">
+                              <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 rounded-pill px-2 py-1 mb-1 fw-medium" style="font-size: 0.68rem;">
+                                ✓ Wireframe adjunto
+                              </span>
+                              <div class="small fw-medium text-dark text-truncate" [title]="wf.fileName || ('Wireframe #' + wf.id)">
+                                {{ wf.fileName || ('Wireframe #' + wf.id) }}
+                              </div>
+                              <span class="text-muted" style="font-size: 0.7rem;">Calidad estética & requisitos</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        <!-- Botón Validar Estética & Checklist -->
+                        <div class="d-flex gap-2">
+                          <button class="btn btn-outline-primary btn-sm flex-grow-1 d-flex align-items-center justify-content-center gap-2 rounded-pill py-1 fw-bold shadow-xs hover-scale" 
+                                  (click)="openInspector(nodo, $event)">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                              <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                            </svg>
+                            <span>Validar Estética</span>
+                          </button>
+                          <button class="btn btn-light btn-sm text-danger border rounded-circle p-1" 
+                                  title="Eliminar este wireframe"
+                                  (click)="deleteWireframe(wf.id, $event)">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                              <polyline points="3 6 5 6 21 6"></polyline>
+                              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"></path>
+                            </svg>
+                          </button>
+                        </div>
+                      } @else {
+                        <!-- Sin Wireframe: Dropzone Directo -->
+                        <div class="wf-dropzone border border-dashed rounded-3 p-3 text-center bg-light transition-all position-relative hover-bg-primary-subtle"
+                             (click)="fileInputAlta.click()">
+                          <input type="file" #fileInputAlta (change)="uploadWireframeForNode($event, nodo)" accept="image/*" style="display: none;">
+                          <svg class="text-primary opacity-75 mb-1" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                            <polyline points="21 15 16 10 5 21"></polyline>
+                          </svg>
+                          <div class="small fw-bold text-dark" style="font-size: 0.78rem;">+ Subir Wireframe de baja fidelidad</div>
+                          <div class="text-secondary" style="font-size: 0.68rem;">Arrastra aquí o haz clic para subir imagen</div>
+                        </div>
+                      }
+
+                    </div>
+                  }
+
+                  @if (altaNodos.length === 0) {
+                    <div class="empty-column-placeholder text-center p-4 border border-dashed rounded-4 my-auto bg-light bg-opacity-50">
+                      <div class="text-danger opacity-50 mb-2">🔴</div>
+                      <h6 class="fw-bold text-dark small mb-1">Sin interfaces de alta prioridad</h6>
+                      <p class="text-secondary small mb-2" style="font-size: 0.72rem;">
+                        Arrastra tarjetas aquí o añade las pantallas vitales del sistema.
+                      </p>
+                      <button class="btn btn-sm btn-outline-danger rounded-pill px-3 py-1" style="font-size: 0.75rem;" (click)="openCreateScreenModal('alta')">
+                        + Añadir a Alta
+                      </button>
+                    </div>
+                  }
+
+                </div>
+
+                <!-- Footer de Columna -->
+                <button class="btn btn-light btn-sm text-danger border-0 rounded-3 mt-3 py-2 fw-medium d-flex align-items-center justify-content-center gap-1 hover-bg-danger-subtle" 
+                        (click)="openCreateScreenModal('alta')">
+                  <span>+</span> <span>Añadir interfaz a Alta</span>
+                </button>
+
+              </div>
+            </div>
+
+            <!-- ============================================== -->
+            <!-- COLUMNA 2: MEDIA PRIORIDAD (SOPORTE/SECUNDARIAS)-->
+            <!-- ============================================== -->
+            <div class="col-12 col-lg-4 d-flex flex-column">
+              <div class="kanban-column kanban-col-media bg-white rounded-4 border shadow-sm p-3 d-flex flex-column h-100">
+                
+                <!-- Header de Columna -->
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                  <div class="d-flex align-items-center gap-2">
+                    <span class="badge rounded-pill bg-warning text-dark px-3 py-1 fw-bold fs-7 shadow-sm">
+                      🟡 MEDIA PRIORIDAD
+                    </span>
+                    <span class="badge bg-warning bg-opacity-10 text-warning-emphasis border border-warning border-opacity-25 rounded-pill">
+                      Secundarias / Soporte
+                    </span>
+                  </div>
+                  <span class="fw-bold text-warning-emphasis fs-6">{{ mediaNodos.length }}</span>
+                </div>
+                <p class="small text-secondary mb-3" style="font-size: 0.78rem;">
+                  Flujos secundarios de cuenta, soporte, filtros y navegación complementaria.
+                </p>
+
+                <!-- Drop List Column -->
+                <div class="kanban-cards-container flex-grow-1 overflow-auto custom-scrollbar pe-1 d-flex flex-column gap-3"
+                     cdkDropList
+                     [cdkDropListData]="mediaNodos"
+                     (cdkDropListDropped)="onCardDrop($event, 'media')">
+                  
+                  @for (nodo of mediaNodos; track nodo.id) {
+                    <!-- Screen Card -->
+                    <div class="screen-card bg-white rounded-4 border shadow-xs p-3 transition-all cursor-grab"
+                         cdkDrag>
+                      
+                      <!-- Card Header -->
+                      <div class="d-flex align-items-center justify-content-between mb-2">
+                        <span class="badge bg-light text-secondary border rounded-pill px-2 py-1 small">
+                          📁 {{ nodo.icono || 'General' }}
+                        </span>
+                        <div class="dropdown">
+                          <button class="btn btn-sm btn-link text-secondary p-0" type="button" data-bs-toggle="dropdown" aria-expanded="false" (click)="$event.stopPropagation()">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                              <circle cx="12" cy="12" r="1"></circle>
+                              <circle cx="19" cy="12" r="1"></circle>
+                              <circle cx="5" cy="12" r="1"></circle>
+                            </svg>
+                          </button>
+                          <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-3 small">
+                            <li><button class="dropdown-item py-1" (click)="openEditScreenModal(nodo, $event)">✏️ Editar información</button></li>
+                            <li><hr class="dropdown-divider my-1"></li>
+                            <li><button class="dropdown-item py-1 text-danger" (click)="deleteScreen(nodo, $event)">🗑️ Eliminar pantalla</button></li>
+                          </ul>
+                        </div>
+                      </div>
+
+                      <!-- Nombre y Descripción -->
+                      <h6 class="fw-bold text-dark mb-1">{{ nodo.nombre }}</h6>
+                      <p class="small text-secondary mb-3 lh-sm" style="font-size: 0.78rem;">
+                        {{ nodo.descripcion || 'Sin descripción añadida.' }}
+                      </p>
+
+                      <!-- SECCIÓN DE WIREFRAME ASOCIADO -->
+                      @let wf = getWireframeForNode(nodo.id);
+                      @if (wf) {
+                        <div class="wf-preview-box rounded-3 border bg-light p-2 mb-2 position-relative overflow-hidden group">
+                          <div class="d-flex align-items-center gap-3">
+                            <div class="wf-thumbnail-wrap rounded border bg-white overflow-hidden shadow-xs" 
+                                 style="width: 70px; height: 70px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                              @if (wf.base64Data) {
+                                <img [src]="wf.base64Data" class="img-fluid" style="width: 100%; height: 100%; object-fit: contain;">
+                              } @else {
+                                <span class="text-secondary small">Wireframe</span>
+                              }
+                            </div>
+                            <div class="flex-grow-1 overflow-hidden">
+                              <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 rounded-pill px-2 py-1 mb-1 fw-medium" style="font-size: 0.68rem;">
+                                ✓ Wireframe adjunto
+                              </span>
+                              <div class="small fw-medium text-dark text-truncate" [title]="wf.fileName || ('Wireframe #' + wf.id)">
+                                {{ wf.fileName || ('Wireframe #' + wf.id) }}
+                              </div>
+                              <span class="text-muted" style="font-size: 0.7rem;">Calidad estética & requisitos</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                          <button class="btn btn-outline-primary btn-sm flex-grow-1 d-flex align-items-center justify-content-center gap-2 rounded-pill py-1 fw-bold shadow-xs hover-scale" 
+                                  (click)="openInspector(nodo, $event)">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                              <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                            </svg>
+                            <span>Validar Estética</span>
+                          </button>
+                          <button class="btn btn-light btn-sm text-danger border rounded-circle p-1" 
+                                  title="Eliminar este wireframe"
+                                  (click)="deleteWireframe(wf.id, $event)">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                              <polyline points="3 6 5 6 21 6"></polyline>
+                              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"></path>
+                            </svg>
+                          </button>
+                        </div>
+                      } @else {
+                        <div class="wf-dropzone border border-dashed rounded-3 p-3 text-center bg-light transition-all position-relative hover-bg-primary-subtle"
+                             (click)="fileInputMedia.click()">
+                          <input type="file" #fileInputMedia (change)="uploadWireframeForNode($event, nodo)" accept="image/*" style="display: none;">
+                          <svg class="text-primary opacity-75 mb-1" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                            <polyline points="21 15 16 10 5 21"></polyline>
+                          </svg>
+                          <div class="small fw-bold text-dark" style="font-size: 0.78rem;">+ Subir Wireframe de baja fidelidad</div>
+                          <div class="text-secondary" style="font-size: 0.68rem;">Arrastra aquí o haz clic para subir imagen</div>
+                        </div>
+                      }
+
+                    </div>
+                  }
+
+                  @if (mediaNodos.length === 0) {
+                    <div class="empty-column-placeholder text-center p-4 border border-dashed rounded-4 my-auto bg-light bg-opacity-50">
+                      <div class="text-warning opacity-50 mb-2">🟡</div>
+                      <h6 class="fw-bold text-dark small mb-1">Sin interfaces secundarias</h6>
+                      <p class="text-secondary small mb-2" style="font-size: 0.72rem;">
+                        Arrastra pantallas secundarias o de soporte aquí.
+                      </p>
+                      <button class="btn btn-sm btn-outline-warning text-dark rounded-pill px-3 py-1" style="font-size: 0.75rem;" (click)="openCreateScreenModal('media')">
+                        + Añadir a Media
+                      </button>
+                    </div>
+                  }
+
+                </div>
+
+                <!-- Footer de Columna -->
+                <button class="btn btn-light btn-sm text-warning-emphasis border-0 rounded-3 mt-3 py-2 fw-medium d-flex align-items-center justify-content-center gap-1 hover-bg-warning-subtle" 
+                        (click)="openCreateScreenModal('media')">
+                  <span>+</span> <span>Añadir interfaz a Media</span>
+                </button>
+
+              </div>
+            </div>
+
+            <!-- ============================================== -->
+            <!-- COLUMNA 3: BAJA PRIORIDAD (COMPLEMENTARIAS)   -->
+            <!-- ============================================== -->
+            <div class="col-12 col-lg-4 d-flex flex-column">
+              <div class="kanban-column kanban-col-baja bg-white rounded-4 border shadow-sm p-3 d-flex flex-column h-100">
+                
+                <!-- Header de Columna -->
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                  <div class="d-flex align-items-center gap-2">
+                    <span class="badge rounded-pill bg-success text-white px-3 py-1 fw-bold fs-7 shadow-sm">
+                      🟢 BAJA PRIORIDAD
+                    </span>
+                    <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 rounded-pill">
+                      Complementarias / Futuro
+                    </span>
+                  </div>
+                  <span class="fw-bold text-success fs-6">{{ bajaNodos.length }}</span>
+                </div>
+                <p class="small text-secondary mb-3" style="font-size: 0.78rem;">
+                  Políticas, términos, FAQ, configuración avanzada o requerimientos para versiones 2.0.
+                </p>
+
+                <!-- Drop List Column -->
+                <div class="kanban-cards-container flex-grow-1 overflow-auto custom-scrollbar pe-1 d-flex flex-column gap-3"
+                     cdkDropList
+                     [cdkDropListData]="bajaNodos"
+                     (cdkDropListDropped)="onCardDrop($event, 'baja')">
+                  
+                  @for (nodo of bajaNodos; track nodo.id) {
+                    <!-- Screen Card -->
+                    <div class="screen-card bg-white rounded-4 border shadow-xs p-3 transition-all cursor-grab"
+                         cdkDrag>
+                      
+                      <!-- Card Header -->
+                      <div class="d-flex align-items-center justify-content-between mb-2">
+                        <span class="badge bg-light text-secondary border rounded-pill px-2 py-1 small">
+                          📁 {{ nodo.icono || 'General' }}
+                        </span>
+                        <div class="dropdown">
+                          <button class="btn btn-sm btn-link text-secondary p-0" type="button" data-bs-toggle="dropdown" aria-expanded="false" (click)="$event.stopPropagation()">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                              <circle cx="12" cy="12" r="1"></circle>
+                              <circle cx="19" cy="12" r="1"></circle>
+                              <circle cx="5" cy="12" r="1"></circle>
+                            </svg>
+                          </button>
+                          <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-3 small">
+                            <li><button class="dropdown-item py-1" (click)="openEditScreenModal(nodo, $event)">✏️ Editar información</button></li>
+                            <li><hr class="dropdown-divider my-1"></li>
+                            <li><button class="dropdown-item py-1 text-danger" (click)="deleteScreen(nodo, $event)">🗑️ Eliminar pantalla</button></li>
+                          </ul>
+                        </div>
+                      </div>
+
+                      <!-- Nombre y Descripción -->
+                      <h6 class="fw-bold text-dark mb-1">{{ nodo.nombre }}</h6>
+                      <p class="small text-secondary mb-3 lh-sm" style="font-size: 0.78rem;">
+                        {{ nodo.descripcion || 'Sin descripción añadida.' }}
+                      </p>
+
+                      <!-- SECCIÓN DE WIREFRAME ASOCIADO -->
+                      @let wf = getWireframeForNode(nodo.id);
+                      @if (wf) {
+                        <div class="wf-preview-box rounded-3 border bg-light p-2 mb-2 position-relative overflow-hidden group">
+                          <div class="d-flex align-items-center gap-3">
+                            <div class="wf-thumbnail-wrap rounded border bg-white overflow-hidden shadow-xs" 
+                                 style="width: 70px; height: 70px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                              @if (wf.base64Data) {
+                                <img [src]="wf.base64Data" class="img-fluid" style="width: 100%; height: 100%; object-fit: contain;">
+                              } @else {
+                                <span class="text-secondary small">Wireframe</span>
+                              }
+                            </div>
+                            <div class="flex-grow-1 overflow-hidden">
+                              <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 rounded-pill px-2 py-1 mb-1 fw-medium" style="font-size: 0.68rem;">
+                                ✓ Wireframe adjunto
+                              </span>
+                              <div class="small fw-medium text-dark text-truncate" [title]="wf.fileName || ('Wireframe #' + wf.id)">
+                                {{ wf.fileName || ('Wireframe #' + wf.id) }}
+                              </div>
+                              <span class="text-muted" style="font-size: 0.7rem;">Calidad estética & requisitos</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                          <button class="btn btn-outline-primary btn-sm flex-grow-1 d-flex align-items-center justify-content-center gap-2 rounded-pill py-1 fw-bold shadow-xs hover-scale" 
+                                  (click)="openInspector(nodo, $event)">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                              <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                            </svg>
+                            <span>Validar Estética</span>
+                          </button>
+                          <button class="btn btn-light btn-sm text-danger border rounded-circle p-1" 
+                                  title="Eliminar este wireframe"
+                                  (click)="deleteWireframe(wf.id, $event)">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                              <polyline points="3 6 5 6 21 6"></polyline>
+                              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"></path>
+                            </svg>
+                          </button>
+                        </div>
+                      } @else {
+                        <div class="wf-dropzone border border-dashed rounded-3 p-3 text-center bg-light transition-all position-relative hover-bg-primary-subtle"
+                             (click)="fileInputBaja.click()">
+                          <input type="file" #fileInputBaja (change)="uploadWireframeForNode($event, nodo)" accept="image/*" style="display: none;">
+                          <svg class="text-primary opacity-75 mb-1" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                            <polyline points="21 15 16 10 5 21"></polyline>
+                          </svg>
+                          <div class="small fw-bold text-dark" style="font-size: 0.78rem;">+ Subir Wireframe de baja fidelidad</div>
+                          <div class="text-secondary" style="font-size: 0.68rem;">Arrastra aquí o haz clic para subir imagen</div>
+                        </div>
+                      }
+
+                    </div>
+                  }
+
+                  @if (bajaNodos.length === 0) {
+                    <div class="empty-column-placeholder text-center p-4 border border-dashed rounded-4 my-auto bg-light bg-opacity-50">
+                      <div class="text-success opacity-50 mb-2">🟢</div>
+                      <h6 class="fw-bold text-dark small mb-1">Sin interfaces de baja prioridad</h6>
+                      <p class="text-secondary small mb-2" style="font-size: 0.72rem;">
+                        Arrastra pantallas complementarias o secundarias aquí.
+                      </p>
+                      <button class="btn btn-sm btn-outline-success rounded-pill px-3 py-1" style="font-size: 0.75rem;" (click)="openCreateScreenModal('baja')">
+                        + Añadir a Baja
+                      </button>
+                    </div>
+                  }
+
+                </div>
+
+                <!-- Footer de Columna -->
+                <button class="btn btn-light btn-sm text-success border-0 rounded-3 mt-3 py-2 fw-medium d-flex align-items-center justify-content-center gap-1 hover-bg-success-subtle" 
+                        (click)="openCreateScreenModal('baja')">
+                  <span>+</span> <span>Añadir interfaz a Baja</span>
+                </button>
+
+              </div>
+            </div>
+
+          </div>
+        </div>
+      }
+
+      <!-- VISTA LISTA JERÁRQUICA -->
+      @if (currentView === 'list') {
+        <div class="bg-white rounded-4 border shadow-sm p-4">
+          <div class="table-responsive">
+            <table class="table align-middle table-hover mb-0">
+              <thead class="table-light small text-secondary">
+                <tr>
+                  <th style="width: 30%;">Nombre de Pantalla</th>
+                  <th>Módulo</th>
+                  <th>Prioridad</th>
+                  <th>Wireframe</th>
+                  <th class="text-end">Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (nodo of nodos; track nodo.id) {
+                  @let wf = getWireframeForNode(nodo.id);
+                  <tr>
+                    <td>
+                      <div class="fw-bold text-dark">{{ nodo.nombre }}</div>
+                      <div class="small text-secondary">{{ nodo.descripcion || 'Sin descripción' }}</div>
+                    </td>
+                    <td>
+                      <span class="badge bg-light text-secondary border rounded-pill px-3 py-1">
+                        {{ nodo.icono || 'General' }}
+                      </span>
+                    </td>
+                    <td>
+                      <span class="badge rounded-pill px-3 py-1"
+                            [ngClass]="{
+                              'bg-danger text-white': nodo.prioridad === 'alta',
+                              'bg-warning text-dark': nodo.prioridad === 'media',
+                              'bg-success text-white': nodo.prioridad === 'baja',
+                              'bg-secondary text-white': !nodo.prioridad
+                            }">
+                        {{ (nodo.prioridad || 'Sin definir') | titlecase }}
+                      </span>
+                    </td>
+                    <td>
+                      @if (wf) {
+                        <div class="d-flex align-items-center gap-2">
+                          <div class="rounded border overflow-hidden" style="width: 38px; height: 38px;">
+                            <img [src]="wf.base64Data" class="img-fluid" style="width: 100%; height: 100%; object-fit: cover;">
+                          </div>
+                          <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 rounded-pill">
+                            ✓ Cargado
+                          </span>
+                        </div>
+                      } @else {
+                        <span class="text-secondary small">Pendiente de subir</span>
+                      }
+                    </td>
+                    <td class="text-end">
+                      <div class="d-flex justify-content-end gap-2">
+                        @if (wf) {
+                          <button class="btn btn-sm btn-outline-primary rounded-pill px-3" (click)="openInspector(nodo, $event)">
+                            Validar Estética
+                          </button>
+                        }
+                        <button class="btn btn-sm btn-light border rounded-pill px-2" (click)="openEditScreenModal(nodo, $event)">
+                          ✏️
+                        </button>
+                        <button class="btn btn-sm btn-light border text-danger rounded-pill px-2" (click)="deleteScreen(nodo, $event)">
+                          🗑️
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      }
+
     </div>
+
+    <!-- ============================================================== -->
+    <!-- MODAL / INSPECTOR DE VALIDACIÓN ESTÉTICA Y CHECKLISTS (SPLIT VIEW) -->
+    <!-- ============================================================== -->
+    @if (showInspectorModal && inspectingNode) {
+      <div class="modal fade show d-block" style="background-color: rgba(15, 23, 42, 0.6); backdrop-filter: blur(6px);" tabindex="-1" (click)="closeInspector()">
+        <div class="modal-dialog modal-dialog-centered modal-xl" style="max-width: 92vw;" (click)="$event.stopPropagation()">
+          <div class="modal-content border-0 shadow-lg overflow-hidden rounded-4" style="height: 88vh;">
+            
+            <!-- Modal Header -->
+            <div class="modal-header bg-white border-bottom px-4 py-3 d-flex align-items-center justify-content-between">
+              <div class="d-flex align-items-center gap-3">
+                
+                <!-- Paginador Anterior / Siguiente -->
+                <div class="btn-group btn-group-sm">
+                  <button class="btn btn-light border" (click)="navigateInspector('prev')" title="Pantalla anterior">
+                    &larr; Anterior
+                  </button>
+                  <button class="btn btn-light border" (click)="navigateInspector('next')" title="Pantalla siguiente">
+                    Siguiente &rarr;
+                  </button>
+                </div>
+
+                <div>
+                  <h5 class="fw-bold mb-0 text-dark d-flex align-items-center gap-2">
+                    <span>Validación de Wireframe:</span>
+                    <span class="text-primary">{{ inspectingNode.nombre }}</span>
+                  </h5>
+                  <div class="d-flex align-items-center gap-2 mt-1">
+                    <span class="badge rounded-pill"
+                          [ngClass]="{
+                            'bg-danger text-white': inspectingNode.prioridad === 'alta',
+                            'bg-warning text-dark': inspectingNode.prioridad === 'media',
+                            'bg-success text-white': inspectingNode.prioridad === 'baja'
+                          }">
+                      Prioridad {{ inspectingNode.prioridad | titlecase }}
+                    </span>
+                    <span class="badge bg-light text-secondary border rounded-pill">
+                      Módulo: {{ inspectingNode.icono || 'General' }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <button type="button" class="btn-close" (click)="closeInspector()"></button>
+            </div>
+
+            <!-- Modal Body (Split-View) -->
+            <div class="modal-body p-0 d-flex flex-column flex-lg-row overflow-hidden h-100">
+              
+              <!-- Left Column: Wireframe Viewer (60%) -->
+              <div class="col-12 col-lg-7 p-4 bg-light d-flex flex-column h-100 border-end">
+                @if (inspectingWireframe?.base64Data) {
+                  <div class="flex-grow-1 d-flex align-items-center justify-content-center bg-white rounded-4 border shadow-xs overflow-hidden position-relative p-3">
+                    <img [src]="inspectingWireframe?.base64Data" 
+                         class="img-fluid rounded" 
+                         style="max-height: 68vh; width: 100%; object-fit: contain;">
+                  </div>
+                  <div class="d-flex align-items-center justify-content-between mt-3 text-secondary small">
+                    <div>
+                      <strong>Archivo:</strong> {{ inspectingWireframe?.fileName || ('Wireframe #' + inspectingWireframe?.id) }}
+                    </div>
+                    <a [href]="inspectingWireframe?.base64Data" target="_blank" class="text-primary fw-medium text-decoration-none">
+                      Abrir en tamaño completo &nearr;
+                    </a>
+                  </div>
+                } @else {
+                  <div class="flex-grow-1 d-flex flex-column align-items-center justify-content-center text-center p-4">
+                    <svg class="text-secondary opacity-50 mb-3" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                      <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                      <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                      <polyline points="21 15 16 10 5 21"></polyline>
+                    </svg>
+                    <h5 class="fw-bold text-dark">No hay wireframe cargado para esta pantalla</h5>
+                    <p class="text-secondary small mb-3">Sube un boceto de baja fidelidad para verificar su composición estética.</p>
+                    <label class="btn btn-primary rounded-pill px-4 cursor-pointer">
+                      <span>Subir Wireframe Ahora</span>
+                      <input type="file" (change)="uploadWireframeForNode($event, inspectingNode)" accept="image/*" style="display: none;">
+                    </label>
+                  </div>
+                }
+              </div>
+
+              <!-- Right Column: Checklists (40%) -->
+              <div class="col-12 col-lg-5 p-4 bg-white d-flex flex-column h-100 overflow-auto custom-scrollbar">
+                
+                <!-- Nav Tabs Checklists -->
+                <ul class="nav nav-pills mb-3 border-bottom pb-2 gap-2">
+                  <li class="nav-item">
+                    <button class="nav-link py-1 px-3 rounded-pill small fw-bold"
+                            [ngClass]="activeInspectorTab === 'aesthetic' ? 'bg-primary text-white active' : 'text-secondary hover-bg-light'"
+                            (click)="activeInspectorTab = 'aesthetic'">
+                      🎨 Checklist Estético del Wireframe
+                    </button>
+                  </li>
+                  <li class="nav-item">
+                    <button class="nav-link py-1 px-3 rounded-pill small fw-bold"
+                            [ngClass]="activeInspectorTab === 'functional' ? 'bg-primary text-white active' : 'text-secondary hover-bg-light'"
+                            (click)="activeInspectorTab = 'functional'">
+                      📋 Requisitos Fase 1
+                    </button>
+                  </li>
+                  <li class="nav-item">
+                    <button class="nav-link py-1 px-3 rounded-pill small fw-bold"
+                            [ngClass]="activeInspectorTab === 'ngo' ? 'bg-dark text-white active' : 'text-secondary hover-bg-light'"
+                            (click)="activeInspectorTab = 'ngo'">
+                      📐 Métricas Ngo 2003
+                    </button>
+                  </li>
+                </ul>
+
+                <!-- TAB 1: CHECKLIST ESTÉTICO (PRINCIPIOS DE DISEÑO BAJA FIDELIDAD) -->
+                @if (activeInspectorTab === 'aesthetic') {
+                  
+                  <!-- Barra de progreso estético -->
+                  @let stats = getAestheticChecklistStats();
+                  <div class="p-3 bg-light rounded-4 border mb-3">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                      <span class="small fw-bold text-dark">Cumplimiento Estético</span>
+                      <span class="badge rounded-pill" [ngClass]="stats.percent === 100 ? 'bg-success text-white' : 'bg-primary text-white'">
+                        {{ stats.completed }} de {{ stats.total }} ({{ stats.percent }}%)
+                      </span>
+                    </div>
+                    <div class="progress" style="height: 6px;">
+                      <div class="progress-bar" 
+                           [ngClass]="stats.percent === 100 ? 'bg-success' : 'bg-primary'" 
+                           role="progressbar" 
+                           [style.width.%]="stats.percent"></div>
+                    </div>
+                    @if (stats.percent === 100) {
+                      <div class="text-success small fw-medium mt-2 d-flex align-items-center gap-1">
+                        ✓ ¡Excelente! El wireframe cumple todos los criterios estéticos para avanzar.
+                      </div>
+                    }
+                  </div>
+
+                  <p class="small text-secondary mb-3">
+                    Verifica que este wireframe respete los principios fundamentales de composición visual:
+                  </p>
+
+                  <!-- Lista de Ítems del Checklist Estético -->
+                  <div class="d-flex flex-column gap-2 mb-4">
+                    @for (item of activeWireframeChecklist; track item.id) {
+                      <div class="d-flex align-items-start gap-3 p-3 rounded-3 border transition-all cursor-pointer"
+                           [ngClass]="item.estado === 'aceptado' ? 'bg-success bg-opacity-10 border-success' : 'bg-light border-light hover-shadow-xs'"
+                           (click)="toggleWireframeCheck(item)">
+                        <input class="form-check-input mt-1 cursor-pointer" 
+                               type="checkbox" 
+                               [checked]="item.estado === 'aceptado'"
+                               (click)="$event.stopPropagation(); toggleWireframeCheck(item)">
+                        <div class="flex-grow-1">
+                          <div class="small fw-medium" [ngClass]="item.estado === 'aceptado' ? 'text-success fw-bold' : 'text-dark'">
+                            {{ item.pregunta }}
+                          </div>
+                        </div>
+                      </div>
+                    }
+
+                    @if (activeWireframeChecklist.length === 0) {
+                      <div class="text-center p-3 text-secondary small bg-light rounded-3 border">
+                        No hay preguntas de checklist estético disponibles para este wireframe.
+                      </div>
+                    }
+                  </div>
+
+                  <!-- Añadir Criterio Personalizado -->
+                  <div class="mt-auto pt-3 border-top">
+                    <label class="form-label small fw-bold text-dark mb-1">Añadir criterio estético adicional:</label>
+                    <div class="input-group input-group-sm">
+                      <input type="text" class="form-control" placeholder="Ej: ¿El tamaño de la tipografía es legible?" [(ngModel)]="newChecklistItemText" (keydown.enter)="addWireframeChecklistItem()">
+                      <button class="btn btn-primary" (click)="addWireframeChecklistItem()">+ Agregar</button>
+                    </div>
+                  </div>
+
+                }
+
+                <!-- TAB 2: REQUISITOS GENERALES DE FASE 1 -->
+                @if (activeInspectorTab === 'functional') {
+                  <p class="small text-secondary mb-3">
+                    Revisa que el diseño conceptual cumpla con los requerimientos derivados de la investigación (Fase 1):
+                  </p>
+
+                  <div class="d-flex flex-column gap-2 mb-4">
+                    @for (item of projectChecklist; track item.id) {
+                      <div class="d-flex align-items-start gap-3 p-3 rounded-3 border transition-all cursor-pointer"
+                           [ngClass]="item.estado === 'aceptado' ? 'bg-primary bg-opacity-10 border-primary' : 'bg-light border-light hover-shadow-xs'"
+                           (click)="toggleProjectCheck(item)">
+                        <input class="form-check-input mt-1 cursor-pointer" 
+                               type="checkbox" 
+                               [checked]="item.estado === 'aceptado'"
+                               (click)="$event.stopPropagation(); toggleProjectCheck(item)">
+                        <div class="flex-grow-1">
+                          <div class="small fw-medium" [ngClass]="item.estado === 'aceptado' ? 'text-primary fw-bold' : 'text-dark'">
+                            {{ item.pregunta }}
+                          </div>
+                        </div>
+                      </div>
+                    }
+
+                    @if (projectChecklist.length === 0) {
+                      <div class="text-center p-3 text-secondary small bg-light rounded-3 border">
+                        No hay requisitos cargados para este proyecto.
+                      </div>
+                    }
+                  </div>
+                }
+
+                <!-- TAB 3: MÉTRICAS NGO ET AL. 2003 -->
+                @if (activeInspectorTab === 'ngo') {
+                  <div class="d-flex flex-column gap-3">
+
+                    @if (!inspectingWireframe) {
+                      <div class="text-center p-4 bg-light rounded-4 border border-dashed">
+                        <div class="text-muted mb-2" style="font-size: 2rem;">📐</div>
+                        <p class="small text-secondary mb-0">Esta pantalla no tiene wireframe adjunto.<br>Sube una imagen primero para analizar sus métricas.</p>
+                      </div>
+                    } @else {
+
+                      <!-- Cabecera con botón Evaluar -->
+                      <div class="p-3 bg-dark bg-opacity-10 rounded-4 border">
+                        <div class="d-flex justify-content-between align-items-start">
+                          <div>
+                            <div class="fw-bold text-dark small mb-1">Análisis Estético Computacional</div>
+                            <div class="text-secondary" style="font-size: 0.72rem;">Basado en Ngo, Teo &amp; Byrne (2003). Information Sciences 152, pp. 25-46.</div>
+                          </div>
+                          <button class="btn btn-sm btn-dark rounded-pill px-3"
+                                  (click)="evaluateNgo()"
+                                  [disabled]="isLoadingNgo">
+                            @if (isLoadingNgo) {
+                              <span class="spinner-border spinner-border-sm me-1" role="status"></span> Analizando...
+                            } @else {
+                              📐 Evaluar
+                            }
+                          </button>
+                        </div>
+                      </div>
+
+                      <!-- Error -->
+                      @if (ngoError) {
+                        <div class="alert alert-danger small rounded-3 py-2 px-3">{{ ngoError }}</div>
+                      }
+
+                      <!-- Resultado -->
+                      @if (ngoResult) {
+
+                        <!-- Overall Score -->
+                        <div class="p-3 rounded-4 border"
+                             [ngClass]="ngoResult.nivel_calidad === 'Alta' ? 'bg-success bg-opacity-10 border-success' : ngoResult.nivel_calidad === 'Media' ? 'bg-warning bg-opacity-10 border-warning' : 'bg-danger bg-opacity-10 border-danger'">
+                          <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                              <div class="fw-bold text-dark">Medida Global (OM)</div>
+                              <div class="text-secondary" style="font-size: 0.72rem;">Promedio de las 13 métricas estéticas</div>
+                            </div>
+                            <div class="text-end">
+                              <div class="display-6 fw-black"
+                                   [ngClass]="ngoResult.nivel_calidad === 'Alta' ? 'text-success' : ngoResult.nivel_calidad === 'Media' ? 'text-warning' : 'text-danger'">
+                                {{ getNgoPercent(ngoResult.metrics.OM) }}<span style="font-size:0.5em">%</span>
+                              </div>
+                              <div class="badge rounded-pill"
+                                   [ngClass]="ngoResult.nivel_calidad === 'Alta' ? 'bg-success' : ngoResult.nivel_calidad === 'Media' ? 'bg-warning text-dark' : 'bg-danger'">
+                                Calidad {{ ngoResult.nivel_calidad }}
+                              </div>
+                            </div>
+                          </div>
+                          <div class="progress mt-2" style="height: 8px;">
+                            <div class="progress-bar"
+                                 [ngClass]="getNgoBarClass(ngoResult.metrics.OM)"
+                                 [style.width.%]="getNgoPercent(ngoResult.metrics.OM)"></div>
+                          </div>
+                          <div class="text-secondary mt-1" style="font-size:0.68rem;">
+                            {{ ngoResult.n_elementos }} elementos detectados · Frame {{ ngoResult.frame.width }}×{{ ngoResult.frame.height }}px
+                          </div>
+                        </div>
+
+                        <!-- Métricas individuales -->
+                        <div class="d-flex flex-column gap-2">
+                          @for (entry of ngoResult.interpretaciones | keyvalue; track entry.key) {
+                            @if (entry.key !== 'OM') {
+                              <div class="p-2 rounded-3 border bg-white">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                  <div>
+                                    <span class="small fw-bold text-dark">{{ entry.key }}</span>
+                                    <span class="text-secondary ms-1" style="font-size:0.7rem;">— {{ $any(entry.value).nombre }}</span>
+                                  </div>
+                                  <div class="d-flex align-items-center gap-2">
+                                    <span class="small fw-bold"
+                                          [ngClass]="$any(entry.value).color === 'success' ? 'text-success' : $any(entry.value).color === 'warning' ? 'text-warning' : 'text-danger'">
+                                      {{ getNgoPercent($any(entry.value).valor) }}%
+                                    </span>
+                                    <span class="badge rounded-pill small"
+                                          [ngClass]="$any(entry.value).color === 'success' ? 'bg-success' : $any(entry.value).color === 'warning' ? 'bg-warning text-dark' : 'bg-danger'">
+                                      {{ $any(entry.value).estado }}
+                                    </span>
+                                  </div>
+                                </div>
+                                <div class="progress" style="height: 5px;">
+                                  <div class="progress-bar"
+                                       [ngClass]="'bg-' + $any(entry.value).color"
+                                       [style.width.%]="getNgoPercent($any(entry.value).valor)"></div>
+                                </div>
+                                <div class="text-secondary mt-1" style="font-size:0.65rem;">{{ $any(entry.value).descripcion }}</div>
+                              </div>
+                            }
+                          }
+                        </div>
+
+                        <!-- Referencia -->
+                        <div class="p-2 bg-light rounded-3 border text-secondary" style="font-size:0.65rem;">
+                          📖 <strong>Referencia:</strong> Ngo, D.C.L., Teo, L.S. &amp; Byrne, J.G. (2003). Modelling interface aesthetics. <em>Information Sciences</em>, 152, 25–46.
+                        </div>
+                      }
+
+                      @if (!ngoResult && !isLoadingNgo && !ngoError) {
+                        <div class="text-center p-3 text-secondary small bg-light rounded-3 border">
+                          Presiona <strong>📐 Evaluar</strong> para analizar la estética computacional del wireframe.
+                        </div>
+                      }
+
+                    }
+                  </div>
+                }
+
+              </div>
+
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="modal-footer bg-white border-top px-4 py-2 d-flex justify-content-between">
+              <span class="small text-secondary">
+                💡 Consejo: Mantén la baja fidelidad limpia (cajas grises y textos claros) antes de definir colores.
+              </span>
+              <button class="btn btn-primary rounded-pill px-4" (click)="closeInspector()">
+                Listo / Guardar
+              </button>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- ============================================================== -->
+    <!-- MODAL CREAR / EDITAR PANTALLA -->
+    <!-- ============================================================== -->
+    @if (showCreateScreenModal) {
+      <div class="modal fade show d-block" style="background-color: rgba(15, 23, 42, 0.4); backdrop-filter: blur(4px);" tabindex="-1" (click)="closeCreateScreenModal()">
+        <div class="modal-dialog modal-dialog-centered" (click)="$event.stopPropagation()">
+          <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+            
+            <div class="modal-header bg-white border-bottom px-4 py-3">
+              <h5 class="fw-bold mb-0 text-dark">
+                {{ isEditingScreen ? 'Editar Pantalla' : 'Nueva Pantalla' }}
+              </h5>
+              <button type="button" class="btn-close" (click)="closeCreateScreenModal()"></button>
+            </div>
+
+            <div class="modal-body p-4">
+              <div class="mb-3">
+                <label class="form-label small fw-bold text-dark">Nombre de la Interfaz *</label>
+                <input type="text" class="form-control" placeholder="Ej: Catálogo de Productos" [(ngModel)]="screenForm.nombre">
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label small fw-bold text-dark">Módulo / Categoría</label>
+                <div class="d-flex flex-wrap gap-1 mb-2">
+                  @for (mod of dynamicModules; track mod) {
+                    <button type="button" 
+                            class="btn btn-sm rounded-pill"
+                            [ngClass]="screenForm.modulo === mod ? 'btn-primary' : 'btn-light border text-secondary'"
+                            (click)="screenForm.modulo = mod">
+                      {{ mod }}
+                    </button>
+                  }
+                </div>
+                <input type="text" class="form-control form-control-sm" placeholder="O escribe el nombre de un nuevo módulo..." [(ngModel)]="screenForm.modulo">
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label small fw-bold text-dark">Nivel de Prioridad *</label>
+                <div class="d-flex gap-2">
+                  <button type="button" class="btn flex-fill py-2 rounded-3 fw-bold"
+                          [ngClass]="screenForm.prioridad === 'alta' ? 'btn-danger text-white shadow-sm' : 'btn-outline-danger'"
+                          (click)="screenForm.prioridad = 'alta'">
+                    🔴 Alta (MVP)
+                  </button>
+                  <button type="button" class="btn flex-fill py-2 rounded-3 fw-bold"
+                          [ngClass]="screenForm.prioridad === 'media' ? 'btn-warning text-dark shadow-sm' : 'btn-outline-warning'"
+                          (click)="screenForm.prioridad = 'media'">
+                    🟡 Media
+                  </button>
+                  <button type="button" class="btn flex-fill py-2 rounded-3 fw-bold"
+                          [ngClass]="screenForm.prioridad === 'baja' ? 'btn-success text-white shadow-sm' : 'btn-outline-success'"
+                          (click)="screenForm.prioridad = 'baja'">
+                    🟢 Baja
+                  </button>
+                </div>
+              </div>
+
+              <div class="mb-0">
+                <label class="form-label small fw-bold text-dark">Descripción u Objetivo de la Pantalla</label>
+                <textarea class="form-control" rows="3" placeholder="Describe qué acciones realiza el usuario en esta pantalla..." [(ngModel)]="screenForm.descripcion"></textarea>
+              </div>
+            </div>
+
+            <div class="modal-footer bg-light border-top px-4 py-3">
+              <button class="btn btn-light border rounded-pill px-4" (click)="closeCreateScreenModal()">Cancelar</button>
+              <button class="btn btn-primary rounded-pill px-4 fw-bold" (click)="saveScreen()" [disabled]="isSaving">
+                @if (isSaving) {
+                  <span class="spinner-border spinner-border-sm me-1"></span>
+                }
+                {{ isEditingScreen ? 'Guardar Cambios' : 'Crear Pantalla' }}
+              </button>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- ============================================================== -->
+    <!-- MODAL CREAR NUEVO MÓDULO (DINÁMICO) -->
+    <!-- ============================================================== -->
+    @if (showNewModuleModal) {
+      <div class="modal fade show d-block" style="background-color: rgba(15, 23, 42, 0.4); backdrop-filter: blur(4px);" tabindex="-1" (click)="showNewModuleModal = false">
+        <div class="modal-dialog modal-dialog-centered modal-sm" (click)="$event.stopPropagation()">
+          <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+            
+            <div class="modal-header bg-white border-bottom px-3 py-2">
+              <h6 class="fw-bold mb-0 text-dark">Nuevo Módulo Funcional</h6>
+              <button type="button" class="btn-close" (click)="showNewModuleModal = false"></button>
+            </div>
+
+            <div class="modal-body p-3">
+              <label class="form-label small fw-medium text-secondary mb-1">Nombre del Módulo</label>
+              <input type="text" 
+                     class="form-control form-control-sm" 
+                     placeholder="Ej: Facturación, Cursos, Pacientes..." 
+                     [(ngModel)]="newModuleNameInput" 
+                     (keydown.enter)="addNewModule()" 
+                     autofocus>
+              <div class="form-text" style="font-size: 0.72rem;">
+                Agrupa las interfaces que pertenezcan a esta misma sección funcional.
+              </div>
+            </div>
+
+            <div class="modal-footer bg-light border-top px-3 py-2">
+              <button class="btn btn-sm btn-light border rounded-pill px-3" (click)="showNewModuleModal = false">Cancelar</button>
+              <button class="btn btn-sm btn-primary rounded-pill px-3 fw-bold" (click)="addNewModule()" [disabled]="!newModuleNameInput.trim()">
+                Crear Módulo
+              </button>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    }
+
   </div>
 }
