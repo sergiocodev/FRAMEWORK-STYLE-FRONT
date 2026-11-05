@@ -176,3 +176,179 @@
 .modal-body {
   min-height: 0;
 }
+
+
+/* =========================================================
+   MUIDESIGNER RESTRUCTURING STYLES (BESSGHAIER ET AL. 2022)
+   ========================================================= */
+.btn-indigo {
+  background-color: #6366f1;
+  color: #ffffff;
+  border-color: #6366f1;
+}
+.btn-indigo:hover {
+  background-color: #4f46e5;
+  color: #ffffff;
+}
+
+.text-indigo {
+  color: #4f46e5 !important;
+}
+
+.bg-indigo-light {
+  background-color: #eef2ff !important;
+}
+
+.border-indigo {
+  border-color: #c7d2fe !important;
+}
+
+.quadrant-box {
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.quadrant-box:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.quadrant-box.active {
+  border-color: #6366f1 !important;
+  background-color: #f5f3ff !important;
+}
+
+.defect-card {
+  transition: transform 0.15s ease;
+}
+
+.defect-card:hover {
+  transform: translateX(2px);
+}
+
+.pointer-events-none {
+  pointer-events: none;
+}
+
+/* Type badges */
+.text-purple {
+  color: #7e22ce !important;
+}
+.bg-purple {
+  background-color: #7e22ce !important;
+}
+.border-purple {
+  border-color: #d8b4fe !important;
+}
+.border-purple-subtle {
+  border-color: rgba(147, 51, 234, 0.25) !important;
+}
+.border-indigo-subtle {
+  border-color: rgba(99, 102, 241, 0.25) !important;
+}
+
+/* Estilos para impresión de la Propuesta Conceptual */
+
+/* =========================================================
+   DIAGRAMA DE ÁRBOL - ARQUITECTURA CONCEPTUAL
+   ========================================================= */
+.tree-container {
+  position: relative;
+  padding: 0.5rem 0;
+}
+
+.tree-root-box {
+  background: #f8fafc;
+  border: 2px solid #2563eb;
+  border-radius: 10px;
+  padding: 0.6rem 1rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+
+.tree-branch-wrapper {
+  position: relative;
+  padding-left: 1.5rem;
+  margin-top: 0.75rem;
+  border-left: 2px dashed #cbd5e1;
+  margin-left: 1.25rem;
+}
+
+.tree-node-card {
+  position: relative;
+  margin-bottom: 0.6rem;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 18px;
+    left: -1.5rem;
+    width: 1.5rem;
+    height: 2px;
+    border-top: 2px dashed #cbd5e1;
+  }
+}
+
+.tree-node-pill {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 0.5rem 0.85rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+  transition: all 0.15s ease;
+
+  &:hover {
+    border-color: #93c5fd;
+    background-color: #f8fafc;
+  }
+}
+
+.tree-sub-branch {
+  position: relative;
+  padding-left: 1.5rem;
+  margin-top: 0.4rem;
+  margin-bottom: 0.4rem;
+  border-left: 2px dotted #cbd5e1;
+  margin-left: 1rem;
+}
+
+.tree-sub-card {
+  position: relative;
+  margin-bottom: 0.35rem;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 14px;
+    left: -1.5rem;
+    width: 1.5rem;
+    height: 2px;
+    border-top: 2px dotted #cbd5e1;
+  }
+}
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  .propuesta-print-area, .propuesta-print-area * {
+    visibility: visible;
+  }
+  .propuesta-print-area {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 1.5cm !important;
+    background: #ffffff !important;
+  }
+  .no-print {
+    display: none !important;
+  }
+}

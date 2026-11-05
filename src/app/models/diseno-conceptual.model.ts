@@ -76,3 +76,79 @@ export interface Wireframe {
   fileName?: string;
   archivo_url?: string;
 }
+
+
+// ============================================================================
+// MODELOS DE REESTRUCTURACION ESTETICA AUTOMATIZADA (Bessghaier et al., 2022)
+// ============================================================================
+
+export interface BoundingBoxElemento {
+  id?: string;
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+  cuadrante?: 'Q1' | 'Q2' | 'Q3' | 'Q4';
+}
+
+export interface DefectoEstructural {
+  code: 'IM' | 'ICM' | 'ILW' | 'OM' | 'DN';
+  nombre: string;
+  descripcion: string;
+  severidad: 'alta' | 'media' | 'baja';
+  categoria: 'Layout' | 'Visual';
+}
+
+export interface CuadranteInfo {
+  codigo: 'Q1' | 'Q2' | 'Q3' | 'Q4';
+  nombre: string;
+  elementos_count: number;
+  porcentaje: number;
+  estado: 'saturado' | 'desbalanceado' | 'equilibrado';
+  elementos: BoundingBoxElemento[];
+}
+
+export interface RecomendacionMaterial {
+  id: string;
+  guideline: string;
+  titulo: string;
+  descripcion: string;
+  tipo: 'automatica' | 'manual' | 'sugerencia';
+  icono: string;
+  beneficio: string;
+}
+
+export interface RestructuringResult {
+  frame: { width: number; height: number };
+  total_elementos: number;
+  score_estructural: {
+    original: number;
+    reestructurado: number;
+    mejora_porcentaje: number;
+    interpretacion: string;
+  };
+  defectos_detectados: DefectoEstructural[];
+  cuadrantes: CuadranteInfo[];
+  color_analisis?: {
+    top_colors: Array<{ color: string; porcentaje: number }>;
+    cumple_60_30_10: boolean;
+    vibrating_detected: boolean;
+    vibrating_detail: string;
+  };
+  original_boxes: BoundingBoxElemento[];
+  restructured_boxes: BoundingBoxElemento[];
+  ngo_comparativa: {
+    balance_old: number;
+    balance_new: number;
+    regularidad_old: number;
+    regularidad_new: number;
+    simplicidad_old: number;
+    simplicidad_new: number;
+    unidad_old: number;
+    unidad_new: number;
+    global_old: number;
+    global_new: number;
+  };
+  recomendaciones: RecomendacionMaterial[];
+  css_export?: string;
+}

@@ -14,7 +14,12 @@ import {
   NodoPantalla,
   Wireframe,
   WireframeChecklistItem,
-  DisenoConceptualChecklistItem
+  DisenoConceptualChecklistItem,
+  RestructuringResult,
+  BoundingBoxElemento,
+  DefectoEstructural,
+  CuadranteInfo,
+  RecomendacionMaterial
 } from '../../../models/diseno-conceptual.model';
 import { Phase } from '../../../shared/components/stepper/stepper.component';
 import { environment } from '../../../../environments/environment';
@@ -58,6 +63,8 @@ export class DisenoConceptualComponent implements OnInit {
   currentView: 'kanban' | 'list' = 'kanban';
   searchTerm: string = '';
   selectedModuloFilter: string = 'todos';
+  selectedTypeFilter: 'todos' | 'pantalla' | 'modulo' | 'componente' = 'todos';
+  selectedParentScreenFilter: string = 'todos';
 
   // Kanban Columns
   altaNodos: NodoPantalla[] = [];
@@ -70,7 +77,7 @@ export class DisenoConceptualComponent implements OnInit {
   isEditingScreen = false;
   editingScreenId: number | null = null;
 
-  // Dynamic Modules
+  // Dynamic Modules / Categories
   customModules: string[] = [];
   showNewModuleModal = false;
   newModuleNameInput = '';
@@ -81,9 +88,15 @@ export class DisenoConceptualComponent implements OnInit {
     return combined;
   }
 
+  get availableScreens(): NodoPantalla[] {
+    return this.nodos.filter(n => (n.tipo || 'pantalla') === 'pantalla');
+  }
+
   screenForm = {
     nombre: '',
-    modulo: '',
+    tipo: 'pantalla' as 'pantalla' | 'modulo' | 'componente',
+    modulo: 'General',
+    parentPantalla: '',
     prioridad: 'alta' as 'alta' | 'media' | 'baja',
     descripcion: ''
   };
@@ -94,8 +107,25 @@ export class DisenoConceptualComponent implements OnInit {
   inspectingWireframe: Wireframe | null = null;
   activeWireframeChecklist: WireframeChecklistItem[] = [];
   newChecklistItemText = '';
-  activeInspectorTab: 'aesthetic' | 'functional' | 'ngo' = 'aesthetic';
+  activeInspectorTab: 'aesthetic' | 'functional' | 'ngo' | 'restructure' = 'aesthetic';
+
+  // --- MUIDesigner 2022 Aesthetic Restructuring state ---
+  restructuringResult: RestructuringResult | null = null;
+  isLoadingRestructuring = false;
+  restructuringError: string | null = null;
+  overlayViewMode: 'none' | 'original' | 'restructured' | 'comparison' = 'original';
+  showQuadrantsGuide = true;
+  selectedQuadrantFilter: 'ALL' | 'Q1' | 'Q2' | 'Q3' | 'Q4' = 'ALL';
+  prunedElementIds: Set<string> = new Set<string>();
+  copyCssSuccess = false;
   isUploadingWireframe = false;
+
+  // Step workflow para Optimización de Layout Móvil:
+  restructuringStep: 'diagnostico' | 'optimizado' = 'diagnostico';
+
+  // Controles de superposición para Diagnóstico de Composición (Web / General):
+  showNgoBoxes = true;
+  showNgoQuadrants = true;
 
   // --- Ngo 2003 metrics state ---
   ngoResult: any = null;
@@ -110,8 +140,20 @@ export class DisenoConceptualComponent implements OnInit {
   }
 
   // --- STATS COMPUTED ---
-  get totalScreensCount(): number {
+  get totalElementsCount(): number {
     return this.nodos.length;
+  }
+
+  get totalScreensCount(): number {
+    return this.nodos.filter(n => (n.tipo || 'pantalla') === 'pantalla').length;
+  }
+
+  get totalModulesCount(): number {
+    return this.nodos.filter(n => n.tipo === 'modulo').length;
+  }
+
+  get totalComponentsCount(): number {
+    return this.nodos.filter(n => n.tipo === 'componente').length;
   }
 
   get highPriorityCount(): number {
@@ -220,23 +262,42 @@ export class DisenoConceptualComponent implements OnInit {
 
   organizeColumns(): void {
     const search = this.searchTerm.trim().toLowerCase();
+    const typeFilter = this.selectedTypeFilter;
+    const parentFilter = this.selectedParentScreenFilter;
     const moduloFilter = this.selectedModuloFilter;
 
     const filtered = this.nodos.filter(n => {
+      const nodoType = (n.tipo || 'pantalla') as 'pantalla' | 'modulo' | 'componente';
       const matchSearch = !search ||
         (n.nombre && n.nombre.toLowerCase().includes(search)) ||
         (n.descripcion && n.descripcion.toLowerCase().includes(search)) ||
         (n.icono && n.icono.toLowerCase().includes(search));
 
+      const matchType = typeFilter === 'todos' || nodoType === typeFilter;
+
+      const matchParent = parentFilter === 'todos' ||
+        (nodoType === 'pantalla' && n.nombre === parentFilter) ||
+        (n.icono && n.icono === parentFilter);
+
       const matchModulo = moduloFilter === 'todos' || (n.icono && n.icono === moduloFilter);
 
-      return matchSearch && matchModulo;
+      return matchSearch && matchType && matchParent && matchModulo;
     });
 
     this.altaNodos = filtered.filter(n => n.prioridad === 'alta');
     this.mediaNodos = filtered.filter(n => n.prioridad === 'media');
     this.bajaNodos = filtered.filter(n => n.prioridad === 'baja');
     this.sinPrioridadNodos = filtered.filter(n => !n.prioridad);
+  }
+
+  setTypeFilter(type: 'todos' | 'pantalla' | 'modulo' | 'componente'): void {
+    this.selectedTypeFilter = type;
+    this.organizeColumns();
+  }
+
+  onParentScreenFilterChange(parent: string): void {
+    this.selectedParentScreenFilter = parent;
+    this.organizeColumns();
   }
 
   onSearchChange(): void {
@@ -246,6 +307,17 @@ export class DisenoConceptualComponent implements OnInit {
   onModuloFilterChange(modulo: string): void {
     this.selectedModuloFilter = modulo;
     this.organizeColumns();
+  }
+
+  getNodeTypeInfo(nodo: NodoPantalla): { label: string; badgeClass: string; type: 'pantalla' | 'modulo' | 'componente' } {
+    const tipo = (nodo.tipo as 'pantalla' | 'modulo' | 'componente') || 'pantalla';
+    if (tipo === 'modulo') {
+      return { label: 'Módulo', badgeClass: 'bg-indigo bg-opacity-10 text-indigo border border-indigo border-opacity-25', type: 'modulo' };
+    }
+    if (tipo === 'componente') {
+      return { label: 'Componente UI', badgeClass: 'bg-purple bg-opacity-10 text-purple border border-purple border-opacity-25', type: 'componente' };
+    }
+    return { label: 'Pantalla', badgeClass: 'bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25', type: 'pantalla' };
   }
 
   // --- DRAG & DROP ENTRE COLUMNAS KANBAN ---
@@ -265,8 +337,15 @@ export class DisenoConceptualComponent implements OnInit {
 
       if (movedItem.id) {
         this.disenoService.updateNodo(this.projectId, movedItem.id, {
+          nombre: movedItem.nombre,
+          tipo: movedItem.tipo,
+          icono: movedItem.icono,
           prioridad: targetPriority
         }).subscribe({
+          next: () => {
+            const n = this.nodos.find(item => item.id === movedItem.id);
+            if (n) n.prioridad = targetPriority;
+          },
           error: (err) => console.error('Error al actualizar prioridad', err)
         });
       }
@@ -359,17 +438,19 @@ export class DisenoConceptualComponent implements OnInit {
     this.organizeColumns();
   }
 
-  // --- MODAL CREAR / EDITAR PANTALLA ---
-  openCreateScreenModal(defaultPriority: 'alta' | 'media' | 'baja' = 'alta'): void {
+  // --- MODAL CREAR / EDITAR ELEMENTO (PANTALLA / MÓDULO / COMPONENTE) ---
+  openCreateScreenModal(defaultPriority: 'alta' | 'media' | 'baja' = 'alta', defaultType: 'pantalla' | 'modulo' | 'componente' = 'pantalla'): void {
     this.isEditingScreen = false;
     this.editingScreenId = null;
-    const defaultMod = this.selectedModuloFilter !== 'todos'
-      ? this.selectedModuloFilter
-      : (this.dynamicModules[0] || 'General');
+    const defaultParent = this.selectedParentScreenFilter !== 'todos'
+      ? this.selectedParentScreenFilter
+      : (this.availableScreens[0]?.nombre || 'Global (Reusable)');
 
     this.screenForm = {
       nombre: '',
-      modulo: defaultMod,
+      tipo: defaultType,
+      modulo: 'General',
+      parentPantalla: defaultParent,
       prioridad: defaultPriority,
       descripcion: ''
     };
@@ -380,9 +461,12 @@ export class DisenoConceptualComponent implements OnInit {
     if (event) event.stopPropagation();
     this.isEditingScreen = true;
     this.editingScreenId = nodo.id || null;
+    const tipo = (nodo.tipo as 'pantalla' | 'modulo' | 'componente') || 'pantalla';
     this.screenForm = {
       nombre: nodo.nombre,
-      modulo: nodo.icono || (this.dynamicModules[0] || 'General'),
+      tipo: tipo,
+      modulo: nodo.icono || 'General',
+      parentPantalla: nodo.icono || (this.availableScreens[0]?.nombre || 'Global (Reusable)'),
       prioridad: (nodo.prioridad as 'alta' | 'media' | 'baja') || 'alta',
       descripcion: nodo.descripcion || ''
     };
@@ -395,20 +479,23 @@ export class DisenoConceptualComponent implements OnInit {
 
   saveScreen(): void {
     if (!this.screenForm.nombre.trim()) {
-      alert('Por favor ingresa un nombre para la pantalla.');
+      alert('Por favor ingresa un nombre para el elemento de interfaz.');
       return;
     }
 
     this.isSaving = true;
+    const parentVal = this.screenForm.tipo === 'pantalla'
+      ? (this.screenForm.modulo || 'General')
+      : (this.screenForm.parentPantalla || 'Global (Reusable)');
 
     if (this.isEditingScreen && this.editingScreenId) {
       // Actualizar
       this.disenoService.updateNodo(this.projectId, this.editingScreenId, {
         nombre: this.screenForm.nombre.trim(),
-        icono: this.screenForm.modulo,
+        tipo: this.screenForm.tipo,
+        icono: parentVal,
         prioridad: this.screenForm.prioridad,
-        descripcion: this.screenForm.descripcion.trim(),
-        tipo: 'pantalla'
+        descripcion: this.screenForm.descripcion.trim()
       }).subscribe({
         next: (updated) => {
           const idx = this.nodos.findIndex(n => n.id === this.editingScreenId);
@@ -420,7 +507,7 @@ export class DisenoConceptualComponent implements OnInit {
           this.closeCreateScreenModal();
         },
         error: (err) => {
-          console.error('Error al actualizar pantalla', err);
+          console.error('Error al actualizar elemento', err);
           this.isSaving = false;
         }
       });
@@ -428,10 +515,10 @@ export class DisenoConceptualComponent implements OnInit {
       // Crear nueva
       const newNodo: NodoPantalla = {
         nombre: this.screenForm.nombre.trim(),
-        icono: this.screenForm.modulo,
+        tipo: this.screenForm.tipo,
+        icono: parentVal,
         prioridad: this.screenForm.prioridad,
         descripcion: this.screenForm.descripcion.trim(),
-        tipo: 'pantalla',
         pos_x: 0,
         pos_y: 0,
         estado_verificacion: 'pendiente'
@@ -445,7 +532,7 @@ export class DisenoConceptualComponent implements OnInit {
           this.closeCreateScreenModal();
         },
         error: (err) => {
-          console.error('Error al crear pantalla', err);
+          console.error('Error al crear elemento', err);
           this.isSaving = false;
         }
       });
@@ -490,6 +577,11 @@ export class DisenoConceptualComponent implements OnInit {
     this.activeWireframeChecklist = [];
     this.ngoResult = null;
     this.ngoError = null;
+    this.restructuringResult = null;
+    this.restructuringError = null;
+    this.prunedElementIds.clear();
+    this.selectedQuadrantFilter = 'ALL';
+    this.restructuringStep = 'diagnostico';
   }
 
   loadChecklistForWireframe(wireframeId: number): void {
@@ -598,6 +690,160 @@ export class DisenoConceptualComponent implements OnInit {
     if (value >= 0.75) return 'bg-success';
     if (value >= 0.50) return 'bg-warning';
     return 'bg-danger';
+  }
+
+
+  // --- OPTIMIZACIÓN DE LAYOUT MÓVIL ---
+  runRestructuring(): void {
+    if (!this.inspectingWireframe?.id) return;
+    this.isLoadingRestructuring = true;
+    this.restructuringResult = null;
+    this.restructuringError = null;
+    this.prunedElementIds.clear();
+    this.restructuringStep = 'diagnostico';
+
+    this.disenoService.restructureWireframe(this.projectId, this.inspectingWireframe.id).subscribe({
+      next: (result) => {
+        this.restructuringResult = result;
+        this.isLoadingRestructuring = false;
+        // Iniciar en modo diagnóstico mostrando los elementos actuales en rojo
+        this.overlayViewMode = 'original';
+        this.restructuringStep = 'diagnostico';
+      },
+      error: (err) => {
+        this.restructuringError = err?.error?.detail || 'Error al analizar la estructura del wireframe.';
+        this.isLoadingRestructuring = false;
+      }
+    });
+  }
+
+  setRestructuringStep(step: 'diagnostico' | 'optimizado'): void {
+    this.restructuringStep = step;
+    if (step === 'diagnostico') {
+      this.overlayViewMode = 'original';
+    } else {
+      this.overlayViewMode = 'restructured';
+    }
+  }
+
+  applyRestructuringProposal(): void {
+    this.setRestructuringStep('optimizado');
+  }
+
+  toggleNgoBoxes(): void {
+    this.showNgoBoxes = !this.showNgoBoxes;
+  }
+
+  toggleNgoQuadrants(): void {
+    this.showNgoQuadrants = !this.showNgoQuadrants;
+  }
+
+  getStructuralScoreBadge(score: number): { label: string; class: string } {
+    if (score <= 4.0) return { label: 'Óptima (Simétrica)', class: 'bg-success text-white' };
+    if (score < 8.0) return { label: 'Aceptable (Regular)', class: 'bg-warning text-dark' };
+    return { label: 'Alta Dispersión', class: 'bg-danger text-white' };
+  }
+
+  setOverlayViewMode(mode: 'none' | 'original' | 'restructured' | 'comparison'): void {
+    this.overlayViewMode = mode;
+  }
+
+  toggleQuadrantGuide(): void {
+    this.showQuadrantsGuide = !this.showQuadrantsGuide;
+  }
+
+  togglePruneElement(elemId?: string): void {
+    if (!elemId) return;
+    if (this.prunedElementIds.has(elemId)) {
+      this.prunedElementIds.delete(elemId);
+    } else {
+      this.prunedElementIds.add(elemId);
+    }
+  }
+
+  isElementPruned(elemId?: string): boolean {
+    return !!elemId && this.prunedElementIds.has(elemId);
+  }
+
+  filterQuadrant(quadrantCode: 'ALL' | 'Q1' | 'Q2' | 'Q3' | 'Q4'): void {
+    this.selectedQuadrantFilter = quadrantCode;
+  }
+
+  getFilteredOriginalBoxes(): BoundingBoxElemento[] {
+    if (!this.restructuringResult?.original_boxes) return [];
+    return this.restructuringResult.original_boxes.filter(b => {
+      if (this.selectedQuadrantFilter !== 'ALL' && b.cuadrante !== this.selectedQuadrantFilter) {
+        return false;
+      }
+      return !this.isElementPruned(b.id);
+    });
+  }
+
+  getFilteredRestructuredBoxes(): BoundingBoxElemento[] {
+    if (!this.restructuringResult?.restructured_boxes) return [];
+    return this.restructuringResult.restructured_boxes.filter(b => {
+      if (this.selectedQuadrantFilter !== 'ALL' && b.cuadrante !== this.selectedQuadrantFilter) {
+        return false;
+      }
+      return !this.isElementPruned(b.id);
+    });
+  }
+
+  copyCssCode(): void {
+    if (!this.restructuringResult?.css_export) return;
+    navigator.clipboard.writeText(this.restructuringResult.css_export).then(() => {
+      this.copyCssSuccess = true;
+      setTimeout(() => {
+        this.copyCssSuccess = false;
+      }, 2500);
+    });
+  }
+
+  // --- PROPUESTA CONCEPTUAL (DOCUMENTO DE SALIDA DE FASE 2) ---
+  showPropuestaModal = false;
+  today: Date = new Date();
+
+  get highPriorityNodos(): NodoPantalla[] {
+    return this.nodos.filter(n => n.prioridad === 'alta');
+  }
+
+  get mediumPriorityNodos(): NodoPantalla[] {
+    return this.nodos.filter(n => n.prioridad === 'media');
+  }
+
+  get lowPriorityNodos(): NodoPantalla[] {
+    return this.nodos.filter(n => n.prioridad === 'baja');
+  }
+
+  openPropuestaConceptualModal(): void {
+    this.showPropuestaModal = true;
+  }
+
+  closePropuestaConceptualModal(): void {
+    this.showPropuestaModal = false;
+  }
+
+
+
+  printPropuesta(): void {
+    window.print();
+  }
+
+  getModulesForScreen(screenName: string): NodoPantalla[] {
+    return this.nodos.filter(n => n.tipo === 'modulo' && n.icono === screenName);
+  }
+
+  getComponentsForScreen(screenName: string): NodoPantalla[] {
+    return this.nodos.filter(n => n.tipo === 'componente' && n.icono === screenName);
+  }
+
+  get globalComponents(): NodoPantalla[] {
+    return this.nodos.filter(n => n.tipo === 'componente' && (!n.icono || n.icono === 'Global (Reusable)' || n.icono === 'General'));
+  }
+
+  get unassignedModules(): NodoPantalla[] {
+    const screenNames = new Set(this.availableScreens.map(s => s.nombre));
+    return this.nodos.filter(n => n.tipo === 'modulo' && (!n.icono || !screenNames.has(n.icono)));
   }
 
   // --- AVANZAR A FASE 3 ---

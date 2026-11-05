@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, Subject } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import {
-  NodoPantalla, NodoConexion, ContenidoItem, Wireframe, DisenoConceptualChecklistItem, WireframeChecklistItem
+  NodoPantalla, NodoConexion, ContenidoItem, Wireframe, DisenoConceptualChecklistItem, WireframeChecklistItem, RestructuringResult
 } from '../../../models/diseno-conceptual.model';
 
 @Injectable({
@@ -146,4 +146,13 @@ export class DisenoConceptualService {
       {}
     );
   }
+
+  // --- REESTRUCTURACION ESTETICA AUTOMATIZADA (Bessghaier et al. 2022) ---
+  restructureWireframe(projectId: number, wireframeId: number): Observable<RestructuringResult> {
+    return this.http.post<RestructuringResult>(
+      this.getBaseUrl(projectId) + '/wireframes/' + wireframeId + '/reestructurar-estetica',
+      {}
+    );
+  }
+
 }
