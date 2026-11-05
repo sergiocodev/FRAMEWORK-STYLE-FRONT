@@ -1,0 +1,241 @@
+<!-- Iconografía -->
+<div class="bg-white rounded p-4 mb-4 shadow-sm border border-light">
+  <div class="d-flex align-items-center justify-content-between mb-1">
+    <h6 class="fw-bold d-flex align-items-center gap-2 mb-0">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="text-primary-blue"
+        viewBox="0 0 16 16">
+        <path
+          d="M12.5 0H5.914a1.5 1.5 0 0 0-1.06.44L2.439 2.853A1.5 1.5 0 0 0 2 3.914V14.5A1.5 1.5 0 0 0 3.5 16h9a1.5 1.5 0 0 0 1.5-1.5v-13A1.5 1.5 0 0 0 12.5 0zM13 14.5a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5V3.914a.5.5 0 0 1 .146-.353l2.415-2.414A.5.5 0 0 1 5.914 1H12.5a.5.5 0 0 1 .5.5v13z" />
+      </svg>
+      Iconografía
+    </h6>
+    <div class="d-flex align-items-center gap-2">
+      <span class="badge bg-success-subtle text-success border border-success-subtle fw-medium" style="font-size: 0.72rem;">
+        🛡️ 100% Open Source Safe
+      </span>
+      <span *ngIf="isApiConnected()" class="badge bg-primary-subtle text-primary border border-primary-subtle fw-medium" style="font-size: 0.72rem;">
+        ⚡ Iconify Lazy Load
+      </span>
+      <span *ngIf="!isApiConnected()" class="badge bg-secondary-subtle text-secondary border fw-medium" style="font-size: 0.72rem;">
+        📡 Modo Offline
+      </span>
+    </div>
+  </div>
+  <div class="text-muted small mb-3">
+    Explora miles de iconos de código abierto y selecciona los que formarán parte del Design System de tu proyecto.
+  </div>
+
+  <div class="row">
+    <!-- Columna Izquierda: Configuración Base + Controles -->
+    <div class="col-lg-5 pe-lg-4 mb-4 mb-lg-0">
+      <div class="bg-light rounded p-4 border" style="min-height: 140px;">
+        <label class="fw-bold mb-1 text-dark d-block">Librería Base (Plug & Play)</label>
+        <p class="small text-muted mb-2">Selecciona la familia iconográfica institucional para tu proyecto.</p>
+
+        <select class="form-select mb-2 shadow-sm border-secondary-subtle" *ngIf="config()"
+          [(ngModel)]="config()!.libreria_iconos" (change)="actualizarConfiguracion()">
+          <option *ngFor="let lib of libreriasDisponibles" [value]="lib.id">
+            {{ lib.name }} {{ lib.recommended ? '(Recomendado)' : '' }}
+          </option>
+        </select>
+
+        <!-- Indicador de Licencia y Protección Legal -->
+        <div class="p-2 rounded bg-white border border-success-subtle d-flex align-items-center gap-2 mb-3 shadow-2xs">
+          <span class="badge bg-success text-white px-2 py-1" style="font-size: 0.7rem;">
+            Licencia {{ activeLibrary().license }}
+          </span>
+          <span class="small text-muted" style="font-size: 0.72rem;">
+            {{ activeLibrary().licenseDescription }}
+          </span>
+        </div>
+
+        <hr class="my-3 text-muted opacity-25">
+        <label class="small text-muted fw-bold mb-1 d-block">Subir Íconos Propios (.SVG)</label>
+        <p class="small text-muted mb-2" style="font-size: 0.72rem;">
+          Se normalizan colores a <code>currentColor</code> y se agregan a los iconos seleccionados del proyecto.
+        </p>
+        <button class="btn btn-outline-primary btn-sm w-100 position-relative">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="me-2" viewBox="0 0 16 16">
+            <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+            <path d="M7.646 1.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 2.707V11.5a.5.5 0 0 1-1 0V2.707L5.354 4.854a.5.5 0 1 1-.708-.708l3-3z"/>
+          </svg>
+          Seleccionar archivos SVG
+          <input type="file" multiple accept=".svg"
+            class="position-absolute top-0 start-0 w-100 h-100 opacity-0 cursor-pointer"
+            (change)="onIconUpload($event)">
+        </button>
+      </div>
+
+      <div class="mt-3 border p-3 rounded bg-white shadow-sm">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <label class="small text-muted fw-bold mb-0">Controles Globales de Íconos</label>
+          <span class="badge bg-primary-subtle text-primary border border-primary-subtle" style="font-size: 0.65rem;">
+            Afecta a todo el proyecto
+          </span>
+        </div>
+        <div class="row gx-3 align-items-center">
+          <div class="col-6">
+            <label class="small text-muted mb-2 d-block" style="font-size: 0.75rem;">Variante de Estilo</label>
+            <div class="btn-group w-100" role="group" *ngIf="config()">
+              <input type="radio" class="btn-check" name="iconStyle" id="styleLineal" value="Lineal"
+                [checked]="isLineal()" (change)="onStyleChange('Lineal')">
+              <label class="btn btn-outline-primary btn-sm fw-medium" for="styleLineal">Lineal</label>
+
+              <input type="radio" class="btn-check" name="iconStyle" id="styleRelleno" value="Relleno"
+                [checked]="isRelleno()" (change)="onStyleChange('Relleno')">
+              <label class="btn btn-outline-primary btn-sm fw-medium" for="styleRelleno">Relleno</label>
+            </div>
+          </div>
+          <div class="col-6 border-start ps-3" *ngIf="config()">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <label class="small text-muted mb-0 d-block" style="font-size: 0.75rem;">Grosor de Trazo</label>
+              <span class="badge bg-light text-muted border" style="font-size: 0.65rem;" *ngIf="isRelleno()">
+                Silueta Sólida
+              </span>
+            </div>
+            <input type="range" class="form-range cursor-pointer" min="1" max="3" step="0.5" id="strokeWidth"
+              [value]="config()?.grosor_iconos || 1.5"
+              (input)="onStrokeChange($event)"
+              (change)="actualizarConfiguracion()">
+            <div class="d-flex justify-content-between text-muted mt-1" style="font-size: 0.65rem;">
+              <span>Fino (1px)</span>
+              <span class="fw-bold text-primary">{{ config()?.grosor_iconos || 1.5 }}px</span>
+              <span>Grueso (3px)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Columna Derecha: Catálogo para Escoger + Área de Íconos Seleccionados -->
+    <div class="col-lg-7 border-start-lg ps-lg-4">
+      <!-- Encabezado del Catálogo -->
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <div>
+          <span class="small fw-bold text-dark">
+            Catálogo: {{ totalLibraryCount() | number }} iconos
+          </span>
+          <span class="text-muted ms-2" style="font-size: 0.7rem;" *ngIf="totalLibraryCount() > 0">
+            ({{ displayedLibraryIcons().length }} en pantalla)
+          </span>
+        </div>
+        <div class="position-relative d-flex align-items-center gap-2">
+          <div *ngIf="isLoading()" class="spinner-border spinner-border-sm text-primary" role="status">
+            <span class="visually-hidden">Cargando...</span>
+          </div>
+          <div class="position-relative">
+            <input type="text" class="form-control form-control-sm bg-light border-0 shadow-none pe-4 rounded-pill"
+              placeholder="Buscar entre miles..." style="width: 170px; font-size: 0.75rem;"
+              [ngModel]="searchQuery" (ngModelChange)="onSearchInput($event)">
+            <span class="position-absolute top-50 translate-middle-y end-0 me-2 text-muted" style="font-size: 0.75rem; pointer-events: none;">🔍</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hint para el usuario -->
+      <div class="alert alert-light border py-1 px-2 mb-2 d-flex align-items-center justify-content-between" style="font-size: 0.7rem;">
+        <span class="text-muted">
+          💡 <strong>Haz clic en cualquier ícono</strong> para seleccionarlo para tu proyecto. Pasa el cursor para ver el nombre.
+        </span>
+        <span class="badge bg-light text-secondary border">
+          {{ customIconsSafe().length }} seleccionados
+        </span>
+      </div>
+
+      <!-- Grid del Catálogo con Scroll y Lazy Loading -->
+      <div class="icon-grid-container custom-scrollbar" [style.--icon-stroke]="config()?.grosor_iconos + 'px'">
+        <!-- Íconos del Catálogo (Clic para Seleccionar / Deseleccionar) -->
+        <div class="icon-card-item" *ngFor="let icon of displayedLibraryIcons()"
+             [class.is-selected]="isIconSelected(icon.name, icon.token)"
+             (click)="toggleSelectLibraryIcon(icon)">
+          
+          <!-- Badge circular azul de Check idéntico a la foto cuando está seleccionado -->
+          <span class="selected-check-badge" *ngIf="isIconSelected(icon.name, icon.token)">✓</span>
+
+          <!-- Botón de eliminar en hover si ya está seleccionado -->
+          <button class="delete-icon-btn shadow-sm" *ngIf="isIconSelected(icon.name, icon.token)"
+                  (click)="toggleSelectLibraryIcon(icon); $event.stopPropagation();" title="Quitar del proyecto">
+            ×
+          </button>
+
+          <!-- SVG del icono centrado -->
+          <div [innerHTML]="icon.safeSvg" class="svg-container"></div>
+
+          <!-- Tooltip / Píldora inferior oscura con el nombre (SOLO visible al pasar el mouse) -->
+          <div class="icon-token-overlay">{{ icon.token }}</div>
+        </div>
+
+        <!-- Estado vacío si la búsqueda no arroja resultados -->
+        <div *ngIf="!isLoading() && displayedLibraryIcons().length === 0"
+          class="col-12 py-4 text-center text-muted small">
+          <div style="font-size: 1.5rem;">🔍</div>
+          No se encontraron iconos para "<strong>{{ searchQuery }}</strong>" en {{ activeLibrary().name }}.
+        </div>
+      </div>
+
+      <!-- Botón Cargar Más para Lazy Loading -->
+      <div class="mt-1 text-center" *ngIf="hasMoreIcons() && !searchQuery.trim()">
+        <button class="btn btn-outline-secondary btn-sm w-100 py-1 d-flex align-items-center justify-content-center gap-2"
+          style="font-size: 0.72rem;" (click)="loadMore()" [disabled]="isLoading()">
+          <span *ngIf="isLoading()" class="spinner-border spinner-border-sm" role="status"></span>
+          <span>{{ isLoading() ? 'Cargando más iconos...' : 'Cargar más iconos (+48)...' }}</span>
+        </button>
+      </div>
+
+      <!-- ========================================================================= -->
+      <!-- ÁREA DE ÍCONOS SELECCIONADOS DEL PROYECTO (Exacto como la foto)            -->
+      <!-- ========================================================================= -->
+      <div class="selected-icons-panel mt-3 p-3 rounded border bg-light shadow-2xs">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <div class="d-flex align-items-center gap-2">
+            <span class="fw-bold small text-dark d-flex align-items-center gap-1">
+              <span class="badge bg-primary text-white rounded-pill px-2">
+                {{ customIconsSafe().length }}
+              </span>
+              Íconos Seleccionados del Proyecto
+            </span>
+          </div>
+          <div class="d-flex align-items-center gap-2">
+            <span *ngIf="copiedToken()" class="badge bg-success-subtle text-success border border-success-subtle" style="font-size: 0.65rem;">
+              ✓ {{ copiedToken() }} copiado
+            </span>
+            <span class="text-muted" style="font-size: 0.68rem;" *ngIf="customIconsSafe().length > 0">
+              Pasa el cursor para ver el nombre o clic para copiar
+            </span>
+          </div>
+        </div>
+
+        <!-- Placeholder cuando no hay iconos seleccionados -->
+        <div *ngIf="customIconsSafe().length === 0" class="empty-selection-box p-3 text-center rounded border border-dashed bg-white">
+          <div class="text-muted small mb-1">
+            👉 <strong>Ningún ícono seleccionado todavía</strong>
+          </div>
+          <div class="text-muted" style="font-size: 0.72rem;">
+            Haz clic en los íconos del catálogo arriba o sube tus propios SVGs para añadirlos al set institucional.
+          </div>
+        </div>
+
+        <!-- Grid de Íconos Seleccionados (Idéntico a la foto con hover para el nombre) -->
+        <div *ngIf="customIconsSafe().length > 0" class="selected-icons-grid custom-scrollbar" [style.--icon-stroke]="config()?.grosor_iconos + 'px'">
+          <div class="icon-card-item is-selected" *ngFor="let icon of customIconsSafe()"
+               (click)="copiarToken(icon.token_name)">
+            
+            <!-- Checkmark circular azul idéntico a la foto -->
+            <span class="selected-check-badge">✓</span>
+
+            <!-- Botón de eliminar en hover (reemplaza al check al pasar el mouse) -->
+            <button class="delete-icon-btn shadow-sm" (click)="eliminarIcono(icon.id); $event.stopPropagation();" title="Eliminar del proyecto">
+              ×
+            </button>
+
+            <!-- SVG del icono centrado -->
+            <div [innerHTML]="icon.safeSvg" class="svg-container"></div>
+
+            <!-- Tooltip / Píldora inferior oscura con el nombre (SOLO visible al pasar el mouse) -->
+            <div class="icon-token-overlay">{{ icon.token_name }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

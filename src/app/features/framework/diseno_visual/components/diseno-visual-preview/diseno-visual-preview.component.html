@@ -122,11 +122,20 @@
           Iconografía
         </div>
         <div class="icon-grid">
-          <div class="premium-icon-box" *ngFor="let icon of currentLibraryIcons.slice(0, 8)" [title]="icon.name">
+          <!-- Íconos seleccionados del proyecto -->
+          <ng-container *ngIf="customIconsSafe().length > 0">
+            <div class="premium-icon-box" *ngFor="let icon of customIconsSafe().slice(0, 8)"
+                 [title]="icon.nombre" [style.color]="getColor('Principal', '#2563eb')"
+                 style="background-color: rgba(37,99,235,0.06);">
+              <div [innerHTML]="icon.safeSvg"></div>
+            </div>
+          </ng-container>
+
+          <!-- Íconos de la librería base si hay espacio disponible -->
+          <div class="premium-icon-box"
+               *ngFor="let icon of currentLibraryIcons.slice(0, (8 - customIconsSafe().length > 0 ? 8 - customIconsSafe().length : 0))"
+               [title]="icon.name">
             <div [innerHTML]="icon.svg"></div>
-          </div>
-          <div class="premium-icon-box" *ngFor="let icon of customIconsSafe().slice(0, 4)" [title]="icon.nombre" [style.color]="getColor('Principal', '#2563eb')" style="background-color: rgba(37,99,235,0.05);">
-            <div [innerHTML]="icon.safeSvg"></div>
           </div>
         </div>
       </div>
