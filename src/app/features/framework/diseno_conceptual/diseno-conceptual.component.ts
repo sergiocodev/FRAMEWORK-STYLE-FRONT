@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -38,7 +38,7 @@ import { environment } from '../../../../environments/environment';
   templateUrl: './diseno-conceptual.component.html',
   styleUrls: ['./diseno-conceptual.component.scss']
 })
-export class DisenoConceptualComponent implements OnInit {
+export class DisenoConceptualComponent implements OnInit, OnDestroy {
   private projectService = inject(ProjectService);
   private disenoService = inject(DisenoConceptualService);
   private route = inject(ActivatedRoute);
@@ -70,6 +70,7 @@ export class DisenoConceptualComponent implements OnInit {
   altaNodos: NodoPantalla[] = [];
   mediaNodos: NodoPantalla[] = [];
   bajaNodos: NodoPantalla[] = [];
+  filteredNodos: NodoPantalla[] = [];
   sinPrioridadNodos: NodoPantalla[] = [];
 
   // Modals state
@@ -137,6 +138,43 @@ export class DisenoConceptualComponent implements OnInit {
     if (!status) return 'En progreso';
     const formatted = status.replace(/_/g, ' ');
     return formatted.charAt(0).toUpperCase() + formatted.slice(1).toLowerCase();
+  }
+
+  // Map de estados de evaluación por wireframeId para actualización reactiva en la vista
+  wireframeEvaluationMap: Map<number, { isEvaluated: boolean; completed: number; total: number; percent: number }> = new Map();
+
+  isWireframeEvaluated(wireframeId?: number): boolean {
+    if (!wireframeId) return false;
+    const stat = this.wireframeEvaluationMap.get(wireframeId);
+    return stat ? stat.isEvaluated : false;
+  }
+
+  getWireframeProgress(wireframeId?: number): { isEvaluated: boolean; completed: number; total: number; percent: number } {
+    if (!wireframeId) return { isEvaluated: false, completed: 0, total: 0, percent: 0 };
+    return this.wireframeEvaluationMap.get(wireframeId) || { isEvaluated: false, completed: 0, total: 0, percent: 0 };
+  }
+
+  get evaluatedWireframesCount(): number {
+    let count = 0;
+    const nodeIds = new Set(this.nodos.map(n => n.id));
+    for (const wf of this.wireframes) {
+      if (wf.id && wf.nodo_id && nodeIds.has(wf.nodo_id)) {
+        if (this.isWireframeEvaluated(wf.id)) count++;
+      }
+    }
+    return count;
+  }
+
+  private updateWireframeEvaluationCache(wireframeId: number, items: WireframeChecklistItem[]): void {
+    const total = items.length;
+    const completed = items.filter(c => c.estado === 'aceptado').length;
+    const percent = total > 0 ? Math.round((completed / total) * 100) : 0;
+    // Se considera evaluado si tiene algún ítem aceptado o si se guardó evaluación de composición
+    const hasNgoSaved = !!localStorage.getItem(`ngo_eval_${this.projectId}_${wireframeId}`);
+    const hasRestructureSaved = !!localStorage.getItem(`restruct_eval_${this.projectId}_${wireframeId}`);
+    const isEvaluated = completed > 0 || hasNgoSaved || hasRestructureSaved;
+
+    this.wireframeEvaluationMap.set(wireframeId, { isEvaluated, completed, total, percent });
   }
 
   // --- STATS COMPUTED ---
@@ -252,6 +290,16 @@ export class DisenoConceptualComponent implements OnInit {
 
         this.organizeColumns();
         this.isLoading = false;
+
+        // Cargar listas de chequeo y evaluaciones de los wireframes para actualizar indicadores reactivos
+        this.wireframes.forEach(wf => {
+          if (wf.id) {
+            this.disenoService.getWireframeChecklist(this.projectId, wf.id).subscribe({
+              next: (items) => this.updateWireframeEvaluationCache(wf.id!, items || []),
+              error: () => this.updateWireframeEvaluationCache(wf.id!, [])
+            });
+          }
+        });
       },
       error: (err) => {
         console.error('Error al cargar datos de Fase 2', err);
@@ -288,6 +336,7 @@ export class DisenoConceptualComponent implements OnInit {
     this.mediaNodos = filtered.filter(n => n.prioridad === 'media');
     this.bajaNodos = filtered.filter(n => n.prioridad === 'baja');
     this.sinPrioridadNodos = filtered.filter(n => !n.prioridad);
+    this.filteredNodos = filtered;
   }
 
   setTypeFilter(type: 'todos' | 'pantalla' | 'modulo' | 'componente'): void {
@@ -564,7 +613,24 @@ export class DisenoConceptualComponent implements OnInit {
     this.showInspectorModal = true;
 
     if (this.inspectingWireframe?.id) {
-      this.loadChecklistForWireframe(this.inspectingWireframe.id);
+      const wfId = this.inspectingWireframe.id;
+      // Recuperar evaluación de Ngo previa si existe en storage
+      const savedNgo = localStorage.getItem(`ngo_eval_${this.projectId}_${wfId}`);
+      if (savedNgo) {
+        try { this.ngoResult = JSON.parse(savedNgo); } catch (e) { this.ngoResult = null; }
+      } else {
+        this.ngoResult = null;
+      }
+
+      // Recuperar reestructuración previa si existe en storage
+      const savedRestruct = localStorage.getItem(`restruct_eval_${this.projectId}_${wfId}`);
+      if (savedRestruct) {
+        try { this.restructuringResult = JSON.parse(savedRestruct); } catch (e) { this.restructuringResult = null; }
+      } else {
+        this.restructuringResult = null;
+      }
+
+      this.loadChecklistForWireframe(wfId);
     } else {
       this.activeWireframeChecklist = [];
     }
@@ -588,6 +654,7 @@ export class DisenoConceptualComponent implements OnInit {
     this.disenoService.getWireframeChecklist(this.projectId, wireframeId).subscribe({
       next: (items) => {
         this.activeWireframeChecklist = items || [];
+        this.updateWireframeEvaluationCache(wireframeId, this.activeWireframeChecklist);
       },
       error: (err) => console.error('Error cargando checklist de wireframe', err)
     });
@@ -595,19 +662,25 @@ export class DisenoConceptualComponent implements OnInit {
 
   toggleWireframeCheck(item: WireframeChecklistItem): void {
     if (!this.inspectingWireframe?.id || !item.id) return;
+    const wfId = this.inspectingWireframe.id;
 
     const newStatus = item.estado === 'aceptado' ? 'pendiente' : 'aceptado';
     item.estado = newStatus;
+    this.updateWireframeEvaluationCache(wfId, this.activeWireframeChecklist);
 
     this.disenoService.updateWireframeChecklistItem(
       this.projectId,
-      this.inspectingWireframe.id,
+      wfId,
       item.id,
       { estado: newStatus }
     ).subscribe({
+      next: () => {
+        this.updateWireframeEvaluationCache(wfId, this.activeWireframeChecklist);
+      },
       error: () => {
         // Revertir si hay error
         item.estado = newStatus === 'aceptado' ? 'pendiente' : 'aceptado';
+        this.updateWireframeEvaluationCache(wfId, this.activeWireframeChecklist);
       }
     });
   }
@@ -674,6 +747,10 @@ export class DisenoConceptualComponent implements OnInit {
       next: (result) => {
         this.ngoResult = result;
         this.isLoadingNgo = false;
+        if (this.inspectingWireframe?.id) {
+          localStorage.setItem(`ngo_eval_${this.projectId}_${this.inspectingWireframe.id}`, JSON.stringify(result));
+          this.updateWireframeEvaluationCache(this.inspectingWireframe.id, this.activeWireframeChecklist);
+        }
       },
       error: (err) => {
         this.ngoError = err?.error?.detail || 'Error al calcular las métricas de Ngo.';
@@ -709,6 +786,10 @@ export class DisenoConceptualComponent implements OnInit {
         // Iniciar en modo diagnóstico mostrando los elementos actuales en rojo
         this.overlayViewMode = 'original';
         this.restructuringStep = 'diagnostico';
+        if (this.inspectingWireframe?.id) {
+          localStorage.setItem(`restruct_eval_${this.projectId}_${this.inspectingWireframe.id}`, JSON.stringify(result));
+          this.updateWireframeEvaluationCache(this.inspectingWireframe.id, this.activeWireframeChecklist);
+        }
       },
       error: (err) => {
         this.restructuringError = err?.error?.detail || 'Error al analizar la estructura del wireframe.';
@@ -817,16 +898,25 @@ export class DisenoConceptualComponent implements OnInit {
 
   openPropuestaConceptualModal(): void {
     this.showPropuestaModal = true;
+    document.body.classList.add('modal-propuesta-open');
   }
 
   closePropuestaConceptualModal(): void {
     this.showPropuestaModal = false;
+    document.body.classList.remove('modal-propuesta-open');
+  }
+
+  ngOnDestroy(): void {
+    document.body.classList.remove('modal-propuesta-open');
   }
 
 
 
   printPropuesta(): void {
-    window.print();
+    document.body.classList.add('modal-propuesta-open');
+    setTimeout(() => {
+      window.print();
+    }, 100);
   }
 
   getModulesForScreen(screenName: string): NodoPantalla[] {

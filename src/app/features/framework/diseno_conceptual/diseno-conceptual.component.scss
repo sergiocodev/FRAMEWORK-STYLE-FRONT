@@ -96,6 +96,11 @@
   background-color: #ffffff;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   user-select: none;
+
+  &.wireframe-evaluado {
+    border-left: 4px solid #10b981 !important;
+    background: linear-gradient(to right, rgba(16, 185, 129, 0.03), #ffffff 20%);
+  }
 }
 
 .screen-card:hover {
@@ -234,17 +239,29 @@
 .text-purple {
   color: #7e22ce !important;
 }
+.text-purple-emphasis {
+  color: #6b21a8 !important;
+}
 .bg-purple {
   background-color: #7e22ce !important;
+}
+.bg-purple-subtle {
+  background-color: #f3e8ff !important;
 }
 .border-purple {
   border-color: #d8b4fe !important;
 }
 .border-purple-subtle {
-  border-color: rgba(147, 51, 234, 0.25) !important;
+  border-color: #d8b4fe !important;
 }
 .border-indigo-subtle {
-  border-color: rgba(99, 102, 241, 0.25) !important;
+  border-color: #c7d2fe !important;
+}
+.bg-indigo-subtle {
+  background-color: #e0e7ff !important;
+}
+.text-indigo-emphasis {
+  color: #3730a3 !important;
 }
 
 /* Estilos para impresión de la Propuesta Conceptual */
@@ -329,26 +346,5 @@
     width: 1.5rem;
     height: 2px;
     border-top: 2px dotted #cbd5e1;
-  }
-}
-
-@media print {
-  body * {
-    visibility: hidden;
-  }
-  .propuesta-print-area, .propuesta-print-area * {
-    visibility: visible;
-  }
-  .propuesta-print-area {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100% !important;
-    margin: 0 !important;
-    padding: 1.5cm !important;
-    background: #ffffff !important;
-  }
-  .no-print {
-    display: none !important;
   }
 }

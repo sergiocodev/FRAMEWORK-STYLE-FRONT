@@ -132,6 +132,24 @@
               <span class="text-secondary small fw-medium" style="font-size: 0.75rem;">Wireframes:</span>
               <span class="badge bg-primary text-white rounded-pill" style="font-size: 0.7rem;">{{ wireframesAttachedCount }}/{{ totalElementsCount }}</span>
             </div>
+
+            <!-- Badge Evaluados -->
+            @if (wireframesAttachedCount > 0) {
+              <div class="stat-pill border px-2 py-1 rounded-pill d-flex align-items-center gap-1 shadow-xs ms-1"
+                   [ngClass]="evaluatedWireframesCount === wireframesAttachedCount ? 'bg-success bg-opacity-10 border-success border-opacity-25' : 'bg-light'"
+                   title="Wireframes con evaluación estética realizada">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                  <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                </svg>
+                <span class="text-secondary small fw-medium" style="font-size: 0.75rem;">Evaluados:</span>
+                <span class="badge rounded-pill text-white" 
+                      [ngClass]="evaluatedWireframesCount === wireframesAttachedCount ? 'bg-success' : 'bg-secondary'"
+                      style="font-size: 0.7rem;">
+                  {{ evaluatedWireframesCount }}/{{ wireframesAttachedCount }}
+                </span>
+              </div>
+            }
           </div>
 
           <!-- Búsqueda y Filtro de Pantalla Contenedora -->
@@ -235,7 +253,10 @@
                   
                   @for (nodo of altaNodos; track nodo.id) {
                     <!-- Screen Card -->
+                    @let cardWf = getWireframeForNode(nodo.id);
+                    @let isEvaluated = isWireframeEvaluated(cardWf?.id);
                     <div class="screen-card bg-white rounded-4 border shadow-xs p-3 transition-all cursor-grab"
+                         [ngClass]="{ 'wireframe-evaluado': isEvaluated }"
                          cdkDrag>
                       
                       <!-- Card Header con Tipo Jerárquico y SVGs -->
@@ -261,13 +282,13 @@
                               <span>Módulo @if(nodo.icono && nodo.icono !== 'General' && nodo.icono !== 'Pantalla Principal'){ <span class="fw-normal text-secondary ms-1">en {{ nodo.icono }}</span> }</span>
                             </span>
                           } @else if (nodo.tipo === 'componente') {
-                            <span class="badge bg-purple bg-opacity-10 text-purple border border-purple border-opacity-25 rounded-pill px-2 py-1 small d-inline-flex align-items-center gap-1">
+                            <span class="badge bg-purple-subtle text-purple-emphasis border border-purple-subtle rounded-pill px-2 py-1 small d-inline-flex align-items-center gap-1 shadow-xs">
                               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
                                 <polyline points="2 17 12 22 22 17"></polyline>
                                 <polyline points="2 12 12 17 22 12"></polyline>
                               </svg>
-                              <span>Componente @if(nodo.icono && nodo.icono !== 'General' && nodo.icono !== 'Pantalla Principal' && nodo.icono !== 'Global (Reusable)'){ <span class="fw-normal text-secondary ms-1">en {{ nodo.icono }}</span> } @else { <span class="badge bg-success-subtle text-success rounded-pill px-1 ms-1" style="font-size:0.6rem;">Reusable</span> }</span>
+                              <span>Componente @if(nodo.icono && nodo.icono !== 'General' && nodo.icono !== 'Pantalla Principal' && nodo.icono !== 'Global (Reusable)'){ <span class="fw-normal text-purple-emphasis opacity-75 ms-1">en {{ nodo.icono }}</span> } @else { <span class="badge bg-success-subtle text-success rounded-pill px-1 ms-1" style="font-size:0.6rem;">Reusable</span> }</span>
                             </span>
                           }
                         </div>
@@ -308,24 +329,38 @@
                               }
                             </div>
                             <div class="flex-grow-1 overflow-hidden">
-                              <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 rounded-pill px-2 py-1 mb-1 fw-medium d-inline-flex align-items-center gap-1" style="font-size: 0.68rem;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Wireframe adjunto</span></span>
+                              @let progress = getWireframeProgress(wf.id);
+                              @if (progress.isEvaluated) {
+                                <span class="badge bg-success text-white rounded-pill px-2 py-1 mb-1 fw-medium d-inline-flex align-items-center gap-1 shadow-xs" style="font-size: 0.68rem;">
+                                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                  <span>Evaluado ({{ progress.completed }}/{{ progress.total }})</span>
+                                </span>
+                              } @else {
+                                <span class="badge bg-warning bg-opacity-10 text-dark border border-warning border-opacity-25 rounded-pill px-2 py-1 mb-1 fw-medium d-inline-flex align-items-center gap-1" style="font-size: 0.68rem;">
+                                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                                  <span>Pendiente de evaluar</span>
+                                </span>
+                              }
                               <div class="small fw-medium text-dark text-truncate" [title]="wf.fileName || ('Wireframe #' + wf.id)">
                                 {{ wf.fileName || ('Wireframe #' + wf.id) }}
                               </div>
-                              <span class="text-muted" style="font-size: 0.7rem;">Calidad estética & requisitos</span>
+                              <span class="text-muted" style="font-size: 0.7rem;">
+                                {{ progress.isEvaluated ? 'Evaluación estética registrada' : 'Calidad estética & requisitos' }}
+                              </span>
                             </div>
                           </div>
                         </div>
 
                         <!-- Botón Validar Estética & Checklist -->
                         <div class="d-flex gap-2">
-                          <button class="btn btn-outline-primary btn-sm flex-grow-1 d-flex align-items-center justify-content-center gap-2 rounded-pill py-1 fw-bold shadow-xs hover-scale" 
+                          <button class="btn btn-sm flex-grow-1 d-flex align-items-center justify-content-center gap-2 rounded-pill py-1 fw-bold shadow-xs hover-scale" 
+                                  [ngClass]="isWireframeEvaluated(wf.id) ? 'btn-outline-success bg-success bg-opacity-10 text-success' : 'btn-outline-primary'"
                                   (click)="openInspector(nodo, $event)">
                             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                               <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
                               <polyline points="22 4 12 14.01 9 11.01"></polyline>
                             </svg>
-                            <span>Validar Estética</span>
+                            <span>{{ isWireframeEvaluated(wf.id) ? 'Ver Evaluación' : 'Validar Estética' }}</span>
                           </button>
                           <button class="btn btn-light btn-sm text-danger border rounded-circle p-1" 
                                   title="Eliminar este wireframe"
@@ -406,7 +441,10 @@
                   
                   @for (nodo of mediaNodos; track nodo.id) {
                     <!-- Screen Card -->
+                    @let cardWf = getWireframeForNode(nodo.id);
+                    @let isEvaluated = isWireframeEvaluated(cardWf?.id);
                     <div class="screen-card bg-white rounded-4 border shadow-xs p-3 transition-all cursor-grab"
+                         [ngClass]="{ 'wireframe-evaluado': isEvaluated }"
                          cdkDrag>
                       
                       <!-- Card Header con Tipo Jerárquico y SVGs -->
@@ -432,13 +470,13 @@
                               <span>Módulo @if(nodo.icono && nodo.icono !== 'General' && nodo.icono !== 'Pantalla Principal'){ <span class="fw-normal text-secondary ms-1">en {{ nodo.icono }}</span> }</span>
                             </span>
                           } @else if (nodo.tipo === 'componente') {
-                            <span class="badge bg-purple bg-opacity-10 text-purple border border-purple border-opacity-25 rounded-pill px-2 py-1 small d-inline-flex align-items-center gap-1">
+                            <span class="badge bg-purple-subtle text-purple-emphasis border border-purple-subtle rounded-pill px-2 py-1 small d-inline-flex align-items-center gap-1 shadow-xs">
                               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
                                 <polyline points="2 17 12 22 22 17"></polyline>
                                 <polyline points="2 12 12 17 22 12"></polyline>
                               </svg>
-                              <span>Componente @if(nodo.icono && nodo.icono !== 'General' && nodo.icono !== 'Pantalla Principal' && nodo.icono !== 'Global (Reusable)'){ <span class="fw-normal text-secondary ms-1">en {{ nodo.icono }}</span> } @else { <span class="badge bg-success-subtle text-success rounded-pill px-1 ms-1" style="font-size:0.6rem;">Reusable</span> }</span>
+                              <span>Componente @if(nodo.icono && nodo.icono !== 'General' && nodo.icono !== 'Pantalla Principal' && nodo.icono !== 'Global (Reusable)'){ <span class="fw-normal text-purple-emphasis opacity-75 ms-1">en {{ nodo.icono }}</span> } @else { <span class="badge bg-success-subtle text-success rounded-pill px-1 ms-1" style="font-size:0.6rem;">Reusable</span> }</span>
                             </span>
                           }
                         </div>
@@ -478,23 +516,37 @@
                               }
                             </div>
                             <div class="flex-grow-1 overflow-hidden">
-                              <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 rounded-pill px-2 py-1 mb-1 fw-medium d-inline-flex align-items-center gap-1" style="font-size: 0.68rem;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Wireframe adjunto</span></span>
+                              @let progress = getWireframeProgress(wf.id);
+                              @if (progress.isEvaluated) {
+                                <span class="badge bg-success text-white rounded-pill px-2 py-1 mb-1 fw-medium d-inline-flex align-items-center gap-1 shadow-xs" style="font-size: 0.68rem;">
+                                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                  <span>Evaluado ({{ progress.completed }}/{{ progress.total }})</span>
+                                </span>
+                              } @else {
+                                <span class="badge bg-warning bg-opacity-10 text-dark border border-warning border-opacity-25 rounded-pill px-2 py-1 mb-1 fw-medium d-inline-flex align-items-center gap-1" style="font-size: 0.68rem;">
+                                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                                  <span>Pendiente de evaluar</span>
+                                </span>
+                              }
                               <div class="small fw-medium text-dark text-truncate" [title]="wf.fileName || ('Wireframe #' + wf.id)">
                                 {{ wf.fileName || ('Wireframe #' + wf.id) }}
                               </div>
-                              <span class="text-muted" style="font-size: 0.7rem;">Calidad estética & requisitos</span>
+                              <span class="text-muted" style="font-size: 0.7rem;">
+                                {{ progress.isEvaluated ? 'Evaluación estética registrada' : 'Calidad estética & requisitos' }}
+                              </span>
                             </div>
                           </div>
                         </div>
 
                         <div class="d-flex gap-2">
-                          <button class="btn btn-outline-primary btn-sm flex-grow-1 d-flex align-items-center justify-content-center gap-2 rounded-pill py-1 fw-bold shadow-xs hover-scale" 
+                          <button class="btn btn-sm flex-grow-1 d-flex align-items-center justify-content-center gap-2 rounded-pill py-1 fw-bold shadow-xs hover-scale" 
+                                  [ngClass]="isWireframeEvaluated(wf.id) ? 'btn-outline-success bg-success bg-opacity-10 text-success' : 'btn-outline-primary'"
                                   (click)="openInspector(nodo, $event)">
                             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                               <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
                               <polyline points="22 4 12 14.01 9 11.01"></polyline>
                             </svg>
-                            <span>Validar Estética</span>
+                            <span>{{ isWireframeEvaluated(wf.id) ? 'Ver Evaluación' : 'Validar Estética' }}</span>
                           </button>
                           <button class="btn btn-light btn-sm text-danger border rounded-circle p-1" 
                                   title="Eliminar este wireframe"
@@ -574,7 +626,10 @@
                   
                   @for (nodo of bajaNodos; track nodo.id) {
                     <!-- Screen Card -->
+                    @let cardWf = getWireframeForNode(nodo.id);
+                    @let isEvaluated = isWireframeEvaluated(cardWf?.id);
                     <div class="screen-card bg-white rounded-4 border shadow-xs p-3 transition-all cursor-grab"
+                         [ngClass]="{ 'wireframe-evaluado': isEvaluated }"
                          cdkDrag>
                       
                       <!-- Card Header con Tipo Jerárquico y SVGs -->
@@ -600,13 +655,13 @@
                               <span>Módulo @if(nodo.icono && nodo.icono !== 'General' && nodo.icono !== 'Pantalla Principal'){ <span class="fw-normal text-secondary ms-1">en {{ nodo.icono }}</span> }</span>
                             </span>
                           } @else if (nodo.tipo === 'componente') {
-                            <span class="badge bg-purple bg-opacity-10 text-purple border border-purple border-opacity-25 rounded-pill px-2 py-1 small d-inline-flex align-items-center gap-1">
+                            <span class="badge bg-purple-subtle text-purple-emphasis border border-purple-subtle rounded-pill px-2 py-1 small d-inline-flex align-items-center gap-1 shadow-xs">
                               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
                                 <polyline points="2 17 12 22 22 17"></polyline>
                                 <polyline points="2 12 12 17 22 12"></polyline>
                               </svg>
-                              <span>Componente @if(nodo.icono && nodo.icono !== 'General' && nodo.icono !== 'Pantalla Principal' && nodo.icono !== 'Global (Reusable)'){ <span class="fw-normal text-secondary ms-1">en {{ nodo.icono }}</span> } @else { <span class="badge bg-success-subtle text-success rounded-pill px-1 ms-1" style="font-size:0.6rem;">Reusable</span> }</span>
+                              <span>Componente @if(nodo.icono && nodo.icono !== 'General' && nodo.icono !== 'Pantalla Principal' && nodo.icono !== 'Global (Reusable)'){ <span class="fw-normal text-purple-emphasis opacity-75 ms-1">en {{ nodo.icono }}</span> } @else { <span class="badge bg-success-subtle text-success rounded-pill px-1 ms-1" style="font-size:0.6rem;">Reusable</span> }</span>
                             </span>
                           }
                         </div>
@@ -646,23 +701,37 @@
                               }
                             </div>
                             <div class="flex-grow-1 overflow-hidden">
-                              <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 rounded-pill px-2 py-1 mb-1 fw-medium d-inline-flex align-items-center gap-1" style="font-size: 0.68rem;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Wireframe adjunto</span></span>
+                              @let progress = getWireframeProgress(wf.id);
+                              @if (progress.isEvaluated) {
+                                <span class="badge bg-success text-white rounded-pill px-2 py-1 mb-1 fw-medium d-inline-flex align-items-center gap-1 shadow-xs" style="font-size: 0.68rem;">
+                                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                  <span>Evaluado ({{ progress.completed }}/{{ progress.total }})</span>
+                                </span>
+                              } @else {
+                                <span class="badge bg-warning bg-opacity-10 text-dark border border-warning border-opacity-25 rounded-pill px-2 py-1 mb-1 fw-medium d-inline-flex align-items-center gap-1" style="font-size: 0.68rem;">
+                                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                                  <span>Pendiente de evaluar</span>
+                                </span>
+                              }
                               <div class="small fw-medium text-dark text-truncate" [title]="wf.fileName || ('Wireframe #' + wf.id)">
                                 {{ wf.fileName || ('Wireframe #' + wf.id) }}
                               </div>
-                              <span class="text-muted" style="font-size: 0.7rem;">Calidad estética & requisitos</span>
+                              <span class="text-muted" style="font-size: 0.7rem;">
+                                {{ progress.isEvaluated ? 'Evaluación estética registrada' : 'Calidad estética & requisitos' }}
+                              </span>
                             </div>
                           </div>
                         </div>
 
                         <div class="d-flex gap-2">
-                          <button class="btn btn-outline-primary btn-sm flex-grow-1 d-flex align-items-center justify-content-center gap-2 rounded-pill py-1 fw-bold shadow-xs hover-scale" 
+                          <button class="btn btn-sm flex-grow-1 d-flex align-items-center justify-content-center gap-2 rounded-pill py-1 fw-bold shadow-xs hover-scale" 
+                                  [ngClass]="isWireframeEvaluated(wf.id) ? 'btn-outline-success bg-success bg-opacity-10 text-success' : 'btn-outline-primary'"
                                   (click)="openInspector(nodo, $event)">
                             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                               <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
                               <polyline points="22 4 12 14.01 9 11.01"></polyline>
                             </svg>
-                            <span>Validar Estética</span>
+                            <span>{{ isWireframeEvaluated(wf.id) ? 'Ver Evaluación' : 'Validar Estética' }}</span>
                           </button>
                           <button class="btn btn-light btn-sm text-danger border rounded-circle p-1" 
                                   title="Eliminar este wireframe"
@@ -733,7 +802,7 @@
                 </tr>
               </thead>
               <tbody>
-                @for (nodo of nodos; track nodo.id) {
+                @for (nodo of filteredNodos; track nodo.id) {
                   @let wf = getWireframeForNode(nodo.id);
                   <tr>
                     <td>
@@ -761,7 +830,7 @@
                           <span>Módulo en: {{ nodo.icono || 'General' }}</span>
                         </span>
                       } @else if (nodo.tipo === 'componente') {
-                        <span class="badge bg-purple bg-opacity-10 text-purple border border-purple border-opacity-25 rounded-pill px-3 py-1 d-inline-flex align-items-center gap-1">
+                        <span class="badge bg-purple-subtle text-purple-emphasis border border-purple-subtle rounded-pill px-3 py-1 d-inline-flex align-items-center gap-1 shadow-xs">
                           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
                             <polyline points="2 17 12 22 22 17"></polyline>
@@ -805,12 +874,14 @@
                     <td class="text-end">
                       <div class="d-flex justify-content-end gap-2">
                         @if (wf) {
-                          <button class="btn btn-sm btn-outline-primary rounded-pill px-3 d-inline-flex align-items-center gap-1" (click)="openInspector(nodo, $event)">
+                          <button class="btn btn-sm rounded-pill px-3 d-inline-flex align-items-center gap-1 shadow-xs hover-scale" 
+                                  [ngClass]="isWireframeEvaluated(wf.id) ? 'btn-outline-success bg-success bg-opacity-10 text-success' : 'btn-outline-primary'"
+                                  (click)="openInspector(nodo, $event)">
                             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                               <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
                               <polyline points="22 4 12 14.01 9 11.01"></polyline>
                             </svg>
-                            <span>Validar Estética</span>
+                            <span>{{ isWireframeEvaluated(wf.id) ? 'Ver Evaluación' : 'Validar Estética' }}</span>
                           </button>
                         }
                         <button class="btn btn-sm btn-light border rounded-pill px-2" (click)="openEditScreenModal(nodo, $event)" title="Editar elemento">
@@ -826,6 +897,17 @@
                           </svg>
                         </button>
                       </div>
+                    </td>
+                  </tr>
+                } @empty {
+                  <tr>
+                    <td colspan="5" class="text-center py-5 text-muted">
+                      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="mb-2 opacity-50">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                      </svg>
+                      <div class="fw-medium text-dark">No se encontraron elementos con los filtros seleccionados</div>
+                      <div class="small text-secondary mt-1">Prueba cambiando la clasificación de arquitectura o la búsqueda.</div>
                     </td>
                   </tr>
                 }
@@ -1205,21 +1287,6 @@
                         No hay preguntas de checklist estético disponibles para este wireframe.
                       </div>
                     }
-                  </div>
-
-                  <!-- Añadir Criterio Personalizado -->
-                  <div class="mt-auto pt-3 border-top">
-                    <label class="form-label small fw-bold text-dark mb-1">Añadir criterio estético adicional:</label>
-                    <div class="input-group input-group-sm">
-                      <input type="text" 
-                             class="form-control" 
-                             placeholder="Ej: ¿Se distinguen los botones primarios de secundarios?" 
-                             [(ngModel)]="newChecklistItemText"
-                             (keyup.enter)="addWireframeChecklistItem()">
-                      <button class="btn btn-outline-primary" (click)="addWireframeChecklistItem()">
-                        + Añadir
-                      </button>
-                    </div>
                   </div>
 
                 }
@@ -1726,10 +1793,7 @@
             </div>
 
 <!-- Modal Footer -->
-            <div class="modal-footer bg-white border-top px-4 py-2 d-flex justify-content-between">
-              <span class="small text-secondary">
-                <span class="d-inline-flex align-items-center gap-1 text-secondary"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2"><path d="M9 18h6M10 22h4M15 14a6 6 0 1 0-6 0c0 1.5 1 2.5 1 3h4c0-.5 1-1.5 1-3z"></path></svg> Consejo: Mantén la baja fidelidad limpia (cajas grises y textos claros) antes de definir colores.</span>
-              </span>
+            <div class="modal-footer bg-white border-top px-4 py-2 d-flex justify-content-end">
               <button class="btn btn-primary rounded-pill px-4" (click)="closeInspector()">
                 Listo / Guardar
               </button>
@@ -1995,14 +2059,14 @@
                       </div>
                     </div>
                     <div class="text-end">
-                      <div class="badge bg-light text-secondary border px-2 py-1 rounded-pill small" style="font-size: 0.68rem;">Propuesta Conceptual</div>
+                      
                       <div class="fw-bold text-dark small mt-1">Arquitectura &amp; Wireframes</div>
                     </div>
                   </div>
                 </div>
 
                 <!-- 1. Resumen de la Arquitectura (Conciso y Claro) -->
-                <div class="mb-3">
+                <div class="propuesta-section mb-4">
                   <h6 class="fw-bold text-dark mb-2 d-flex align-items-center gap-2">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2">
                       <line x1="18" y1="20" x2="18" y2="10"></line>
@@ -2044,7 +2108,7 @@
                 </div>
 
                 <!-- 2. Diagrama de Árbol de la Arquitectura (Visual y Deductivo) -->
-                <div class="mb-3">
+                <div class="propuesta-section mb-4">
                   <div class="d-flex justify-content-between align-items-center mb-2">
                     <h6 class="fw-bold text-dark mb-0 d-flex align-items-center gap-2">
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2">
@@ -2184,7 +2248,7 @@
                 </div>
 
                 <!-- 3. Matriz de Prioridades y Alcance (Roadmap MVP) -->
-                <div class="mb-3">
+                <div class="propuesta-section propuesta-section-prioridades mb-4">
                   <div class="d-flex justify-content-between align-items-center mb-2">
                     <h6 class="fw-bold text-dark mb-0 d-flex align-items-center gap-2">
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2">
@@ -2199,7 +2263,7 @@
                   <div class="row g-2">
                     <!-- Alta Prioridad (MVP) -->
                     <div class="col-12 col-md-4">
-                      <div class="card h-100 border border-danger border-opacity-25 rounded-3 bg-danger bg-opacity-10 p-2 shadow-xs">
+                      <div class="card border border-danger border-opacity-25 rounded-3 bg-danger bg-opacity-10 p-2 shadow-xs">
                         <div class="d-flex align-items-center justify-content-between mb-1">
                           <span class="badge bg-danger text-white rounded-pill px-2 py-0 small fw-bold" style="font-size: 0.68rem;">
                             Alta Prioridad (MVP)
@@ -2226,7 +2290,7 @@
 
                     <!-- Media Prioridad -->
                     <div class="col-12 col-md-4">
-                      <div class="card h-100 border border-warning border-opacity-25 rounded-3 bg-warning bg-opacity-10 p-2 shadow-xs">
+                      <div class="card border border-warning border-opacity-25 rounded-3 bg-warning bg-opacity-10 p-2 shadow-xs">
                         <div class="d-flex align-items-center justify-content-between mb-1">
                           <span class="badge bg-warning text-dark rounded-pill px-2 py-0 small fw-bold" style="font-size: 0.68rem;">
                             Media Prioridad
@@ -2253,7 +2317,7 @@
 
                     <!-- Baja Prioridad -->
                     <div class="col-12 col-md-4">
-                      <div class="card h-100 border border-success border-opacity-25 rounded-3 bg-success bg-opacity-10 p-2 shadow-xs">
+                      <div class="card border border-success border-opacity-25 rounded-3 bg-success bg-opacity-10 p-2 shadow-xs">
                         <div class="d-flex align-items-center justify-content-between mb-1">
                           <span class="badge bg-success text-white rounded-pill px-2 py-0 small fw-bold" style="font-size: 0.68rem;">
                             Baja Prioridad
@@ -2281,7 +2345,7 @@
                 </div>
 
                 <!-- 4. Catálogo de Wireframes Propuestos (Compacto y Visual) -->
-                <div class="mb-3">
+                <div class="propuesta-section mb-4">
                   <div class="d-flex justify-content-between align-items-center mb-2">
                     <h6 class="fw-bold text-dark mb-0 d-flex align-items-center gap-2">
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2">
@@ -2298,14 +2362,20 @@
                     @for (item of nodos; track item.id) {
                       @let wf = getWireframeForNode(item.id);
                       @if (wf) {
-                        <div class="col-6 col-md-4 col-lg-3">
-                          <div class="card h-100 border rounded-3 overflow-hidden shadow-xs">
-                            <div class="bg-light p-1 text-center border-bottom d-flex align-items-center justify-content-center" style="height: 110px;">
-                              <img [src]="wf.base64Data" class="img-fluid rounded" style="max-height: 100%; max-width: 100%; object-fit: contain;">
+                        <div class="col-12 col-md-6">
+                          <div class="card h-100 border rounded-3 overflow-hidden shadow-xs hover-scale">
+                            <div class="bg-light p-2 text-center border-bottom d-flex align-items-center justify-content-center" style="height: 240px; background-color: #f8fafc !important;">
+                              <img [src]="wf.base64Data" class="img-fluid rounded border shadow-2xs" style="max-height: 100%; max-width: 100%; object-fit: contain;">
                             </div>
-                            <div class="card-body p-2">
-                              <div class="d-flex align-items-center justify-content-between mb-1">
-                                <span class="badge bg-light text-secondary border rounded-pill" style="font-size: 0.58rem;">
+                            <div class="card-body p-3">
+                              <div class="d-flex align-items-center justify-content-between mb-2">
+                                <span class="badge rounded-pill"
+                                      [ngClass]="{
+                                        'bg-primary-subtle text-primary border border-primary-subtle': (item.tipo || 'pantalla') === 'pantalla',
+                                        'bg-indigo-subtle text-indigo border border-indigo-subtle': item.tipo === 'modulo',
+                                        'bg-purple-subtle text-purple-emphasis border border-purple-subtle': item.tipo === 'componente'
+                                      }"
+                                      style="font-size: 0.68rem;">
                                   {{ (item.tipo || 'pantalla') | uppercase }}
                                 </span>
                                 <span class="badge rounded-pill"
@@ -2314,13 +2384,14 @@
                                         'bg-warning text-dark': item.prioridad === 'media',
                                         'bg-success text-white': item.prioridad === 'baja'
                                       }"
-                                      style="font-size: 0.58rem;">
+                                      style="font-size: 0.68rem;">
                                   {{ item.prioridad | titlecase }}
                                 </span>
                               </div>
-                              <h6 class="fw-bold text-dark mb-0 text-truncate" style="font-size: 0.72rem;">{{ item.nombre }}</h6>
-                              <div class="text-muted text-truncate" style="font-size: 0.62rem;">
-                                {{ wf.fileName || ('Wireframe #' + wf.id) }}
+                              <h6 class="fw-bold text-dark mb-1 fs-6">{{ item.nombre }}</h6>
+                              <div class="d-flex align-items-center justify-content-between text-muted" style="font-size: 0.72rem;">
+                                <span>{{ wf.fileName || ('Wireframe #' + wf.id) }}</span>
+                                <span class="text-secondary small">{{ item.icono ? ('En: ' + item.icono) : '' }}</span>
                               </div>
                             </div>
                           </div>

@@ -1,14 +1,14 @@
-<div class="d-flex" style="height: 100vh; overflow: hidden; background-color: #F8FAFC;">
+<div class="d-flex app-layout-root" style="height: 100vh; overflow: hidden; background-color: #F8FAFC;">
   <!-- Sidebar (Left, Fixed) -->
-  <app-sidebar></app-sidebar>
+  <app-sidebar class="app-layout-sidebar"></app-sidebar>
   
   <!-- Right Side Column -->
-  <div class="d-flex flex-column flex-grow-1 overflow-hidden">
+  <div class="d-flex flex-column flex-grow-1 overflow-hidden app-layout-content-col">
     <!-- Header (Top, Fixed) -->
-    <app-header></app-header>
+    <app-header class="app-layout-header"></app-header>
     
     <!-- Main Content Area (Scrollable) -->
-    <div class="flex-grow-1 overflow-auto position-relative">
+    <div class="flex-grow-1 overflow-auto position-relative app-layout-main-area">
       <router-outlet></router-outlet>
     </div>
   </div>

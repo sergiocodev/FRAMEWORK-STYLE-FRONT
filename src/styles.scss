@@ -347,3 +347,231 @@ body {
 *::after {
   box-sizing: inherit;
 }
+
+/* =========================================================
+   PRINT STYLES FOR PROPUESTA CONCEPTUAL (GLOBAL)
+   ========================================================= */
+@media print {
+  @page {
+    size: portrait;
+    margin: 10mm 12mm;
+  }
+
+  body.modal-propuesta-open {
+    /* 1. Ocultar absolutamente todo el cascarón de la app */
+    .app-layout-sidebar,
+    .app-layout-header,
+    app-sidebar,
+    app-header,
+    app-page-header,
+    app-diseno-header,
+    .diseno-container > .container-fluid,
+    .no-print,
+    .modal-header,
+    .modal-footer,
+    .modal-backdrop {
+      display: none !important;
+      visibility: hidden !important;
+      width: 0 !important;
+      height: 0 !important;
+      overflow: hidden !important;
+      position: absolute !important;
+      left: -9999px !important;
+    }
+
+    /* 2. Resetear el flujo continuo de la página (sin restricción de 100vh) */
+    &,
+    html {
+      width: 100% !important;
+      height: auto !important;
+      min-height: auto !important;
+      overflow: visible !important;
+      background: #ffffff !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+
+    /* 3. Desmantelar containers fijos del layout principal */
+    .app-layout-root,
+    .app-layout-content-col,
+    .app-layout-main-area,
+    .diseno-container {
+      display: block !important;
+      width: 100% !important;
+      height: auto !important;
+      min-height: auto !important;
+      max-height: none !important;
+      overflow: visible !important;
+      background: #ffffff !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      position: static !important;
+    }
+
+    /* 4. Desmantelar el modal para flujo natural en papel */
+    .modal {
+      position: static !important;
+      display: block !important;
+      width: 100% !important;
+      height: auto !important;
+      min-height: auto !important;
+      overflow: visible !important;
+      background: transparent !important;
+      backdrop-filter: none !important;
+      padding: 0 !important;
+      margin: 0 !important;
+      z-index: auto !important;
+    }
+
+    .modal-dialog {
+      position: static !important;
+      display: block !important;
+      max-width: 100% !important;
+      width: 100% !important;
+      height: auto !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      transform: none !important;
+      overflow: visible !important;
+    }
+
+    .modal-content {
+      position: static !important;
+      display: block !important;
+      width: 100% !important;
+      height: auto !important;
+      max-height: none !important;
+      border: none !important;
+      border-radius: 0 !important;
+      box-shadow: none !important;
+      background: transparent !important;
+      overflow: visible !important;
+    }
+
+    .modal-body {
+      position: static !important;
+      display: block !important;
+      width: 100% !important;
+      height: auto !important;
+      max-height: none !important;
+      overflow: visible !important;
+      background: transparent !important;
+      padding: 0 !important;
+      margin: 0 !important;
+    }
+
+    /* 5. El documento es toda la hoja */
+    .propuesta-print-area {
+      position: static !important;
+      display: block !important;
+      width: 100% !important;
+      max-width: 100% !important;
+      height: auto !important;
+      overflow: visible !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      border: none !important;
+      border-radius: 0 !important;
+      box-shadow: none !important;
+      background: #ffffff !important;
+    }
+
+    /* 6. Estructura de secciones independientes (evita sobreposiciones) */
+    .propuesta-section {
+      display: block !important;
+      clear: both !important;
+      width: 100% !important;
+      margin-bottom: 1.75rem !important;
+      overflow: visible !important;
+      position: relative !important;
+
+      &::after {
+        content: "" !important;
+        display: table !important;
+        clear: both !important;
+      }
+    }
+
+    .propuesta-section-prioridades {
+      break-inside: avoid !important;
+      page-break-inside: avoid !important;
+    }
+
+    .propuesta-section h5,
+    .propuesta-section h6,
+    .propuesta-section > .d-flex {
+      break-after: avoid !important;
+      page-break-after: avoid !important;
+    }
+
+    /* 7. Cuadrículas fijas para impresión usando flotación robusta (sin colapsos de flexbox) */
+    .propuesta-print-area .row {
+      display: block !important;
+      margin-left: -6px !important;
+      margin-right: -6px !important;
+      clear: both !important;
+
+      &::before,
+      &::after {
+        content: "" !important;
+        display: table !important;
+        clear: both !important;
+      }
+    }
+
+    .propuesta-print-area .col-6.col-md-3 {
+      display: block !important;
+      float: left !important;
+      width: 25% !important;
+      padding-left: 6px !important;
+      padding-right: 6px !important;
+      box-sizing: border-box !important;
+    }
+
+    .propuesta-print-area .col-12.col-md-4 {
+      display: block !important;
+      float: left !important;
+      width: 33.333333% !important;
+      padding-left: 6px !important;
+      padding-right: 6px !important;
+      box-sizing: border-box !important;
+    }
+
+    .propuesta-print-area .col-12.col-md-6 {
+      display: block !important;
+      float: left !important;
+      width: 50% !important;
+      padding-left: 6px !important;
+      padding-right: 6px !important;
+      box-sizing: border-box !important;
+      margin-bottom: 14px !important;
+      break-inside: avoid !important;
+      page-break-inside: avoid !important;
+    }
+
+    .propuesta-print-area .card {
+      height: auto !important;
+      min-height: auto !important;
+      max-height: none !important;
+      overflow: visible !important;
+      break-inside: avoid !important;
+      page-break-inside: avoid !important;
+    }
+
+    /* 8. Control de saltos de página */
+    .tree-node-card,
+    .tree-root-box,
+    .propuesta-print-area .border-bottom {
+      break-inside: avoid !important;
+      page-break-inside: avoid !important;
+    }
+
+    .propuesta-print-area img {
+      max-width: 100% !important;
+      break-inside: avoid !important;
+      page-break-inside: avoid !important;
+    }
+  }
+}
