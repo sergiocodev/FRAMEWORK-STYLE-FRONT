@@ -1,9 +1,9 @@
-import { Injectable, inject } from '@angular/core';
+﻿import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, Subject } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import {
-  NodoPantalla, NodoConexion, ContenidoItem, Wireframe, DisenoConceptualChecklistItem, WireframeChecklistItem
+  NodoPantalla, NodoConexion, ContenidoItem, Wireframe, DisenoConceptualChecklistItem, WireframeChecklistItem, RestructuringResult
 } from '../../../models/diseno-conceptual.model';
 
 @Injectable({
@@ -84,10 +84,17 @@ export class DisenoConceptualService {
     return this.http.get<Wireframe[]>(`${this.getBaseUrl(projectId)}/wireframes`);
   }
 
-  createWireframe(projectId: number, file: File): Observable<Wireframe> {
+  createWireframe(projectId: number, file: File, nodoId?: number | null): Observable<Wireframe> {
     const formData = new FormData();
     formData.append('file', file);
+    if (nodoId !== undefined && nodoId !== null) {
+      formData.append('nodo_id', nodoId.toString());
+    }
     return this.http.post<Wireframe>(`${this.getBaseUrl(projectId)}/wireframes`, formData);
+  }
+
+  updateWireframe(projectId: number, wireframeId: number, nodoId: number | null): Observable<Wireframe> {
+    return this.http.put<Wireframe>(`${this.getBaseUrl(projectId)}/wireframes/${wireframeId}`, { nodo_id: nodoId });
   }
 
   deleteWireframe(projectId: number, wireframeId: number): Observable<any> {
@@ -131,4 +138,21 @@ export class DisenoConceptualService {
   deleteWireframeChecklistItem(projectId: number, wireframeId: number, itemId: number): Observable<any> {
     return this.http.delete(`${this.getBaseUrl(projectId)}/wireframes/${wireframeId}/checklist/${itemId}`);
   }
+
+  // --- METRICAS ESTETICAS NGO ET AL. 2003 ---
+  evaluateWireframeNgo(projectId: number, wireframeId: number): Observable<any> {
+    return this.http.post<any>(
+      this.getBaseUrl(projectId) + '/wireframes/' + wireframeId + '/evaluar-ngo',
+      {}
+    );
+  }
+
+  // --- REESTRUCTURACION ESTETICA AUTOMATIZADA (Bessghaier et al. 2022) ---
+  restructureWireframe(projectId: number, wireframeId: number): Observable<RestructuringResult> {
+    return this.http.post<RestructuringResult>(
+      this.getBaseUrl(projectId) + '/wireframes/' + wireframeId + '/reestructurar-estetica',
+      {}
+    );
+  }
+
 }

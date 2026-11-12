@@ -1,4 +1,4 @@
-import { Component, Input, inject } from '@angular/core';
+import { Component, Input, Output, EventEmitter, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Phase } from '../../../../../shared/components/stepper/stepper.component';
 import { InvestigationPreviewComponent } from '../../../investigation/components/investigation-preview/investigation-preview.component';
@@ -18,6 +18,7 @@ export class DisenoHeaderComponent {
 
   @Input() project: any;
   @Input() phases: Phase[] = [];
+  @Output() openPropuesta = new EventEmitter<void>();
 
   showPhase1Preview: boolean = false;
   isLoadingPhase1: boolean = false;
