@@ -4,10 +4,11 @@ import { DisenoVisualService } from '../../services/diseno-visual.service';
 import { InvestigationService } from '../../../services/investigation.service';
 import { DisenoVisualColorsComponent } from './components/diseno-visual-colors/diseno-visual-colors.component';
 import { DisenoVisualTypographyComponent } from './components/diseno-visual-typography/diseno-visual-typography.component';
+import { DisenoVisualWcagComponent } from './components/diseno-visual-wcag/diseno-visual-wcag.component';
 import { DisenoVisualIconsComponent } from './components/diseno-visual-icons/diseno-visual-icons.component';
 import { DisenoVisualLayoutComponent } from './components/diseno-visual-layout/diseno-visual-layout.component';
 
-export type SystemTab = 'colors' | 'typography' | 'icons' | 'layout';
+export type SystemTab = 'colors' | 'typography' | 'wcag' | 'icons' | 'layout';
 
 export interface FlowStep {
   id: SystemTab;
@@ -24,6 +25,7 @@ export interface FlowStep {
     CommonModule,
     DisenoVisualColorsComponent,
     DisenoVisualTypographyComponent,
+    DisenoVisualWcagComponent,
     DisenoVisualIconsComponent,
     DisenoVisualLayoutComponent
   ],
@@ -39,60 +41,70 @@ export class DisenoVisualLibraryComponent implements OnInit {
   identidadMarca: any = null;
   activeTab: SystemTab = 'colors';
 
-  // Flujo obligatorio secuencial (4 pasos)
+  // Flujo obligatorio secuencial (5 pasos: 1. Color, 2. Tipografía, 3. Contraste, 4. Iconografía, 5. Espaciado y Layout)
   steps: FlowStep[] = [
-      {
-        id: 'colors',
-        stepNumber: 1,
-        label: 'Colores y Contraste',
-        icon: 'bi-palette-fill',
-        description: 'Paleta, WCAG y MSSBOA'
-      },
-      {
-        id: 'typography',
-        stepNumber: 2,
-        label: 'Tipografía',
-        icon: 'bi-fonts',
-        description: 'Jerarquía y Fuentes'
-      },
-      {
-        id: 'icons',
-        stepNumber: 3,
-        label: 'Iconografía',
-        icon: 'bi-app-indicator',
-        description: 'Librerías y SVG'
-      },
-      {
-        id: 'layout',
-        stepNumber: 4,
-        label: 'Espaciado y Layout',
-        icon: 'bi-distribute-horizontal',
-        description: 'Grilla de 8pt y Formas'
-      }
-    ];
+    {
+      id: 'colors',
+      stepNumber: 1,
+      label: 'Color',
+      icon: 'bi-palette-fill',
+      description: 'Paleta cromática y roles'
+    },
+    {
+      id: 'typography',
+      stepNumber: 2,
+      label: 'Tipografía',
+      icon: 'bi-fonts',
+      description: 'Jerarquía y Fuentes'
+    },
+    {
+      id: 'wcag',
+      stepNumber: 3,
+      label: 'Contraste',
+      icon: 'bi-circle-half',
+      description: 'Matriz WCAG y Accesibilidad'
+    },
+    {
+      id: 'icons',
+      stepNumber: 4,
+      label: 'Iconografía',
+      icon: 'bi-app-indicator',
+      description: 'Librerías y SVG'
+    },
+    {
+      id: 'layout',
+      stepNumber: 5,
+      label: 'Espaciado y Layout',
+      icon: 'bi-distribute-horizontal',
+      description: 'Grilla de 8pt y Formas'
+    }
+  ];
 
-    // Seguimiento de pasos completados manualmente o por datos existentes
-    completedSteps = signal<Record<SystemTab, boolean>>({
-      colors: false,
-      typography: false,
-      icons: false,
-      layout: false
-    });
+  // Seguimiento de pasos completados manualmente o por datos existentes
+  completedSteps = signal<Record<SystemTab, boolean>>({
+    colors: false,
+    typography: false,
+    wcag: false,
+    icons: false,
+    layout: false
+  });
 
-    // Verificaciones reactivas de compleción por datos del servicio
-    isStepCompleted(tab: SystemTab): boolean {
-      if(this.completedSteps()[tab]) return true;
+  // Verificaciones reactivas de compleción por datos del servicio
+  isStepCompleted(tab: SystemTab): boolean {
+    if (this.completedSteps()[tab]) return true;
 
-      // Validación automática según datos existentes
-      switch(tab) {
+    // Validación automática según datos existentes
+    switch (tab) {
       case 'colors':
-      return(this.disenoVisualService.colores() || []).length > 0;
+        return (this.disenoVisualService.colores() || []).length > 0;
       case 'typography':
-      return(this.disenoVisualService.tipografias() || []).length > 0;
+        return (this.disenoVisualService.tipografias() || []).length > 0;
+      case 'wcag':
+        return this.completedSteps()['wcag'] || (this.disenoVisualService.colores() || []).length >= 2;
       case 'icons':
-      return !!this.disenoVisualService.config()?.libreria_iconos;
+        return !!this.disenoVisualService.config()?.libreria_iconos;
       case 'layout':
-      return !!this.disenoVisualService.config()?.escala_espaciado_base;
+        return !!this.disenoVisualService.config()?.escala_espaciado_base;
       default:
         return false;
     }

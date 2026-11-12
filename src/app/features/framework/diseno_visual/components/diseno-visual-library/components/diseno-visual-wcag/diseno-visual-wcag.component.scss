@@ -1,0 +1,43 @@
+.diseno-visual-wcag-orchestrator {
+  width: 100%;
+}
+
+.shadow-2xs {
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.bg-indigo-subtle {
+  background-color: #e0e7ff;
+}
+
+.text-indigo {
+  color: #4338ca;
+}
+
+.method-selector-container {
+  background-color: #f1f5f9;
+}
+
+.method-tab-btn {
+  border: 1px solid transparent;
+  background-color: transparent;
+  color: #64748b;
+  cursor: pointer;
+
+  &:hover {
+    color: #1e293b;
+    background-color: rgba(255, 255, 255, 0.6);
+  }
+
+  &.active {
+    background-color: #ffffff;
+    color: #0d6efd;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    border-color: #e2e8f0;
+
+    .small {
+      color: #0d6efd !important;
+      opacity: 0.85;
+    }
+  }
+}

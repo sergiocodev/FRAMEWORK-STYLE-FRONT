@@ -61,15 +61,65 @@
 
         <!-- Share URL bar (Opción B: Evaluación Pública Desatendida) -->
         <div class="d-flex align-items-center gap-2 flex-wrap">
-          <div class="input-group input-group-sm shadow-xs" style="max-width: 440px;">
-            <span class="input-group-text bg-white border-end-0 text-success fw-semibold" title="Enlace Público Activo">
-              <span class="spinner-grow spinner-grow-sm text-success me-1" style="width: 8px; height: 8px;"
-                role="status"></span>
-              Público
+          <!-- Switch Habilitar / Desactivar Cuestionario -->
+          <div class="form-check form-switch d-flex align-items-center gap-2 m-0 px-2 py-1 bg-white border rounded-3 shadow-xs cursor-pointer"
+            [title]="isSurveyActive ? 'El cuestionario está abierto. Clic para cerrarlo y bloquear nuevos ingresos.' : 'El cuestionario está cerrado. Clic para activarlo y permitir respuestas.'"
+            (click)="toggleSurveyActive()">
+            <input class="form-check-input ms-0 cursor-pointer" type="checkbox" role="switch" id="toggleSurveySwitch"
+              [checked]="isSurveyActive" [disabled]="isTogglingSurvey" (click)="$event.stopPropagation()" (change)="toggleSurveyActive()">
+            <label class="form-check-label small fw-bold cursor-pointer user-select-none mb-0" for="toggleSurveySwitch"
+              [class.text-success]="isSurveyActive" [class.text-danger]="!isSurveyActive">
+              @if (isTogglingSurvey) {
+              <span class="spinner-border spinner-border-sm me-1" role="status"></span>
+              }
+              {{ isSurveyActive ? 'Recepción Abierta' : 'Recepción Cerrada' }}
+            </label>
+          </div>
+
+          <!-- Cupo y Progreso de Respuestas (Clic para Configurar Cupo) -->
+          <button type="button" class="btn btn-sm btn-light border d-flex align-items-center gap-1 px-2 py-1 bg-white rounded-3 shadow-xs cursor-pointer text-decoration-none"
+            (click)="openQuotaModal()"
+            [title]="'Clic para configurar límite de cupos y cierre automático (actual: ' + (assessment?.respuestas_completadas || 0) + '/' + (assessment?.total_respuestas || 30) + ')'">
+            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" class="text-primary">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+            <span class="small fw-semibold text-dark" style="font-size: 0.75rem;">
+              Cupo: {{ assessment?.respuestas_completadas || 0 }}/{{ assessment?.total_respuestas || 30 }}
             </span>
-            <input type="text" class="form-control border-start-0 small bg-light" [value]="publicSurveyUrl" readonly>
+            @if (assessment?.auto_cerrar_cupo !== false && (assessment?.respuestas_completadas || 0) >= (assessment?.total_respuestas || 30) && (assessment?.total_respuestas || 30) > 0) {
+            <span class="badge bg-warning text-dark border ms-1" style="font-size: 0.65rem;">Lleno</span>
+            }
+            <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" class="text-muted ms-1" title="Configurar cupo">
+              <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
+              <path d="m15 5 4 4"/>
+            </svg>
+          </button>
+
+          <!-- Input Group con URL, Copiar, Compartir, Revocar y Abrir -->
+          <div class="input-group input-group-sm shadow-xs" style="max-width: 560px;">
+            <span class="input-group-text bg-white border-end-0 fw-semibold"
+              [class.text-success]="isSurveyActive" [class.text-muted]="!isSurveyActive"
+              [title]="isSharingViaNetworkIp ? 'Enlace configurado con IP de red local para compartir con personas en tu misma WiFi' : (isSurveyActive ? 'Enlace Público Activo' : 'Enlace Pausado / Inactivo')">
+              @if (isSurveyActive) {
+              <span class="spinner-grow spinner-grow-sm text-success me-1" style="width: 8px; height: 8px;" role="status"></span>
+              } @else {
+              <span class="badge bg-secondary-subtle text-muted me-1 p-1" style="font-size: 0.65rem;">⏸</span>
+              }
+              {{ isSharingViaNetworkIp ? 'WiFi Local' : 'Público' }}
+            </span>
+            <input type="text" class="form-control border-start-0 small bg-light" [value]="publicSurveyUrl" readonly
+              [class.opacity-50]="!isSurveyActive"
+              [title]="isSurveyActive ? 'Enlace seguro del cuestionario' : 'La encuesta está cerrada temporalmente'">
+
+            <!-- Botón Copiar -->
             <button class="btn btn-outline-primary d-flex align-items-center gap-1" (click)="copySurveyUrl()"
-              title="Copiar enlace público para compartir por WhatsApp/Email">
+              [disabled]="!isSurveyActive"
+              [title]="isSurveyActive ? 'Copiar enlace al portapapeles' : 'Activa la recepción para habilitar el enlace'">
               <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none"
                 stroke="currentColor" stroke-width="2">
                 <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
@@ -77,8 +127,48 @@
               </svg>
               <span>Copiar</span>
             </button>
-            <button class="btn btn-primary text-white d-flex align-items-center gap-1" (click)="openPublicSurvey()"
-              title="Abrir formulario público en nueva pestaña">
+
+            <!-- Botón Compartir Destacado -->
+            <button class="btn btn-success text-white d-flex align-items-center gap-1"
+              (click)="openShareModal()"
+              [disabled]="!isSurveyActive"
+              [title]="isSurveyActive ? 'Compartir cuestionario por WhatsApp, Correo o QR' : 'Activa la recepción para habilitar el enlace'">
+              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2">
+                <circle cx="18" cy="5" r="3"/>
+                <circle cx="6" cy="12" r="3"/>
+                <circle cx="18" cy="19" r="3"/>
+                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
+                <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+              </svg>
+              <span class="fw-semibold">Compartir</span>
+            </button>
+
+            <!-- Botón Revocar / Nuevo Enlace -->
+            <button class="btn btn-outline-secondary d-flex align-items-center gap-1"
+              (click)="regenerateSurveyLink()"
+              [disabled]="isRegeneratingLink"
+              title="Revocar enlace actual y generar uno nuevo e impredecible (invalida el link anterior)">
+              @if (isRegeneratingLink) {
+              <span class="spinner-border spinner-border-sm" role="status"></span>
+              } @else {
+              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2">
+                <path d="M21 2v6h-6" />
+                <path d="M3 12a9 9 0 0 1 15-6.7L21 8" />
+                <path d="M3 22v-6h6" />
+                <path d="M21 12a9 9 0 0 1-15 6.7L3 16" />
+              </svg>
+              }
+              <span>Revocar/Nuevo</span>
+            </button>
+
+            <!-- Botón Abrir -->
+            <button class="btn d-flex align-items-center gap-1"
+              [class.btn-primary]="isSurveyActive" [class.text-white]="isSurveyActive"
+              [class.btn-light]="!isSurveyActive" [class.text-muted]="!isSurveyActive"
+              (click)="openPublicSurvey()"
+              [title]="isSurveyActive ? 'Abrir formulario en nueva pestaña' : 'Cuestionario cerrado (al abrir mostrará aviso de cerrado)'">
               <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none"
                 stroke="currentColor" stroke-width="2">
                 <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
@@ -547,7 +637,7 @@
             <table class="table table-hover align-middle mb-0">
               <thead class="table-light text-muted small">
                 <tr>
-                  <th scope="col" style="width: 60px;"># ID</th>
+                  <th scope="col" style="width: 60px;">N°</th>
                   <th scope="col">Participante Anónimo</th>
                   <th scope="col">Fecha de Envío</th>
                   <th scope="col" class="text-center">Simplicidad</th>
@@ -561,7 +651,7 @@
               <tbody>
                 @for (encuesta of assessment?.visawi_encuestas; track encuesta.id) {
                 <tr>
-                  <td class="text-muted small fw-bold">#{{ encuesta.id }}</td>
+                  <td class="text-muted small fw-bold">{{ encuesta.id }}</td>
                   <td>
                     <div class="d-flex align-items-center gap-2">
                       <div class="avatar-circle small bg-light text-muted border"
@@ -681,7 +771,8 @@
           </div>
           <div>
             <h3 class="mb-0 fs-5 fw-bold text-dark">Calibrar Metas y Benchmarks VisAWI</h3>
-            <p class="text-muted small mb-0">Define los objetivos esperados (1.0 a 7.0) para ajustar el polígono del radar</p>
+            <p class="text-muted small mb-0">Define los objetivos esperados (1.0 a 7.0) para ajustar el polígono del
+              radar</p>
           </div>
         </div>
         <button class="btn-close" (click)="closeVisawiModal()">&times;</button>
@@ -689,12 +780,14 @@
 
       <div class="modal-body p-3 p-md-4">
         <div class="alert alert-light border d-flex align-items-center gap-2 py-2 px-3 mb-3 text-muted small rounded-3">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+            stroke="#d97706" stroke-width="2">
             <circle cx="12" cy="12" r="10" />
             <line x1="12" y1="16" x2="12" y2="12" />
             <line x1="12" y1="8" x2="12.01" y2="8" />
           </svg>
-          <span>Modifica las metas deseadas (Benchmark Target) para calibrar el polígono de referencia del gráfico Radar.</span>
+          <span>Modifica las metas deseadas (Benchmark Target) para calibrar el polígono de referencia del gráfico
+            Radar.</span>
         </div>
 
         <div class="row g-3">
@@ -704,7 +797,8 @@
               <div>
                 <div class="d-flex align-items-center justify-content-between mb-1">
                   <strong class="text-dark fs-6">{{ m.dimension }}</strong>
-                  <span class="badge rounded-pill" [ngClass]="getMetricLevel(m.puntaje).badgeClass" style="font-size: 0.75rem;">
+                  <span class="badge rounded-pill" [ngClass]="getMetricLevel(m.puntaje).badgeClass"
+                    style="font-size: 0.75rem;">
                     {{ getMetricLevel(m.puntaje).label }}
                   </span>
                 </div>
@@ -736,7 +830,8 @@
                       <span class="rounded-circle d-inline-block bg-warning" style="width: 7px; height: 7px;"></span>
                       Meta Benchmark:
                     </span>
-                    <span class="badge bg-warning-subtle text-warning-emphasis fw-bold">{{ m.target || 6.0 }} / 7.0</span>
+                    <span class="badge bg-warning-subtle text-warning-emphasis fw-bold">{{ m.target || 6.0 }} /
+                      7.0</span>
                   </div>
                   <input type="range" class="form-range slider-target" min="1.0" max="7.0" step="0.1"
                     [(ngModel)]="m.target">
@@ -749,13 +844,16 @@
       </div>
 
       <div class="modal-footer py-3 px-4">
-        <button class="btn btn-outline-secondary px-3" (click)="closeVisawiModal()" [disabled]="isSaving">Cancelar</button>
-        <button class="btn btn-primary d-flex align-items-center gap-2 px-4" (click)="saveVisawiMetrics()" [disabled]="isSaving">
+        <button class="btn btn-outline-secondary px-3" (click)="closeVisawiModal()"
+          [disabled]="isSaving">Cancelar</button>
+        <button class="btn btn-primary d-flex align-items-center gap-2 px-4" (click)="saveVisawiMetrics()"
+          [disabled]="isSaving">
           @if (isSaving) {
           <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
           <span>Guardando...</span>
           } @else {
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2">
             <polyline points="20 6 9 17 4 12" />
           </svg>
           <span class="fw-semibold">Guardar Metas</span>
@@ -1221,4 +1319,224 @@
     <span>{{ toastMessage }}</span>
   </div>
   }
+  <!-- Modal: Configurar Cupo y Cierre Automático de Respuestas -->
+  @if (isQuotaModalOpen) {
+  <div class="modal-backdrop" (click)="closeQuotaModal()">
+    <div class="modal-card" style="max-width: 500px;" (click)="$event.stopPropagation()">
+      <div class="modal-header py-3 px-4 bg-white border-bottom">
+        <div class="d-flex align-items-center gap-3">
+          <div class="card-icon"
+            style="width: 38px; height: 38px; background: rgba(37, 99, 235, 0.12); color: #2563eb; display: flex; align-items: center; justify-content: center; border-radius: 10px;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+          </div>
+          <div>
+            <h3 class="mb-0 fs-5 fw-bold text-dark">Configurar Cupo de Respuestas</h3>
+            <p class="text-muted small mb-0">Define la cantidad objetivo de participantes para el proyecto</p>
+          </div>
+        </div>
+        <button class="btn-close" (click)="closeQuotaModal()">&times;</button>
+      </div>
+
+      <div class="modal-body p-4">
+        <!-- Progreso y Estado de la Muestra -->
+        <div class="p-3 bg-light rounded-3 border mb-3">
+          <div class="d-flex justify-content-between align-items-center mb-1">
+            <span class="small text-muted fw-semibold">Progreso de Respuestas Recibidas:</span>
+            <span class="small fw-bold text-dark">
+              {{ assessment?.respuestas_completadas || 0 }} de {{ tempQuota }}
+            </span>
+          </div>
+          <div class="progress" style="height: 8px; border-radius: 4px;">
+            <div class="progress-bar bg-primary"
+              [style.width.%]="tempQuota > 0 ? mathMin(100, ((assessment?.respuestas_completadas || 0) / tempQuota) * 100) : 0">
+            </div>
+          </div>
+          <div class="d-flex justify-content-between align-items-center mt-2 small text-muted">
+            <span>
+              @if ((tempQuota - (assessment?.respuestas_completadas || 0)) > 0) {
+                Faltan <strong>{{ tempQuota - (assessment?.respuestas_completadas || 0) }}</strong> respuestas para alcanzar la meta.
+              } @else {
+                <span class="text-warning-emphasis fw-bold">¡Meta de participantes completada!</span>
+              }
+            </span>
+          </div>
+        </div>
+
+        <!-- Input de Cupo Límite -->
+        <div class="mb-3">
+          <label class="form-label fw-bold text-dark small mb-1" for="quotaInput">
+            Límite de Participantes (Cupo Máximo)
+          </label>
+          <div class="input-group">
+            <button class="btn btn-outline-secondary" type="button"
+              (click)="adjustQuota(-5)" [disabled]="tempQuota <= 5">-5</button>
+            <button class="btn btn-outline-secondary" type="button"
+              (click)="adjustQuota(-1)" [disabled]="tempQuota <= 1">-1</button>
+            <input type="number" id="quotaInput" class="form-control text-center fw-bold fs-5"
+              min="1" max="1000" [(ngModel)]="tempQuota">
+            <button class="btn btn-outline-secondary" type="button"
+              (click)="adjustQuota(1)" [disabled]="tempQuota >= 1000">+1</button>
+            <button class="btn btn-outline-secondary" type="button"
+              (click)="adjustQuota(5)" [disabled]="tempQuota >= 1000">+5</button>
+          </div>
+
+          <!-- Botones de Acceso Rápido -->
+          <div class="d-flex align-items-center gap-1 mt-2 flex-wrap">
+            <span class="text-muted small me-1">Sugeridos:</span>
+            <button type="button" class="btn btn-sm btn-outline-primary py-0 px-2 rounded-pill small"
+              [class.active]="tempQuota === 10" (click)="tempQuota = 10">10</button>
+            <button type="button" class="btn btn-sm btn-outline-primary py-0 px-2 rounded-pill small"
+              [class.active]="tempQuota === 15" (click)="tempQuota = 15">15</button>
+            <button type="button" class="btn btn-sm btn-outline-primary py-0 px-2 rounded-pill small"
+              [class.active]="tempQuota === 20" (click)="tempQuota = 20">20</button>
+            <button type="button" class="btn btn-sm btn-outline-primary py-0 px-2 rounded-pill small"
+              [class.active]="tempQuota === 30" (click)="tempQuota = 30">30</button>
+            <button type="button" class="btn btn-sm btn-outline-primary py-0 px-2 rounded-pill small"
+              [class.active]="tempQuota === 50" (click)="tempQuota = 50">50</button>
+          </div>
+        </div>
+
+        <!-- Opción de Auto-Cierre -->
+        <div class="form-check form-switch p-3 bg-white border rounded-3 mt-3">
+          <input class="form-check-input ms-0 me-2" type="checkbox" role="switch" id="autoCloseSwitch"
+            [(ngModel)]="tempAutoClose">
+          <label class="form-check-label fw-bold text-dark small cursor-pointer" for="autoCloseSwitch">
+            Cerrar automáticamente la encuesta al alcanzar el cupo
+          </label>
+          <p class="text-muted small mb-0 mt-1" style="font-size: 0.78rem;">
+            Al activarse, cuando se alcance este número de respuestas el cuestionario se pausará automáticamente para que no ingresen participantes no contemplados en la muestra.
+          </p>
+        </div>
+      </div>
+
+      <div class="modal-footer py-3 px-4">
+        <button class="btn btn-outline-secondary px-3" (click)="closeQuotaModal()" [disabled]="isSavingQuota">Cancelar</button>
+        <button class="btn btn-primary d-flex align-items-center gap-2 px-4" (click)="saveQuotaSettings()" [disabled]="isSavingQuota">
+          @if (isSavingQuota) {
+          <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+          <span>Guardando...</span>
+          } @else {
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="20 6 9 17 4 12" />
+          </svg>
+          <span class="fw-semibold">Guardar Configuración</span>
+          }
+        </button>
+      </div>
+    </div>
+  </div>
+  }
+
+  <!-- Modal: Compartir Cuestionario Público VisAWI -->
+  @if (isShareModalOpen) {
+  <div class="modal-backdrop" (click)="closeShareModal()">
+    <div class="modal-card" style="max-width: 560px;" (click)="$event.stopPropagation()">
+      <div class="modal-header py-3 px-4 bg-white border-bottom">
+        <div class="d-flex align-items-center gap-3">
+          <div class="card-icon"
+            style="width: 40px; height: 40px; background: rgba(16, 185, 129, 0.12); color: #10b981; display: flex; align-items: center; justify-content: center; border-radius: 10px;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2">
+              <circle cx="18" cy="5" r="3"/>
+              <circle cx="6" cy="12" r="3"/>
+              <circle cx="18" cy="19" r="3"/>
+              <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
+              <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+            </svg>
+          </div>
+          <div>
+            <h3 class="mb-0 fs-5 fw-bold text-dark">Compartir Cuestionario VisAWI</h3>
+            <p class="text-muted small mb-0">Difunde la encuesta entre tus participantes o usuarios evaluadores</p>
+          </div>
+        </div>
+        <button class="btn-close" (click)="closeShareModal()">&times;</button>
+      </div>
+
+      <div class="modal-body p-4">
+        <!-- Enlace público directo -->
+        <div class="mb-3">
+          <label class="form-label fw-bold text-dark small mb-1">Enlace Seguro de Evaluación</label>
+          <div class="input-group">
+            <input type="text" class="form-control bg-light small" [value]="publicSurveyUrl" readonly>
+            <button class="btn btn-outline-primary d-flex align-items-center gap-1" (click)="copySurveyUrl()">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2">
+                <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
+                <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
+              </svg>
+              <span>Copiar</span>
+            </button>
+          </div>
+          <div class="form-text small text-muted">
+            Los participantes ingresan de forma anónima, visualizan los diseños del proyecto y responden 18 reactivos en 2 minutos.
+          </div>
+        </div>
+
+        <!-- Botones de canales rápidos -->
+        <label class="form-label fw-bold text-dark small mb-2">Canales de Difusión Directa</label>
+        <div class="row g-2 mb-3">
+          <!-- WhatsApp -->
+          <div class="col-12 col-sm-6">
+            <button type="button" class="btn btn-outline-success w-100 py-2 d-flex align-items-center justify-content-center gap-2 rounded-3"
+              (click)="shareViaWhatsApp()">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M13.601 2.326A7.854 7.854 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.933 7.933 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.898 7.898 0 0 0 13.6 2.326zM7.994 14.521a6.573 6.573 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.557 6.557 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592zm3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.016-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.729.729 0 0 0-.529.247c-.182.198-.691.677-.691 1.654 0 .977.71 1.916.81 2.049.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232z"/>
+              </svg>
+              <span class="fw-semibold">Enviar por WhatsApp</span>
+            </button>
+          </div>
+
+          <!-- Correo -->
+          <div class="col-12 col-sm-6">
+            <button type="button" class="btn btn-outline-primary w-100 py-2 d-flex align-items-center justify-content-center gap-2 rounded-3"
+              (click)="shareViaEmail()">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2">
+                <rect width="20" height="16" x="2" y="4" rx="2"/>
+                <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+              </svg>
+              <span class="fw-semibold">Enviar por Correo</span>
+            </button>
+          </div>
+
+          <!-- Copiar Mensaje Completo -->
+          <div class="col-12">
+            <button type="button" class="btn btn-light border w-100 py-2 d-flex align-items-center justify-content-center gap-2 rounded-3"
+              (click)="copyShareInvitation()">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2">
+                <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
+                <rect width="8" height="4" x="8" y="2" rx="1" ry="1"/>
+              </svg>
+              <span class="fw-semibold text-secondary">Copiar Mensaje de Invitación Completo</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Código QR para pruebas presenciales -->
+        <div class="p-3 bg-light rounded-3 border text-center">
+          <div class="fw-semibold text-dark small mb-1">Código QR para Pruebas Presenciales</div>
+          <div class="text-muted small mb-2" style="font-size: 0.78rem;">
+            Ideal para que participantes escaneen con la cámara de su smartphone en sesiones de prueba:
+          </div>
+          <div class="d-inline-block p-2 bg-white rounded-3 border shadow-xs">
+            <img [src]="'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=' + encodeUrl(publicSurveyUrl)"
+              alt="Código QR del Cuestionario" width="150" height="150" class="d-block mx-auto">
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer py-3 px-4">
+        <button class="btn btn-primary px-4" (click)="closeShareModal()">Entendido</button>
+      </div>
+    </div>
+  </div>
+  }
+
 </div>

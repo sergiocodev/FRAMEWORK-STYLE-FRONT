@@ -80,6 +80,12 @@ export interface EvaluacionEsteticaResponse {
   pantallas_fase4?: PantallaFase4Item[];
   calista_metricas?: any;
   visawi_encuestas?: VisawiEncuestaResponse[];
+  server_network_ip?: string;
+  encuesta_activa?: boolean;
+  encuesta_token?: string;
+  auto_cerrar_cupo?: boolean;
+  cupo_alcanzado?: boolean;
+  mensaje_cierre?: string;
 }
 
 export interface HallazgoCreateRequest {
@@ -145,6 +151,14 @@ export interface VisawiPublicSurveyInfo {
   dimensiones: VisawiPublicDimensionInfo[];
   items: VisawiQuestionnaireItem[];
   escala: VisawiPublicLikertOption[];
+  server_network_ip?: string;
+  encuesta_activa?: boolean;
+  encuesta_token?: string;
+  auto_cerrar_cupo?: boolean;
+  total_respuestas?: number;
+  respuestas_completadas?: number;
+  cupo_alcanzado?: boolean;
+  mensaje_cierre?: string;
 }
 
 export interface VisawiPublicSubmissionResponse {

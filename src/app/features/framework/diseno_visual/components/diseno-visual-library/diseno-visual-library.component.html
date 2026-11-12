@@ -40,7 +40,9 @@
 
           <!-- Number/Check Circle Indicator -->
           <span class="step-indicator-circle flex-shrink-0 d-flex align-items-center justify-content-center fw-bold">
-            <span *ngIf="isStepCompleted(step.id) && activeTab !== step.id">✓</span>
+            <svg *ngIf="isStepCompleted(step.id) && activeTab !== step.id" xmlns="http://www.w3.org/2000/svg" width="11" height="11" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425z"/>
+            </svg>
             <span *ngIf="!isStepCompleted(step.id) || activeTab === step.id">{{ step.stepNumber }}</span>
           </span>
 
@@ -72,7 +74,7 @@
     </div>
   </div>
 
-  <!-- Sistema 1: Colores, Accesibilidad WCAG & MSSBOA -->
+  <!-- Sistema 1: Color -->
   <section id="section-colors" *ngIf="activeTab === 'colors'">
     <app-diseno-visual-colors [proyectoId]="proyectoId" [identidadMarca]="identidadMarca">
     </app-diseno-visual-colors>
@@ -84,13 +86,19 @@
     </app-diseno-visual-typography>
   </section>
 
-  <!-- Sistema 3: Iconografía -->
+  <!-- Sistema 3: Contraste & WCAG 2.1 -->
+  <section id="section-wcag" *ngIf="activeTab === 'wcag'">
+    <app-diseno-visual-wcag [proyectoId]="proyectoId">
+    </app-diseno-visual-wcag>
+  </section>
+
+  <!-- Sistema 4: Iconografía -->
   <section id="section-icons" *ngIf="activeTab === 'icons'">
     <app-diseno-visual-icons [proyectoId]="proyectoId">
     </app-diseno-visual-icons>
   </section>
 
-  <!-- Sistema 4: Espaciado, Forma y Grids -->
+  <!-- Sistema 5: Espaciado, Forma y Grids -->
   <section id="section-layout" *ngIf="activeTab === 'layout'">
     <app-diseno-visual-layout [proyectoId]="proyectoId">
     </app-diseno-visual-layout>

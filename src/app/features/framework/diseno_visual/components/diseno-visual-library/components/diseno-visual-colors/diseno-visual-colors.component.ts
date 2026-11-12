@@ -10,8 +10,7 @@ import {
 import {
   contrastRatio,
   hexToHsl,
-  hslToHex,
-  suggestAccessibleColor
+  hslToHex
 } from '../../../../utils/color-utils';
 
 @Component({
@@ -37,12 +36,9 @@ export class DisenoVisualColorsComponent {
   // Modals state
   showColorModal = false;
   showDeleteModal = false;
-  showContrastFixModal = false;
   editingColor: Partial<ColorItem> = {};
   colorToDelete: ColorItem | null = null;
   isNewColor = false;
-  colorToFix: ColorItem | null = null;
-  suggestedHex: string = '';
 
   // MSSBOA Optimizer State
   showMssboaModal = false;
@@ -205,139 +201,6 @@ export class DisenoVisualColorsComponent {
     const color = cols.find((c: ColorItem) => clean(c.uso || '') === target);
     return color ? color.hex_code : fallback;
   }
-
-  // --- Contrast Validation & Modals ---
-  abrirModalContraste(fg: ColorItem, sugerenciaHex: string) {
-    this.colorToFix = fg;
-    this.suggestedHex = sugerenciaHex;
-    this.showContrastFixModal = true;
-  }
-
-  cerrarModalContraste() {
-    this.showContrastFixModal = false;
-    this.colorToFix = null;
-    this.suggestedHex = '';
-  }
-
-  sobreescribirColorContraste() {
-    if (this.colorToFix && this.suggestedHex) {
-      const colorActualizado = { ...this.colorToFix, hex_code: this.suggestedHex };
-      this.disenoVisualService.actualizarColor(colorActualizado).subscribe(() => {
-        this.cerrarModalContraste();
-      });
-    }
-  }
-
-  guardarComoVarianteContraste() {
-    if (this.colorToFix && this.suggestedHex) {
-      const nuevoColor: ColorItem = {
-        proyecto_id: this.proyectoId,
-        nombre: `${this.colorToFix.nombre} (Accesible)`,
-        token_name: `${this.colorToFix.token_name || 'color'}.acc`,
-        hex_code: this.suggestedHex,
-        uso: this.colorToFix.uso,
-        orden: this.colores().length
-      };
-      this.disenoVisualService.agregarColor(nuevoColor).subscribe(() => {
-        this.cerrarModalContraste();
-      });
-    }
-  }
-
-  // Computed WCAG Contrast Matrix
-  matrizContraste = computed(() => {
-    const cols: ColorItem[] = this.colores();
-
-    const bgColors = cols.filter(
-      (c) => c.uso === 'Fondo' || c.uso === 'Superficie' || c.nombre.toLowerCase().includes('fondo')
-    );
-    const fgColorsRaw = cols.filter(
-      (c) =>
-        c.uso.includes('Texto') ||
-        c.uso === 'Principal' ||
-        c.uso === 'Secundario' ||
-        c.uso === 'Acento' ||
-        c.uso === 'Éxito' ||
-        c.uso === 'Advertencia' ||
-        c.uso === 'Error' ||
-        c.uso === 'Información'
-    );
-
-    const fondos =
-      bgColors.length > 0
-        ? bgColors
-        : [
-            {
-              hex_code: '#FFFFFF',
-              nombre: 'Fondo Blanco',
-              uso: 'Fondo',
-              token_name: 'color.bg',
-              proyecto_id: this.proyectoId
-            } as ColorItem
-          ];
-
-    const frentesRaw =
-      fgColorsRaw.length > 0
-        ? fgColorsRaw
-        : cols.filter(
-            (c) =>
-              c.uso !== 'Fondo' &&
-              c.uso !== 'Superficie' &&
-              !c.nombre.toLowerCase().includes('fondo')
-          );
-
-    const frentes = frentesRaw.filter(
-      (v, i, a) => a.findIndex((t) => t.hex_code === v.hex_code) === i
-    );
-
-    if (frentes.length === 0) {
-      frentes.push({
-        hex_code: '#0044CC',
-        nombre: 'Principal',
-        uso: 'Texto principal',
-        token_name: 'color.primary'
-      } as ColorItem);
-    }
-
-    const rows = frentes.map((fg) => {
-      const cells = fondos.map((bg) => {
-        const ratio = contrastRatio(fg.hex_code, bg.hex_code);
-        const aa_normal = ratio >= 4.5;
-        const aaa_normal = ratio >= 7.0;
-        const aa_large = ratio >= 3.0;
-
-        let label = 'Fail';
-        let badgeClass = 'bg-danger text-white border border-danger';
-
-        if (aaa_normal) {
-          label = 'AAA';
-          badgeClass = 'bg-success text-white border border-success';
-        } else if (aa_normal) {
-          label = 'AA';
-          badgeClass = 'bg-success bg-opacity-75 text-white border border-success';
-        } else if (aa_large) {
-          label = 'AA 18pt+';
-          badgeClass = 'bg-warning text-dark border border-warning';
-        }
-
-        let sugerenciaHex = null;
-        if (!aa_normal) {
-          sugerenciaHex = suggestAccessibleColor(fg.hex_code, bg.hex_code, 4.5);
-        }
-
-        return {
-          bg,
-          ratio: ratio.toFixed(2),
-          label,
-          badgeClass,
-          sugerenciaHex
-        };
-      });
-      return { fg, cells };
-    });
-
-    return { headers: fondos, rows };
-  });
 
   // --- MSSBOA Optimizer ---
   abrirModalMSSBOA() {

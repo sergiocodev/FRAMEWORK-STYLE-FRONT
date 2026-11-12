@@ -6,6 +6,23 @@ import {
   TypographyItem,
   DisenoVisualConfig
 } from '../../../../services/diseno-visual.service';
+import { evaluateAPCA, auditProjectTypographyTokens } from '../../../../utils/apca-utils';
+import {
+  calculateOpticalTracking,
+  calculateDynamicLineHeight,
+  calculateFluidTypography,
+  evaluateFontPairing,
+  recommendOptimalPairings,
+  validateSpatialLegibility,
+  calculateGuiTypographyScore,
+  generateHarmonicScale,
+  exportDesignTokens,
+  FONT_MORPHOLOGY_CATALOG,
+  LayoutDensity,
+  TypographicArchetype,
+  FontPairingEvaluation,
+  TypographyHierarchyScore
+} from '../../../../utils/typography-algorithms';
 
 @Component({
   selector: 'app-diseno-visual-typography',
@@ -20,12 +37,112 @@ export class DisenoVisualTypographyComponent {
   private disenoVisualService = inject(DisenoVisualService);
   config = this.disenoVisualService.config;
   tipografias = this.disenoVisualService.tipografias;
+  colores = this.disenoVisualService.colores;
   tipografiasPreview = signal<TypographyItem[] | null>(null);
+  private lastSyncedSignature = '';
+
+  // Sincronización en tiempo real con el Paso 1 (Colores del Proyecto) mediante APCA
+  colorTextoPrincipal = computed(() => {
+    const cols = this.colores() || [];
+    const match =
+      cols.find(c => c.uso.toLowerCase().includes('texto principal')) ||
+      cols.find(c => c.uso.toLowerCase().includes('texto')) ||
+      cols.find(c => c.uso === 'Principal');
+    return match ? { nombre: match.nombre, hex: match.hex_code } : { nombre: 'Texto Base', hex: '#1E293B' };
+  });
+
+  colorFondoPrincipal = computed(() => {
+    const cols = this.colores() || [];
+    const match =
+      cols.find(c => c.uso === 'Fondo' || c.nombre.toLowerCase().includes('fondo')) ||
+      cols.find(c => c.uso === 'Superficie');
+    return match ? { nombre: match.nombre, hex: match.hex_code } : { nombre: 'Fondo Base', hex: '#FFFFFF' };
+  });
+
+  apcaPaletteSync = computed(() => {
+    const lista = this.tipografiasPreview() || this.tipografias() || [];
+    const fg = this.colorTextoPrincipal().hex;
+    const bg = this.colorFondoPrincipal().hex;
+    const evaluation = evaluateAPCA(fg, bg);
+    const audit = auditProjectTypographyTokens(lista, evaluation.absLc);
+    return { evaluation, audit, fg, bg };
+  });
+
+  // Estados de control algorítmico y matemático
+  layoutDensity = signal<LayoutDensity>('normal');
+  baselineGridStep = signal<number>(4);
+  enableFluidClamp = signal<boolean>(true);
+  selectedArchetype = signal<TypographicArchetype>('saas');
+
+  arquetipos: Array<{ id: TypographicArchetype; label: string; desc: string }> = [
+    { id: 'saas', label: 'SaaS / Pro', desc: 'Interfaces corporativas y funcionales' },
+    { id: 'tech', label: 'Tech / Modern', desc: 'Startups, Web3 y productos digitales' },
+    { id: 'dashboard', label: 'Dashboard', desc: 'Alta densidad de información y métricas' },
+    { id: 'editorial', label: 'Editorial', desc: 'Publicaciones, elegancia y autoridad' },
+    { id: 'friendly', label: 'Amigable', desc: 'B2C, apps de consumo y calidez' },
+    { id: 'minimalist', label: 'Minimalista', desc: 'Diseño sobrio, suizo y estructurado' }
+  ];
+
+  setArchetype(arch: TypographicArchetype) {
+    this.selectedArchetype.set(arch);
+  }
 
   // Modals state
   showTypographyModal = false;
   isNewTypography = false;
   editingTypography: Partial<TypographyItem> = {};
+
+  // Modo de visualización dual UI/UX (Tokens vs Muestrario Visual)
+  vistaModo: 'tokens' | 'visual' = 'tokens';
+  modoAvanzado = false;
+  mostrarGridOverlay = false;
+  textoMuestra = 'El veloz murciélago hindú comía feliz cardillo y kiwi.';
+  copiedTokenId: number | string | null = null;
+
+  toggleModoAvanzado() {
+    this.modoAvanzado = !this.modoAvanzado;
+  }
+
+  // Agrupaciones reactivas para la Vista Básica (Fuente Principal y Secundaria)
+  tipografiasPrincipales = computed<TypographyItem[]>(() => {
+    const lista = this.tipografiasPreview() || this.tipografias();
+    return lista.filter(t => t.tipo_fuente === 'Principal');
+  });
+
+  tipografiasSecundarias = computed<TypographyItem[]>(() => {
+    const lista = this.tipografiasPreview() || this.tipografias();
+    return lista.filter(t => t.tipo_fuente === 'Secundaria');
+  });
+
+  estiloTitularPreview = computed<TypographyItem | undefined>(() => {
+    const lista = this.tipografiasPrincipales();
+    return lista.find(t => t.estilo === 'Display') || lista.find(t => t.estilo === 'H1') || lista[0];
+  });
+
+  estiloCuerpoPreview = computed<TypographyItem | undefined>(() => {
+    const lista = this.tipografiasSecundarias();
+    return lista.find(t => t.estilo === 'Body') || lista[0];
+  });
+
+  // Progresión ordenada de menor a mayor para el visualizador gráfico (Equalizer/Stepper)
+  progresionAscendente = computed(() => {
+    const lista = this.tipografiasPreview() || this.tipografias();
+    return [...lista].sort((a, b) => a.tamano_px - b.tamano_px);
+  });
+
+  // Tamaño máximo para calcular las alturas relativas del ecualizador
+  maxTamanoPx = computed(() => {
+    const lista = this.progresionAscendente();
+    if (lista.length === 0) return 64;
+    return Math.max(...lista.map(t => t.tamano_px));
+  });
+
+  getBarHeightPercentage(tamanoPx: number): number {
+    const max = this.maxTamanoPx();
+    if (max <= 0) return 30;
+    const raw = (tamanoPx / max) * 100;
+    return Math.max(16, Math.min(100, Math.round(raw)));
+  }
 
   escalaBase = 16;
   escalaRatio = 1.25;
@@ -48,12 +165,48 @@ export class DisenoVisualTypographyComponent {
   ];
 
   constructor() {
-    // Reactively load Google Fonts when config changes
+    // Carga reactiva de Google Fonts cuando cambia la configuración
     effect(() => {
       const cfg = this.config();
       if (cfg) {
         this.loadGoogleFont(cfg.fuente_principal);
         this.loadGoogleFont(cfg.fuente_secundaria);
+      }
+    });
+
+    // Sincronizar automáticamente escalaBase y escalaRatio desde los tokens guardados del proyecto
+    effect(() => {
+      const lista = this.tipografias();
+      if (lista && lista.length > 0 && !this.tipografiasPreview()) {
+        const sig = lista.map(t => `${t.estilo}:${t.tamano_px}`).join('|');
+        if (sig !== this.lastSyncedSignature) {
+          this.lastSyncedSignature = sig;
+          const bodyItem = lista.find(t => t.estilo.toUpperCase() === 'BODY');
+          if (bodyItem && bodyItem.tamano_px >= 12) {
+            this.escalaBase = bodyItem.tamano_px;
+          }
+
+          const base = this.escalaBase || 16;
+          const h2Item = lista.find(t => t.estilo.toUpperCase() === 'H2');
+          const h1Item = lista.find(t => t.estilo.toUpperCase() === 'H1');
+          let estimatedRatio = 1.25;
+          if (h2Item && h2Item.tamano_px > base) {
+            estimatedRatio = Math.pow(h2Item.tamano_px / base, 1 / 4);
+          } else if (h1Item && h1Item.tamano_px > base) {
+            estimatedRatio = Math.pow(h1Item.tamano_px / base, 1 / 5);
+          }
+
+          let closest = this.ratios[3]; // 1.250 por defecto
+          let minDiff = Infinity;
+          for (const r of this.ratios) {
+            const diff = Math.abs(r.valor - estimatedRatio);
+            if (diff < minDiff) {
+              minDiff = diff;
+              closest = r;
+            }
+          }
+          this.escalaRatio = closest.valor;
+        }
       }
     });
   }
@@ -71,59 +224,58 @@ export class DisenoVisualTypographyComponent {
     }
   }
 
-  advertenciaTipografica = computed(() => {
+  // =========================================================================
+  // MODELO 4: EVALUACIÓN DE EMPAREJAMIENTO TIPOGRÁFICO (NMF / CHOI & HYUN 2024)
+  // =========================================================================
+  pairingEvaluation = computed<FontPairingEvaluation>(() => {
     const cfg = this.config();
-    if (!cfg || !cfg.fuente_principal || !cfg.fuente_secundaria) return null;
+    const principal = cfg?.fuente_principal || 'Inter';
+    const secundaria = cfg?.fuente_secundaria || 'Inter';
+    return evaluateFontPairing(principal, secundaria);
+  });
 
-    const principal = cfg.fuente_principal;
-    const secundaria = cfg.fuente_secundaria;
+  recommendedPairings = computed(() => {
+    const cfg = this.config();
+    const principal = cfg?.fuente_principal || 'Inter';
+    return recommendOptimalPairings(principal, this.selectedArchetype());
+  });
 
-    if (principal === secundaria) return null;
-
-    const categorias: Record<string, string> = {
-      'Playfair Display': 'Serif', 'Merriweather': 'Serif', 'Lora': 'Serif',
-      'Outfit': 'Sans-Serif Geométrica', 'Poppins': 'Sans-Serif Geométrica', 'Montserrat': 'Sans-Serif Geométrica',
-      'Raleway': 'Sans-Serif Geométrica', 'Nunito': 'Sans-Serif Geométrica', 'Quicksand': 'Sans-Serif Geométrica',
-      'Space Grotesk': 'Sans-Serif Geométrica', 'Rubik': 'Sans-Serif Geométrica',
-      'Inter': 'Sans-Serif Neutra', 'Roboto': 'Sans-Serif Neutra', 'Open Sans': 'Sans-Serif Neutra',
-      'Lato': 'Sans-Serif Neutra', 'Work Sans': 'Sans-Serif Neutra', 'Fira Sans': 'Sans-Serif Neutra',
-      'Karla': 'Sans-Serif Neutra', 'Ubuntu': 'Sans-Serif Neutra',
-      'Oswald': 'Display'
-    };
-
-    const cat1 = categorias[principal];
-    const cat2 = categorias[secundaria];
-
-    if (cat1 && cat2 && cat1 === cat2) {
-      if (cat1 === 'Serif') {
-        return 'Ambas son fuentes Serif. Es difícil diferenciarlas visualmente. Usa una Serif para títulos y una Sans-Serif para cuerpo, o usa la misma fuente para todo.';
-      }
-      return `Poco contraste: Mezclar dos fuentes similares (${cat1}) parece un error visual. Para una jerarquía elegante, o usas la misma fuente, o combinas con una categoría distinta.`;
+  advertenciaTipografica = computed<string | null>(() => {
+    const evaluation = this.pairingEvaluation();
+    if (evaluation.verdict === 'Poco Contraste' || evaluation.verdict === 'Disonante') {
+      return evaluation.explanation;
     }
-
     return null;
   });
 
-  previewEscala() {
-    const estilos = [
-      { estilo: 'Display', step: 6, peso: 'Bold (700)', interlineado: 1.1, tipo_fuente: 'Principal' },
-      { estilo: 'H1', step: 5, peso: 'Bold (700)', interlineado: 1.1, tipo_fuente: 'Principal' },
-      { estilo: 'H2', step: 4, peso: 'Bold (700)', interlineado: 1.2, tipo_fuente: 'Principal' },
-      { estilo: 'H3', step: 3, peso: 'Semibold (600)', interlineado: 1.2, tipo_fuente: 'Principal' },
-      { estilo: 'H4', step: 2, peso: 'Semibold (600)', interlineado: 1.3, tipo_fuente: 'Principal' },
-      { estilo: 'H5', step: 1, peso: 'Medium (500)', interlineado: 1.4, tipo_fuente: 'Principal' },
-      { estilo: 'Body', step: 0, peso: 'Regular (400)', interlineado: 1.5, tipo_fuente: 'Secundaria' },
-      { estilo: 'Small', step: -1, peso: 'Regular (400)', interlineado: 1.5, tipo_fuente: 'Secundaria' }
-    ];
+  aplicarParejaRecomendada(fontName: string) {
+    const currentConfig = this.config();
+    if (currentConfig) {
+      currentConfig.fuente_secundaria = fontName;
+      this.actualizarConfiguracion();
+    }
+  }
 
-    const nuevasTipografias: TypographyItem[] = estilos.map((conf, index) => ({
+  // =========================================================================
+  // MODELO 7 & 1 & 2: GENERADOR DE ESCALA ARMÓNICA INTEGRADA (GRID 4PX + TRACKING)
+  // =========================================================================
+  previewEscala() {
+    const scaleItems = generateHarmonicScale(this.escalaBase, this.escalaRatio, {
+      gridStep: this.baselineGridStep(),
+      density: this.layoutDensity(),
+      includeFluid: this.enableFluidClamp()
+    });
+
+    const nuevasTipografias: TypographyItem[] = scaleItems.map(item => ({
       proyecto_id: this.proyectoId,
-      estilo: conf.estilo,
-      tamano_px: Math.round(this.escalaBase * Math.pow(this.escalaRatio, conf.step)),
-      peso: conf.peso,
-      interlineado: conf.interlineado,
-      tipo_fuente: conf.tipo_fuente,
-      orden: index
+      estilo: item.estilo,
+      tamano_px: item.tamano_px,
+      peso: item.peso,
+      interlineado: item.interlineado,
+      tipo_fuente: item.tipo_fuente,
+      orden: item.orden,
+      letter_spacing: item.letter_spacing,
+      line_height_px: item.line_height_px
     }));
 
     this.tipografiasPreview.set(nuevasTipografias);
@@ -142,6 +294,29 @@ export class DisenoVisualTypographyComponent {
     this.tipografiasPreview.set(null);
   }
 
+  // =========================================================================
+  // MODELO 6: SCORE MULTIFACTORIAL DE JERARQUÍA EN GUI (0 - 100)
+  // =========================================================================
+  hierarchyScore = computed<TypographyHierarchyScore>(() => {
+    const lista = this.tipografiasPreview() || this.tipografias();
+    const cfg = this.config();
+    return calculateGuiTypographyScore(
+      lista,
+      cfg?.fuente_principal || 'Inter',
+      cfg?.fuente_secundaria || 'Inter',
+      this.escalaBase
+    );
+  });
+
+  scoreLecturabilidad = computed(() => {
+    const h = this.hierarchyScore();
+    return {
+      score: `Grado ${h.grade} (${h.overallScore}/100)`,
+      color: h.gradeBadge,
+      mensaje: h.diagnostics[0] || 'Jerarquía balanceada para interfaces gráficas modernas.'
+    };
+  });
+
   get estiloH1() {
     return this.getEstiloActivo('H1');
   }
@@ -155,55 +330,37 @@ export class DisenoVisualTypographyComponent {
     return lista?.find((t: any) => t.estilo === nombre);
   }
 
-  scoreLecturabilidad = computed(() => {
-    const h1 = this.estiloH1;
-    const body = this.estiloBody;
-
-    if (!h1 || !body) return null;
-
-    const ratio = h1.tamano_px / body.tamano_px;
-
-    if (ratio < 2.0) {
-      return { score: 'Pobre', color: 'danger', mensaje: 'Jerarquía plana. Faltan puntos focales claros.' };
-    } else if (ratio >= 2.0 && ratio < 2.5) {
-      return { score: 'Bueno', color: 'success', mensaje: 'Jerarquía estándar y equilibrada.' };
-    } else {
-      return {
-        score: 'Excelente',
-        color: 'primary',
-        mensaje: 'Jerarquía agresiva. Tu diseño se verá moderno y espectacular.'
-      };
-    }
-  });
-
-  abrirModalTipografia(tipo?: TypographyItem) {
-    if (tipo) {
-      this.isNewTypography = false;
-      this.editingTypography = { ...tipo };
-    } else {
-      this.isNewTypography = true;
-      this.editingTypography = {
-        proyecto_id: this.proyectoId,
-        estilo: 'Nuevo Estilo',
-        tamano_px: 16,
-        peso: 'Regular (400)',
-        interlineado: 1.5,
-        tipo_fuente: 'Principal',
-        orden: this.tipografias().length
-      };
-    }
-    this.showTypographyModal = true;
+  // =========================================================================
+  // MODELO 1: TRACKING ÓPTICO PARA RENDERIZADO
+  // =========================================================================
+  getTracking(size: number, weight: string): string {
+    return calculateOpticalTracking(size, weight).cssValue;
   }
 
-  cerrarModalTipografia() {
-    this.showTypographyModal = false;
+  // =========================================================================
+  // MODELO 2: RITMO VERTICAL A 4PX
+  // =========================================================================
+  getLineHeightPx(size: number, interlineado?: number): number {
+    if (interlineado) {
+      return Math.round(size * interlineado);
+    }
+    return calculateDynamicLineHeight(size, this.baselineGridStep(), this.layoutDensity()).snappedPx;
   }
 
+  // =========================================================================
+  // MODELO 5: FRECUENCIA ESPACIAL Y LEGIBILIDAD APCA / SOMERS
+  // =========================================================================
   get advertenciaProporciones(): string | null {
     if (!this.editingTypography || !this.editingTypography.tamano_px) return null;
     const size = this.editingTypography.tamano_px;
     const lh = this.editingTypography.interlineado;
-    const weight = this.editingTypography.peso;
+    const weight = this.editingTypography.peso || 'Regular (400)';
+    const estilo = this.editingTypography.estilo || '';
+
+    const apcaValidation = validateSpatialLegibility(size, weight, estilo);
+    if (!apcaValidation.isCompliant && apcaValidation.warnings.length > 0) {
+      return apcaValidation.warnings.join(' ') + (apcaValidation.recommendation ? ` Sugerencia: ${apcaValidation.recommendation}` : '');
+    }
 
     // Regla 1: Titulares grandes necesitan interlineado corto
     if (size > 32 && lh && lh > 1.3) {
@@ -215,20 +372,58 @@ export class DisenoVisualTypographyComponent {
       return `Los textos pequeños para lectura requieren más "aire". Un interlineado de ${lh} dificulta la lectura. Sugerido: 1.5 o mayor.`;
     }
 
-    // Regla 3: Pesos muy ligeros en tamaños pequeños
-    if (size < 16 && weight && (weight.includes('300') || weight.includes('Light'))) {
-      return `Las fuentes delgadas ("Light") en tamaños pequeños (${size}px) son difíciles de leer en pantallas de baja resolución. Sugerimos subir a Regular (400).`;
-    }
-
-    // Regla 4: Pesos muy gruesos en textos muy pequeños
-    if (size < 14 && weight && (weight.includes('800') || weight.includes('ExtraBold'))) {
-      return `El peso "ExtraBold" en textos tan pequeños empastará las letras y reducirá drásticamente la legibilidad.`;
-    }
-
     return null;
   }
 
+  // =========================================================================
+  // EXPORTACIÓN DE TOKENS
+  // =========================================================================
+  tokensExport = computed(() => {
+    const lista = this.tipografiasPreview() || this.tipografias();
+    const cfg = this.config();
+    return exportDesignTokens(lista, cfg?.fuente_principal || 'Inter', cfg?.fuente_secundaria || 'Inter', cfg);
+  });
+
+  abrirModalTipografia(tipo?: TypographyItem) {
+    if (tipo) {
+      this.isNewTypography = false;
+      this.editingTypography = { ...tipo };
+    } else {
+      this.isNewTypography = true;
+      const lhDefault = calculateDynamicLineHeight(16, this.baselineGridStep(), this.layoutDensity());
+      const trackingDefault = calculateOpticalTracking(16, 'Regular (400)');
+      this.editingTypography = {
+        proyecto_id: this.proyectoId,
+        estilo: 'Nuevo Estilo',
+        tamano_px: 16,
+        peso: 'Regular (400)',
+        interlineado: lhDefault.ratio,
+        tipo_fuente: 'Principal',
+        orden: this.tipografias().length,
+        letter_spacing: trackingDefault.trackingEm,
+        line_height_px: lhDefault.snappedPx
+      };
+    }
+    this.showTypographyModal = true;
+  }
+
+  cerrarModalTipografia() {
+    this.showTypographyModal = false;
+  }
+
   guardarTipografia() {
+    // Si no tiene line_height_px o letter_spacing, calcularlos automáticamente
+    if (this.editingTypography.tamano_px) {
+      const size = this.editingTypography.tamano_px;
+      const weight = this.editingTypography.peso || 'Regular (400)';
+      if (!this.editingTypography.letter_spacing) {
+        this.editingTypography.letter_spacing = calculateOpticalTracking(size, weight).trackingEm;
+      }
+      if (!this.editingTypography.line_height_px && this.editingTypography.interlineado) {
+        this.editingTypography.line_height_px = Math.round(size * this.editingTypography.interlineado);
+      }
+    }
+
     if (this.isNewTypography) {
       this.disenoVisualService.agregarTipografia(this.editingTypography as TypographyItem).subscribe(() => {
         this.cerrarModalTipografia();
@@ -252,5 +447,58 @@ export class DisenoVisualTypographyComponent {
       this.disenoVisualService.actualizarConfig(currentConfig).subscribe();
     }
   }
-}
 
+  // =========================================================================
+  // UI/UX HELPERS: PRESETS, CONVERSIÓN DE PESO Y COPIADO DE CSS
+  // =========================================================================
+  setPresetTexto(preset: 'pangram' | 'headline' | 'numbers') {
+    switch (preset) {
+      case 'headline':
+        this.textoMuestra = 'Diseño de Interfaces Modernas y Sistemas Escalables';
+        break;
+      case 'numbers':
+        this.textoMuestra = '0123456789 • +34 912 345 678 • $1,280,450.00 USD';
+        break;
+      case 'pangram':
+      default:
+        this.textoMuestra = 'El veloz murciélago hindú comía feliz cardillo y kiwi.';
+        break;
+    }
+  }
+
+  getFontWeightNumber(peso: string | undefined): number {
+    if (!peso) return 400;
+    if (peso.includes('800')) return 800;
+    if (peso.includes('700')) return 700;
+    if (peso.includes('600')) return 600;
+    if (peso.includes('500')) return 500;
+    if (peso.includes('300')) return 300;
+    return 400;
+  }
+
+  copiarTokenCSS(tipo: TypographyItem) {
+    const fontFamily = tipo.tipo_fuente === 'Principal'
+      ? this.config()?.fuente_principal || 'Inter'
+      : this.config()?.fuente_secundaria || 'Inter';
+    const tracking = this.getTracking(tipo.tamano_px, tipo.peso);
+    const lhPx = this.getLineHeightPx(tipo.tamano_px, tipo.interlineado);
+    const weightNum = this.getFontWeightNumber(tipo.peso);
+    const remValue = (tipo.tamano_px / this.escalaBase).toFixed(3);
+
+    const cssSnippet = `/* Token Tipográfico: ${tipo.estilo} */\nfont-family: '${fontFamily}', sans-serif;\nfont-size: ${tipo.tamano_px}px; /* ${remValue}rem */\nline-height: ${lhPx}px; /* ratio: ${tipo.interlineado} */\nfont-weight: ${weightNum};\nletter-spacing: ${tracking};`;
+
+    if (navigator?.clipboard?.writeText) {
+      navigator.clipboard.writeText(cssSnippet).then(() => {
+        const idKey = tipo.id ?? tipo.estilo;
+        this.copiedTokenId = idKey;
+        setTimeout(() => {
+          if (this.copiedTokenId === idKey) {
+            this.copiedTokenId = null;
+          }
+        }, 2200);
+      }).catch(err => {
+        console.warn('Error al copiar CSS:', err);
+      });
+    }
+  }
+}

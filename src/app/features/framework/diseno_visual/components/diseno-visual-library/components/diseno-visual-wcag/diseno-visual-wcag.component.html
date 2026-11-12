@@ -1,0 +1,134 @@
+<!-- Orquestador Principal: Validación de Contraste y Accesibilidad Visual -->
+<div class="diseno-visual-wcag-orchestrator">
+
+  <!-- Cabecera del Orquestador y Selector de Método de Validación -->
+  <div class="card border-0 shadow-sm rounded-4 p-4 mb-4 bg-white">
+    <div class="d-flex justify-content-between align-items-start mb-3 flex-wrap gap-3">
+      <div>
+        <div class="d-flex align-items-center gap-2 mb-1">
+          <span class="badge bg-primary bg-opacity-10 text-primary border border-primary-subtle px-3 py-1 rounded-pill small fw-bold d-flex align-items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+              <path d="M12 8a4 4 0 1 1-8 0 4 4 0 0 1 8 0z"/>
+            </svg>
+            Motor Dual de Accesibilidad
+          </span>
+          <h4 class="fw-bold mb-0 text-dark">
+            Validación de Contraste y Ergonomía Visual
+          </h4>
+        </div>
+        <p class="text-muted small mb-0">
+          Evalúa la accesibilidad de tu paleta mediante el marco normativo legal vigente (WCAG 2.1)
+          o con el algoritmo perceptual de última generación para diseño digital (APCA / WCAG 3).
+        </p>
+      </div>
+
+      <!-- Botón de Asistencia Metodológica -->
+      <button type="button"
+        class="btn btn-sm d-flex align-items-center gap-2 px-3 py-2 rounded-pill shadow-2xs transition-all"
+        [ngClass]="mostrarGuiaMetodologica() ? 'btn-primary' : 'btn-outline-secondary bg-white'"
+        (click)="toggleGuiaMetodologica()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+          <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+          <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+        </svg>
+        <span>{{ mostrarGuiaMetodologica() ? 'Ocultar Guía Metodológica' : '¿Qué método debo usar?' }}</span>
+      </button>
+    </div>
+
+    <!-- Guía Metodológica Desplegable -->
+    <div class="row g-3 mb-3 p-3 bg-light rounded-3 border" *ngIf="mostrarGuiaMetodologica()">
+      <div class="col-12 col-md-6">
+        <div class="p-3 bg-white rounded-3 border h-100 shadow-2xs">
+          <div class="d-flex align-items-center gap-2 mb-2">
+            <div class="p-2 rounded-2 bg-primary bg-opacity-10 text-primary">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M9.669.864 8 0 6.331.864l-1.858.282-.842 1.68-1.337 1.32L2.6 6l-.306 1.854 1.337 1.32.842 1.68 1.858.282L8 12l1.669-.864 1.858-.282.842-1.68 1.337-1.32L13.4 6l.306-1.854-1.337-1.32-.842-1.68L9.669.864z"/>
+              </svg>
+            </div>
+            <div>
+              <h6 class="fw-bold mb-0 text-dark">Método WCAG 2.1 (Legal & Auditoría)</h6>
+              <span class="text-muted small">Estándar regulatorio obligatorio</span>
+            </div>
+          </div>
+          <p class="small text-muted mb-2">
+            Utiliza una fórmula matemática pura de luminancia relativa con ratios fijos (4.5:1 para texto normal, 3.0:1 para texto grande).
+          </p>
+          <ul class="small text-muted ps-3 mb-0">
+            <li><strong>Obligatorio para:</strong> Auditorías de accesibilidad, cumplimiento legal (ADA, Section 508, EN 301 549) y certificaciones gubernamentales.</li>
+            <li><strong>Limitación:</strong> No toma en cuenta el modo oscuro ni la frecuencia espacial de la fuente.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="col-12 col-md-6">
+        <div class="p-3 bg-white rounded-3 border h-100 shadow-2xs">
+          <div class="d-flex align-items-center gap-2 mb-2">
+            <div class="p-2 rounded-2 bg-indigo-subtle text-indigo">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z"/>
+                <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z"/>
+              </svg>
+            </div>
+            <div>
+              <h6 class="fw-bold mb-0 text-dark">Método APCA (WCAG 3 - Percepción Humana)</h6>
+              <span class="text-muted small">Algoritmo moderno para diseñadores UI</span>
+            </div>
+          </div>
+          <p class="small text-muted mb-2">
+            Diseñado para pantallas autoiluminadas. Modela la adaptación visual, la polaridad claro/oscuro y prescribe tamaños mínimos de fuente exactos.
+          </p>
+          <ul class="small text-muted ps-3 mb-0">
+            <li><strong>Recomendado para:</strong> Decisiones de diseño UI/UX reales, ergonomía visual en modo oscuro y selección de tipografía (px y peso).</li>
+            <li><strong>Ventaja:</strong> Evita falsos positivos y falsos rechazos en interfaces digitales modernas.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Selector de Métodos (Segmented Control Tabs) -->
+    <div class="method-selector-container p-1 rounded-pill bg-light border d-inline-flex flex-wrap gap-1">
+      <!-- Opción 1: WCAG 2.1 -->
+      <button type="button"
+        class="method-tab-btn d-flex align-items-center gap-2 px-4 py-2 rounded-pill transition-all"
+        [class.active]="metodoActivo() === 'wcag21'"
+        (click)="setMetodo('wcag21')">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+          <path d="M10.854 7.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7.5 9.793l2.646-2.647a.5.5 0 0 1 .708 0z"/>
+          <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
+          <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/>
+        </svg>
+        <div class="text-start">
+          <div class="fw-bold" style="font-size: 0.85rem;">WCAG 2.1 Clásico</div>
+          <div class="small text-muted" style="font-size: 0.65rem;">Normativo (AA / AAA)</div>
+        </div>
+      </button>
+
+      <!-- Opción 2: APCA / WCAG 3 -->
+      <button type="button"
+        class="method-tab-btn d-flex align-items-center gap-2 px-4 py-2 rounded-pill transition-all"
+        [class.active]="metodoActivo() === 'apca'"
+        (click)="setMetodo('apca')">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+          <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+          <path d="M7 11.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm-1-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5z"/>
+        </svg>
+        <div class="text-start">
+          <div class="fw-bold" style="font-size: 0.85rem;">APCA / WCAG 3 Moderno</div>
+          <div class="small text-muted" style="font-size: 0.65rem;">Perceptual (Lc & Tipografía)</div>
+        </div>
+      </button>
+    </div>
+  </div>
+
+  <!-- Vista Condicional: Método Hijo 1 (WCAG 2.1 Estándar) -->
+  <section id="section-method-wcag21" *ngIf="metodoActivo() === 'wcag21'">
+    <app-wcag-standard [proyectoId]="proyectoId"></app-wcag-standard>
+  </section>
+
+  <!-- Vista Condicional: Método Hijo 2 (APCA WCAG 3 Perceptual) -->
+  <section id="section-method-apca" *ngIf="metodoActivo() === 'apca'">
+    <app-wcag-apca [proyectoId]="proyectoId"></app-wcag-apca>
+  </section>
+
+</div>

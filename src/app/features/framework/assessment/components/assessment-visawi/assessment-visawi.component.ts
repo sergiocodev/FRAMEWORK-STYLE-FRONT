@@ -60,6 +60,17 @@ export class AssessmentVisawiComponent implements OnInit {
   // Toast message
   toastMessage: string | null = null;
   private toastTimeout: any;
+  isTogglingSurvey: boolean = false;
+  isRegeneratingLink: boolean = false;
+
+  // Modal de Configuración de Cupo Límite
+  isQuotaModalOpen: boolean = false;
+  tempQuota: number = 30;
+  tempAutoClose: boolean = true;
+  isSavingQuota: boolean = false;
+
+  // Modal de Compartir Cuestionario
+  isShareModalOpen: boolean = false;
 
   // VisAWI Modal de Ajuste y Métricas
   isVisawiModalOpen: boolean = false;
@@ -527,12 +538,24 @@ export class AssessmentVisawiComponent implements OnInit {
   }
 
   get publicSurveyUrl(): string {
+    const token = (this.assessment as any)?.encuesta_token || this.projectId;
     if (typeof window !== 'undefined') {
-      return `${window.location.origin}/survey/visawi/${this.projectId}`;
+      const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+      const ip = (this.assessment as any)?.server_network_ip;
+      if (isLocalhost && ip && ip !== '127.0.0.1') {
+        const port = window.location.port ? `:${window.location.port}` : '';
+        return `${window.location.protocol}//${ip}${port}/survey/visawi/${token}`;
+      }
+      return `${window.location.origin}/survey/visawi/${token}`;
     }
-    return `http://localhost:4200/survey/visawi/${this.projectId}`;
+    return `http://localhost:4200/survey/visawi/${token}`;
   }
 
+  get isSharingViaNetworkIp(): boolean {
+    if (typeof window === 'undefined') return false;
+    const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+    return isLocalhost && !!(this.assessment as any)?.server_network_ip && (this.assessment as any)?.server_network_ip !== '127.0.0.1';
+  }
   copySurveyUrl(): void {
     const url = this.publicSurveyUrl;
     if (navigator.clipboard) {
@@ -544,6 +567,136 @@ export class AssessmentVisawiComponent implements OnInit {
     } else {
       this.showToast('Enlace listo para compartir');
     }
+  }
+
+  get isSurveyActive(): boolean {
+    return (this.assessment as any)?.encuesta_activa !== false;
+  }
+
+  openShareModal(): void {
+    if (!this.isSurveyActive) {
+      this.showToast('Activa la recepción de la encuesta para poder compartirla');
+      return;
+    }
+    this.isShareModalOpen = true;
+  }
+
+  closeShareModal(): void {
+    this.isShareModalOpen = false;
+  }
+
+  shareViaWhatsApp(): void {
+    const title = this.project?.title || 'STYLE Framework';
+    const text = encodeURIComponent(
+      `¡Hola! Te invito a evaluar la percepción estética visual de la interfaz del proyecto *${title}* (Instrumento psicométrico VisAWI).\n\nEs 100% anónimo y toma solo 2 minutos:\n${this.publicSurveyUrl}`
+    );
+    window.open(`https://api.whatsapp.com/send?text=${text}`, '_blank');
+  }
+
+  shareViaEmail(): void {
+    const title = this.project?.title || 'STYLE Framework';
+    const subject = encodeURIComponent(`Evaluación Estética Visual de Interfaz - ${title}`);
+    const body = encodeURIComponent(
+      `Hola,\n\nTe invito a participar en la evaluación estética visual de las pantallas de nuestro proyecto "${title}" mediante el instrumento psicométrico oficial VisAWI.\n\nEs 100% anónimo y requiere aproximadamente 2 minutos:\n${this.publicSurveyUrl}\n\n¡Muchas gracias por tu colaboración!`
+    );
+    window.open(`mailto:?subject=${subject}&body=${body}`, '_blank');
+  }
+
+  copyShareInvitation(): void {
+    const title = this.project?.title || 'STYLE Framework';
+    const msg = `¡Hola! Te invito a participar en la evaluación estética visual de la interfaz del proyecto "${title}". Es 100% anónimo y toma solo 2 minutos:\n${this.publicSurveyUrl}`;
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(msg).then(() => {
+        this.showToast('¡Mensaje de invitación copiado al portapapeles!');
+      });
+    } else {
+      this.copySurveyUrl();
+    }
+  }
+
+  encodeUrl(url: string): string {
+    return encodeURIComponent(url || '');
+  }
+
+  openQuotaModal(): void {
+    this.tempQuota = this.assessment?.total_respuestas || 30;
+    this.tempAutoClose = (this.assessment as any)?.auto_cerrar_cupo !== false;
+    this.isQuotaModalOpen = true;
+  }
+
+  closeQuotaModal(): void {
+    this.isQuotaModalOpen = false;
+  }
+
+  adjustQuota(delta: number): void {
+    const val = (this.tempQuota || 0) + delta;
+    this.tempQuota = Math.max(1, Math.min(1000, val));
+  }
+
+  mathMin(a: number, b: number): number {
+    return Math.min(a, b);
+  }
+
+  saveQuotaSettings(): void {
+    if (!this.assessment) return;
+    const finalQuota = Math.max(1, Math.floor(Number(this.tempQuota) || 30));
+    this.tempQuota = finalQuota;
+
+    this.isSavingQuota = true;
+    this.assessmentService.updateAssessment(this.projectId, {
+      total_respuestas: finalQuota,
+      auto_cerrar_cupo: this.tempAutoClose
+    } as any).subscribe({
+      next: (res: EvaluacionEsteticaResponse) => {
+        this.assessment = res;
+        this.isSavingQuota = false;
+        this.closeQuotaModal();
+        this.showToast(`Cupo límite configurado a ${finalQuota} participantes`);
+      },
+      error: (err: any) => {
+        console.error('Error al actualizar configuración de cupo:', err);
+        this.isSavingQuota = false;
+        alert('Hubo un error al guardar la configuración del cupo.');
+      }
+    });
+  }
+
+  regenerateSurveyLink(): void {
+    if (this.isRegeneratingLink) return;
+    const confirmed = confirm('¿Estás seguro de generar un nuevo enlace? El enlace actual quedará revocado e invalidado inmediatamente, y nadie podrá volver a usarlo.');
+    if (!confirmed) return;
+
+    this.isRegeneratingLink = true;
+    this.assessmentService.regenerateSurveyToken(this.projectId).subscribe({
+      next: (updatedAssessment) => {
+        this.assessment = updatedAssessment;
+        this.isRegeneratingLink = false;
+        this.showToast('¡Nuevo enlace seguro generado! El enlace anterior ha sido revocado.');
+      },
+      error: (err) => {
+        console.error('Error al regenerar enlace:', err);
+        this.isRegeneratingLink = false;
+        this.showToast('No se pudo regenerar el enlace');
+      }
+    });
+  }
+
+  toggleSurveyActive(): void {
+    if (this.isTogglingSurvey) return;
+    this.isTogglingSurvey = true;
+    this.assessmentService.togglePublicSurvey(this.projectId).subscribe({
+      next: (updatedAssessment) => {
+        this.assessment = updatedAssessment;
+        this.isTogglingSurvey = false;
+        const statusText = (updatedAssessment as any).encuesta_activa !== false ? 'habilitada y recibiendo respuestas' : 'pausada / cerrada';
+        this.showToast(`Encuesta pública ${statusText}`);
+      },
+      error: (err) => {
+        console.error('Error al cambiar estado de la encuesta pública:', err);
+        this.isTogglingSurvey = false;
+        this.showToast('No se pudo cambiar el estado de la encuesta');
+      }
+    });
   }
 
   openPublicSurvey(): void {

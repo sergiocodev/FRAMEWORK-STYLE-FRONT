@@ -46,6 +46,8 @@ export interface TypographyItem {
   interlineado: number;
   tipo_fuente?: string;
   orden?: number;
+  letter_spacing?: number;
+  line_height_px?: number;
 }
 
 export interface DisenoVisualCompleto {
