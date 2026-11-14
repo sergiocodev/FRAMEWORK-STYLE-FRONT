@@ -6,7 +6,10 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './modal.component.html',
-  styleUrls: ['./modal.component.scss']
+  styleUrls: ['./modal.component.scss'],
+  host: {
+    '[attr.title]': 'null'
+  }
 })
 export class ModalComponent {
   /** Indicates if the modal is currently open */

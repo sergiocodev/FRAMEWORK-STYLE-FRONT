@@ -26,20 +26,8 @@ describe('DisenoVisualWcagComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('debe tener el método WCAG 2.1 activo por defecto', () => {
-    expect(component.metodoActivo()).toBe('wcag21');
-  });
-
-  it('debe permitir cambiar al método APCA', () => {
-    component.setMetodo('apca');
-    expect(component.metodoActivo()).toBe('apca');
-  });
-
-  it('debe alternar la guía metodológica', () => {
-    expect(component.mostrarGuiaMetodologica()).toBeFalse();
-    component.toggleGuiaMetodologica();
-    expect(component.mostrarGuiaMetodologica()).toBeTrue();
-    component.toggleGuiaMetodologica();
-    expect(component.mostrarGuiaMetodologica()).toBeFalse();
+  it('debe renderizar el módulo estándar WCAG 2.1', () => {
+    const standardEl = fixture.nativeElement.querySelector('app-wcag-standard');
+    expect(standardEl).toBeTruthy();
   });
 });

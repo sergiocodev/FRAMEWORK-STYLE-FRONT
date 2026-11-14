@@ -74,6 +74,21 @@ describe('Typography Mathematical Models & Algorithms', () => {
       expect(compact.snappedPx).toBeLessThanOrEqual(normal.snappedPx);
       expect(comfortable.snappedPx).toBeGreaterThanOrEqual(normal.snappedPx);
     });
+
+    it('debe soportar gridStep=0 (Ratio Libre Editorial) sin NaN ni redondeo forzado a 4px', () => {
+      const editorial18 = calculateDynamicLineHeight(18, 0, 'comfortable');
+      expect(Number.isNaN(editorial18.ratio)).toBeFalse();
+      expect(Number.isNaN(editorial18.snappedPx)).toBeFalse();
+      expect(editorial18.gridStep).toBe(0);
+      expect(editorial18.cssLineHeight).toBe(`${editorial18.ratio}`);
+      expect(editorial18.cssLineHeight).not.toContain('px');
+    });
+
+    it('debe exportar cssLineHeight adimensional cuando includeFluid=true (sin px fijos)', () => {
+      const fluidLh = calculateDynamicLineHeight(16, 4, 'normal', { includeFluid: true });
+      expect(fluidLh.cssLineHeight).not.toContain('px');
+      expect(fluidLh.cssLineHeight).toBe(`${fluidLh.ratio}`);
+    });
   });
 
   describe('3. Model: Responsive Fluid Typography (CSS clamp)', () => {
@@ -117,14 +132,20 @@ describe('Typography Mathematical Models & Algorithms', () => {
       expect(evalEditorial.harmonyScore).toBeGreaterThanOrEqual(80);
     });
 
-    it('debe generar recomendaciones óptimas de fuentes secundarias', () => {
+    it('debe generar recomendaciones óptimas diferenciadas sin saturar todas al 100%', () => {
       const recommendations = recommendOptimalPairings('Space Grotesk', 'tech');
-      expect(recommendations.length).toBeGreaterThan(0);
+      expect(recommendations.length).toBe(4);
       expect(recommendations[0].compatibilityScore).toBeGreaterThanOrEqual(75);
+      expect(recommendations[0].compatibilityScore).toBeLessThan(100);
+
+      const poppinsSaas = recommendOptimalPairings('Poppins', 'saas');
+      const uniqueScores = new Set(poppinsSaas.map(r => r.compatibilityScore));
+      expect(uniqueScores.size).toBeGreaterThan(1);
+      expect(poppinsSaas[0].compatibilityScore).toBeGreaterThanOrEqual(poppinsSaas[3].compatibilityScore);
     });
   });
 
-  describe('5. Model: Spatial Frequency Legibility (APCA / Somers)', () => {
+  describe('5. Model: Spatial Frequency Legibility', () => {
     it('debe emitir advertencia si se usa peso Light (300) en tamaños pequeños (<16px)', () => {
       const evalLightSmall = validateSpatialLegibility(12, 'Light (300)');
       expect(evalLightSmall.isCompliant).toBeFalse();
@@ -167,6 +188,18 @@ describe('Typography Mathematical Models & Algorithms', () => {
         expect(scale[i].tamano_px).toBeGreaterThanOrEqual(scale[i + 1].tamano_px);
       }
     });
+
+    it('en lectura editorial continua debe priorizar el ratio ideal sobre el redondeo estricto a 4px', () => {
+      const scaleEditorial = generateHarmonicScale(18, 1.25, {
+        gridStep: 4,
+        density: 'comfortable',
+        includeFluid: true,
+        archetype: 'editorial'
+      });
+      const body = scaleEditorial.find(i => i.estilo === 'Body')!;
+      expect(body.interlineado).toBeGreaterThanOrEqual(1.5);
+      expect(body.lineHeightCss).not.toContain('px');
+    });
   });
 
   describe('7. Model: Multi-factor GUI Typographic Hierarchy Index', () => {
@@ -179,6 +212,31 @@ describe('Typography Mathematical Models & Algorithms', () => {
       expect(score.metrics.baselineRhythmScore).toBe(100);
       expect(score.metrics.scaleProgressionScore).toBeGreaterThan(80);
       expect(score.diagnostics.length).toBeGreaterThan(0);
+    });
+
+    it('no debe penalizar estilos de lectura editorial continua cuyo ratio no es múltiplo de 4px', () => {
+      const scale = generateHarmonicScale(18, 1.25, {
+        gridStep: 4,
+        density: 'comfortable',
+        includeFluid: true,
+        archetype: 'editorial'
+      });
+      const body = scale.find(i => i.estilo === 'Body')!;
+      // Forzar un caso no múltiplo de 4px pero ratio óptimo (18px * 1.61 = 29px)
+      body.interlineado = 1.61;
+      body.line_height_px = 29;
+
+      const scoreEditorial = calculateGuiTypographyScore(scale, 'Playfair Display', 'Inter', 18, {
+        gridStep: 4,
+        archetype: 'editorial',
+        includeFluid: true
+      });
+      expect(scoreEditorial.metrics.baselineRhythmScore).toBe(100);
+
+      const scoreFreeRatio = calculateGuiTypographyScore(scale, 'Playfair Display', 'Inter', 18, {
+        gridStep: 0
+      });
+      expect(scoreFreeRatio.metrics.baselineRhythmScore).toBe(100);
     });
   });
 
@@ -198,6 +256,35 @@ describe('Typography Mathematical Models & Algorithms', () => {
       const parsedJson = JSON.parse(tokens.w3cTokensJson);
       expect(parsedJson.typography).toBeDefined();
       expect(parsedJson.typography.h1.fontSize.$value).toBeDefined();
+    });
+
+    it('nunca debe exportar line-height en px fijos cuando usa clamp() fluido', () => {
+      const scale = generateHarmonicScale(16, 1.25, { includeFluid: true });
+      const tokens = exportDesignTokens(scale, 'Outfit', 'Inter', { includeFluid: true });
+
+      expect(tokens.cssVariables).toContain('clamp(');
+      expect(tokens.cssVariables).not.toMatch(/--text-[a-z0-9-]+-line-height:\s*\d+px;/);
+
+      const twBody = tokens.tailwindConfig['theme']['extend']['fontSize']['body'];
+      expect(String(twBody[0])).toContain('clamp(');
+      expect(String(twBody[1].lineHeight)).not.toContain('px');
+
+      const parsedJson = JSON.parse(tokens.w3cTokensJson);
+      expect(parsedJson.typography.body.fontSize.$value).toContain('clamp(');
+      expect(parsedJson.typography.body.lineHeight.$type).toBe('number');
+      expect(typeof parsedJson.typography.body.lineHeight.$value).toBe('number');
+    });
+
+    it('debe exportar line-height en px alineado a rejilla cuando clamp() está desactivado y gridStep > 0', () => {
+      const scale = generateHarmonicScale(16, 1.25, { includeFluid: false, gridStep: 4 });
+      const tokens = exportDesignTokens(scale, 'Outfit', 'Inter', { includeFluid: false, gridStep: 4 });
+
+      expect(tokens.cssVariables).not.toContain('clamp(');
+      expect(tokens.cssVariables).toMatch(/--text-body-line-height:\s*\d+px;/);
+
+      const parsedJson = JSON.parse(tokens.w3cTokensJson);
+      expect(parsedJson.typography.body.lineHeight.$type).toBe('dimension');
+      expect(String(parsedJson.typography.body.lineHeight.$value)).toMatch(/^\d+px$/);
     });
   });
 

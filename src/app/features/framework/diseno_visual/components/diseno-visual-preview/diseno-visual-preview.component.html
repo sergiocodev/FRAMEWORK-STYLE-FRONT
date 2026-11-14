@@ -1,174 +1,1493 @@
-<div class="d-flex justify-content-between align-items-center mb-3">
-  <div class="fw-bold fs-5 d-flex align-items-center gap-2">
-    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16" [style.color]="getColor('Principal', '#2563eb')">
-      <path d="M8 2a6 6 0 1 0 0 12A6 6 0 0 0 8 2M2.38 7h3.337a2.6 2.6 0 0 1 0 2H2.38A4.98 4.98 0 0 1 2 8c0-.348.036-.684.103-1.002zM3.447 5h2.518c.28-.716.666-1.353 1.127-1.879A4.97 4.97 0 0 0 3.447 5zm2.518 6H3.447a4.97 4.97 0 0 0 3.645 1.879c-.461-.526-.846-1.163-1.127-1.879zm1.758-6h1.277c-.244-.755-.584-1.428-.985-1.954C7.545 3.518 7.218 4.19 7 4.92zm1.277 6H7c.218.73.545 1.403.985 1.954.401-.526.741-1.199.985-1.954zm.643-4h-2.92a1.6 1.6 0 0 0 0 2h2.92a1.6 1.6 0 0 0 0-2zm1.399-2a4.97 4.97 0 0 0-3.645-1.879c.461.526.846 1.163 1.127 1.879zM12.553 11h-2.518c-.28.716-.666 1.353-1.127 1.879A4.97 4.97 0 0 0 12.553 11zm1.067-2h-3.337a2.6 2.6 0 0 1 0-2h3.337C13.964 7.316 14 7.652 14 8c0 .348-.036.684-.103 1.002z" />
-    </svg>
-    BrandBook Showcase
-  </div>
-</div>
-
 <div class="preview-container" [ngStyle]="previewStyles">
-  <!-- Ambiente -->
+  <!-- Ambiente Glass / Glow Dinámico -->
   <div class="ambient-glow"></div>
 
   <div class="preview-content">
-    <!-- Navbar -->
+    <!-- Navbar Superior -->
     <nav class="preview-navbar">
       <div class="navbar-brand">
-        <div class="rounded-circle d-flex align-items-center justify-content-center text-white" 
-             style="width: 32px; height: 32px;" 
-             [style.background-color]="getColor('Principal', '#2563eb')">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+        <div class="rounded-circle d-flex align-items-center justify-content-center text-white brand-icon-circle"
+          [style.background-color]="getColor('Principal', '#2563eb')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+          </svg>
         </div>
-        BrandBook.
+        <div class="d-flex flex-column">
+          <div class="d-flex align-items-center gap-2">
+            <span class="brand-title">BrandBook Studio</span>
+            <span class="version-tag">Tokens v2.0</span>
+          </div>
+          <span class="brand-subtitle">Design System Architecture</span>
+        </div>
       </div>
-      <div class="d-flex gap-2">
-        <button class="btn-outline-premium btn-premium rounded-pill px-3 py-1" style="font-size: 0.8rem;">Modo UI</button>
+
+      <!-- Action Tools (Export & View Switcher) -->
+      <div class="d-flex align-items-center gap-2">
+        <button type="button" class="btn-action-tool" (click)="openExportModal()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="16 18 22 12 16 6"></polyline>
+            <polyline points="8 6 2 12 8 18"></polyline>
+          </svg>
+          <span>Exportar Tokens</span>
+        </button>
+
+        <div class="view-mode-toggle">
+          <button type="button" class="toggle-btn" [class.active]="currentView === 'tokens'"
+            (click)="setView('tokens')">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="3" width="7" height="7"></rect>
+              <rect x="14" y="3" width="7" height="7"></rect>
+              <rect x="14" y="14" width="7" height="7"></rect>
+              <rect x="3" y="14" width="7" height="7"></rect>
+            </svg>
+            Tokens Bento
+          </button>
+          <button type="button" class="toggle-btn" [class.active]="currentView === 'ui'" (click)="setView('ui')">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+              <line x1="8" y1="21" x2="16" y2="21"></line>
+              <line x1="12" y1="17" x2="12" y2="21"></line>
+            </svg>
+            Modo UI Real
+          </button>
+        </div>
       </div>
     </nav>
 
-    <!-- Hero -->
-    <header class="hero-section">
-      <div class="badge px-3 py-1 mb-3 fw-medium" [style.background-color]="getColor('Principal', '#2563eb') + '1A'" [style.color]="getColor('Principal', '#2563eb')" [style.border-radius.px]="halfRadius * 2">Sistema de Diseño Generado</div>
-      <h1 [style.font-family]="fuentes.principal">Tu identidad, codificada.</h1>
-      <p [style.font-family]="fuentes.secundaria">Visualiza cómo tus tokens de diseño toman vida en una interfaz real y armónica. Explora la tipografía, el color y el espacio.</p>
-    </header>
+    <!-- VIEW 1: TOKENS BENTO GRID -->
+    <div class="bento-grid" *ngIf="currentView === 'tokens'">
 
-    <!-- Bento Grid -->
-    <div class="bento-grid">
-      
-      <!-- Colores -->
-      <div class="bento-item bento-colors">
-        <div class="bento-title">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg>
-          Paleta de Colores
+      <!-- 1. Paleta de Colores -->
+      <div class="bento-item bento-colors" (mousemove)="onCardMouseMove($event)">
+        <div class="bento-title-row">
+          <div class="bento-title">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10" />
+              <circle cx="12" cy="12" r="4" />
+            </svg>
+            Paleta de Colores & Rampas Cromáticas (50–900)
+          </div>
+          <span class="badge-token-count">{{ colores().length }} Tokens Configurados</span>
         </div>
-        <div class="swatch-container">
-          <div class="color-swatch" *ngFor="let color of colores()">
-            <div class="swatch-color" [style.background-color]="color.hex_code"></div>
-            <div class="swatch-info">
-              <div class="swatch-name">{{color.uso}}</div>
-              <div class="swatch-hex">{{color.hex_code}}</div>
+
+        <div class="colors-chromatic-grid">
+          <div class="color-ramp-card" *ngFor="let color of colores()" (click)="openColorInspector(color)">
+            <div class="ramp-card-header">
+              <div class="d-flex align-items-center gap-2">
+                <span class="color-dot" [style.background-color]="color.hex_code"></span>
+                <span class="color-token-name">color.{{ (color.uso || color.nombre).toLowerCase().replace(' ', '-')
+                  }}</span>
+              </div>
+              <button type="button" class="btn-inspect-pill" (click)="openColorInspector(color, $event)"
+                title="Inspeccionar Token">
+                Inspeccionar
+              </button>
+            </div>
+
+            <div class="color-swatch-display" [style.background-color]="color.hex_code"
+              [title]="color.nombre + ' (' + color.uso + ')'">
+              <span class="swatch-hex-badge">{{ color.hex_code }}</span>
+            </div>
+
+            <div class="chromatic-ramp-bar" (click)="$event.stopPropagation()">
+              <div class="ramp-step" *ngFor="let step of getRamp(color.hex_code)" [style.background-color]="step.hex"
+                (click)="copyHex(step.hex)" [title]="'Paso ' + step.step + ': ' + step.hex + ' (Click para copiar)'">
+                <span class="step-num">{{ step.step }}</span>
+              </div>
+            </div>
+
+            <div class="ramp-card-footer">
+              <div class="d-flex flex-column">
+                <span class="footer-role">{{ color.uso }}</span>
+                <span class="footer-name">{{ color.nombre || color.uso }}</span>
+              </div>
+              <span class="footer-hex" (click)="copyHex(color.hex_code); $event.stopPropagation()">
+                {{ color.hex_code }}
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+              </span>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Tipografía -->
-      <div class="bento-item bento-typography">
-        <div class="bento-title">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg>
-          Escala Tipográfica
+      <!-- 2. Escala Tipográfica -->
+      <div class="bento-item bento-typography" (mousemove)="onCardMouseMove($event)">
+        <div class="bento-title-row">
+          <div class="bento-title">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="4 7 4 4 20 4 20 7" />
+              <line x1="9" y1="20" x2="15" y2="20" />
+              <line x1="12" y1="4" x2="12" y2="20" />
+            </svg>
+            Live Type Playpen & Escala Tipográfica
+          </div>
+          <span class="badge-token-count">{{ tipografias().length }} Niveles</span>
         </div>
-        <div class="d-flex flex-column gap-2">
+
+        <div class="live-type-toolbar">
+          <div class="live-input-box">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 20h9"></path>
+              <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+            </svg>
+            <input type="text" [(ngModel)]="customPreviewText" placeholder="Escribe aquí para probar en vivo..."
+              class="live-type-input">
+            <button type="button" class="btn-reset-text" (click)="resetPreviewText()">Restablecer</button>
+          </div>
+        </div>
+
+        <div class="typo-list custom-scrollbar">
           <div class="typo-row" *ngFor="let tipo of tipografias()">
-            <div class="typo-specimen" [style.font-family]="tipo.tipo_fuente === 'Principal' ? fuentes.principal : fuentes.secundaria">Aa</div>
-            <div class="typo-details ms-3">
-              <div class="typo-role">{{tipo.estilo}} • {{tipo.tipo_fuente === 'Principal' ? fuentes.principal : fuentes.secundaria}}</div>
-              <div [style.font-family]="tipo.tipo_fuente === 'Principal' ? fuentes.principal : fuentes.secundaria" 
-                   [style.font-weight]="getFontWeightValue(tipo.peso)" 
-                   [style.font-size.px]="tipo.tamano_px" 
-                   [style.line-height]="tipo.interlineado" 
-                   class="mt-1"
-                   [style.color]="getColor('Texto principal', '#1f2937')">
-                {{tipo.estilo === 'H1' ? 'El zorro ágil' : (tipo.estilo === 'H2' ? 'Salta sobre' : (tipo.estilo === 'H3' ? 'El perro perezoso' : (tipo.estilo === 'Body' ? 'La tipografía es el arte y la técnica de organizar letras para que el lenguaje escrito sea legible y atractivo.' : 'Diseño generado automáticamente.')))}}
+            <div class="typo-specimen"
+              [style.font-family]="tipo.tipo_fuente === 'Principal' ? fuentes.principal : fuentes.secundaria">
+              Aa
+            </div>
+            <div class="typo-details">
+              <div class="typo-role">
+                <span class="token-code-chip">{{ tipo.estilo }}</span>
+                <span class="font-tag">{{ tipo.tipo_fuente === 'Principal' ? fuentes.principal : fuentes.secundaria
+                  }}</span>
+              </div>
+              <div class="typo-sample-wrapper">
+                <div class="typo-sample"
+                  [style.font-family]="tipo.tipo_fuente === 'Principal' ? fuentes.principal : fuentes.secundaria"
+                  [style.font-weight]="getFontWeightValue(tipo.peso)" [style.font-size.px]="tipo.tamano_px"
+                  [style.line-height]="tipo.interlineado" [style.color]="getColor('Texto principal', '#1f2937')">
+                  {{ customPreviewText || 'Texto de muestra tipográfica' }}
+                </div>
+                <div class="anatomy-guide-line"></div>
               </div>
             </div>
-            <div class="text-end" style="font-size: 0.75rem; color: #9ca3af; min-width: 80px;">
-              {{tipo.tamano_px}}px<br>{{tipo.peso.split(' ')[0]}}
+            <div class="typo-meta">
+              <span class="meta-px">{{ tipo.tamano_px }}px</span>
+              <span class="meta-weight">{{ getPesoDisplay(tipo.peso) }}</span>
+              <span class="meta-leading">{{ tipo.interlineado }}x</span>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Componentes UI -->
-      <div class="bento-item bento-ui">
-        <div class="bento-title">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
-          Componentes UI
-        </div>
-        <div class="ui-showcase-box d-flex flex-column gap-4 h-100">
-          
-          <div>
-            <div class="fw-medium mb-3" style="font-size: 0.8rem;" [style.color]="getColor('Texto principal', '#1f2937')">Botones & Acciones</div>
-            <div class="d-flex flex-wrap gap-2">
-              <button class="btn-premium shadow-sm">Primario</button>
-              <button class="btn-premium btn-outline-premium">Secundario</button>
-              <button class="btn-premium text-white border-0" [style.background-color]="getColor('Acento', '#3b82f6')">Acento</button>
-            </div>
+      <!-- 4. Iconografía -->
+      <div class="bento-item bento-icons" (mousemove)="onCardMouseMove($event)">
+        <div class="bento-title-row">
+          <div class="bento-title">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polygon
+                points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+            </svg>
+            Iconografía
           </div>
-
-          <div>
-            <div class="fw-medium mb-3" style="font-size: 0.8rem;" [style.color]="getColor('Texto principal', '#1f2937')">Feedback / Alertas</div>
-            <div class="d-flex flex-column gap-2">
-              <div class="p-2 px-3 d-flex align-items-center gap-2" [style.background-color]="getColor('Éxito', '#10b981') + '1A'" [style.color]="getColor('Éxito', '#10b981')" [style.border-radius.px]="halfRadius">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-                <span class="small fw-bold">Operación exitosa</span>
-              </div>
-              <div class="p-2 px-3 d-flex align-items-center gap-2" [style.background-color]="getColor('Error', '#ef4444') + '1A'" [style.color]="getColor('Error', '#ef4444')" [style.border-radius.px]="halfRadius">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                <span class="small fw-bold">Ha ocurrido un error</span>
-              </div>
-            </div>
-          </div>
-
+          <span class="token-code-chip">{{ config()?.estilo_iconos || 'Lineal' }} • {{ config()?.grosor_iconos || 1.5
+            }}px</span>
         </div>
-      </div>
 
-      <!-- Iconografía -->
-      <div class="bento-item bento-icons">
-        <div class="bento-title">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-          Iconografía
-        </div>
         <div class="icon-grid">
-          <!-- Íconos seleccionados del proyecto -->
           <ng-container *ngIf="customIconsSafe().length > 0">
-            <div class="premium-icon-box" *ngFor="let icon of customIconsSafe().slice(0, 8)"
-                 [title]="icon.nombre" [style.color]="getColor('Principal', '#2563eb')"
-                 style="background-color: rgba(37,99,235,0.06);">
+            <div class="premium-icon-box custom-project-icon" *ngFor="let icon of customIconsSafe().slice(0, 10)"
+              [title]="icon.nombre" [style.color]="getColor('Principal', '#2563eb')"
+              [style.border-radius.px]="halfRadius">
               <div [innerHTML]="icon.safeSvg"></div>
             </div>
           </ng-container>
 
-          <!-- Íconos de la librería base si hay espacio disponible -->
           <div class="premium-icon-box"
-               *ngFor="let icon of currentLibraryIcons.slice(0, (8 - customIconsSafe().length > 0 ? 8 - customIconsSafe().length : 0))"
-               [title]="icon.name">
+            *ngFor="let icon of currentLibraryIcons.slice(0, (10 - customIconsSafe().length > 0 ? 10 - customIconsSafe().length : 6))"
+            [title]="icon.name" [style.border-radius.px]="halfRadius">
             <div [innerHTML]="icon.svg"></div>
           </div>
         </div>
       </div>
 
-      <!-- Espaciado -->
-      <div class="bento-item bento-spacing">
-        <div class="bento-title">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
-          Escala Base ({{config()?.escala_espaciado_base}}px)
+      <!-- 4. Espaciado de Layout -->
+      <div class="bento-item bento-layout" (mousemove)="onCardMouseMove($event)">
+        <div class="bento-title-row">
+          <div class="bento-title">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path
+                d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+            </svg>
+            Espaciado de Layout
+          </div>
+          <span class="token-code-chip">Base: {{ config()?.escala_espaciado_base || 8 }}px &middot; Radio: {{
+            config()?.radio_borde_base ?? 8 }}px &middot; {{ config()?.grid_columnas || 12 }} Cols</span>
         </div>
-        <div class="spacing-chart mt-4">
-          <div *ngFor="let esp of escalaEspaciado" class="spacing-bar-col w-100">
-            <span style="font-size:0.6rem; color: #9ca3af">{{esp.token}}</span>
-            <div class="spacing-bar" [style.height.px]="esp.valor"></div>
-            <span style="font-size:0.6rem; font-weight: 600" [style.color]="getColor('Texto principal', '#1f2937')">{{esp.valor}}</span>
+
+        <div class="layout-showcase-stack">
+          <!-- Sub-bloque 1: Escala de Espaciado -->
+          <div class="layout-sub-card">
+            <div class="layout-sub-header">
+              <span class="layout-sub-title">Escala de Espaciado (Spacing)</span>
+              <span class="layout-sub-chip">--spacing-base: {{ config()?.escala_espaciado_base || 8 }}px</span>
+            </div>
+            <div class="spacing-ruler-grid">
+              <div *ngFor="let esp of escalaEspaciado" class="spacing-col">
+                <span class="spacing-token-pill">{{ esp.token }}</span>
+                <div class="spacing-bar-stage">
+                  <div class="spacing-bar-fill" [style.height.px]="esp.valor * 1.8"
+                    [title]="esp.token + ': ' + esp.valor + 'px'">
+                    <span class="bar-mult-tag">{{ esp.mult }}x</span>
+                  </div>
+                </div>
+                <div class="spacing-baseline"></div>
+                <span class="spacing-px-label">{{ esp.valor }}px</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sub-bloque 2: Radio de Borde Base (Forma) -->
+          <div class="layout-sub-card">
+            <div class="layout-sub-header">
+              <span class="layout-sub-title">Radio de Borde Base (Forma)</span>
+              <span class="layout-sub-chip">--radius-base: {{ config()?.radio_borde_base ?? 8 }}px</span>
+            </div>
+            <div class="radius-live-display">
+              <div class="radius-shape-box" [style.border-radius.px]="config()?.radio_borde_base ?? 8">
+                <span class="radius-val-label">{{ config()?.radio_borde_base ?? 8 }}px</span>
+              </div>
+              <div class="radius-info-col">
+                <span class="radius-role-title">Morfología de Componentes</span>
+                <span class="radius-role-desc">Radio institucional aplicado a tarjetas, botones, inputs y contenedores
+                  del sistema.</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sub-bloque 3: Grilla Responsiva (Layout) -->
+          <div class="layout-sub-card">
+            <div class="layout-sub-header">
+              <span class="layout-sub-title">Grilla Responsiva (Layout)</span>
+              <span class="layout-sub-chip">{{ config()?.grid_columnas || 12 }} Cols &middot; Gutter {{
+                config()?.grid_gutter || 16 }}px</span>
+            </div>
+            <div class="grid-showcase-box">
+              <div class="grid-columns-container" [style.gap.px]="config()?.grid_gutter || 16">
+                <div class="grid-col-demo" *ngFor="let col of arrayColumnas" [style.border-radius.px]="halfRadius">
+                </div>
+              </div>
+              <div class="grid-info-footer">
+                <span>Gutter: {{ config()?.grid_gutter || 16 }}px</span>
+                <span>Columnas totales: {{ config()?.grid_columnas || 12 }}</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- Grillas -->
-      <div class="bento-item bento-grid-system">
-        <div class="bento-title d-flex justify-content-between w-100">
-          <span class="d-flex align-items-center gap-2">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
-            Layout Grid
-          </span>
-          <span class="fw-normal" style="font-size: 0.65rem;">{{config()?.grid_columnas}} col / {{config()?.grid_gutter}}px</span>
+    </div>
+
+    <!-- VIEW 2: MODO UI REAL (SAAS DASHBOARD PROFESIONAL: 01 AL 11) -->
+    <div class="saas-preview-wrapper" *ngIf="currentView === 'ui'">
+
+      <!-- SAAS APPLICATION BROWSER WINDOW (10. BIG ELEMENTS) -->
+      <div class="saas-browser-window" [class.viewport-desktop]="saasViewportMode === 'desktop'"
+        [class.viewport-tablet]="saasViewportMode === 'tablet'" [class.viewport-mobile]="saasViewportMode === 'mobile'"
+        [style.border-radius.px]="config()?.radio_borde_base ?? 8">
+
+        <!-- Top Browser Chrome / Window Bar -->
+        <div class="saas-window-topbar">
+          <div class="window-controls">
+            <span class="control-dot dot-close"></span>
+            <span class="control-dot dot-min"></span>
+            <span class="control-dot dot-max"></span>
+          </div>
+
+          <div class="saas-address-bar">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              class="ssl-icon">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </svg>
+            <span class="domain-prefix">https://</span>
+            <span class="domain-name">app.novapay.io</span>
+            <span class="domain-path">/{{ saasActiveNav }}</span>
+          </div>
+
+          <!-- SELECTOR DE VIEWPORT & TOGGLE DE RETÍCULA -->
+          <div class="d-flex align-items-center gap-2">
+            <button type="button" class="btn-grid-overlay-toggle" [class.active]="saasShowGridOverlay"
+              (click)="toggleGridOverlay()"
+              title="Superponer Guías de Grilla del Sistema de Diseño (Figma Grid Overlay)">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="3" width="18" height="18" rx="2"></rect>
+                <line x1="9" y1="3" x2="9" y2="21"></line>
+                <line x1="15" y1="15" x2="15" y2="21"></line>
+                <line x1="15" y1="3" x2="15" y2="9"></line>
+              </svg>
+              <span>Grilla: {{ config()?.grid_columnas || 12 }} Col &middot; {{ config()?.grid_gutter || 16 }}px</span>
+            </button>
+
+            <div class="viewport-device-switcher">
+              <button type="button" class="btn-device-toggle" [class.active]="saasViewportMode === 'desktop'"
+                (click)="setSaasViewport('desktop')" title="Vista Escritorio (100%)">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                  <line x1="8" y1="21" x2="16" y2="21"></line>
+                  <line x1="12" y1="17" x2="12" y2="21"></line>
+                </svg>
+                <span>Desktop</span>
+              </button>
+              <button type="button" class="btn-device-toggle" [class.active]="saasViewportMode === 'tablet'"
+                (click)="setSaasViewport('tablet')" title="Vista Tablet (768px)">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect>
+                  <line x1="12" y1="18" x2="12.01" y2="18"></line>
+                </svg>
+                <span>Tablet</span>
+              </button>
+              <button type="button" class="btn-device-toggle" [class.active]="saasViewportMode === 'mobile'"
+                (click)="setSaasViewport('mobile')" title="Vista Móvil (390px)">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+                  <line x1="12" y1="18" x2="12.01" y2="18"></line>
+                </svg>
+                <span>Móvil</span>
+              </button>
+            </div>
+          </div>
         </div>
-        <div class="grid-showcase mt-4" [style.gap.px]="config()?.grid_gutter">
-          <div class="grid-col-demo" *ngFor="let col of arrayColumnas" [style.border-radius.px]="halfRadius"></div>
+
+        <!-- MAIN SAAS SHELL (04. GRID SYSTEM & 05. SPACING) -->
+        <div class="saas-app-shell">
+
+          <!-- 10. BIG ELEMENTS: SIDEBAR NAVIGATION -->
+          <aside class="saas-sidebar">
+            <!-- Brand Logo (01. Colors & 02. Typography) -->
+            <div class="saas-brand-box">
+              <div class="brand-logo-sq" [style.background-color]="getColor('Principal', '#2563eb')"
+                [style.border-radius.px]="halfRadius">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5">
+                  <rect x="2" y="5" width="20" height="14" rx="2"></rect>
+                  <line x1="2" y1="10" x2="22" y2="10"></line>
+                </svg>
+              </div>
+              <div class="brand-text-col">
+                <span class="brand-title" [style.font-family]="fuentes.principal">NovaPay B2B</span>
+                <span class="brand-tier-badge">FINTECH</span>
+              </div>
+            </div>
+
+            <!-- Navigation Links (03. Iconography & 08. Buttons/Links) -->
+            <div class="sidebar-section-label">GESTIÓN FINANCIERA</div>
+            <nav class="saas-nav-menu">
+              <!-- 1. DASHBOARD -->
+              <button type="button" class="saas-nav-item" [class.active]="saasActiveNav === 'dashboard'"
+                (click)="setSaasNav('dashboard')" [style.border-radius.px]="halfRadius" title="Dashboard de Pagos">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="3" width="7" height="7"></rect>
+                  <rect x="14" y="3" width="7" height="7"></rect>
+                  <rect x="14" y="14" width="7" height="7"></rect>
+                  <rect x="3" y="14" width="7" height="7"></rect>
+                </svg>
+                <span>Dashboard & Pagos</span>
+                <span class="saas-count-badge">LIVE</span>
+              </button>
+
+              <!-- 2. FORMULARIO & AJUSTES -->
+              <button type="button" class="saas-nav-item" [class.active]="saasActiveNav === 'settings'"
+                (click)="setSaasNav('settings')" [style.border-radius.px]="halfRadius"
+                title="Cuentas Bancarias & Ajustes">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M3 21h18M3 10h18M5 6l7-3 7 3M4 10v11M20 10v11M8 14v4M12 14v4M16 14v4"></path>
+                </svg>
+                <span>Cuentas & Ajustes</span>
+                <span class="saas-count-badge">API</span>
+              </button>
+
+              <!-- 3. PLANES & FACTURACIÓN -->
+              <button type="button" class="saas-nav-item" [class.active]="saasActiveNav === 'pricing'"
+                (click)="setSaasNav('pricing')" [style.border-radius.px]="halfRadius" title="Tarifas & Liquidación">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                  <line x1="1" y1="10" x2="23" y2="10"></line>
+                </svg>
+                <span>Tarifas & Tiers</span>
+                <span class="saas-count-badge">3</span>
+              </button>
+            </nav>
+
+            <div class="sidebar-section-label mt-4">ACCESO DIRECTO</div>
+            <nav class="saas-nav-menu">
+              <button type="button" class="saas-nav-item" (click)="setView('tokens')"
+                [style.border-radius.px]="halfRadius" title="Ver Tokens en Bruto">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <circle cx="12" cy="12" r="4"></circle>
+                </svg>
+                <span>Tokens de Diseño</span>
+                <span class="saas-count-badge">{{ colores().length + tipografias().length }}</span>
+              </button>
+            </nav>
+
+            <!-- Bottom User Profile Card (09. Small Elements & 11. Cards) -->
+            <div class="sidebar-user-footer" [style.border-radius.px]="halfRadius">
+              <div class="user-avatar-wrap">
+                <div class="saas-avatar" [style.background-color]="getColor('Principal', '#2563eb')">NP</div>
+                <span class="avatar-online-dot"></span>
+              </div>
+              <div class="user-info-text">
+                <span class="user-name" [style.font-family]="fuentes.principal">{{ saasSettingsRole }}</span>
+                <span class="user-role">{{ saasSettingsEmail }}</span>
+              </div>
+              <button type="button" class="btn-user-action" (click)="setSaasNav('settings')" title="Configuración">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="3"></circle>
+                  <path
+                    d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
+                  </path>
+                </svg>
+              </button>
+            </div>
+          </aside>
+
+          <!-- MAIN VIEWPORT CONTENT -->
+          <main class="saas-main-viewport">
+
+            <!-- SUPERPOSICIÓN DE RETÍCULA DINÁMICA (FIGMA-STYLE GRID OVERLAY) -->
+            <div class="saas-layout-grid-overlay" *ngIf="saasShowGridOverlay">
+              <div class="overlay-grid-column" *ngFor="let col of arrayColumnas; let i = index">
+                <span class="overlay-col-badge">Col {{ i + 1 }}</span>
+              </div>
+            </div>
+
+            <!-- MOBILE RESPONSIVE NAV BAR (Visible on mobile viewport or when sidebar is hidden) -->
+            <div class="saas-mobile-nav-bar"
+              [class.force-show]="saasViewportMode === 'mobile' || saasViewportMode === 'tablet'">
+              <button type="button" class="mobile-nav-tab" [class.active]="saasActiveNav === 'dashboard'"
+                (click)="setSaasNav('dashboard')">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="3" width="7" height="7"></rect>
+                  <rect x="14" y="3" width="7" height="7"></rect>
+                  <rect x="14" y="14" width="7" height="7"></rect>
+                  <rect x="3" y="14" width="7" height="7"></rect>
+                </svg>
+                <span>Dashboard</span>
+              </button>
+              <button type="button" class="mobile-nav-tab" [class.active]="saasActiveNav === 'settings'"
+                (click)="setSaasNav('settings')">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M3 21h18M3 10h18M5 6l7-3 7 3M4 10v11M20 10v11M8 14v4M12 14v4M16 14v4"></path>
+                </svg>
+                <span>Cuentas & Ajustes</span>
+              </button>
+              <button type="button" class="mobile-nav-tab" [class.active]="saasActiveNav === 'pricing'"
+                (click)="setSaasNav('pricing')">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                  <line x1="1" y1="10" x2="23" y2="10"></line>
+                </svg>
+                <span>Tarifas & Tiers</span>
+              </button>
+            </div>
+
+            <!-- SCREEN 1: DASHBOARD GENERAL & MÉTRICAS (01 AL 11) -->
+            <div class="saas-screen-container" *ngIf="saasActiveNav === 'dashboard'">
+              <!-- 10. BIG ELEMENTS: TOPBAR HEADER -->
+              <header class="saas-viewport-header">
+                <!-- Breadcrumb & Title (02. Typography) -->
+                <div class="header-breadcrumb-col">
+                  <div class="saas-breadcrumb">
+                    <span>Finanzas</span>
+                    <span class="b-sep">/</span>
+                    <span>Pasarela de Pagos</span>
+                    <span class="b-sep">/</span>
+                    <span class="b-current">Liquidaciones & Conciliación</span>
+                  </div>
+                  <h2 class="saas-page-title" [style.font-family]="fuentes.principal">Consola de Pagos & Tesorería</h2>
+                </div>
+
+                <!-- Header Search (06. Textfields) & Actions (08. Buttons) -->
+                <div class="header-actions-group">
+                  <!-- 06. TEXTFIELDS: Search Input with Shortcut -->
+                  <div class="saas-search-input-box">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                      class="search-icon">
+                      <circle cx="11" cy="11" r="8"></circle>
+                      <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                    <input type="text" [(ngModel)]="saasSearchQuery"
+                      placeholder="Buscar transacción, cliente, ID o tarjeta..." class="saas-search-field">
+                    <kbd class="shortcut-kbd">⌘K</kbd>
+                  </div>
+
+                  <!-- 08. BUTTONS: Secondary Action -->
+                  <button type="button" class="btn-saas-secondary" (click)="openExportModal()">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                      <polyline points="7 10 12 15 17 10"></polyline>
+                      <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                    <span>Exportar CSV</span>
+                  </button>
+
+                  <!-- 08. BUTTONS: Primary Action -->
+                  <button type="button" class="btn-saas-primary">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                      stroke-width="2.5">
+                      <line x1="12" y1="5" x2="12" y2="19"></line>
+                      <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
+                    <span>Nuevo Cobro B2B</span>
+                  </button>
+                </div>
+              </header>
+
+              <!-- SUB-HEADER FILTER BAR (06. TEXTFIELDS, 07. SELECTORS, 09. SMALL ELEMENTS) -->
+              <div class="saas-filter-toolbar">
+                <div class="filter-left-pills">
+                  <!-- Filter Pills (09. Small Elements) -->
+                  <button type="button" class="filter-tab-pill" [class.active]="saasSelectedFilter === 'all'"
+                    (click)="saasSelectedFilter = 'all'">
+                    Todas las Operaciones
+                  </button>
+                  <button type="button" class="filter-tab-pill" [class.active]="saasSelectedFilter === 'tokens'"
+                    (click)="saasSelectedFilter = 'tokens'">
+                    Aprobadas (98.4%)
+                  </button>
+                  <button type="button" class="filter-tab-pill" [class.active]="saasSelectedFilter === 'components'"
+                    (click)="saasSelectedFilter = 'components'">
+                    En Revisión & Disputas
+                  </button>
+
+                  <!-- 01. COLORS: TAGS DE COLORES PERSONALIZADOS (SI EXISTEN EN LA BIBLIOTECA) -->
+                  <span *ngFor="let customCol of coloresPersonalizados" class="custom-color-tag-pill"
+                    [style.background-color]="customCol.hex_code + '18'" [style.color]="customCol.hex_code"
+                    [style.border-color]="customCol.hex_code + '45'"
+                    [title]="'Color Personalizado: ' + (customCol.nombre || customCol.uso) + ' (' + customCol.hex_code + ')'">
+                    <span class="custom-dot" [style.background-color]="customCol.hex_code"></span>
+                    {{ customCol.nombre || customCol.uso }}
+                  </span>
+                </div>
+
+                <div class="filter-right-controls">
+                  <!-- 07. SELECTORS: Time Range Dropdown -->
+                  <div class="saas-select-wrap">
+                    <select [(ngModel)]="saasTimeRange" class="saas-dropdown-select">
+                      <option value="7d">Últimos 7 días</option>
+                      <option value="30d">Últimos 30 días</option>
+                      <option value="90d">Último trimestre</option>
+                      <option value="year">Año Fiscal 2026</option>
+                    </select>
+                  </div>
+
+                  <!-- 07. SELECTORS: Live Sync Switch Toggle -->
+                  <div class="saas-toggle-control" (click)="saasLiveSync = !saasLiveSync"
+                    title="Alternar sincronización de Webhooks en vivo">
+                    <div class="saas-switch" [class.active]="saasLiveSync">
+                      <div class="saas-switch-thumb"></div>
+                    </div>
+                    <span class="saas-toggle-label">{{ saasLiveSync ? 'Webhooks Live' : 'Modo Offline' }}</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 11. CARDS: 4-COLUMN KPI ANALYTICS GRID (04. GRID & 05. SPACING) -->
+              <section class="saas-kpi-grid">
+
+                <!-- KPI Card 1: Volumen Procesado -->
+                <div class="saas-stat-card" [style.border-radius.px]="config()?.radio_borde_base ?? 8">
+                  <div class="stat-card-header">
+                    <span class="stat-label">Volumen Procesado</span>
+                  </div>
+                  <div class="stat-metric-row">
+                    <span class="stat-metric-number" [style.font-family]="fuentes.principal">$148,920</span>
+                    <span class="stat-metric-unit">.50 USD</span>
+                  </div>
+                  <div class="stat-footer-progress">
+                    <div class="progress-track">
+                      <div class="progress-fill"
+                        style="width: 100%; background: var(--preview-primary-color, #2563eb);"></div>
+                    </div>
+                    <span class="stat-meta-note">100% conciliado en banco receptor</span>
+                  </div>
+                </div>
+
+                <!-- KPI Card 2: Tasa de Aprobación Bancaria -->
+                <div class="saas-stat-card" [style.border-radius.px]="config()?.radio_borde_base ?? 8">
+                  <div class="stat-card-header">
+                    <span class="stat-label">Tasa de Aprobación</span>
+                  </div>
+                  <div class="stat-metric-row">
+                    <span class="stat-metric-number" [style.font-family]="fuentes.principal">99.4%</span>
+                    <span class="stat-metric-unit">éxito cobros</span>
+                  </div>
+                  <div class="stat-footer-progress">
+                    <div class="progress-track">
+                      <div class="progress-fill"
+                        style="width: 99.4%; background: var(--preview-success-color, #10b981);"></div>
+                    </div>
+                    <span class="stat-meta-note">Latencia media de pasarela: 142ms</span>
+                  </div>
+                </div>
+
+                <!-- KPI Card 3: Saldo Disponible en Bóveda -->
+                <div class="saas-stat-card" [style.border-radius.px]="config()?.radio_borde_base ?? 8">
+                  <div class="stat-card-header">
+                    <span class="stat-label">Saldo en Bóveda (Disponible)</span>
+                  </div>
+                  <div class="stat-metric-row">
+                    <span class="stat-metric-number" [style.font-family]="fuentes.principal">$42,650</span>
+                    <span class="stat-metric-unit">.00 USD</span>
+                  </div>
+                  <div class="stat-footer-progress">
+                    <div class="progress-track">
+                      <div class="progress-fill" style="width: 72%; background: var(--preview-primary-color, #2563eb);">
+                      </div>
+                    </div>
+                    <span class="stat-meta-note">Radio de curvatura base: {{ config()?.radio_borde_base ?? 8 }}px</span>
+                  </div>
+                </div>
+
+                <!-- KPI Card 4: Canales de Cobro & Grilla -->
+                <div class="saas-stat-card card-clickable-grid" (click)="toggleGridOverlay()"
+                  [style.border-radius.px]="config()?.radio_borde_base ?? 8"
+                  title="Click para alternar guías de retícula en pantalla">
+                  <div class="stat-card-header">
+                    <span class="stat-label">Grilla Base & Canales</span>
+                  </div>
+                  <div class="stat-metric-row">
+                    <span class="stat-metric-number" [style.font-family]="fuentes.principal">{{ config()?.grid_columnas
+                      || 12 }}</span>
+                    <span class="stat-metric-unit">Columnas</span>
+                  </div>
+                  <div class="stat-footer-progress">
+                    <div class="d-flex align-items-center justify-content-between">
+                      <span class="stat-meta-note">Retícula: {{ saasShowGridOverlay ? 'Guías Activas' : 'Ver Guías'
+                        }}</span>
+                      <span class="badge-grid-indicator" [class.active]="saasShowGridOverlay">{{ saasShowGridOverlay ?
+                        'ON' : 'OFF' }}</span>
+                    </div>
+                  </div>
+                </div>
+
+              </section>
+
+              <!-- 10. BIG ELEMENTS & 11. CARDS: DATA TABLE DE COMPONENTES EN PRODUCCIÓN (ANCHO COMPLETO) -->
+              <div class="saas-table-card" [style.border-radius.px]="config()?.radio_borde_base ?? 8">
+                <div class="table-card-topbar">
+                  <div class="table-title-group">
+                    <h3 class="table-heading" [style.font-family]="fuentes.principal">Registro de Operaciones &
+                      Conciliación Bancaria</h3>
+                    <span class="table-sub">Transacciones de cobro en tiempo real procesadas a través de la pasarela
+                      multicanal</span>
+                  </div>
+                  <div class="d-flex align-items-center gap-2">
+                    <span class="table-counter-tag">{{ saasSelectedCount }} seleccionadas</span>
+                    <button type="button" class="btn-table-action" title="Actualizar datos">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <polyline points="23 4 23 10 17 10"></polyline>
+                        <polyline points="1 20 1 14 7 14"></polyline>
+                        <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+
+                <div class="table-responsive">
+                  <table class="saas-data-table">
+                    <thead>
+                      <tr>
+                        <th class="th-checkbox">
+                          <!-- 07. SELECTORS: Master Checkbox -->
+                          <input type="checkbox" [checked]="isAllSaasRowsSelected()"
+                            (change)="toggleAllSaasRows($event)" class="saas-checkbox">
+                        </th>
+                        <th>Transacción / Cliente</th>
+                        <th>Método de Pago</th>
+                        <th>Monto (USD)</th>
+                        <th>Fecha & Canal</th>
+                        <th>Estado (09)</th>
+                        <th class="text-end">Acciones (08)</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <!-- Row 1: Liquidado / Exitoso -->
+                      <tr [class.row-selected]="saasSelectedBtn" (click)="saasSelectedBtn = !saasSelectedBtn">
+                        <td class="td-checkbox" (click)="$event.stopPropagation()">
+                          <input type="checkbox" [(ngModel)]="saasSelectedBtn" class="saas-checkbox">
+                        </td>
+                        <td>
+                          <div class="component-meta-cell">
+                            <span class="comp-id-tag">TX-8921</span>
+                            <div class="comp-name-wrap">
+                              <span class="comp-name">Acme Global Cloud Inc.</span>
+                              <span class="comp-detail">Visa Business Débito **** 4242 • Liquidación T+1</span>
+                            </div>
+                          </div>
+                        </td>
+                        <td><span class="category-chip">Tarjeta de Crédito</span></td>
+                        <td><code class="token-code-tag">$14,250.00 USD</code></td>
+                        <td><span class="font-spec-tag">14 Nov 2026, 11:20 AM</span></td>
+                        <td>
+                          <!-- 09. Small Elements: Badge Verde -->
+                          <span class="saas-badge badge-green">
+                            <span class="badge-dot"></span> Liquidado
+                          </span>
+                        </td>
+                        <td class="text-end" (click)="$event.stopPropagation()">
+                          <!-- 08. Buttons: Quick Action -->
+                          <button type="button" class="btn-row-action btn-row-primary">Ver Recibo</button>
+                        </td>
+                      </tr>
+
+                      <!-- Row 2: En Proceso -->
+                      <tr [class.row-selected]="saasSelectedInput" (click)="saasSelectedInput = !saasSelectedInput">
+                        <td class="td-checkbox" (click)="$event.stopPropagation()">
+                          <input type="checkbox" [(ngModel)]="saasSelectedInput" class="saas-checkbox">
+                        </td>
+                        <td>
+                          <div class="component-meta-cell">
+                            <span class="comp-id-tag">TX-8920</span>
+                            <div class="comp-name-wrap">
+                              <span class="comp-name">Starlight Digital SaaS</span>
+                              <span class="comp-detail">Transferencia SEPA / ACH Directa</span>
+                            </div>
+                          </div>
+                        </td>
+                        <td><span class="category-chip">Banca Directa</span></td>
+                        <td><code class="token-code-tag">$8,420.00 USD</code></td>
+                        <td><span class="font-spec-tag">14 Nov 2026, 10:45 AM</span></td>
+                        <td>
+                          <!-- 09. Small Elements: Badge Azul -->
+                          <span class="saas-badge badge-blue">
+                            <span class="badge-dot"></span> En Proceso
+                          </span>
+                        </td>
+                        <td class="text-end" (click)="$event.stopPropagation()">
+                          <button type="button" class="btn-row-action btn-row-secondary">Gestionar</button>
+                        </td>
+                      </tr>
+
+                      <!-- Row 3: En Revisión / Disputa -->
+                      <tr [class.row-selected]="saasSelectedSwitch" (click)="saasSelectedSwitch = !saasSelectedSwitch">
+                        <td class="td-checkbox" (click)="$event.stopPropagation()">
+                          <input type="checkbox" [(ngModel)]="saasSelectedSwitch" class="saas-checkbox">
+                        </td>
+                        <td>
+                          <div class="component-meta-cell">
+                            <span class="comp-id-tag">TX-8919</span>
+                            <div class="comp-name-wrap">
+                              <span class="comp-name">Vanguard E-Commerce LLC</span>
+                              <span class="comp-detail">Apple Pay Wallet • Revisión 3DS activa</span>
+                            </div>
+                          </div>
+                        </td>
+                        <td><span class="category-chip">Billetera Digital</span></td>
+                        <td><code class="token-code-tag">$2,190.50 USD</code></td>
+                        <td><span class="font-spec-tag">14 Nov 2026, 09:15 AM</span></td>
+                        <td>
+                          <!-- 09. Small Elements: Badge Amarillo -->
+                          <span class="saas-badge badge-warning">
+                            <span class="badge-dot"></span> En Revisión
+                          </span>
+                        </td>
+                        <td class="text-end" (click)="$event.stopPropagation()">
+                          <button type="button" class="btn-row-action btn-row-secondary">Auditar</button>
+                        </td>
+                      </tr>
+
+                      <!-- Row 4: Rechazado / Fondos Insuficientes -->
+                      <tr [class.row-selected]="saasSelectedBadge" (click)="saasSelectedBadge = !saasSelectedBadge">
+                        <td class="td-checkbox" (click)="$event.stopPropagation()">
+                          <input type="checkbox" [(ngModel)]="saasSelectedBadge" class="saas-checkbox">
+                        </td>
+                        <td>
+                          <div class="component-meta-cell">
+                            <span class="comp-id-tag">TX-8918</span>
+                            <div class="comp-name-wrap">
+                              <span class="comp-name">Nexus Consulting Partners</span>
+                              <span class="comp-detail">Mastercard Prepago • Fondos insuficientes</span>
+                            </div>
+                          </div>
+                        </td>
+                        <td><span class="category-chip">Tarjeta Prepago</span></td>
+                        <td><code class="token-code-tag">$640.00 USD</code></td>
+                        <td><span class="font-spec-tag">14 Nov 2026, 08:30 AM</span></td>
+                        <td>
+                          <!-- 09. Small Elements: Badge Rojo -->
+                          <span class="saas-badge badge-error">
+                            <span class="badge-dot"></span> Rechazado
+                          </span>
+                        </td>
+                        <td class="text-end" (click)="$event.stopPropagation()">
+                          <button type="button" class="btn-row-action btn-row-secondary">Reintentar</button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <!-- END SCREEN 1: DASHBOARD -->
+            </div>
+
+            <!-- SCREEN 2: FORMULARIO & AJUSTES (06. TEXTFIELDS, 07. SELECTORS, 08. BUTTONS, 09. SMALL ELEMENTS) -->
+            <div class="saas-screen-container" *ngIf="saasActiveNav === 'settings'">
+              <header class="saas-viewport-header">
+                <div class="header-breadcrumb-col">
+                  <div class="saas-breadcrumb">
+                    <span>Workspace</span>
+                    <span class="b-sep">/</span>
+                    <span>Finanzas B2B</span>
+                    <span class="b-sep">/</span>
+                    <span class="b-current">Cuentas & Transferencias</span>
+                  </div>
+                  <h2 class="saas-page-title" [style.font-family]="fuentes.principal">Configuración de Pagos & Tesorería
+                  </h2>
+                </div>
+
+                <div class="header-actions-group">
+                  <button type="button" class="btn-saas-secondary" (click)="setSaasNav('dashboard')">
+                    <span>Volver a Dashboard</span>
+                  </button>
+                  <button type="button" class="btn-saas-primary" (click)="saveSaasSettings()">
+                    <svg *ngIf="!saasSettingsSaved" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                      stroke="currentColor" stroke-width="2.5">
+                      <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                    <svg *ngIf="saasSettingsSaved" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                      stroke="currentColor" stroke-width="2.5">
+                      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                      <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                    </svg>
+                    <span>{{ saasSettingsSaved ? '¡Parámetros Guardados!' : 'Guardar Ajustes' }}</span>
+                  </button>
+                </div>
+              </header>
+
+              <!-- SUCCESS FEEDBACK ALERT (09. Small Elements) -->
+              <div class="saas-alert-banner alert-success mb-3" *ngIf="saasSettingsSaved">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                  <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                </svg>
+                <span>¡Parámetros bancarios, cuenta receptora y credenciales de pasarela actualizadas con éxito!</span>
+              </div>
+
+              <!-- SETTINGS FORMS GRID (11. Cards & 04. Grid System) -->
+              <div class="settings-cards-grid">
+
+                <!-- CARD 1: IDENTIDAD FISCAL & CUENTA BANCARIA (06. Textfields & 09. Small Elements) -->
+                <div class="saas-form-card" [style.border-radius.px]="config()?.radio_borde_base ?? 8">
+                  <div class="form-card-header">
+                    <h3 class="form-card-title" [style.font-family]="fuentes.principal">Perfil de Tesorería & Cuenta
+                      Receptora</h3>
+                    <p class="form-card-desc">Información fiscal corporativa, cuenta bancaria de abono y contacto
+                      oficial.</p>
+                  </div>
+
+                  <!-- Avatar Upload Row (09. Small Elements) -->
+                  <div class="avatar-uploader-row mb-4">
+                    <div class="saas-large-avatar" [style.background-color]="getColor('Principal', '#2563eb')">
+                      <span>NP</span>
+                    </div>
+                    <div class="avatar-meta-col">
+                      <div class="d-flex align-items-center gap-2 mb-1">
+                        <button type="button" class="btn-avatar-upload">Cambiar Logo</button>
+                        <button type="button" class="btn-avatar-remove">Eliminar</button>
+                      </div>
+                      <span class="avatar-tip">Emblema corporativo para recibos de pago y extractos de cuenta.</span>
+                    </div>
+                  </div>
+
+                  <!-- Textfield Inputs (06. Textfields) -->
+                  <div class="form-inputs-layout">
+                    <div class="form-field-group">
+                      <label class="form-field-label">Razón Social de la Empresa</label>
+                      <input type="text" [(ngModel)]="saasSettingsName" class="form-text-input"
+                        placeholder="Nombre comercial de la empresa">
+                    </div>
+
+                    <div class="form-field-group">
+                      <label class="form-field-label">Identificador Fiscal (Tax ID / EIN)</label>
+                      <input type="text" [(ngModel)]="saasSettingsTaxId" class="form-text-input"
+                        placeholder="US-EIN 00-000000">
+                    </div>
+
+                    <div class="form-field-group">
+                      <label class="form-field-label">Correo Oficial de Pagos</label>
+                      <div class="input-icon-group">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                          stroke-width="2" class="field-icon-left">
+                          <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                          <polyline points="22,6 12,13 2,6"></polyline>
+                        </svg>
+                        <input type="email" [(ngModel)]="saasSettingsEmail" class="form-text-input input-with-icon"
+                          placeholder="treasury&#64;empresa.io">
+                        <span class="field-suffix-badge badge-green">Verificado</span>
+                      </div>
+                    </div>
+
+                    <div class="form-field-group">
+                      <label class="form-field-label">Cargo del Responsable (07. Selectors)</label>
+                      <div class="custom-select-wrapper">
+                        <select [(ngModel)]="saasSettingsRole" class="form-select-input">
+                          <option value="Jefe de Tesorería & Pagos">Jefe de Tesorería & Pagos</option>
+                          <option value="Director Financiero (CFO)">Director Financiero (CFO)</option>
+                          <option value="Auditor de Riesgo & Fraude">Auditor de Riesgo & Fraude</option>
+                          <option value="Oficial de Cumplimiento AML">Oficial de Cumplimiento AML</option>
+                        </select>
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                          stroke-width="2" class="select-chevron">
+                          <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                      </div>
+                    </div>
+
+                    <div class="form-field-group">
+                      <label class="form-field-label">Banco Depositario</label>
+                      <input type="text" [(ngModel)]="saasSettingsBankName" class="form-text-input"
+                        placeholder="Nombre de entidad bancaria">
+                    </div>
+
+                    <div class="form-field-group">
+                      <label class="form-field-label">Número de Cuenta / IBAN</label>
+                      <input type="text" [(ngModel)]="saasSettingsAccountNum" class="form-text-input"
+                        placeholder="IBAN o número de cuenta">
+                    </div>
+
+                    <div class="form-field-group full-width">
+                      <label class="form-field-label">Descripción en Extracto Bancario (Statement Descriptor)</label>
+                      <textarea [(ngModel)]="saasSettingsBio" rows="2" class="form-textarea-input"
+                        placeholder="Texto que verán los clientes en su extracto bancario..."></textarea>
+                      <div class="textarea-footer">
+                        <span>Aparece en el resumen de tarjeta de crédito de tus clientes</span>
+                        <span>{{ saasSettingsBio.length }}/200</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- CARD 2: PROTOCOLOS DE SEGURIDAD & WEBHOOKS (07. Selectors & 09. Small Elements) -->
+                <div class="saas-form-card" [style.border-radius.px]="config()?.radio_borde_base ?? 8">
+                  <div class="form-card-header">
+                    <h3 class="form-card-title" [style.font-family]="fuentes.principal">Seguridad Transaccional &
+                      Integración API</h3>
+                    <p class="form-card-desc">Divisa base de liquidación, Webhooks en producción y autenticación 2FA.
+                    </p>
+                  </div>
+
+                  <div class="form-inputs-layout">
+                    <div class="form-field-group">
+                      <label class="form-field-label">Moneda Base de Liquidación</label>
+                      <div class="custom-select-wrapper">
+                        <select [(ngModel)]="saasSettingsCurrency" class="form-select-input">
+                          <option value="USD">USD ($) - Dólar Estadounidense</option>
+                          <option value="EUR">EUR (€) - Euro Comunitario</option>
+                          <option value="PEN">PEN (S/) - Sol Peruano</option>
+                          <option value="MXN">MXN ($) - Peso Mexicano</option>
+                        </select>
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                          stroke-width="2" class="select-chevron">
+                          <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                      </div>
+                    </div>
+
+                    <div class="form-field-group">
+                      <label class="form-field-label">Ambiente de Operación</label>
+                      <div class="input-addon-group">
+                        <span class="input-prefix-addon">ENTORNO</span>
+                        <input type="text" value="PRODUCCIÓN LIVE" disabled
+                          class="form-text-input input-with-prefix text-success fw-bold">
+                      </div>
+                    </div>
+
+                    <div class="form-field-group full-width">
+                      <label class="form-field-label">Clave Pública de API (Public API Key)</label>
+                      <input type="text" [(ngModel)]="saasSettingsApiKey" class="form-text-input font-monospace"
+                        placeholder="pk_live_...">
+                    </div>
+
+                    <div class="form-field-group full-width">
+                      <label class="form-field-label">Endpoint de Webhooks (Notificaciones de Pago)</label>
+                      <input type="text" [(ngModel)]="saasSettingsWebhookUrl" class="form-text-input font-monospace"
+                        placeholder="https://api.tudominio.com/webhook">
+                    </div>
+                  </div>
+
+                  <!-- Switch Controls (07. Selectors) -->
+                  <div class="form-switches-block mt-4">
+                    <div class="switch-row-item">
+                      <div class="switch-info-col">
+                        <div class="d-flex align-items-center gap-2">
+                          <span class="switch-label-title">Autenticación 2FA en Retiros</span>
+                          <span class="saas-badge badge-blue">Recomendado</span>
+                        </div>
+                        <p class="switch-label-desc">Solicita token biométrico u OTP en transferencias mayores a $5,000
+                          USD.</p>
+                      </div>
+                      <label class="saas-switch-ctrl">
+                        <input type="checkbox" [(ngModel)]="saas2FAEnabled">
+                        <span class="switch-slider"></span>
+                      </label>
+                    </div>
+
+                    <div class="switch-row-item">
+                      <div class="switch-info-col">
+                        <span class="switch-label-title">Alertas Inmediatas de Contracargos & Fraude</span>
+                        <p class="switch-label-desc">Notificar de inmediato al equipo legal ante cualquier disputa
+                          bancaria.</p>
+                      </div>
+                      <label class="saas-switch-ctrl">
+                        <input type="checkbox" [(ngModel)]="saasEmailAlerts">
+                        <span class="switch-slider"></span>
+                      </label>
+                    </div>
+
+                    <div class="switch-row-item">
+                      <div class="switch-info-col">
+                        <span class="switch-label-title">Barrido Automático Diario (Auto-Sweep)</span>
+                        <p class="switch-label-desc">Transfiere el saldo de bóveda disponible a la cuenta bancaria cada
+                          24 horas.</p>
+                      </div>
+                      <label class="saas-switch-ctrl">
+                        <input type="checkbox" [(ngModel)]="saasStrictSSO">
+                        <span class="switch-slider"></span>
+                      </label>
+                    </div>
+                  </div>
+
+                  <!-- Checkbox Selection (07. Selectors) -->
+                  <div class="form-checkboxes-block mt-4">
+                    <span class="block-sub-heading">Canales de Alerta Financiera Activos</span>
+                    <div class="checkbox-options-grid mt-2">
+                      <label class="saas-checkbox-label">
+                        <input type="checkbox" [(ngModel)]="saasNotifySlack" class="saas-checkbox">
+                        <span>Notificar en Slack (#fintech-alerts)</span>
+                      </label>
+                      <label class="saas-checkbox-label">
+                        <input type="checkbox" [(ngModel)]="saasNotifyEmail" class="saas-checkbox">
+                        <span>Resumen diario de conciliación por Correo</span>
+                      </label>
+                      <label class="saas-checkbox-label">
+                        <input type="checkbox" [(ngModel)]="saasNotifySMS" class="saas-checkbox">
+                        <span>Alertas críticas de seguridad vía SMS</span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
+              <!-- BOTTOM ACTIONS BAR (08. Buttons) -->
+              <div class="settings-footer-actions mt-4" [style.border-radius.px]="config()?.radio_borde_base ?? 8">
+                <div class="danger-zone-col">
+                  <span class="danger-title">Zona de Protección de Fondos</span>
+                  <span class="danger-desc">Pausa de emergencia para congelar cobros y retiros ante actividad
+                    inusual.</span>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                  <button type="button" class="btn-danger-outline">Pausar Pasarela de Pagos</button>
+                  <button type="button" class="btn-saas-secondary" (click)="setSaasNav('dashboard')">Descartar</button>
+                  <button type="button" class="btn-saas-primary" (click)="saveSaasSettings()">
+                    <span>{{ saasSettingsSaved ? '¡Guardado con Éxito!' : 'Guardar Todo' }}</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- SCREEN 3: PLANES & FACTURACIÓN (11. CARDS, 01. COLORS, 08. BUTTONS, 09. SMALL ELEMENTS) -->
+            <div class="saas-screen-container" *ngIf="saasActiveNav === 'pricing'">
+              <header class="saas-viewport-header">
+                <div class="header-breadcrumb-col">
+                  <div class="saas-breadcrumb">
+                    <span>Workspace</span>
+                    <span class="b-sep">/</span>
+                    <span>FinTech B2B</span>
+                    <span class="b-sep">/</span>
+                    <span class="b-current">Planes & Tarifas</span>
+                  </div>
+                  <h2 class="saas-page-title" [style.font-family]="fuentes.principal">Tarifas de Procesamiento & Planes
+                    de Cobro</h2>
+                </div>
+
+                <div class="header-actions-group">
+                  <button type="button" class="btn-saas-secondary" (click)="setSaasNav('dashboard')">
+                    <span>Volver a Dashboard</span>
+                  </button>
+                </div>
+              </header>
+
+              <!-- BILLING CYCLE TOGGLE (07. Selectors & 09. Small Elements) -->
+              <div class="billing-cycle-hero mb-4">
+                <div class="billing-switcher-pill">
+                  <button type="button" class="cycle-tab-btn" [class.active]="saasBillingCycle === 'monthly'"
+                    (click)="setSaasBilling('monthly')">
+                    Liquidación Semanal
+                  </button>
+                  <button type="button" class="cycle-tab-btn" [class.active]="saasBillingCycle === 'yearly'"
+                    (click)="setSaasBilling('yearly')">
+                    <span>Liquidación Diaria Inmediata</span>
+                    <span class="save-discount-badge">Tarifa -20%</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- 11. CARDS: 3 PRICING TIERS GRID -->
+              <div class="saas-pricing-grid">
+
+                <!-- TIER 1: STARTER PAY -->
+                <div class="pricing-card" [style.border-radius.px]="config()?.radio_borde_base ?? 8">
+                  <div class="tier-top-row">
+                    <span class="tier-name">Starter Pay</span>
+                    <span class="saas-badge badge-neutral">Plan Base</span>
+                  </div>
+                  <p class="tier-desc">Para startups y negocios emergentes con facturación mensual hasta $50,000 USD.
+                  </p>
+
+                  <div class="tier-price-row">
+                    <span class="currency-symbol">%</span>
+                    <span class="price-val" [style.font-family]="fuentes.principal">2.9</span>
+                    <span class="price-period">+ $0.30 / cobro</span>
+                  </div>
+
+                  <div class="tier-divider"></div>
+
+                  <ul class="tier-features-list">
+                    <li>
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2.5" class="feature-check">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                      </svg>
+                      <span>Aceptación de Visa, Mastercard y Amex</span>
+                    </li>
+                    <li>
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2.5" class="feature-check">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                      </svg>
+                      <span>Liquidación bancaria estándar en T+3</span>
+                    </li>
+                    <li>
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2.5" class="feature-check">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                      </svg>
+                      <span>Portal de conciliación y recibos digitales</span>
+                    </li>
+                    <li>
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2.5" class="feature-check">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                      </svg>
+                      <span>API REST y Webhooks de eventos</span>
+                    </li>
+                  </ul>
+
+                  <button type="button" class="btn-tier-action btn-tier-current" disabled>
+                    <span>Plan Base Activo</span>
+                  </button>
+                </div>
+
+                <!-- TIER 2: BUSINESS SCALE (FEATURED CON COLOR PRIMARIO) -->
+                <div class="pricing-card card-featured" [style.border-radius.px]="config()?.radio_borde_base ?? 8">
+                  <div class="featured-ribbon-tag" [style.background-color]="getColor('Principal', '#2563eb')">
+                    TASA PREFERENCIAL
+                  </div>
+
+                  <div class="tier-top-row">
+                    <span class="tier-name fw-bold" style="color: var(--preview-primary-color, #2563eb);">Business
+                      Scale</span>
+                    <span class="saas-badge badge-green">Recomendado</span>
+                  </div>
+                  <p class="tier-desc">Para empresas en rápida expansión con alto flujo transaccional y pagos globales.
+                  </p>
+
+                  <div class="tier-price-row">
+                    <span class="currency-symbol">%</span>
+                    <span class="price-val" [style.font-family]="fuentes.principal">{{ saasBillingCycle === 'monthly' ?
+                      '1.9' : '1.5' }}</span>
+                    <span class="price-period">+ $0.15 / cobro</span>
+                  </div>
+
+                  <div class="tier-divider"></div>
+
+                  <ul class="tier-features-list">
+                    <li>
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2.5" class="feature-check">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                      </svg>
+                      <span><strong>Pagos multidivisa en +45 países</strong></span>
+                    </li>
+                    <li>
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2.5" class="feature-check">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                      </svg>
+                      <span>Liquidación acelerada garantizada T+1</span>
+                    </li>
+                    <li>
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2.5" class="feature-check">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                      </svg>
+                      <span>Motor antifraude con Machine Learning</span>
+                    </li>
+                    <li>
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2.5" class="feature-check">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                      </svg>
+                      <span>Reintentos inteligentes de cobros fallidos</span>
+                    </li>
+                    <li>
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2.5" class="feature-check">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                      </svg>
+                      <span>Soporte prioritario 24/7 con SLA 99.9%</span>
+                    </li>
+                  </ul>
+
+                  <!-- 08. Buttons: Primary Action Button -->
+                  <button type="button" class="btn-tier-action btn-tier-primary">
+                    <span>Activar Business Scale</span>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                      stroke-width="2.5">
+                      <polyline points="9 18 15 12 9 6"></polyline>
+                    </svg>
+                  </button>
+                </div>
+
+                <!-- TIER 3: ENTERPRISE GLOBAL -->
+                <div class="pricing-card" [style.border-radius.px]="config()?.radio_borde_base ?? 8">
+                  <div class="tier-top-row">
+                    <span class="tier-name">Enterprise Global</span>
+                    <span class="saas-badge badge-blue">SLA 99.99%</span>
+                  </div>
+                  <p class="tier-desc">Para corporaciones con volumen mensual superior a $1M USD y dispersión masiva.
+                  </p>
+
+                  <div class="tier-price-row">
+                    <span class="currency-symbol">%</span>
+                    <span class="price-val" [style.font-family]="fuentes.principal">{{ saasBillingCycle === 'monthly' ?
+                      '0.9' : '0.8' }}</span>
+                    <span class="price-period">volumen a medida</span>
+                  </div>
+
+                  <div class="tier-divider"></div>
+
+                  <ul class="tier-features-list">
+                    <li>
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2.5" class="feature-check">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                      </svg>
+                      <span>Enrutamiento bancario multi-adquirente</span>
+                    </li>
+                    <li>
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2.5" class="feature-check">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                      </svg>
+                      <span>Liquidación instantánea T+0 el mismo día</span>
+                    </li>
+                    <li>
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2.5" class="feature-check">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                      </svg>
+                      <span>Bóveda PCI-DSS Nivel 1 dedicada</span>
+                    </li>
+                    <li>
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2.5" class="feature-check">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                      </svg>
+                      <span>Gerente de cuenta técnico y asesoría AML</span>
+                    </li>
+                  </ul>
+
+                  <button type="button" class="btn-tier-action btn-tier-secondary">
+                    <span>Contactar a Ventas B2B</span>
+                  </button>
+                </div>
+
+              </div>
+
+              <!-- BILLING SUMMARY / PAYMENT METHOD CARD (11. Cards) -->
+              <div class="payment-method-widget mt-4" [style.border-radius.px]="config()?.radio_borde_base ?? 8">
+                <div class="d-flex align-items-center gap-3">
+                  <div class="card-chip-box">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                      <line x1="1" y1="10" x2="23" y2="10"></line>
+                    </svg>
+                  </div>
+                  <div>
+                    <div class="d-flex align-items-center gap-2">
+                      <span class="card-number-label">Visa terminada en •••• 4829</span>
+                      <span class="saas-badge badge-green">Principal</span>
+                    </div>
+                    <span class="card-expiry-sub">Vence 12/2028 · Facturación automática activa</span>
+                  </div>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                  <button type="button" class="btn-saas-secondary">Ver Facturas Anteriores</button>
+                  <button type="button" class="btn-saas-secondary">Editar Método</button>
+                </div>
+              </div>
+            </div>
+
+          </main>
+
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- MODAL TOKEN INSPECTOR -->
+<div class="inspector-overlay" *ngIf="selectedColorForInspector" (click)="closeColorInspector()">
+  <div class="inspector-modal" (click)="$event.stopPropagation()"
+    [style.border-radius.px]="config()?.radio_borde_base ?? 8">
+    <div class="inspector-header">
+      <div class="d-flex align-items-center gap-2">
+        <span class="inspector-dot" [style.background-color]="selectedColorForInspector.hex_code"></span>
+        <div>
+          <h3 class="inspector-title">{{ selectedColorForInspector.nombre || selectedColorForInspector.uso }}</h3>
+          <span class="token-code-chip">{{ getInspectorTokenName(selectedColorForInspector) }}</span>
+        </div>
+      </div>
+      <button type="button" class="btn-close-modal" (click)="closeColorInspector()">✕</button>
+    </div>
+
+    <div class="inspector-body">
+      <div class="inspector-dual-preview mb-3">
+        <div class="preview-box light-box">
+          <div class="color-circle" [style.background-color]="selectedColorForInspector.hex_code"></div>
+          <span class="preview-label">Superficie Clara</span>
+        </div>
+        <div class="preview-box dark-box">
+          <div class="color-circle" [style.background-color]="selectedColorForInspector.hex_code"></div>
+          <span class="preview-label">Superficie Oscura</span>
         </div>
       </div>
 
+      <div class="mb-3">
+        <span class="inspector-section-label">Rampa Cromática Tonal</span>
+        <div class="chromatic-ramp-bar mt-1">
+          <div class="ramp-step" *ngFor="let s of getRamp(selectedColorForInspector.hex_code)"
+            [style.background-color]="s.hex" (click)="copyHex(s.hex)" [title]="'Paso ' + s.step + ': ' + s.hex">
+            <span class="step-num">{{ s.step }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="format-rows-list">
+        <div class="format-row">
+          <span class="format-label">CSS Variable</span>
+          <code class="format-code">{{ getInspectorCssVar(selectedColorForInspector) }}</code>
+          <button type="button" class="btn-copy-format"
+            (click)="copyInspectorFormat('css', getInspectorCssVar(selectedColorForInspector))">
+            {{ inspectorCopiedKey === 'css' ? '¡Copiado!' : 'Copiar' }}
+          </button>
+        </div>
+
+        <div class="format-row">
+          <span class="format-label">HEX</span>
+          <code class="format-code">{{ selectedColorForInspector.hex_code }}</code>
+          <button type="button" class="btn-copy-format"
+            (click)="copyInspectorFormat('hex', selectedColorForInspector.hex_code)">
+            {{ inspectorCopiedKey === 'hex' ? '¡Copiado!' : 'Copiar' }}
+          </button>
+        </div>
+
+        <div class="format-row">
+          <span class="format-label">RGB</span>
+          <code class="format-code">{{ getInspectorRgb(selectedColorForInspector) }}</code>
+          <button type="button" class="btn-copy-format"
+            (click)="copyInspectorFormat('rgb', getInspectorRgb(selectedColorForInspector))">
+            {{ inspectorCopiedKey === 'rgb' ? '¡Copiado!' : 'Copiar' }}
+          </button>
+        </div>
+
+        <div class="format-row">
+          <span class="format-label">HSL</span>
+          <code class="format-code">{{ getInspectorHsl(selectedColorForInspector) }}</code>
+          <button type="button" class="btn-copy-format"
+            (click)="copyInspectorFormat('hsl', getInspectorHsl(selectedColorForInspector))">
+            {{ inspectorCopiedKey === 'hsl' ? '¡Copiado!' : 'Copiar' }}
+          </button>
+        </div>
+
+        <div class="format-row">
+          <span class="format-label">Tailwind</span>
+          <code class="format-code">{{ getInspectorTailwind(selectedColorForInspector) }}</code>
+          <button type="button" class="btn-copy-format"
+            (click)="copyInspectorFormat('tailwind', getInspectorTailwind(selectedColorForInspector))">
+            {{ inspectorCopiedKey === 'tailwind' ? '¡Copiado!' : 'Copiar' }}
+          </button>
+        </div>
+
+        <div class="format-row">
+          <span class="format-label">W3C DTCG Token</span>
+          <code class="format-code">{{ getInspectorDtcg(selectedColorForInspector) }}</code>
+          <button type="button" class="btn-copy-format"
+            (click)="copyInspectorFormat('dtcg', getInspectorDtcg(selectedColorForInspector))">
+            {{ inspectorCopiedKey === 'dtcg' ? '¡Copiado!' : 'Copiar' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL EXPORTAR -->
+<div class="export-overlay" *ngIf="showExportModal" (click)="closeExportModal()">
+  <div class="export-modal" (click)="$event.stopPropagation()"
+    [style.border-radius.px]="config()?.radio_borde_base ?? 8">
+    <div class="export-header">
+      <div class="d-flex align-items-center gap-2">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="7 10 12 15 17 10"></polyline>
+          <line x1="12" y1="15" x2="12" y2="3"></line>
+        </svg>
+        <h3 class="export-title">Exportar Sistema de Diseño</h3>
+      </div>
+      <button type="button" class="btn-close-modal" (click)="closeExportModal()">✕</button>
+    </div>
+
+    <div class="export-tabs">
+      <button type="button" class="tab-btn" [class.active]="exportTab === 'css'" (click)="setExportTab('css')">
+        CSS (:root)
+      </button>
+      <button type="button" class="tab-btn" [class.active]="exportTab === 'tailwind'"
+        (click)="setExportTab('tailwind')">
+        Tailwind Config
+      </button>
+      <button type="button" class="tab-btn" [class.active]="exportTab === 'json'" (click)="setExportTab('json')">
+        JSON W3C (Figma)
+      </button>
+      <button type="button" class="tab-btn" [class.active]="exportTab === 'scss'" (click)="setExportTab('scss')">
+        SCSS Variables
+      </button>
+    </div>
+
+    <div class="export-code-wrapper">
+      <pre class="export-code-block custom-scrollbar"><code>{{ getExportCode() }}</code></pre>
+    </div>
+
+    <div class="export-footer">
+      <span class="export-desc">
+        {{ exportTab === 'json' ? 'Compatible con Tokens Studio for Figma y Style Dictionary.' : (exportTab ===
+        'tailwind' ? 'Pega este bloque en tu archivo tailwind.config.js.' : 'Variables nativas listas para importar en
+        tu hoja de estilos.') }}
+      </span>
+      <button type="button" class="btn-copy-export" (click)="copyExportCode()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+        </svg>
+        {{ exportCopied ? '¡Código Copiado!' : 'Copiar al Portapapeles' }}
+      </button>
     </div>
   </div>
 </div>

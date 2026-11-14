@@ -8,8 +8,6 @@
  *    principle of font pairing" (NMF & Graph Morphological Affinity).
  * 2. Singh & Bhakthavatsalam (Microsoft Designer, arXiv:2501.10969, 2025):
  *    "AI Based Font Pair Suggestion Modelling For Graphic Design".
- * 3. Andrew Somers (W3C Silver / WCAG 3 Candidate, 2021-2024):
- *    "APCA (Advanced Perceptual Contrast Algorithm) & Spatial Frequency Models".
  * 4. Wallace, Bylinskii et al. (Adobe Research / ACM TOCHI 2022, ACM DIS 2022):
  *    "Towards Individuated Reading Experiences & FontMART".
  * 5. Apple HIG / Inter Dynamic Type Tracking & Bringhurst Typographic Laws.
@@ -143,10 +141,33 @@ export interface TypographyItemLike {
   line_height_px?: number;
 }
 
+export interface DynamicLineHeightOptions {
+  /** Cuando true (uso de clamp() fluido), cssLineHeight se exporta adimensional (sin px fijos) */
+  includeFluid?: boolean;
+  /** Cuando true (lectura editorial continua), prioriza el ratio hiperbólico sobre el redondeo a 4px */
+  preferRatio?: boolean;
+}
+
+export interface GuiScoreOptions {
+  gridStep?: number;
+  archetype?: TypographicArchetype;
+  includeFluid?: boolean;
+}
+
+export interface DesignTokensOptions {
+  includeFluid?: boolean;
+  gridStep?: number;
+  basePx?: number;
+  ratio?: number;
+  [key: string]: any;
+}
+
 export interface HarmonicScaleOptions {
   gridStep?: number;
   density?: LayoutDensity;
   includeFluid?: boolean;
+  archetype?: TypographicArchetype;
+  editorialRatioPriority?: boolean;
 }
 
 export interface HarmonicScaleItem extends TypographyItemLike {
@@ -203,7 +224,7 @@ export const FONT_MORPHOLOGY_CATALOG: Record<string, FontMorphologyProfile> = {
     xHeightRatio: 0.70,
     strokeContrast: 1.10,
     primarySuitability: 'headings',
-    archetypes: ['tech', 'saas', 'modern' as any]
+    archetypes: ['tech', 'saas', 'minimalist']
   },
   'Poppins': {
     name: 'Poppins',
@@ -401,7 +422,7 @@ export const FONT_MORPHOLOGY_CATALOG: Record<string, FontMorphologyProfile> = {
  * Calcula el tracking/letter-spacing óptico en función del tamaño de fuente y peso.
  * 
  * Basado en las curvas no lineales de Apple Dynamic Type y la física perceptual
- * de frecuencia espacial (Somers / APCA):
+ * de frecuencia espacial:
  * - En tamaños pequeños (<16px), la rasterización de píxeles empasta letras contiguas.
  *   Se requiere tracking positivo para evitar amontonamiento.
  * - En 16px (lectura regular), el tracking base es neutro (0em).
@@ -487,7 +508,8 @@ export function calculateOpticalTracking(
 export function calculateDynamicLineHeight(
   fontSizePx: number,
   gridStep = 4,
-  density: LayoutDensity = 'normal'
+  density: LayoutDensity = 'normal',
+  options?: DynamicLineHeightOptions
 ): DynamicLineHeightResult {
   const safeSize = Math.max(8, fontSizePx);
 
@@ -500,13 +522,38 @@ export function calculateDynamicLineHeight(
   const targetRatio = Math.max(1.05, Math.min(1.75, rawRatio * densityMultiplier));
 
   const rawPx = safeSize * targetRatio;
-  // Ajuste a la cuadrícula base de 4px u 8px
+  const useFreeRatio = gridStep <= 0 || Boolean(options?.preferRatio);
+  const useFluidCss = Boolean(options?.includeFluid) || useFreeRatio;
+
+  if (useFreeRatio) {
+    const ratio = Number(targetRatio.toFixed(3));
+    const approxPx = Math.round(rawPx);
+    const cssLineHeight = `${ratio}`;
+    const rhythmDiagnostic = gridStep <= 0
+      ? `Ratio libre optimizado para lectura continua (${ratio}x; ~${approxPx}px a ${safeSize}px). En lectura editorial el ratio importa más que el redondeo a 4px.`
+      : `Prioridad de ratio editorial (${ratio}x; ~${approxPx}px a ${safeSize}px) sin forzar redondeo estricto a ${gridStep}px.`;
+
+    return {
+      fontSizePx: safeSize,
+      ratio,
+      rawPx: Number(rawPx.toFixed(2)),
+      snappedPx: approxPx,
+      gridStep: gridStep <= 0 ? 0 : gridStep,
+      cssLineHeight,
+      rhythmDiagnostic
+    };
+  }
+
+  // Ajuste a la cuadrícula base de 4px u 8px (para bloques y componentes UI)
   const snappedPx = Math.max(gridStep, Math.round(rawPx / gridStep) * gridStep);
   const ratio = Number((snappedPx / safeSize).toFixed(3));
-  const cssLineHeight = `${snappedPx}px`;
+  // Con tipografía fluida clamp(), exportar line-height adimensional para escalar con font-size
+  const cssLineHeight = useFluidCss ? `${ratio}` : `${snappedPx}px`;
 
   let rhythmDiagnostic = '';
-  if (snappedPx % gridStep === 0) {
+  if (useFluidCss) {
+    rhythmDiagnostic = `Ratio adimensional fluido (${ratio}) compatible con clamp(); referencia desktop ${snappedPx}px (${snappedPx / gridStep} módulos de ${gridStep}px).`;
+  } else if (snappedPx % gridStep === 0) {
     rhythmDiagnostic = `Alineado con precisión a la rejilla base de ${gridStep}px (${snappedPx}px = ${snappedPx / gridStep} módulos).`;
   } else {
     rhythmDiagnostic = `Desalineado de la rejilla. Ajustado a ${snappedPx}px.`;
@@ -567,6 +614,56 @@ export function calculateFluidTypography(
     interceptRem: interceptRemFixed,
     clampCss
   };
+}
+
+const STANDARD_SCALE_STEPS: Record<string, number> = {
+  display: 6,
+  h1: 5,
+  h2: 4,
+  h3: 3,
+  h4: 2,
+  h5: 1,
+  body: 0,
+  cuerpo: 0,
+  small: -1,
+  micro: -2
+};
+
+export function isContinuousReadingStyle(
+  item: Pick<TypographyItemLike, 'estilo' | 'tamano_px' | 'tipo_fuente'>
+): boolean {
+  const name = (item.estilo || '').trim().toLowerCase();
+  if (/micro|badge|caption|overline|display|h[1-6]/i.test(name)) {
+    return false;
+  }
+  if (/body|cuerpo|paragraph|p[aá]rrafo|reading|lectura|article|prose|small/i.test(name)) {
+    return true;
+  }
+  return item.tipo_fuente === 'Secundaria' && item.tamano_px >= 14 && item.tamano_px <= 22;
+}
+
+export function resolveItemFluidClamp(
+  item: TypographyItemLike,
+  basePx = 16,
+  ratio = 1.25
+): string {
+  const existingClamp = (item as Partial<HarmonicScaleItem>).fluidClamp;
+  if (existingClamp) {
+    return existingClamp;
+  }
+
+  const safeBase = Math.max(12, basePx || 16);
+  const safeRatio = ratio > 1 ? ratio : 1.25;
+  const key = (item.estilo || '').trim().toLowerCase();
+  const mappedStep = STANDARD_SCALE_STEPS[key];
+  const step = mappedStep !== undefined
+    ? mappedStep
+    : Math.log(Math.max(8, item.tamano_px) / safeBase) / Math.log(safeRatio);
+
+  const mobileRatio = 1.0 + (safeRatio - 1.0) * 0.65;
+  const mobileFloor = key === 'small' ? Math.min(safeBase, 14) : 12;
+  const mobileSize = Math.max(mobileFloor, Math.round(safeBase * Math.pow(mobileRatio, step)));
+  return calculateFluidTypography(mobileSize, item.tamano_px).clampCss;
 }
 
 // ============================================================================
@@ -698,31 +795,56 @@ export function recommendOptimalPairings(
 
   const scored = candidates.map(candidate => {
     const evaluation = evaluateFontPairing(p1.name, candidate.name);
-    let score = evaluation.harmonyScore;
 
-    // Bonificación si el candidato es apto para cuerpo
-    if (candidate.primarySuitability === 'body' || candidate.primarySuitability === 'both') {
-      score += 5;
+    // 1. Armonía morfológica continua (0 - 60 pts), evitando saturar en 100 antes de ponderar
+    let morphologicalScore = 0;
+    if (evaluation.morphologicalDistance >= 0.22 && evaluation.morphologicalDistance <= 0.68) {
+      const centerDev = Math.abs(evaluation.morphologicalDistance - 0.45);
+      morphologicalScore = 60 * (1 - centerDev * 0.65);
+    } else {
+      morphologicalScore = (evaluation.harmonyScore / 100) * 60;
     }
 
-    // Bonificación por coincidencia de arquetipo
-    if (archetype && candidate.archetypes.includes(archetype)) {
-      score += 10;
+    // 2. Idoneidad para cuerpo de texto (0 - 16 pts)
+    let suitabilityScore = 2;
+    if (candidate.primarySuitability === 'body') {
+      suitabilityScore = 16;
+    } else if (candidate.primarySuitability === 'both') {
+      suitabilityScore = 12;
     }
+
+    // 3. Afinidad jerarquizada por arquetipo de GUI (0 - 16 pts)
+    let archetypeScore = 8;
+    if (archetype) {
+      const archIndex = candidate.archetypes.indexOf(archetype);
+      archetypeScore = archIndex !== -1 ? Math.max(10, 16 - Math.min(archIndex, 2) * 3) : 2;
+    }
+
+    // 4. Ergonomía de lectura en pantalla: x-height óptimo (~0.74) + estabilidad de trazo (0 - 8 pts)
+    const xHeightScore = 5 * Math.max(0, 1 - Math.abs(candidate.xHeightRatio - 0.74) / 0.14);
+    const strokeScore = 3 * Math.max(0, 1 - Math.max(0, candidate.strokeContrast - 1.0) / 1.8);
+
+    const rawScore = morphologicalScore + suitabilityScore + archetypeScore + xHeightScore + strokeScore;
 
     return {
-      secondaryFont: candidate.name,
-      compatibilityScore: Math.min(100, score),
-      archetype: candidate.archetypes[0] || 'saas',
-      contrastReason: `${candidate.category} con ratio x-height ${candidate.xHeightRatio} para lectura fluida.`
+      rawScore,
+      recommendation: {
+        secondaryFont: candidate.name,
+        compatibilityScore: Math.max(0, Math.min(100, Math.round(rawScore))),
+        archetype: candidate.archetypes[0] || 'saas',
+        contrastReason: `${candidate.category} con ratio x-height ${candidate.xHeightRatio} para lectura fluida.`
+      }
     };
   });
 
-  return scored.sort((a, b) => b.compatibilityScore - a.compatibilityScore).slice(0, 4);
+  return scored
+    .sort((a, b) => b.rawScore - a.rawScore)
+    .slice(0, 4)
+    .map(entry => entry.recommendation);
 }
 
 // ============================================================================
-// 7. MODELO MATEMÁTICO 5: FRECUENCIA ESPACIAL Y LEGIBILIDAD (APCA / SOMERS)
+// 7. MODELO MATEMÁTICO 5: FRECUENCIA ESPACIAL Y LEGIBILIDAD
 // ============================================================================
 /**
  * Valida la idoneidad psicofísica de una combinación de tamaño y peso de fuente.
@@ -767,10 +889,10 @@ export function validateSpatialLegibility(
     warnings.push(`Titular grande (${fontSizePx}px) con peso Light (${numericWeight}): Falta de anclaje óptico para la jerarquía del layout.`);
   }
 
-  // Regla 4: Tamaño por debajo del umbral físico de legibilidad APCA (12px en sRGB)
+  // Regla 4: Tamaño por debajo del umbral físico de legibilidad (12px en sRGB)
   if (fontSizePx < 12) {
     score -= 35;
-    warnings.push(`Tamaño crítico (${fontSizePx}px): Inferior al mínimo físico recomendado por APCA para interfaces (12px).`);
+    warnings.push(`Tamaño crítico (${fontSizePx}px): Inferior al mínimo físico recomendado para interfaces (12px).`);
   }
 
   let recommendation: string | undefined;
@@ -805,14 +927,15 @@ export function validateSpatialLegibility(
  * 1. Progresión Geométrica y Weber-Fechner JND (Just Noticeable Difference >= 1.125)
  * 2. Conforme al Ritmo Vertical de 4px
  * 3. Salud del Interletrado Óptico
- * 4. Frecuencia Espacial y Legibilidad APCA
+ * 4. Frecuencia Espacial y Legibilidad
  * 5. Armonía de Emparejamiento Tipográfico
  */
 export function calculateGuiTypographyScore(
   items: TypographyItemLike[],
   primaryFont: string,
   secondaryFont: string,
-  basePx = 16
+  basePx = 16,
+  options?: GuiScoreOptions
 ): TypographyHierarchyScore {
   if (!items || items.length === 0) {
     return {
@@ -855,17 +978,59 @@ export function calculateGuiTypographyScore(
     diagnostics.push(`Escala áurea equilibrada (${scaleRatio.toFixed(2)}x): Proporción óptima entre titulares y contenido.`);
   }
 
-  // Métrica 2: Ritmo vertical en rejilla de 4px
-  let alignedToGridCount = 0;
-  items.forEach(item => {
-    const lhPx = item.line_height_px || Math.round(item.tamano_px * item.interlineado);
-    if (lhPx % 4 === 0) {
-      alignedToGridCount++;
+  // Métrica 2: Ritmo vertical en rejilla de 4px/8px (flexible para lectura editorial continua y modo fluido)
+  const gridStep = options?.gridStep ?? 4;
+  const archetype = options?.archetype;
+  const includeFluid = options?.includeFluid ?? false;
+  let baselineRhythmScore = 100;
+
+  if (gridStep <= 0) {
+    let ratioCompliantCount = 0;
+    items.forEach(item => {
+      const ratio = item.interlineado || 1.4;
+      const reading = isContinuousReadingStyle(item);
+      const ideal = 1.10 + (1.62 / Math.sqrt(Math.max(8, item.tamano_px)));
+      const minHeading = Math.max(1.05, Number((ideal * 0.85).toFixed(2)));
+      const maxHeading = Math.min(1.70, Number((ideal * 1.15).toFixed(2)));
+      const ok = reading
+        ? ratio >= 1.40 && ratio <= 1.78
+        : item.tamano_px >= 24
+          ? ratio >= minHeading && ratio <= maxHeading
+          : ratio >= 1.20 && ratio <= 1.78;
+      if (ok) {
+        ratioCompliantCount++;
+      }
+    });
+    baselineRhythmScore = Math.round((ratioCompliantCount / items.length) * 100);
+    diagnostics.push('Modo Ratio Libre / Editorial: en lectura continua el ratio proporcional de interlineado prima sobre el redondeo estricto a 4px.');
+    if (baselineRhythmScore < 80) {
+      actionableTips.push('Ajusta el ratio de interlineado: usa 1.45–1.65 en lectura continua y 1.10–1.25 en titulares grandes.');
     }
-  });
-  const baselineRhythmScore = Math.round((alignedToGridCount / items.length) * 100);
-  if (baselineRhythmScore < 80) {
-    actionableTips.push(`${items.length - alignedToGridCount} estilos no están ajustados a la rejilla de 4px. Activa el ajuste automático de cuadrícula.`);
+  } else {
+    let alignedToGridCount = 0;
+    let relaxedEditorialCount = 0;
+    items.forEach(item => {
+      const lhPx = item.line_height_px || Math.round(item.tamano_px * item.interlineado);
+      const isGridAligned = lhPx % gridStep === 0;
+      const isReading = isContinuousReadingStyle(item);
+      const hasHealthyReadingRatio = item.interlineado >= 1.45 && item.interlineado <= 1.75;
+      const allowReadingRatio = isReading && hasHealthyReadingRatio && (archetype === 'editorial' || includeFluid);
+
+      if (isGridAligned) {
+        alignedToGridCount++;
+      } else if (allowReadingRatio) {
+        alignedToGridCount++;
+        relaxedEditorialCount++;
+      }
+    });
+
+    baselineRhythmScore = Math.round((alignedToGridCount / items.length) * 100);
+    if (relaxedEditorialCount > 0 || archetype === 'editorial') {
+      diagnostics.push(`En lectura editorial continua el ratio proporcional de interlineado importa más que el redondeo estricto a ${gridStep}px.`);
+    }
+    if (baselineRhythmScore < 80) {
+      actionableTips.push(`${items.length - alignedToGridCount} estilos UI no son múltiplos de ${gridStep}px. Útil para alinear componentes, aunque en lectura editorial continua prima el ratio.`);
+    }
   }
 
   // Métrica 3: Salud del Interletrado Óptico
@@ -956,6 +1121,7 @@ export function generateHarmonicScale(
   const gridStep = options?.gridStep ?? 4;
   const density = options?.density ?? 'normal';
   const includeFluid = options?.includeFluid ?? true;
+  const editorialPriority = Boolean(options?.editorialRatioPriority) || options?.archetype === 'editorial';
 
   const styleConfigs: Array<{
     estilo: string;
@@ -985,15 +1151,22 @@ export function generateHarmonicScale(
     }
     const tamano_px = Math.max(minFloor, Math.round(rawSize));
 
-    // Para Small >= 15px, peso Regular 400 es suficientemente legible; en 14px se refuerza a Semibold 600 para APCA
+    // Para Small >= 15px, peso Regular 400 es suficientemente legible; en 14px se refuerza a Semibold 600 para mayor legibilidad
     const resolvedPeso = cfg.estilo === 'Small' && tamano_px >= 15 ? 'Regular (400)' : cfg.peso;
 
-    const lhResult = calculateDynamicLineHeight(tamano_px, gridStep, density);
+    const preferRatio = gridStep <= 0 || (
+      editorialPriority &&
+      isContinuousReadingStyle({ estilo: cfg.estilo, tamano_px, tipo_fuente: cfg.tipo_fuente })
+    );
+    const lhResult = calculateDynamicLineHeight(tamano_px, gridStep, density, {
+      includeFluid,
+      preferRatio
+    });
     const trackingResult = calculateOpticalTracking(tamano_px, resolvedPeso);
 
     let fluidClamp: string | undefined;
     if (includeFluid) {
-      // En móvil se usa un ratio más suave, manteniendo el umbral mínimo ergonómico APCA
+      // En móvil se usa un ratio más suave, manteniendo el umbral mínimo ergonómico
       const mobileRatio = 1.0 + (ratio - 1.0) * 0.65;
       const mobileFloor = cfg.estilo === 'Small' ? Math.min(basePx, 14) : 12;
       const mobileSize = Math.max(mobileFloor, Math.round(basePx * Math.pow(mobileRatio, cfg.step)));
@@ -1031,10 +1204,42 @@ export function exportDesignTokens(
   items: TypographyItemLike[],
   primaryFont: string,
   secondaryFont: string,
-  config?: any
+  config?: DesignTokensOptions
 ): DesignTokensExport {
   const pFont = primaryFont || 'Inter';
   const sFont = secondaryFont || 'Inter';
+  const hasAnyItemClamp = items.some(i => typeof (i as Partial<HarmonicScaleItem>).fluidClamp === 'string');
+  const useFluid = config?.includeFluid !== undefined ? Boolean(config.includeFluid) : hasAnyItemClamp;
+  const gridStep = config?.gridStep ?? 4;
+  const basePx = config?.basePx && config.basePx > 0 ? config.basePx : 16;
+  const scaleRatio = config?.ratio && config.ratio > 1 ? config.ratio : 1.25;
+
+  const resolveLineHeightToken = (item: TypographyItemLike) => {
+    const lhPx = item.line_height_px || Math.round(item.tamano_px * item.interlineado);
+    const rawRatio = item.interlineado && item.interlineado > 0
+      ? item.interlineado
+      : lhPx / Math.max(1, item.tamano_px);
+    const ratioNum = Number(rawRatio.toFixed(3));
+
+    // Nunca exportar line-height en px fijos cuando se usa clamp() o modo ratio libre
+    if (useFluid || gridStep <= 0) {
+      return {
+        isUnitless: true,
+        cssValue: `${ratioNum}`,
+        jsonValue: ratioNum as number | string,
+        jsonType: 'number' as const,
+        lhPx
+      };
+    }
+
+    return {
+      isUnitless: false,
+      cssValue: `${lhPx}px`,
+      jsonValue: `${lhPx}px` as number | string,
+      jsonType: 'dimension' as const,
+      lhPx
+    };
+  };
 
   // 1. CSS Custom Properties
   const cssLines: string[] = [
@@ -1050,13 +1255,19 @@ export function exportDesignTokens(
     const tracking = item.letter_spacing !== undefined
       ? `${item.letter_spacing}em`
       : calculateOpticalTracking(item.tamano_px, item.peso).cssValue;
-    const lhPx = item.line_height_px || Math.round(item.tamano_px * item.interlineado);
+    const lhToken = resolveLineHeightToken(item);
     const weightNum = extractNumericWeight(item.peso);
+    const sizeCss = useFluid
+      ? resolveItemFluidClamp(item, basePx, scaleRatio)
+      : `${item.tamano_px}px`;
 
     cssLines.push(`  /* ${item.estilo} */`);
-    cssLines.push(`  --text-${key}-size: ${item.tamano_px}px;`);
+    cssLines.push(`  --text-${key}-size: ${sizeCss};`);
+    if (useFluid) {
+      cssLines.push(`  --text-${key}-size-desktop: ${item.tamano_px}px;`);
+    }
     cssLines.push(`  --text-${key}-rem: ${(item.tamano_px / 16).toFixed(3)}rem;`);
-    cssLines.push(`  --text-${key}-line-height: ${lhPx}px;`);
+    cssLines.push(`  --text-${key}-line-height: ${lhToken.cssValue};`);
     cssLines.push(`  --text-${key}-tracking: ${tracking};`);
     cssLines.push(`  --text-${key}-weight: ${weightNum};`);
     cssLines.push('');
@@ -1072,12 +1283,15 @@ export function exportDesignTokens(
     const tracking = item.letter_spacing !== undefined
       ? `${item.letter_spacing}em`
       : calculateOpticalTracking(item.tamano_px, item.peso).cssValue;
-    const lhPx = item.line_height_px || Math.round(item.tamano_px * item.interlineado);
+    const lhToken = resolveLineHeightToken(item);
+    const tailwindSize = useFluid
+      ? resolveItemFluidClamp(item, basePx, scaleRatio)
+      : `${(item.tamano_px / 16).toFixed(3)}rem`;
 
     tailwindFontSize[key] = [
-      `${(item.tamano_px / 16).toFixed(3)}rem`,
+      tailwindSize,
       {
-        lineHeight: `${lhPx}px`,
+        lineHeight: lhToken.cssValue,
         letterSpacing: tracking,
         fontWeight: `${extractNumericWeight(item.peso)}`
       }
@@ -1108,14 +1322,17 @@ export function exportDesignTokens(
 
   items.forEach(item => {
     const key = item.estilo.toLowerCase().replace(/\s+/g, '-');
-    const lhPx = item.line_height_px || Math.round(item.tamano_px * item.interlineado);
+    const lhToken = resolveLineHeightToken(item);
     const tracking = item.letter_spacing !== undefined
       ? `${item.letter_spacing}em`
       : calculateOpticalTracking(item.tamano_px, item.peso).cssValue;
+    const dtcgSize = useFluid
+      ? resolveItemFluidClamp(item, basePx, scaleRatio)
+      : `${item.tamano_px}px`;
 
     dtcgTokens['typography'][key] = {
-      fontSize: { $value: `${item.tamano_px}px`, $type: 'dimension' },
-      lineHeight: { $value: `${lhPx}px`, $type: 'dimension' },
+      fontSize: { $value: dtcgSize, $type: 'dimension' },
+      lineHeight: { $value: lhToken.jsonValue, $type: lhToken.jsonType },
       fontWeight: { $value: extractNumericWeight(item.peso), $type: 'fontWeight' },
       letterSpacing: { $value: tracking, $type: 'dimension' }
     };

@@ -6,7 +6,6 @@ import {
   TypographyItem,
   DisenoVisualConfig
 } from '../../../../services/diseno-visual.service';
-import { evaluateAPCA, auditProjectTypographyTokens } from '../../../../utils/apca-utils';
 import {
   calculateOpticalTracking,
   calculateDynamicLineHeight,
@@ -17,6 +16,8 @@ import {
   calculateGuiTypographyScore,
   generateHarmonicScale,
   exportDesignTokens,
+  resolveItemFluidClamp,
+  isContinuousReadingStyle,
   FONT_MORPHOLOGY_CATALOG,
   LayoutDensity,
   TypographicArchetype,
@@ -37,42 +38,34 @@ export class DisenoVisualTypographyComponent {
   private disenoVisualService = inject(DisenoVisualService);
   config = this.disenoVisualService.config;
   tipografias = this.disenoVisualService.tipografias;
-  colores = this.disenoVisualService.colores;
   tipografiasPreview = signal<TypographyItem[] | null>(null);
   private lastSyncedSignature = '';
-
-  // Sincronización en tiempo real con el Paso 1 (Colores del Proyecto) mediante APCA
-  colorTextoPrincipal = computed(() => {
-    const cols = this.colores() || [];
-    const match =
-      cols.find(c => c.uso.toLowerCase().includes('texto principal')) ||
-      cols.find(c => c.uso.toLowerCase().includes('texto')) ||
-      cols.find(c => c.uso === 'Principal');
-    return match ? { nombre: match.nombre, hex: match.hex_code } : { nombre: 'Texto Base', hex: '#1E293B' };
-  });
-
-  colorFondoPrincipal = computed(() => {
-    const cols = this.colores() || [];
-    const match =
-      cols.find(c => c.uso === 'Fondo' || c.nombre.toLowerCase().includes('fondo')) ||
-      cols.find(c => c.uso === 'Superficie');
-    return match ? { nombre: match.nombre, hex: match.hex_code } : { nombre: 'Fondo Base', hex: '#FFFFFF' };
-  });
-
-  apcaPaletteSync = computed(() => {
-    const lista = this.tipografiasPreview() || this.tipografias() || [];
-    const fg = this.colorTextoPrincipal().hex;
-    const bg = this.colorFondoPrincipal().hex;
-    const evaluation = evaluateAPCA(fg, bg);
-    const audit = auditProjectTypographyTokens(lista, evaluation.absLc);
-    return { evaluation, audit, fg, bg };
-  });
 
   // Estados de control algorítmico y matemático
   layoutDensity = signal<LayoutDensity>('normal');
   baselineGridStep = signal<number>(4);
   enableFluidClamp = signal<boolean>(true);
   selectedArchetype = signal<TypographicArchetype>('saas');
+
+  gridModes = [
+    { label: 'Rejilla 4px (UI)', value: 4 },
+    { label: 'Rejilla 8px (UI)', value: 8 },
+    { label: 'Ratio Libre (Editorial)', value: 0 }
+  ];
+
+  setBaselineGridStep(step: number | string) {
+    const parsed = Number(step);
+    this.baselineGridStep.set(Number.isFinite(parsed) ? parsed : 4);
+    this.previewEscala();
+  }
+
+  isReadingStyle(tipo: TypographyItem): boolean {
+    return isContinuousReadingStyle(tipo);
+  }
+
+  usesUnitlessLineHeightExport(): boolean {
+    return this.enableFluidClamp() || this.baselineGridStep() <= 0;
+  }
 
   arquetipos: Array<{ id: TypographicArchetype; label: string; desc: string }> = [
     { id: 'saas', label: 'SaaS / Pro', desc: 'Interfaces corporativas y funcionales' },
@@ -263,7 +256,8 @@ export class DisenoVisualTypographyComponent {
     const scaleItems = generateHarmonicScale(this.escalaBase, this.escalaRatio, {
       gridStep: this.baselineGridStep(),
       density: this.layoutDensity(),
-      includeFluid: this.enableFluidClamp()
+      includeFluid: this.enableFluidClamp(),
+      archetype: this.selectedArchetype()
     });
 
     const nuevasTipografias: TypographyItem[] = scaleItems.map(item => ({
@@ -304,7 +298,12 @@ export class DisenoVisualTypographyComponent {
       lista,
       cfg?.fuente_principal || 'Inter',
       cfg?.fuente_secundaria || 'Inter',
-      this.escalaBase
+      this.escalaBase,
+      {
+        gridStep: this.baselineGridStep(),
+        archetype: this.selectedArchetype(),
+        includeFluid: this.enableFluidClamp()
+      }
     );
   });
 
@@ -348,7 +347,7 @@ export class DisenoVisualTypographyComponent {
   }
 
   // =========================================================================
-  // MODELO 5: FRECUENCIA ESPACIAL Y LEGIBILIDAD APCA / SOMERS
+  // MODELO 5: FRECUENCIA ESPACIAL Y LEGIBILIDAD
   // =========================================================================
   get advertenciaProporciones(): string | null {
     if (!this.editingTypography || !this.editingTypography.tamano_px) return null;
@@ -357,9 +356,9 @@ export class DisenoVisualTypographyComponent {
     const weight = this.editingTypography.peso || 'Regular (400)';
     const estilo = this.editingTypography.estilo || '';
 
-    const apcaValidation = validateSpatialLegibility(size, weight, estilo);
-    if (!apcaValidation.isCompliant && apcaValidation.warnings.length > 0) {
-      return apcaValidation.warnings.join(' ') + (apcaValidation.recommendation ? ` Sugerencia: ${apcaValidation.recommendation}` : '');
+    const spatialValidation = validateSpatialLegibility(size, weight, estilo);
+    if (!spatialValidation.isCompliant && spatialValidation.warnings.length > 0) {
+      return spatialValidation.warnings.join(' ') + (spatialValidation.recommendation ? ` Sugerencia: ${spatialValidation.recommendation}` : '');
     }
 
     // Regla 1: Titulares grandes necesitan interlineado corto
@@ -381,7 +380,17 @@ export class DisenoVisualTypographyComponent {
   tokensExport = computed(() => {
     const lista = this.tipografiasPreview() || this.tipografias();
     const cfg = this.config();
-    return exportDesignTokens(lista, cfg?.fuente_principal || 'Inter', cfg?.fuente_secundaria || 'Inter', cfg);
+    return exportDesignTokens(
+      lista,
+      cfg?.fuente_principal || 'Inter',
+      cfg?.fuente_secundaria || 'Inter',
+      {
+        includeFluid: this.enableFluidClamp(),
+        gridStep: this.baselineGridStep(),
+        basePx: this.escalaBase,
+        ratio: this.escalaRatio
+      }
+    );
   });
 
   abrirModalTipografia(tipo?: TypographyItem) {
@@ -412,14 +421,12 @@ export class DisenoVisualTypographyComponent {
   }
 
   guardarTipografia() {
-    // Si no tiene line_height_px o letter_spacing, calcularlos automáticamente
+    // Recalcular siempre letter_spacing y line_height_px según el tamaño, peso e interlineado actuales
     if (this.editingTypography.tamano_px) {
       const size = this.editingTypography.tamano_px;
       const weight = this.editingTypography.peso || 'Regular (400)';
-      if (!this.editingTypography.letter_spacing) {
-        this.editingTypography.letter_spacing = calculateOpticalTracking(size, weight).trackingEm;
-      }
-      if (!this.editingTypography.line_height_px && this.editingTypography.interlineado) {
+      this.editingTypography.letter_spacing = calculateOpticalTracking(size, weight).trackingEm;
+      if (this.editingTypography.interlineado) {
         this.editingTypography.line_height_px = Math.round(size * this.editingTypography.interlineado);
       }
     }
@@ -483,9 +490,19 @@ export class DisenoVisualTypographyComponent {
     const tracking = this.getTracking(tipo.tamano_px, tipo.peso);
     const lhPx = this.getLineHeightPx(tipo.tamano_px, tipo.interlineado);
     const weightNum = this.getFontWeightNumber(tipo.peso);
-    const remValue = (tipo.tamano_px / this.escalaBase).toFixed(3);
+    const basePx = this.escalaBase > 0 ? this.escalaBase : 16;
+    const remValue = (tipo.tamano_px / basePx).toFixed(3);
+    const unitlessRatio = Number((tipo.interlineado || lhPx / Math.max(1, tipo.tamano_px)).toFixed(3));
 
-    const cssSnippet = `/* Token Tipográfico: ${tipo.estilo} */\nfont-family: '${fontFamily}', sans-serif;\nfont-size: ${tipo.tamano_px}px; /* ${remValue}rem */\nline-height: ${lhPx}px; /* ratio: ${tipo.interlineado} */\nfont-weight: ${weightNum};\nletter-spacing: ${tracking};`;
+    let cssSnippet: string;
+    if (this.enableFluidClamp()) {
+      const clampCss = resolveItemFluidClamp(tipo, basePx, this.escalaRatio);
+      cssSnippet = `/* Token Tipográfico: ${tipo.estilo} (Fluido clamp) */\nfont-family: '${fontFamily}', sans-serif;\nfont-size: ${clampCss}; /* desktop: ${tipo.tamano_px}px (${remValue}rem) */\nline-height: ${unitlessRatio}; /* ratio adimensional para escalado fluido (~${lhPx}px en desktop) */\nfont-weight: ${weightNum};\nletter-spacing: ${tracking};`;
+    } else if (this.baselineGridStep() <= 0) {
+      cssSnippet = `/* Token Tipográfico: ${tipo.estilo} (Editorial / Ratio Libre) */\nfont-family: '${fontFamily}', sans-serif;\nfont-size: ${remValue}rem; /* ${tipo.tamano_px}px */\nline-height: ${unitlessRatio}; /* ratio prioritario para lectura continua (~${lhPx}px) */\nfont-weight: ${weightNum};\nletter-spacing: ${tracking};`;
+    } else {
+      cssSnippet = `/* Token Tipográfico: ${tipo.estilo} (Rejilla ${this.baselineGridStep()}px UI) */\nfont-family: '${fontFamily}', sans-serif;\nfont-size: ${tipo.tamano_px}px; /* ${remValue}rem */\nline-height: ${lhPx}px; /* rejilla ${this.baselineGridStep()}px (ratio: ${unitlessRatio}) */\nfont-weight: ${weightNum};\nletter-spacing: ${tracking};`;
+    }
 
     if (navigator?.clipboard?.writeText) {
       navigator.clipboard.writeText(cssSnippet).then(() => {
