@@ -1,0 +1,196 @@
+.text-primary-blue {
+  color: #2563eb !important;
+}
+
+.bg-primary-blue {
+  background-color: #2563eb !important;
+  color: white !important;
+}
+
+.rounded-4 {
+  border-radius: 1rem !important;
+}
+
+.btn-xs {
+  padding: 0.2rem 0.55rem;
+  font-size: 0.7rem;
+  line-height: 1.2;
+}
+
+.btn-white {
+  background-color: #ffffff;
+  color: #64748b;
+  border-color: #e2e8f0;
+  transition: all 0.15s ease-in-out;
+
+  &:hover {
+    background-color: #f8fafc;
+    color: #1e293b;
+    border-color: #cbd5e1;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+  }
+}
+
+.transition-all {
+  transition: all 0.2s ease-in-out;
+}
+
+/* ========================================================================= */
+/* MEJORA 2: VISOR DE RETÍCULA BASE DE 4PX (BASELINE GRID OVERLAY)           */
+/* ========================================================================= */
+.baseline-grid-overlay {
+  position: relative;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    z-index: 10;
+    background-image: repeating-linear-gradient(
+      to bottom,
+      rgba(37, 99, 235, 0.12) 0px,
+      rgba(37, 99, 235, 0.12) 1px,
+      transparent 1px,
+      transparent 4px
+    );
+  }
+}
+
+.table th, .table td {
+  vertical-align: middle;
+}
+
+/* ========================================================================= */
+/* VISTA 1 & 2: REFINAMIENTO DE TABLA Y MUESTRARIO TIPOGRÁFICO               */
+/* ========================================================================= */
+.typography-spec-table {
+  thead th {
+    font-size: 0.74rem;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: #64748b;
+    background-color: #f8fafc;
+  }
+
+  tbody tr {
+    transition: background-color 0.15s ease-in-out;
+    &:hover {
+      background-color: #f8fafc;
+    }
+  }
+
+  td {
+    padding-top: 0.85rem !important;
+    padding-bottom: 0.85rem !important;
+  }
+}
+
+.type-specimen-row {
+  transition: all 0.18s ease-in-out;
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+
+  &:hover {
+    background-color: #f8fafc;
+  }
+
+  &:last-child {
+    border-bottom: none !important;
+  }
+}
+
+.type-specimen-text {
+  overflow-wrap: break-word;
+  word-break: break-word;
+  transition: all 0.2s ease-in-out;
+}
+
+/* ========================================================================= */
+/* VISUALIZADOR DE ESCALA MODULAR (EQUALIZER / STEPPER)                      */
+/* ========================================================================= */
+.type-scale-equalizer {
+  display: flex;
+  align-items: flex-end;
+  gap: 5px;
+  height: 64px;
+  padding: 4px 2px 2px 2px;
+
+  .equalizer-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    height: 100%;
+    position: relative;
+    cursor: default;
+
+    .equalizer-bar {
+      width: 100%;
+      border-radius: 4px 4px 2px 2px;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      background-color: #cbd5e1;
+
+      &.bar-base {
+        background: linear-gradient(180deg, #2563eb 0%, #1d4ed8 100%);
+        box-shadow: 0 2px 6px rgba(37, 99, 235, 0.25);
+      }
+
+      &.bar-principal {
+        background: linear-gradient(180deg, #60a5fa 0%, #3b82f6 100%);
+      }
+
+      &.bar-secundaria {
+        background: linear-gradient(180deg, #94a3b8 0%, #64748b 100%);
+      }
+    }
+
+    &:hover {
+      .equalizer-bar {
+        filter: brightness(1.15);
+        transform: scaleY(1.05);
+      }
+      .equalizer-size-label {
+        color: #1e293b;
+        font-weight: 700;
+      }
+    }
+
+    .equalizer-size-label {
+      font-size: 0.62rem;
+      color: #64748b;
+      line-height: 1;
+      margin-bottom: 3px;
+      transition: all 0.15s ease;
+    }
+
+    .equalizer-name-label {
+      font-size: 0.58rem;
+      color: #94a3b8;
+      line-height: 1;
+      margin-top: 4px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+      max-width: 100%;
+    }
+  }
+}
+
+.type-scale-metric-pill {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.6rem;
+  padding: 0.35rem 0.5rem;
+  transition: all 0.15s ease-in-out;
+
+  &:hover {
+    border-color: #cbd5e1;
+    background-color: #f8fafc;
+  }
+}

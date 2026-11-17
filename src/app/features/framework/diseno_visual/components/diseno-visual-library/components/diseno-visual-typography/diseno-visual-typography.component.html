@@ -1,0 +1,895 @@
+<!-- Sistema tipográfico con Modelos Matemáticos y Algoritmos Científicos -->
+<div class="bg-white rounded p-4 mb-4 shadow-sm border border-light">
+  <div class="d-flex justify-content-between align-items-center mb-1">
+    <h6 class="fw-bold d-flex align-items-center gap-2 mb-0">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="text-primary-blue"
+        viewBox="0 0 16 16">
+        <path
+          d="M1.5 2.5A1.5 1.5 0 0 1 3 1h10a1.5 1.5 0 0 1 1.5 1.5v3.563a2 2 0 0 1 0 3.874V13.5A1.5 1.5 0 0 1 13 15H3a1.5 1.5 0 0 1-1.5-1.5V9.937a2 2 0 0 1 0-3.874V2.5zm1 3.563a2 2 0 0 1 0 3.874V13.5a.5.5 0 0 0 .5.5h10a.5.5 0 0 0 .5-.5V9.937a2 2 0 0 1 0-3.874V2.5a.5.5 0 0 0-.5-.5H3a.5.5 0 0 0-.5.5v3.563zM2 7a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm12 0a1 1 0 1 0 0 2 1 1 0 0 0 0-2z" />
+        <path
+          d="M11.434 4H4.566L4.5 5.994h.386c.21-1.252.612-1.446 2.173-1.495l.343-.011v6.343c0 .537-.116.665-1.049.748V12h3.294v-.421c-.938-.083-1.054-.21-1.054-.748V4.488l.348.01c1.56.05 1.963.244 2.173 1.496h.386L11.434 4z" />
+      </svg>
+      Sistema Tipográfico Inteligente (GUI Typography Engine)
+    </h6>
+    <span *ngIf="scoreLecturabilidad()"
+      class="badge bg-{{scoreLecturabilidad().color}} bg-opacity-10 text-{{scoreLecturabilidad().color}} border border-{{scoreLecturabilidad().color}} px-3 py-1"
+      style="font-size: 0.75rem;">
+      Índice GUI: {{scoreLecturabilidad().score}}
+    </span>
+  </div>
+  <div class="text-muted small mb-3">
+    Basado en modelos psicofísicos de frecuencia espacial (APCA), curvas de interletrado óptico (Apple HIG) y afinidad
+    morfológica NMF (Nature Sci Rep 2024).
+  </div>
+
+  <div class="row g-3 mb-4" *ngIf="config()">
+    <!-- Columna 1: Emparejamiento Científico de Fuentes -->
+    <div class="col-lg-5">
+      <div class="card border border-light shadow-none h-100 p-3 bg-light bg-opacity-50">
+        <h6 class="fw-bold mb-2 text-dark d-flex align-items-center justify-content-between"
+          style="font-size: 0.82rem;">
+          <span>Emparejamiento Morfológico</span>
+          <span
+            class="badge bg-{{pairingEvaluation().badgeColor}} bg-opacity-10 text-{{pairingEvaluation().badgeColor}} border border-{{pairingEvaluation().badgeColor}}"
+            style="font-size: 0.68rem;">
+            {{ pairingEvaluation().verdict }} ({{ pairingEvaluation().harmonyScore }}%)
+          </span>
+        </h6>
+
+        <div class="row g-2 mb-2">
+          <div class="col-6">
+            <label class="small text-muted mb-1 fw-bold" style="font-size: 0.7rem;">Titulares (Principal)</label>
+            <select class="form-select form-select-sm" [(ngModel)]="config()!.fuente_principal"
+              (change)="actualizarConfiguracion()">
+              <option *ngFor="let font of fuentesDisponibles" [value]="font">{{font}}</option>
+            </select>
+          </div>
+          <div class="col-6">
+            <label class="small text-muted mb-1 fw-bold" style="font-size: 0.7rem;">Cuerpo (Secundaria)</label>
+            <select class="form-select form-select-sm" [(ngModel)]="config()!.fuente_secundaria"
+              (change)="actualizarConfiguracion()">
+              <option *ngFor="let font of fuentesDisponibles" [value]="font">{{font}}</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Selector de Arquetipo de GUI (TypographicArchetype) -->
+        <div class="mb-2">
+          <div class="d-flex justify-content-between align-items-center mb-1">
+            <label class="small text-muted mb-0 fw-bold" style="font-size: 0.68rem;">Arquetipo de GUI
+              (Intención):</label>
+            <span class="badge bg-primary bg-opacity-10 text-primary border border-primary py-0 px-2"
+              style="font-size: 0.65rem;">
+              {{ selectedArchetype() | uppercase }}
+            </span>
+          </div>
+          <div class="d-flex flex-wrap gap-1">
+            <button *ngFor="let arch of arquetipos" type="button" class="btn btn-xs rounded-pill"
+              [ngClass]="selectedArchetype() === arch.id ? 'btn-primary text-white shadow-sm' : 'btn-white text-muted border border-light'"
+              style="font-size: 0.66rem; padding: 0.15rem 0.5rem;" (click)="setArchetype(arch.id)" [title]="arch.desc">
+              {{ arch.label }}
+            </button>
+          </div>
+        </div>
+
+        <!-- Explicación del modelo de Choi & Hyun -->
+        <div class="p-2 rounded bg-white border border-light small text-muted mb-2" style="font-size: 0.74rem;">
+          <div class="d-flex align-items-center justify-content-between mb-1">
+            <span class="fw-bold text-dark">Distancia Morfológica:</span>
+            <span class="badge bg-secondary bg-opacity-10 text-secondary">{{ pairingEvaluation().morphologicalDistance
+              }} D_nmf</span>
+          </div>
+          <p class="mb-0 lh-sm">{{ pairingEvaluation().explanation }}</p>
+        </div>
+
+        <!-- Recomendaciones automáticas según el Arquetipo seleccionado -->
+        <div class="mt-auto pt-1">
+          <div class="d-flex justify-content-between align-items-center mb-1">
+            <label class="small text-muted mb-0 fw-bold" style="font-size: 0.68rem;">
+              Sugerencias para {{ selectedArchetype() | uppercase }}:
+            </label>
+            <span class="text-muted" style="font-size: 0.62rem;">Choi & Hyun 2024</span>
+          </div>
+          <div class="d-flex flex-wrap gap-1">
+            <button *ngFor="let rec of recommendedPairings()"
+              class="btn btn-xs btn-outline-primary py-0 px-2 rounded-pill bg-white d-flex align-items-center gap-1"
+              style="font-size: 0.66rem;" (click)="aplicarParejaRecomendada(rec.secondaryFont)"
+              [title]="rec.contrastReason">
+              <span>+ {{ rec.secondaryFont }}</span>
+              <span class="badge bg-primary bg-opacity-10 text-primary py-0 px-1" style="font-size: 0.6rem;">{{
+                rec.compatibilityScore }}%</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Columna 2: Generador de Escala & Ritmo Vertical -->
+    <div class="col-lg-7">
+      <div
+        class="card border border-light shadow-none h-100 p-3 bg-light bg-opacity-50 d-flex flex-column justify-content-between">
+        <div>
+          <!-- Cabecera -->
+          <div class="d-flex justify-content-between align-items-center mb-1">
+            <h6 class="fw-bold mb-0 text-dark d-flex align-items-center gap-2" style="font-size: 0.82rem;">
+              <span>Motor de Escala & Ritmo Vertical</span>
+            </h6>
+            <span class="badge bg-primary bg-opacity-10 text-primary border border-primary" style="font-size: 0.65rem;">
+              Rejilla {{ baselineGridStep() }}px Lock
+            </span>
+          </div>
+          <p class="text-muted mb-2" style="font-size: 0.72rem;">
+            Calcula la progresión modular con interlineado dinámico inverso, interletrado óptico adaptativo y ajuste a
+            rejilla base de 4px.
+          </p>
+
+          <!-- Inputs de configuración matemática -->
+          <div class="row g-2 align-items-end mb-2">
+            <div class="col-3">
+              <label class="small text-muted mb-1 fw-semibold" style="font-size: 0.68rem;">Base (px)</label>
+              <input type="number" class="form-control form-control-sm" [(ngModel)]="escalaBase"
+                (ngModelChange)="previewEscala()">
+            </div>
+            <div class="col-4">
+              <label class="small text-muted mb-1 fw-semibold" style="font-size: 0.68rem;">Ratio Modular</label>
+              <select class="form-select form-select-sm" [(ngModel)]="escalaRatio" (ngModelChange)="previewEscala()">
+                <option *ngFor="let r of ratios" [value]="r.valor">{{r.nombre}}</option>
+              </select>
+            </div>
+            <div class="col-3">
+              <label class="small text-muted mb-1 fw-semibold" style="font-size: 0.68rem;">Densidad UI</label>
+              <select class="form-select form-select-sm" [ngModel]="layoutDensity()"
+                (ngModelChange)="layoutDensity.set($event); previewEscala()">
+                <option value="compact">Compacto</option>
+                <option value="normal">Estándar</option>
+                <option value="comfortable">Espacioso</option>
+              </select>
+            </div>
+            <div class="col-2">
+              <button class="btn btn-sm btn-outline-primary w-100 fw-medium" style="font-size: 0.72rem;"
+                (click)="previewEscala()">
+                Calcular
+              </button>
+            </div>
+          </div>
+
+          <!-- Switch Tipografía fluida y estado del ritmo -->
+          <div class="d-flex align-items-center gap-3 pt-1 border-top border-light small text-muted mb-2"
+            style="font-size: 0.7rem;">
+            <div class="form-check form-switch mb-0">
+              <input class="form-check-input" type="checkbox" id="fluidClampSwitch" [ngModel]="enableFluidClamp()"
+                (ngModelChange)="enableFluidClamp.set($event); previewEscala()">
+              <label class="form-check-label" for="fluidClampSwitch">Tipografía Fluida Responsiva (clamp)</label>
+            </div>
+            <span class="text-muted ms-auto">
+              Ritmo: <strong class="text-dark">{{ hierarchyScore().metrics.baselineRhythmScore }}%</strong> conforme a
+              4px
+            </span>
+          </div>
+        </div>
+
+        <!-- ========================================================================= -->
+        <!-- RECOMENDACIÓN 1: VISUALIZADOR GRÁFICO DE ESCALA MODULAR (EQUALIZER STEPPER)-->
+        <!-- ========================================================================= -->
+        <div class="p-2 rounded-3 bg-white border border-light mb-2">
+          <div class="d-flex justify-content-between align-items-center mb-1">
+            <div class="d-flex align-items-center gap-1">
+              <span class="fw-bold text-dark" style="font-size: 0.69rem;">Progresión Armónica Modular</span>
+              <span class="badge bg-light text-muted border py-0 px-1" style="font-size: 0.6rem;">
+                f(n) = {{ escalaBase }} × {{ escalaRatio }}ⁿ
+              </span>
+            </div>
+            <span class="badge bg-primary bg-opacity-10 text-primary py-0 px-1" style="font-size: 0.62rem;">
+              Base: {{ escalaBase }}px
+            </span>
+          </div>
+
+          <!-- Gráfica de Barras Proporcionales (Equalizer) -->
+          <div class="type-scale-equalizer">
+            <div *ngFor="let item of progresionAscendente()" class="equalizer-col"
+              [title]="item.estilo + ': ' + item.tamano_px + 'px (line-height: ' + getLineHeightPx(item.tamano_px, item.interlineado) + 'px)'">
+              <span class="equalizer-size-label">{{ item.tamano_px }}</span>
+              <div class="equalizer-bar" [style.height.%]="getBarHeightPercentage(item.tamano_px)" [ngClass]="{
+                  'bar-base': item.estilo === 'Body',
+                  'bar-principal': item.tipo_fuente === 'Principal',
+                  'bar-secundaria': item.tipo_fuente === 'Secundaria' && item.estilo !== 'Body'
+                }">
+              </div>
+              <span class="equalizer-name-label">{{ item.estilo }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ========================================================================= -->
+        <!-- RECOMENDACIÓN 2: TABLERO DE SALUD Y MÉTRICAS DE CALIBRACIÓN TIPOGRÁFICA   -->
+        <!-- ========================================================================= -->
+        <div class="row g-1 pt-1">
+          <!-- Métrica 1: Rejilla 4px Lock -->
+          <div class="col-3">
+            <div class="type-scale-metric-pill text-center">
+              <div class="text-muted d-flex align-items-center justify-content-center gap-1"
+                style="font-size: 0.61rem;">
+                <span>Rejilla 4px</span>
+              </div>
+              <div class="fw-bold text-dark lh-sm" style="font-size: 0.74rem;">
+                {{ hierarchyScore().metrics.baselineRhythmScore }}%
+              </div>
+              <div class="text-success fw-medium" style="font-size: 0.58rem;">Bloqueo 4px</div>
+            </div>
+          </div>
+
+          <!-- Métrica 2: Armonía Modular -->
+          <div class="col-3">
+            <div class="type-scale-metric-pill text-center">
+              <div class="text-muted d-flex align-items-center justify-content-center gap-1"
+                style="font-size: 0.61rem;">
+                <span>Armonía</span>
+              </div>
+              <div class="fw-bold text-dark lh-sm" style="font-size: 0.74rem;">
+                {{ hierarchyScore().metrics.scaleProgressionScore }}%
+              </div>
+              <div class="text-muted" style="font-size: 0.58rem;">JND Fechner</div>
+            </div>
+          </div>
+
+          <!-- Métrica 3: Tracking Adaptativo -->
+          <div class="col-3">
+            <div class="type-scale-metric-pill text-center">
+              <div class="text-muted d-flex align-items-center justify-content-center gap-1"
+                style="font-size: 0.61rem;">
+                <span>Tracking</span>
+              </div>
+              <div class="fw-bold text-dark lh-sm" style="font-size: 0.74rem;">
+                {{ hierarchyScore().metrics.opticalTrackingHealth }}%
+              </div>
+              <div class="text-info fw-medium" style="font-size: 0.58rem;">Apple HIG</div>
+            </div>
+          </div>
+
+          <!-- Métrica 4: Morfología de Trazo (Frecuencia Espacial) -->
+          <div class="col-3">
+            <div class="type-scale-metric-pill text-center"
+              title="Evalúa que los pesos y tamaños de la escala sean estables geométricamente (sin dependencia de color)">
+              <div class="text-muted d-flex align-items-center justify-content-center gap-1"
+                style="font-size: 0.61rem;">
+                <span>Morfología</span>
+              </div>
+              <div class="fw-bold text-dark lh-sm" style="font-size: 0.74rem;">
+                {{ hierarchyScore().metrics.spatialLegibilityScore }}%
+              </div>
+              <div class="text-success fw-medium" style="font-size: 0.58rem;">Trazo Estable</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Barra de control y cabecera de estilos tipográficos -->
+  <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-3 mt-4">
+    <div class="d-flex align-items-center gap-2 flex-wrap">
+      <span class="small fw-bold text-dark">Estilos Tipográficos ({{ (tipografiasPreview() || tipografias()).length
+        }})</span>
+      <span class="badge bg-secondary bg-opacity-10 text-secondary border fw-normal" style="font-size: 0.7rem;">
+        Cuadrícula: 4px Baseline
+      </span>
+      <span class="badge bg-info bg-opacity-10 text-info border border-info fw-normal" style="font-size: 0.7rem;">
+        Interletrado: Dinámico Óptico
+      </span>
+      <!-- Indicador en tiempo real APCA conectado al Paso 1 (Colores) -->
+      <span *ngIf="apcaPaletteSync().audit.total > 0"
+        class="badge d-inline-flex align-items-center gap-1 fw-medium border"
+        [ngClass]="apcaPaletteSync().audit.fallan === 0 ? 'bg-success bg-opacity-10 text-success border-success' : 'bg-warning bg-opacity-10 text-dark border-warning'"
+        style="font-size: 0.7rem;"
+        [title]="'Evaluado con ' + colorTextoPrincipal().nombre + ' (' + apcaPaletteSync().fg + ') sobre ' + colorFondoPrincipal().nombre + ' (' + apcaPaletteSync().bg + ')'">
+        <span class="rounded-circle border d-inline-block" [style.background-color]="apcaPaletteSync().fg"
+          style="width: 8px; height: 8px;"></span>
+        <span class="rounded-circle border d-inline-block" [style.background-color]="apcaPaletteSync().bg"
+          style="width: 8px; height: 8px;"></span>
+        <span>APCA Paleta (Lc {{ apcaPaletteSync().evaluation.absLc }}): {{ apcaPaletteSync().audit.cumplen }}/{{
+          apcaPaletteSync().audit.total }} aptos</span>
+      </span>
+    </div>
+
+    <div class="d-flex align-items-center gap-2 flex-wrap">
+      <!-- Selector de Modo de Vista (Segmented Control) -->
+      <div class="btn-group btn-group-sm p-1 bg-light rounded-pill border" role="group">
+        <button type="button" class="btn rounded-pill px-3 py-1 fw-medium transition-all"
+          [ngClass]="vistaModo === 'tokens' ? 'btn-white shadow-sm text-primary fw-bold' : 'text-muted border-0 bg-transparent'"
+          (click)="vistaModo = 'tokens'" title="Vista compacta de tabla con especificaciones">
+          <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="currentColor" class="me-1"
+            viewBox="0 0 16 16">
+            <path
+              d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm15 2h-4v3h4V4zm0 4h-4v3h4V8zm0 4h-4v3h3a1 1 0 0 0 1-1v-2zm-5 3v-3H6v3h4zm-5 0v-3H1v2a1 1 0 0 0 1 1h3zm-4-4h4V8H1v3zm0-4h4V4H1v3zm5-3v3h4V4H6zm4 4H6v3h4V8z" />
+          </svg>
+          Especificaciones
+        </button>
+        <button type="button" class="btn rounded-pill px-3 py-1 fw-medium transition-all"
+          [ngClass]="vistaModo === 'visual' ? 'btn-white shadow-sm text-primary fw-bold' : 'text-muted border-0 bg-transparent'"
+          (click)="vistaModo = 'visual'" title="Vista de catálogo y escala tipográfica visual en cascada">
+          <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="currentColor" class="me-1"
+            viewBox="0 0 16 16">
+            <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z" />
+            <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8zm8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z" />
+          </svg>
+          Muestrario Visual
+        </button>
+      </div>
+
+      <!-- Toggle Vista Avanzada / Básica (Opción 1: Control de profundidad técnica) -->
+      <div class="d-flex align-items-center bg-light border rounded-pill px-3 py-1" *ngIf="vistaModo === 'tokens'">
+        <div class="form-check form-switch mb-0 d-flex align-items-center gap-2">
+          <input class="form-check-input my-0 cursor-pointer" type="checkbox" role="switch" id="modoAvanzadoSwitch"
+            [checked]="modoAvanzado" (change)="toggleModoAvanzado()">
+          <label
+            class="form-check-label small fw-semibold text-dark d-flex align-items-center gap-1 cursor-pointer user-select-none"
+            for="modoAvanzadoSwitch" style="font-size: 0.73rem;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="currentColor"
+              [ngClass]="modoAvanzado ? 'text-primary' : 'text-muted'" viewBox="0 0 16 16">
+              <path
+                d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492zM5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0z" />
+              <path
+                d="M9.796 1.343c-.527-1.79-3.065-1.79-3.592 0l-.094.319a.873.873 0 0 1-1.255.52l-.292-.16c-1.64-.892-3.433.902-2.54 2.541l.159.292a.873.873 0 0 1-.52 1.255l-.319.094c-1.79.527-1.79 3.065 0 3.592l.319.094a.873.873 0 0 1 .52 1.255l-.16.292c-.892 1.64.901 3.434 2.541 2.54l.292-.159a.873.873 0 0 1 1.255.52l.094.319c.527 1.79 3.065 1.79 3.592 0l.094-.319a.873.873 0 0 1 1.255-.52l.292.16c1.64.893 3.434-.902 2.54-2.541l-.159-.292a.873.873 0 0 1 .52-1.255l.319-.094c1.79-.527 1.79-3.065 0-3.592l-.319-.094a.873.873 0 0 1-.52-1.255l.16-.292c.893-1.64-.902-3.433-2.541-2.54l-.292.159a.873.873 0 0 1-1.255-.52l-.094-.319z" />
+            </svg>
+            <span>Vista Técnica</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Toggle de Rejilla 4px -->
+      <button type="button"
+        class="btn btn-sm rounded-pill px-3 py-1 d-flex align-items-center gap-1 transition-all border"
+        [ngClass]="mostrarGridOverlay ? 'btn-primary text-white shadow-sm' : 'btn-white text-muted'"
+        (click)="mostrarGridOverlay = !mostrarGridOverlay" title="Alternar cuadrícula de referencia de 4px">
+        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="currentColor" viewBox="0 0 16 16">
+          <path
+            d="M1 2.5A1.5 1.5 0 0 1 2.5 1h3A1.5 1.5 0 0 1 7 2.5v3A1.5 1.5 0 0 1 5.5 7h-3A1.5 1.5 0 0 1 1 5.5v-3zM2.5 2a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5h-3zm6.5.5A1.5 1.5 0 0 1 10.5 1h3A1.5 1.5 0 0 1 15 2.5v3A1.5 1.5 0 0 1 13.5 7h-3A1.5 1.5 0 0 1 9 5.5v-3zm1.5-.5a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5h-3zM1 10.5A1.5 1.5 0 0 1 2.5 9h3A1.5 1.5 0 0 1 7 10.5v3A1.5 1.5 0 0 1 5.5 15h-3A1.5 1.5 0 0 1 1 13.5v-3zm1.5-.5a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5h-3zm6.5.5A1.5 1.5 0 0 1 10.5 9h3a1.5 1.5 0 0 1 1.5 1.5v3a1.5 1.5 0 0 1-1.5 1.5h-3A1.5 1.5 0 0 1 9 13.5v-3zm1.5-.5a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5h-3z" />
+        </svg>
+        <span>Rejilla 4px</span>
+      </button>
+
+      <button class="btn btn-primary btn-sm px-3 shadow-sm rounded-pill" (click)="abrirModalTipografia()">
+        + Nuevo estilo
+      </button>
+    </div>
+  </div>
+
+  <!-- Banner de previsualización -->
+  <div *ngIf="tipografiasPreview() !== null"
+    class="alert alert-warning border-warning shadow-sm d-flex align-items-center justify-content-between mb-4">
+    <div class="d-flex align-items-center">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+        class="me-2 text-warning flex-shrink-0" viewBox="0 0 16 16">
+        <path
+          d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
+      </svg>
+      <div>
+        <strong>Modo Previsualización Matemática:</strong> Estás previsualizando la escala calibrada con límites
+        ergonómicos APCA.
+        <div class="small text-dark opacity-75">Pulsa <strong>Guardar esta escala</strong> para actualizar los tokens en
+          todo el proyecto.</div>
+      </div>
+    </div>
+    <div class="d-flex gap-2">
+      <button class="btn btn-sm btn-outline-secondary bg-white" (click)="cancelarEscalaPreview()">Descartar</button>
+      <button class="btn btn-sm btn-success fw-bold px-3" (click)="guardarEscalaPreview()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="me-1"
+          viewBox="0 0 16 16">
+          <path
+            d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z" />
+        </svg>
+        Guardar esta escala
+      </button>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- VISTA 1A: MODO BÁSICO (LAS 2 FUENTES DEL SISTEMA: PRINCIPAL Y SECUNDARIA)  -->
+  <!-- ========================================================================= -->
+  <div *ngIf="vistaModo === 'tokens' && !modoAvanzado" class="mb-4">
+    <div class="row g-3">
+      <!-- Tarjeta 1: Fuente Principal (Titulares) -->
+      <div class="col-lg-6">
+        <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden bg-white p-4"
+          [class.baseline-grid-overlay]="mostrarGridOverlay">
+          <div class="d-flex justify-content-between align-items-start mb-3">
+            <div>
+              <div class="d-flex align-items-center gap-2 mb-1">
+                <span class="badge bg-primary bg-opacity-10 text-primary border border-primary fw-semibold px-2 py-1"
+                  style="font-size: 0.72rem;">
+                  Fuente Principal
+                </span>
+                <span class="text-muted small" style="font-size: 0.74rem;">Titulares & Encabezados</span>
+              </div>
+              <h4 class="fw-bold text-dark mb-0" [style.font-family]="config()?.fuente_principal">
+                {{ config()?.fuente_principal || 'Inter' }}
+              </h4>
+            </div>
+            <span class="badge bg-light text-secondary border fw-medium px-2 py-1" style="font-size: 0.72rem;">
+              {{ tipografiasPrincipales().length }} estilos
+            </span>
+          </div>
+
+          <!-- Muestra de Titular Principal -->
+          <div class="p-3 rounded-3 bg-light bg-opacity-50 border border-light mb-3">
+            <div class="text-muted small mb-1 fw-semibold"
+              style="font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.05em;">
+              Muestra en Titular ({{ estiloTitularPreview()?.estilo || 'Display' }}):
+            </div>
+            <div class="text-dark text-truncate" [style.font-family]="config()?.fuente_principal"
+              [style.font-weight]="getFontWeightNumber(estiloTitularPreview()?.peso || '700')"
+              [style.letter-spacing]="getTracking(estiloTitularPreview()?.tamano_px || 49, estiloTitularPreview()?.peso || '700')"
+              style="font-size: 1.6rem; line-height: 1.25;" title="{{ textoMuestra }}">
+              {{ textoMuestra }}
+            </div>
+          </div>
+
+          <!-- Escala y Tokens Asociados -->
+          <div class="mt-auto">
+            <div class="text-muted small mb-2 fw-semibold" style="font-size: 0.72rem;">Estilos de la jerarquía
+              principal:</div>
+            <div class="d-flex flex-wrap gap-2">
+              <button *ngFor="let item of tipografiasPrincipales()" type="button"
+                class="btn btn-sm btn-white border rounded-pill d-inline-flex align-items-center gap-2 py-1 px-3 shadow-none transition-all"
+                (click)="abrirModalTipografia(item)" [title]="'Editar ' + item.estilo + ' (' + item.tamano_px + 'px)'">
+                <span class="fw-bold text-dark" style="font-size: 0.76rem;">{{ item.estilo }}</span>
+                <span class="badge bg-primary bg-opacity-10 text-primary py-0 px-1" style="font-size: 0.68rem;">{{
+                  item.tamano_px }}px</span>
+                <span class="text-muted" style="font-size: 0.68rem;">{{ item.peso.split(' ')[0] }}</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="currentColor" class="text-muted"
+                  viewBox="0 0 16 16">
+                  <path
+                    d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10z" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tarjeta 2: Fuente Secundaria (Cuerpo & UI) -->
+      <div class="col-lg-6">
+        <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden bg-white p-4"
+          [class.baseline-grid-overlay]="mostrarGridOverlay">
+          <div class="d-flex justify-content-between align-items-start mb-3">
+            <div>
+              <div class="d-flex align-items-center gap-2 mb-1">
+                <span class="badge bg-secondary bg-opacity-10 text-secondary border fw-semibold px-2 py-1"
+                  style="font-size: 0.72rem;">
+                  Fuente Secundaria
+                </span>
+                <span class="text-muted small" style="font-size: 0.74rem;">Cuerpo, Párrafos e Interfaz</span>
+              </div>
+              <h4 class="fw-bold text-dark mb-0" [style.font-family]="config()?.fuente_secundaria">
+                {{ config()?.fuente_secundaria || 'Montserrat' }}
+              </h4>
+            </div>
+            <span class="badge bg-light text-secondary border fw-medium px-2 py-1" style="font-size: 0.72rem;">
+              {{ tipografiasSecundarias().length }} estilos
+            </span>
+          </div>
+
+          <!-- Muestra de Párrafo de Lectura Continua -->
+          <div class="p-3 rounded-3 bg-light bg-opacity-50 border border-light mb-3">
+            <div class="text-muted small mb-1 fw-semibold"
+              style="font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.05em;">
+              Muestra en Lectura Continua ({{ estiloCuerpoPreview()?.estilo || 'Body' }}):
+            </div>
+            <div class="text-dark" [style.font-family]="config()?.fuente_secundaria"
+              [style.font-weight]="getFontWeightNumber(estiloCuerpoPreview()?.peso || '400')"
+              [style.letter-spacing]="getTracking(estiloCuerpoPreview()?.tamano_px || 16, estiloCuerpoPreview()?.peso || '400')"
+              style="font-size: 0.95rem; line-height: 1.55;">
+              {{ textoMuestra }}. Calibrada para lectura fluida, componentes UI y alta densidad de datos.
+            </div>
+          </div>
+
+          <!-- Escala y Tokens Asociados -->
+          <div class="mt-auto">
+            <div class="text-muted small mb-2 fw-semibold" style="font-size: 0.72rem;">Estilos de lectura y UI:</div>
+            <div class="d-flex flex-wrap gap-2">
+              <button *ngFor="let item of tipografiasSecundarias()" type="button"
+                class="btn btn-sm btn-white border rounded-pill d-inline-flex align-items-center gap-2 py-1 px-3 shadow-none transition-all"
+                (click)="abrirModalTipografia(item)" [title]="'Editar ' + item.estilo + ' (' + item.tamano_px + 'px)'">
+                <span class="fw-bold text-dark" style="font-size: 0.76rem;">{{ item.estilo }}</span>
+                <span class="badge bg-secondary bg-opacity-10 text-secondary py-0 px-1" style="font-size: 0.68rem;">{{
+                  item.tamano_px }}px</span>
+                <span class="text-muted" style="font-size: 0.68rem;">{{ item.peso.split(' ')[0] }}</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="currentColor"
+                  class="text-muted ms-1" viewBox="0 0 16 16">
+                  <path
+                    d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10z" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Barra informativa inferior con acceso a la Vista Técnica -->
+    <div
+      class="d-flex flex-wrap justify-content-between align-items-center gap-2 p-3 mt-3 bg-light rounded-4 border border-light">
+      <div class="d-flex align-items-center gap-2 text-muted small" style="font-size: 0.76rem;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor"
+          class="text-primary flex-shrink-0" viewBox="0 0 16 16">
+          <path
+            d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z" />
+        </svg>
+        <span>Vista sintética activa (2 familias tipográficas). Para inspeccionar cada token con su ratio, line-height
+          4px y tracking en em, activa la <strong>Vista Técnica</strong>.</span>
+      </div>
+      <button type="button"
+        class="btn btn-xs btn-outline-primary rounded-pill px-3 fw-medium d-inline-flex align-items-center gap-1"
+        (click)="toggleModoAvanzado()">
+        <span>Abrir Vista Técnica</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" fill="currentColor" viewBox="0 0 16 16">
+          <path fill-rule="evenodd"
+            d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z" />
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- VISTA 1B: MODO TÉCNICO AVANZADO (TABLA EXTENSA COMPLETA DE TOKENS)        -->
+  <!-- ========================================================================= -->
+  <div *ngIf="vistaModo === 'tokens' && modoAvanzado"
+    class="card bg-white border-0 shadow-sm rounded-4 overflow-hidden mb-4"
+    [class.baseline-grid-overlay]="mostrarGridOverlay">
+    <div class="table-responsive">
+      <table class="table table-hover mb-0 border-light align-middle typography-spec-table">
+        <thead class="bg-light">
+          <tr>
+            <th class="px-4 py-3 text-muted small fw-semibold border-bottom-0" style="width: 22%;">Token & Fuente</th>
+            <th class="px-3 py-3 text-muted small fw-semibold border-bottom-0" style="width: 30%;">Muestra Compacta</th>
+            <th class="px-3 py-3 text-muted small fw-semibold border-bottom-0" style="width: 24%;">Dimensiones (Tamaño /
+              Line-Height)</th>
+            <th class="px-3 py-3 text-muted small fw-semibold border-bottom-0" style="width: 14%;">Calibración Óptica
+            </th>
+            <th class="px-4 py-3 text-muted small fw-semibold border-bottom-0 text-end" style="width: 10%;">Acciones
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let tipo of (tipografiasPreview() || tipografias())" class="border-bottom border-light">
+            <!-- Token & Familia -->
+            <td class="px-4 py-3">
+              <div class="d-flex align-items-center gap-2 mb-1">
+                <span class="fw-bold text-dark fs-6">{{ tipo.estilo }}</span>
+                <span class="badge"
+                  [ngClass]="tipo.tipo_fuente === 'Principal' ? 'bg-primary bg-opacity-10 text-primary border border-primary' : 'bg-secondary bg-opacity-10 text-secondary border'"
+                  style="font-size: 0.65rem;">
+                  {{ tipo.tipo_fuente }}
+                </span>
+              </div>
+              <div class="text-muted text-truncate" style="font-size: 0.72rem; max-width: 200px;"
+                title="{{ tipo.tipo_fuente === 'Principal' ? config()?.fuente_principal : config()?.fuente_secundaria }}">
+                {{ tipo.tipo_fuente === 'Principal' ? config()?.fuente_principal : config()?.fuente_secundaria }}
+              </div>
+            </td>
+
+            <!-- Muestra Normalizada -->
+            <td class="px-3 py-3">
+              <div class="text-dark text-truncate"
+                [style.font-family]="tipo.tipo_fuente === 'Principal' ? config()?.fuente_principal : config()?.fuente_secundaria"
+                [style.letter-spacing]="getTracking(tipo.tamano_px, tipo.peso)"
+                [style.font-weight]="getFontWeightNumber(tipo.peso)" style="font-size: 1.05rem; max-width: 340px;"
+                title="{{ textoMuestra }}">
+                {{ textoMuestra }}
+              </div>
+            </td>
+
+            <!-- Dimensiones agrupadas (px + rem + line-height con check 4px) -->
+            <td class="px-3 py-3">
+              <div class="d-flex align-items-center gap-2 mb-1">
+                <span class="badge bg-secondary bg-opacity-10 text-secondary fw-bold px-2 py-1"
+                  style="font-size: 0.76rem;">
+                  {{ tipo.tamano_px }} px
+                </span>
+                <span class="text-dark fw-semibold small">
+                  {{ getLineHeightPx(tipo.tamano_px, tipo.interlineado) }} px
+                </span>
+                <span
+                  class="badge bg-success bg-opacity-10 text-success border border-success d-inline-flex align-items-center gap-1 py-0 px-1"
+                  *ngIf="getLineHeightPx(tipo.tamano_px, tipo.interlineado) % 4 === 0"
+                  title="Alineado a cuadrícula de 4px" style="font-size: 0.65rem;">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="9" height="9" fill="currentColor" viewBox="0 0 16 16">
+                    <path
+                      d="M12.736 3.97a.75.75 0 0 1 1.048 1.087l-7.25 7a.75.75 0 0 1-1.072-.02l-3.5-3.5a.75.75 0 1 1 1.084-1.04L6.03 10.457l6.706-6.487z" />
+                  </svg>
+                  <span>4px</span>
+                </span>
+              </div>
+              <div class="text-muted" style="font-size: 0.69rem;">
+                {{ (tipo.tamano_px / escalaBase).toFixed(3) }} rem • Ratio: {{ tipo.interlineado }}x
+              </div>
+            </td>
+
+            <!-- Calibración Óptica: Peso & Tracking en em -->
+            <td class="px-3 py-3">
+              <div class="d-flex flex-wrap align-items-center gap-1">
+                <span class="badge bg-light text-dark border fw-medium" style="font-size: 0.69rem;">
+                  {{ tipo.peso }}
+                </span>
+                <span class="badge"
+                  [ngClass]="getTracking(tipo.tamano_px, tipo.peso).startsWith('-') ? 'bg-info bg-opacity-10 text-info border border-info' : (getTracking(tipo.tamano_px, tipo.peso) === '0em' ? 'bg-light text-muted border' : 'bg-success bg-opacity-10 text-success border border-success')"
+                  style="font-size: 0.69rem;">
+                  {{ getTracking(tipo.tamano_px, tipo.peso) }}
+                </span>
+              </div>
+            </td>
+
+            <!-- Acciones -->
+            <td class="px-4 py-3 text-end">
+              <div class="d-inline-flex align-items-center gap-1">
+                <!-- Copiar Token CSS -->
+                <button type="button" class="btn btn-sm rounded-circle p-2 transition-all position-relative"
+                  [ngClass]="copiedTokenId === (tipo.id ?? tipo.estilo) ? 'btn-success text-white' : 'btn-light text-secondary'"
+                  style="width: 32px; height: 32px;" (click)="copiarTokenCSS(tipo)"
+                  [title]="copiedTokenId === (tipo.id ?? tipo.estilo) ? '¡Copiado al portapapeles!' : 'Copiar snippet CSS del estilo'">
+                  <svg *ngIf="copiedTokenId !== (tipo.id ?? tipo.estilo)" xmlns="http://www.w3.org/2000/svg" width="13"
+                    height="13" fill="currentColor" viewBox="0 0 16 16">
+                    <path
+                      d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z" />
+                    <path
+                      d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z" />
+                  </svg>
+                  <svg *ngIf="copiedTokenId === (tipo.id ?? tipo.estilo)" xmlns="http://www.w3.org/2000/svg" width="13"
+                    height="13" fill="currentColor" viewBox="0 0 16 16">
+                    <path
+                      d="M12.736 3.97a.75.75 0 0 1 1.048 1.087l-7.25 7a.75.75 0 0 1-1.072-.02l-3.5-3.5a.75.75 0 1 1 1.084-1.04L6.03 10.457l6.706-6.487z" />
+                  </svg>
+                </button>
+
+                <!-- Editar -->
+                <button type="button" class="btn btn-sm btn-light text-primary rounded-circle p-2 transition-all"
+                  style="width: 32px; height: 32px;" (click)="abrirModalTipografia(tipo)" title="Editar estilo">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="currentColor"
+                    viewBox="0 0 16 16">
+                    <path
+                      d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z" />
+                  </svg>
+                </button>
+
+                <!-- Eliminar -->
+                <button type="button" class="btn btn-sm btn-light text-danger rounded-circle p-2 transition-all"
+                  style="width: 32px; height: 32px;" (click)="eliminarTipografia(tipo.id)" title="Eliminar estilo">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="currentColor"
+                    viewBox="0 0 16 16">
+                    <path
+                      d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
+                    <path fill-rule="evenodd"
+                      d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
+                  </svg>
+                </button>
+              </div>
+            </td>
+          </tr>
+          <tr *ngIf="tipografias().length === 0">
+            <td colspan="5" class="text-center text-muted py-4">
+              No hay tipografías configuradas. Usa el generador matemático para comenzar.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- VISTA 2: MUESTRARIO VISUAL (CASCADA INTERACTIVA / TYPE SPECIMEN)          -->
+  <!-- ========================================================================= -->
+  <div *ngIf="vistaModo === 'visual'" class="card bg-white border-0 shadow-sm rounded-4 p-4 mb-4"
+    [class.baseline-grid-overlay]="mostrarGridOverlay">
+    <!-- Barra de Control del Muestrario -->
+    <div class="row align-items-center g-3 mb-4 pb-3 border-bottom border-light">
+      <div class="col-lg-7">
+        <label class="small text-muted fw-semibold mb-1" style="font-size: 0.72rem;">Texto de muestra en vivo:</label>
+        <div class="input-group input-group-sm">
+          <input type="text" class="form-control shadow-none border-light bg-light" [(ngModel)]="textoMuestra"
+            placeholder="Escribe aquí para previsualizar todos los estilos...">
+          <button class="btn btn-outline-secondary d-inline-flex align-items-center gap-1" type="button"
+            (click)="setPresetTexto('pangram')" title="Restaurar pangrama clásico">
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" viewBox="0 0 16 16">
+              <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z" />
+              <path
+                d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z" />
+            </svg>
+            <span>Pangrama</span>
+          </button>
+        </div>
+      </div>
+      <div class="col-lg-5">
+        <label class="small text-muted fw-semibold mb-1" style="font-size: 0.72rem;">Preajustes rápidos:</label>
+        <div class="d-flex flex-wrap gap-1">
+          <button type="button" class="btn btn-xs btn-white rounded-pill border d-inline-flex align-items-center gap-1"
+            (click)="setPresetTexto('headline')">
+            <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" fill="currentColor" viewBox="0 0 16 16">
+              <path
+                d="M2.5 3a.5.5 0 0 1 .5.5v2h3v-2a.5.5 0 0 1 1 0v7a.5.5 0 0 1-1 0v-3h-3v3a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />
+            </svg>
+            <span>Titular</span>
+          </button>
+          <button type="button" class="btn btn-xs btn-white rounded-pill border d-inline-flex align-items-center gap-1"
+            (click)="setPresetTexto('numbers')">
+            <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" fill="currentColor" viewBox="0 0 16 16">
+              <path
+                d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm4.5 1.5a.5.5 0 0 0 0 1h2.5a.5.5 0 0 0 0-1h-2.5zm1 2.5a.5.5 0 0 0 0 1h1.5a.5.5 0 0 0 0-1h-1.5zm-1 2.5a.5.5 0 0 0 0 1h2.5a.5.5 0 0 0 0-1h-2.5z" />
+            </svg>
+            <span>Métricas / Cifras</span>
+          </button>
+          <button type="button" class="btn btn-xs btn-white rounded-pill border d-inline-flex align-items-center gap-1"
+            (click)="setPresetTexto('pangram')">
+            <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" fill="currentColor" viewBox="0 0 16 16">
+              <path
+                d="M12.258 3h-8.51l-.083 2.46h.479c.26-1.544.758-1.783 2.693-1.845l.424-.013v7.827c0 .663-.144.821-1.3.923v.52h4.082v-.52c-1.162-.102-1.306-.26-1.306-.923V3.602l.43.013c1.935.062 2.434.301 2.694 1.846h.479L12.258 3z" />
+            </svg>
+            <span>Abecedario</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cascada de Especificaciones y Muestras a Escala Real -->
+    <div class="d-flex flex-column gap-4">
+      <div *ngFor="let tipo of (tipografiasPreview() || tipografias())"
+        class="type-specimen-row border-bottom border-light pb-4">
+        <!-- Fila de metadatos del estilo -->
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
+          <div class="d-flex align-items-center gap-2 flex-wrap">
+            <span class="badge bg-dark text-white fw-bold px-2 py-1" style="font-size: 0.75rem;">{{ tipo.estilo
+              }}</span>
+            <span class="badge"
+              [ngClass]="tipo.tipo_fuente === 'Principal' ? 'bg-primary bg-opacity-10 text-primary border border-primary' : 'bg-secondary bg-opacity-10 text-secondary border'"
+              style="font-size: 0.65rem;">
+              {{ tipo.tipo_fuente }}: {{ tipo.tipo_fuente === 'Principal' ? config()?.fuente_principal :
+              config()?.fuente_secundaria }}
+            </span>
+            <span class="text-muted small" style="font-size: 0.73rem;">
+              <strong>{{ tipo.tamano_px }}px</strong> ({{ (tipo.tamano_px / escalaBase).toFixed(3) }}rem)
+            </span>
+            <span class="text-muted small" style="font-size: 0.73rem;">
+              • Line-height: <strong>{{ getLineHeightPx(tipo.tamano_px, tipo.interlineado) }}px</strong> ({{
+              tipo.interlineado }}x)
+              <span
+                class="badge bg-success bg-opacity-10 text-success border border-success d-inline-flex align-items-center gap-1 ms-1 py-0 px-1"
+                *ngIf="getLineHeightPx(tipo.tamano_px, tipo.interlineado) % 4 === 0"
+                title="Alineado a cuadrícula de 4px" style="font-size: 0.65rem;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="9" height="9" fill="currentColor" viewBox="0 0 16 16">
+                  <path
+                    d="M12.736 3.97a.75.75 0 0 1 1.048 1.087l-7.25 7a.75.75 0 0 1-1.072-.02l-3.5-3.5a.75.75 0 1 1 1.084-1.04L6.03 10.457l6.706-6.487z" />
+                </svg>
+                <span>4px</span>
+              </span>
+            </span>
+            <span class="text-muted small" style="font-size: 0.73rem;">
+              • Tracking: <strong class="text-info">{{ getTracking(tipo.tamano_px, tipo.peso) }}</strong>
+            </span>
+            <span class="text-muted small" style="font-size: 0.73rem;">
+              • Peso: <strong>{{ tipo.peso }}</strong>
+            </span>
+          </div>
+
+          <div class="d-flex align-items-center gap-1">
+            <button class="btn btn-xs btn-white rounded-pill border d-flex align-items-center gap-1"
+              (click)="copiarTokenCSS(tipo)"
+              [title]="copiedTokenId === (tipo.id ?? tipo.estilo) ? '¡Copiado!' : 'Copiar CSS'">
+              <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" fill="currentColor" viewBox="0 0 16 16">
+                <path
+                  d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z" />
+                <path
+                  d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z" />
+              </svg>
+              <span>{{ copiedTokenId === (tipo.id ?? tipo.estilo) ? '¡Copiado!' : 'Copiar CSS' }}</span>
+            </button>
+            <button class="btn btn-xs btn-white rounded-pill border text-primary" (click)="abrirModalTipografia(tipo)"
+              title="Editar">
+              Editar
+            </button>
+          </div>
+        </div>
+
+        <!-- Renderizado de la muestra a tamaño real -->
+        <div class="type-specimen-text text-dark"
+          [style.font-family]="tipo.tipo_fuente === 'Principal' ? config()?.fuente_principal : config()?.fuente_secundaria"
+          [style.font-size.px]="tipo.tamano_px" [style.letter-spacing]="getTracking(tipo.tamano_px, tipo.peso)"
+          [style.font-weight]="getFontWeightNumber(tipo.peso)" [style.line-height]="tipo.interlineado">
+          {{ textoMuestra }}
+        </div>
+      </div>
+
+      <div *ngIf="tipografias().length === 0" class="text-center text-muted py-4">
+        No hay tipografías configuradas. Usa el generador matemático para comenzar.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Typography Modal con Validación APCA / Somers -->
+<div class="modal fade show d-block" tabindex="-1" *ngIf="showTypographyModal"
+  style="background-color: rgba(0,0,0,0.5);">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg" style="border-radius: 1rem; overflow: hidden;">
+      <div class="modal-header bg-light border-bottom-0 py-3 px-4">
+        <h5 class="modal-title fw-bold text-dark fs-6">{{ isNewTypography ? 'Agregar Estilo Tipográfico' : 'Editar
+          Estilo' }}</h5>
+        <button type="button" class="btn-close shadow-none" (click)="cerrarModalTipografia()"></button>
+      </div>
+      <div class="modal-body px-4 py-4">
+
+        <div class="mb-3">
+          <label class="form-label small fw-medium text-muted mb-1">Nombre del estilo</label>
+          <input type="text" class="form-control" [(ngModel)]="editingTypography.estilo"
+            placeholder="ej. H1, Body, Subtítulo">
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label small fw-medium text-muted mb-1">Tipo de fuente (Familia)</label>
+          <select class="form-select" [(ngModel)]="editingTypography.tipo_fuente">
+            <option value="Principal">Principal ({{config()?.fuente_principal}})</option>
+            <option value="Secundaria">Secundaria ({{config()?.fuente_secundaria}})</option>
+          </select>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-6">
+            <label class="form-label small fw-medium text-muted mb-1">Tamaño (px)</label>
+            <input type="number" class="form-control" [(ngModel)]="editingTypography.tamano_px">
+          </div>
+          <div class="col-6">
+            <label class="form-label small fw-medium text-muted mb-1">Interlineado (Ratio)</label>
+            <input type="number" step="0.05" class="form-control" [(ngModel)]="editingTypography.interlineado">
+          </div>
+        </div>
+
+        <div class="mb-4">
+          <label class="form-label small fw-medium text-muted mb-1">Peso (Font Weight)</label>
+          <select class="form-select" [(ngModel)]="editingTypography.peso">
+            <option value="Light (300)">Light (300)</option>
+            <option value="Regular (400)">Regular (400)</option>
+            <option value="Medium (500)">Medium (500)</option>
+            <option value="Semibold (600)">Semibold (600)</option>
+            <option value="Bold (700)">Bold (700)</option>
+            <option value="ExtraBold (800)">ExtraBold (800)</option>
+          </select>
+        </div>
+
+        <!-- Muestra interactiva en modal con tracking óptico calculado en tiempo real -->
+        <div class="p-3 rounded bg-light border border-light" *ngIf="editingTypography.tamano_px">
+          <div class="small text-muted mb-1 fw-bold" style="font-size: 0.68rem;">Muestra en vivo con interletrado
+            óptico:</div>
+          <div [style.font-size.px]="editingTypography.tamano_px"
+            [style.letter-spacing]="getTracking(editingTypography.tamano_px || 16, editingTypography.peso || '400')"
+            [style.line-height]="editingTypography.interlineado || 1.4" class="text-dark text-truncate">
+            {{ editingTypography.estilo || 'Texto de Muestra' }}
+          </div>
+          <div class="text-muted mt-2 d-flex gap-2" style="font-size: 0.68rem;">
+            <span>Tracking: <strong>{{ getTracking(editingTypography.tamano_px || 16, editingTypography.peso || '400')
+                }}</strong></span>
+            <span>•</span>
+            <span>Altura 4px: <strong>{{ getLineHeightPx(editingTypography.tamano_px || 16,
+                editingTypography.interlineado) }}px</strong></span>
+          </div>
+        </div>
+
+      </div>
+      <div *ngIf="advertenciaProporciones"
+        class="alert alert-info border-info shadow-sm d-flex align-items-start mx-4 mb-3 p-3"
+        style="font-size: 0.8rem; background-color: #f8fbff;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+          class="me-2 mt-1 flex-shrink-0 text-info" viewBox="0 0 16 16">
+          <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+          <path
+            d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z" />
+        </svg>
+        <span><strong>Diagnóstico APCA & Proporciones:</strong> {{ advertenciaProporciones }}</span>
+      </div>
+      <div class="modal-footer border-top-0 bg-light px-4 py-3">
+        <button type="button" class="btn btn-light fw-medium px-4" (click)="cerrarModalTipografia()">Cancelar</button>
+        <button type="button" class="btn btn-primary fw-medium px-4 rounded-pill shadow-sm"
+          (click)="guardarTipografia()">
+          {{ isNewTypography ? 'Guardar' : 'Actualizar' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,446 @@
+<!-- Módulo de Validación de Contraste APCA (WCAG 3 - Algoritmo Perceptual Moderno) -->
+<div class="wcag-apca-container">
+
+  <!-- Tarjeta de Cabecera y Métricas APCA -->
+  <div class="bg-white rounded-4 p-4 mb-4 shadow-sm border border-light">
+    <div class="d-flex justify-content-between align-items-start mb-3 flex-wrap gap-3">
+      <div>
+        <div class="d-flex align-items-center gap-2 mb-1">
+          <span class="badge bg-indigo-subtle text-indigo border border-indigo-subtle px-2 py-1 rounded-pill small fw-bold">
+            WCAG 3.0 Silver Candidate
+          </span>
+          <h5 class="fw-bold mb-0 text-dark">
+            Validación Perceptual APCA (Accessible Perceptual Contrast Algorithm)
+          </h5>
+        </div>
+        <p class="text-muted small mb-0">
+          Evalúa el contraste visual real basado en la fisiología ocular humana, la frecuencia espacial y la sensibilidad
+          a la luminancia. Sincronizado automáticamente con tus colores y tu escala tipográfica del proyecto.
+        </p>
+      </div>
+
+      <!-- Métricas Resumen APCA -->
+      <div class="d-flex align-items-center gap-2 flex-wrap" *ngIf="metricasAPCA().total > 0">
+        <div class="stat-badge d-flex align-items-center gap-2 px-3 py-2 rounded-3 bg-light border">
+          <span class="small text-muted">Aptas para UI (Lc ≥ 60):</span>
+          <span class="fw-bold" [ngClass]="metricasAPCA().porcentajeAprobado >= 70 ? 'text-success' : 'text-warning'">
+            {{ metricasAPCA().porcentajeAprobado }}%
+          </span>
+        </div>
+
+        <div class="stat-badge d-flex align-items-center gap-2 px-3 py-2 rounded-3 bg-success-subtle text-success border border-success-subtle">
+          <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425z"/>
+          </svg>
+          <span class="small fw-semibold">{{ metricasAPCA().lc90 }} Lectura Fluida (Lc 90+)</span>
+        </div>
+
+        <div class="stat-badge d-flex align-items-center gap-2 px-3 py-2 rounded-3 bg-info-subtle text-info-emphasis border border-info-subtle">
+          <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/>
+            <path d="M4 4h8v2H4zm0 4h8v1H4zm0 3h5v1H4z"/>
+          </svg>
+          <span class="small fw-semibold">{{ metricasAPCA().lc75 }} Cuerpo de Texto (Lc 75+)</span>
+        </div>
+
+        <div class="stat-badge d-flex align-items-center gap-2 px-3 py-2 rounded-3 bg-danger-subtle text-danger border border-danger-subtle" *ngIf="metricasAPCA().fail > 0">
+          <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+          </svg>
+          <span class="small fw-semibold">{{ metricasAPCA().fail }} Críticas (&lt; 30)</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Barra de Filtros APCA -->
+    <div class="d-flex justify-content-between align-items-center pt-3 border-top flex-wrap gap-2">
+      <div class="btn-group btn-group-sm" role="group">
+        <button type="button" class="btn btn-outline-secondary" [class.active]="filtroNivel() === 'todos'" (click)="setFiltro('todos')">
+          Todas
+        </button>
+        <button type="button" class="btn btn-outline-success" [class.active]="filtroNivel() === 'fluida'" (click)="setFiltro('fluida')">
+          Lectura Fluida (Lc 90+)
+        </button>
+        <button type="button" class="btn btn-outline-primary" [class.active]="filtroNivel() === 'cuerpo'" (click)="setFiltro('cuerpo')">
+          Cuerpo (Lc 75+)
+        </button>
+        <button type="button" class="btn btn-outline-info" [class.active]="filtroNivel() === 'titulos'" (click)="setFiltro('titulos')">
+          Títulos / UI (Lc 60+)
+        </button>
+        <button type="button" class="btn btn-outline-danger" [class.active]="filtroNivel() === 'fallos'" (click)="setFiltro('fallos')">
+          Alertas (Fail)
+        </button>
+      </div>
+
+      <button type="button" class="btn btn-sm d-flex align-items-center gap-2 shadow-2xs"
+        [ngClass]="mostrarTodasLasCombinaciones() ? 'btn-primary' : 'btn-outline-secondary bg-white'"
+        (click)="toggleTodasLasCombinaciones()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+          <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z" />
+          <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8zm8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z" />
+        </svg>
+        <span>{{ mostrarTodasLasCombinaciones() ? 'Mostrando todos los colores' : 'Ver todas las combinaciones posibles' }}</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Leyenda Técnica de Niveles APCA -->
+  <div class="row g-2 mb-4">
+    <div class="col-12 col-md-6 col-xl-4">
+      <div class="p-3 bg-white rounded-3 border h-100 shadow-2xs">
+        <div class="d-flex align-items-center gap-2 mb-1">
+          <span class="badge bg-success text-white border border-success px-2 py-1">Lc 90+</span>
+          <span class="fw-bold small text-dark">Lectura Fluida Preferente</span>
+        </div>
+        <p class="small text-muted mb-0">Óptimo para textos de lectura larga, cuerpos estándar (14-16px) y fuentes delgadas (peso 300-400).</p>
+      </div>
+    </div>
+
+    <div class="col-12 col-md-6 col-xl-4">
+      <div class="p-3 bg-white rounded-3 border h-100 shadow-2xs">
+        <div class="d-flex align-items-center gap-2 mb-1">
+          <span class="badge bg-success bg-opacity-75 text-white border border-success px-2 py-1">Lc 75+</span>
+          <span class="fw-bold small text-dark">Cuerpo de Texto Normal</span>
+        </div>
+        <p class="small text-muted mb-0">Mínimo recomendado para lectura de párrafos (16px peso 400 regular) y textos informativos.</p>
+      </div>
+    </div>
+
+    <div class="col-12 col-md-6 col-xl-4">
+      <div class="p-3 bg-white rounded-3 border h-100 shadow-2xs">
+        <div class="d-flex align-items-center gap-2 mb-1">
+          <span class="badge bg-info bg-opacity-75 text-dark border border-info px-2 py-1">Lc 60+</span>
+          <span class="fw-bold small text-dark">Texto Grande o Negrita</span>
+        </div>
+        <p class="small text-muted mb-0">Apto para subtítulos y texto grande (24px peso 400 regular o 16px peso 700 negrita).</p>
+      </div>
+    </div>
+
+    <div class="col-12 col-md-6 col-xl-4">
+      <div class="p-3 bg-white rounded-3 border h-100 shadow-2xs">
+        <div class="d-flex align-items-center gap-2 mb-1">
+          <span class="badge bg-warning text-dark border border-warning px-2 py-1">Lc 45+</span>
+          <span class="fw-bold small text-dark">Titulares y Controles UI</span>
+        </div>
+        <p class="small text-muted mb-0">Apto para encabezados de 32px+, iconos informativos y botones interactivos primarios.</p>
+      </div>
+    </div>
+
+    <div class="col-12 col-md-6 col-xl-4">
+      <div class="p-3 bg-white rounded-3 border h-100 shadow-2xs">
+        <div class="d-flex align-items-center gap-2 mb-1">
+          <span class="badge bg-secondary text-white border border-secondary px-2 py-1">Lc 30+</span>
+          <span class="fw-bold small text-dark">Decorativo y No Textual</span>
+        </div>
+        <p class="small text-muted mb-0">Solo para bordes de contenedores, líneas divisoras o texto deshabilitado.</p>
+      </div>
+    </div>
+
+    <div class="col-12 col-md-6 col-xl-4">
+      <div class="p-3 bg-white rounded-3 border h-100 shadow-2xs">
+        <div class="d-flex align-items-center gap-2 mb-1">
+          <span class="badge bg-danger text-white border border-danger px-2 py-1">Fail (&lt; 30)</span>
+          <span class="fw-bold small text-dark">Insuficiente</span>
+        </div>
+        <p class="small text-muted mb-0">Contraste invisible o ilegible para la visión humana normal. No utilizar en interfaz.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Estado vacío si aún no hay colores configurados -->
+  <div *ngIf="(colores() || []).length === 0" class="card border-dashed p-5 text-center bg-white rounded-4 shadow-sm mb-4">
+    <div class="text-secondary opacity-50 mb-2">
+      <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" viewBox="0 0 16 16">
+        <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+      </svg>
+    </div>
+    <h6 class="fw-bold text-dark">No hay colores cargados en el proyecto</h6>
+    <p class="text-muted small mb-0">Primero agrega colores en el Paso 1 (Color) para poder calcular la matriz perceptual APCA.</p>
+  </div>
+
+  <!-- Matriz de Contraste Perceptual APCA -->
+  <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-4" *ngIf="(colores() || []).length > 0">
+    <div class="table-responsive rounded-0 border-0 bg-white" style="max-height: 640px; overflow: auto;">
+      <table class="table table-bordered table-custom align-middle mb-0" style="table-layout: fixed;">
+        <thead class="bg-light text-muted small sticky-top" style="z-index: 2;">
+          <tr>
+            <th class="py-3 px-3 fw-medium bg-light" style="width: 230px; position: sticky; left: 0; z-index: 3;">
+              <div class="d-flex align-items-center gap-1 text-dark fw-bold">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+                  <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+                </svg>
+                <span>Texto \ Fondos</span>
+              </div>
+            </th>
+            <th *ngFor="let header of matrizAPCA().headers" class="py-3 px-3 fw-medium text-center bg-light"
+              style="width: 170px;">
+              <div class="d-flex flex-column align-items-center">
+                <div class="rounded-circle shadow-sm border mb-1" [style.background-color]="header.hex_code"
+                  style="width: 24px; height: 24px;"></div>
+                <span class="text-truncate w-100 fw-bold text-dark" [title]="header.nombre">{{ header.nombre }}</span>
+                <span class="text-muted font-monospace" style="font-size: 0.65rem;">{{ header.hex_code }}</span>
+              </div>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let row of matrizAPCA().rows">
+            <!-- Primera columna fija (Texto / Frente) -->
+            <td class="px-3 py-3 bg-light border-end" style="position: sticky; left: 0; z-index: 1;">
+              <div class="d-flex align-items-center gap-2">
+                <div class="rounded-circle shadow-sm border flex-shrink-0" [style.background-color]="row.fg.hex_code"
+                  style="width: 26px; height: 26px;"></div>
+                <div class="overflow-hidden">
+                  <div class="small fw-bold text-dark text-truncate" [title]="row.fg.nombre">{{ row.fg.nombre }}</div>
+                  <div class="text-muted font-monospace" style="font-size: 0.68rem;">{{ row.fg.hex_code }}</div>
+                </div>
+              </div>
+            </td>
+
+            <!-- Celdas de la matriz APCA con visualización interactiva -->
+            <td *ngFor="let cell of row.cells" class="p-0 position-relative text-center border">
+              <div class="d-flex flex-column align-items-center justify-content-center w-100 p-2"
+                style="min-height: 115px;" [style.background-color]="cell.bg.hex_code">
+
+                <!-- Muestra tipográfica -->
+                <div class="fw-bold mb-1" [style.color]="row.fg.hex_code" style="font-size: 1.25rem; line-height: 1;">
+                  Aa
+                </div>
+
+                <!-- Puntuación Lc firmada y Badge de nivel -->
+                <span class="badge {{ cell.evaluation.badgeClass }} px-2 py-1 shadow-sm mb-1 font-monospace"
+                  style="font-size: 0.68rem;"
+                  [title]="cell.evaluation.polarityLabel + ' - ' + cell.evaluation.description">
+                  Lc {{ formatSignedLc(cell.evaluation.lc) }}
+                </span>
+
+                <!-- Requisitos tipográficos sugeridos -->
+                <div class="d-flex align-items-center gap-1 font-monospace text-muted mb-1" style="font-size: 0.60rem;">
+                  <span class="bg-white bg-opacity-75 px-1 rounded border text-dark" *ngIf="cell.evaluation.minFontSizeNormal">
+                    Reg: {{ cell.evaluation.minFontSizeNormal }}px
+                  </span>
+                  <span class="bg-white bg-opacity-75 px-1 rounded border text-dark" *ngIf="cell.evaluation.minFontSizeBold">
+                    Bold: {{ cell.evaluation.minFontSizeBold }}px
+                  </span>
+                </div>
+
+                <!-- Sugerencia 2: Resumen rápido de Tokens del Proyecto -->
+                <div class="mb-1" *ngIf="cell.tokenAudit.total > 0">
+                  <span class="badge px-2 py-0 rounded-pill font-monospace"
+                    [ngClass]="cell.tokenAudit.fallan === 0 ? 'bg-success-subtle text-success border border-success-subtle' : (cell.tokenAudit.cumplen > 0 ? 'bg-primary-subtle text-primary border border-primary-subtle' : 'bg-danger-subtle text-danger border border-danger-subtle')"
+                    style="font-size: 0.58rem;"
+                    [title]="'Estilos Aprobados: ' + (cell.tokenAudit.resumenAprobados.join(', ') || 'Ninguno')">
+                    Tokens: {{ cell.tokenAudit.cumplen }}/{{ cell.tokenAudit.total }} aptos
+                  </span>
+                </div>
+
+                <!-- Botón para ver inspección tipográfica detallada -->
+                <button type="button"
+                  class="btn btn-sm btn-light py-0 px-2 shadow-sm text-primary rounded-pill d-inline-flex align-items-center gap-1"
+                  style="font-size: 0.62rem; opacity: 0.95;"
+                  (click)="abrirInspeccionTipografica(cell)">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z"/>
+                    <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8zm8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"/>
+                  </svg>
+                  Inspeccionar
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Modal Detallado de Inspección Tipográfica APCA -->
+  <div class="modal" [class.show]="selectedCell()" [style.display]="selectedCell() ? 'block' : 'none'" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+      <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden" *ngIf="selectedCell() as c">
+        <div class="modal-header bg-light border-bottom-0 pb-2">
+          <div class="d-flex align-items-center gap-2">
+            <span class="badge {{ c.evaluation.badgeClass }} font-monospace px-2 py-1">
+              Lc {{ formatSignedLc(c.evaluation.lc) }}
+            </span>
+            <h5 class="modal-title fw-bold text-dark mb-0">
+              Inspección Perceptual APCA & Auditoría Tipográfica
+            </h5>
+          </div>
+          <button type="button" class="btn-close" (click)="cerrarInspeccionTipografica()"></button>
+        </div>
+
+        <div class="modal-body p-4" style="max-height: 80vh; overflow-y: auto;">
+          <!-- Comparador Visual de Colores y Polaridad -->
+          <div class="d-flex align-items-center justify-content-between p-3 rounded-3 bg-light border mb-4 flex-wrap gap-3">
+            <div class="d-flex align-items-center gap-3">
+              <div class="d-flex align-items-center gap-2">
+                <div class="rounded-circle border shadow-sm" [style.background-color]="c.fg.hex_code" style="width: 28px; height: 28px;"></div>
+                <div>
+                  <div class="small fw-bold text-dark">{{ c.fg.nombre }} (Texto)</div>
+                  <div class="font-monospace text-muted small" style="font-size: 0.72rem;">{{ c.fg.hex_code }}</div>
+                </div>
+              </div>
+              <span class="text-muted small">sobre</span>
+              <div class="d-flex align-items-center gap-2">
+                <div class="rounded-circle border shadow-sm" [style.background-color]="c.bg.hex_code" style="width: 28px; height: 28px;"></div>
+                <div>
+                  <div class="small fw-bold text-dark">{{ c.bg.nombre }} (Fondo)</div>
+                  <div class="font-monospace text-muted small" style="font-size: 0.72rem;">{{ c.bg.hex_code }}</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Sugerencia 3: Badges de fuentes reales del proyecto -->
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+              <span class="badge bg-white text-secondary border px-2 py-1 small">
+                {{ c.evaluation.polarityLabel }}
+              </span>
+              <span class="badge bg-primary bg-opacity-10 text-primary border border-primary-subtle px-2 py-1 small">
+                Fuente Principal: {{ fuentePrincipal() }}
+              </span>
+              <span class="badge bg-secondary bg-opacity-10 text-secondary border px-2 py-1 small">
+                Fuente Secundaria: {{ fuenteSecundaria() }}
+              </span>
+            </div>
+          </div>
+
+          <!-- Sugerencia 3: Muestra de Texto en Vivo con las fuentes reales del proyecto -->
+          <div class="mb-4">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <label class="form-label fw-bold text-dark small mb-0">Simulación en Vivo con la Tipografía de tu Proyecto:</label>
+              <span class="small text-muted font-monospace" style="font-size: 0.75rem;">
+                Renderizando con: {{ fuentePrincipal() }} (Títulos) y {{ fuenteSecundaria() }} (Cuerpo)
+              </span>
+            </div>
+            <div class="p-4 rounded-3 border" [style.background-color]="c.bg.hex_code">
+              <h3 class="fw-bold mb-2" [style.color]="c.fg.hex_code" [style.font-family]="fuentePrincipal()">
+                Encabezado Principal de Ejemplo (Bold 700)
+              </h3>
+              <p class="mb-2 fw-medium" [style.color]="c.fg.hex_code" [style.font-family]="fuentePrincipal()" style="font-size: 1.15rem;">
+                Subtítulo o texto destacado mediano (Medium 500 - 18px)
+              </p>
+              <p class="mb-0" [style.color]="c.fg.hex_code" [style.font-family]="fuenteSecundaria()" style="font-size: 1rem; line-height: 1.5;">
+                Párrafo de cuerpo de texto estándar. Este bloque simula cómo el ojo humano procesa las frecuencias
+                espaciales y el contraste en pantallas digitales con tu tipografía real y el algoritmo APCA.
+              </p>
+            </div>
+          </div>
+
+          <!-- Sugerencia 1 y 4: Semáforo de Compatibilidad con los Tokens Reales del Proyecto y Alternativa Tipográfica -->
+          <div class="mb-4" *ngIf="c.tokenAudit.total > 0">
+            <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
+              <label class="form-label fw-bold text-dark small mb-0 d-flex align-items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="text-primary" viewBox="0 0 16 16">
+                  <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/>
+                  <path d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.235.235 0 0 1 .02-.022z"/>
+                </svg>
+                Semáforo de Compatibilidad con tus Tokens de Tipografía (Paso 2):
+              </label>
+              <span class="badge" [ngClass]="c.tokenAudit.fallan === 0 ? 'bg-success text-white' : 'bg-warning text-dark'">
+                {{ c.tokenAudit.cumplen }} de {{ c.tokenAudit.total }} estilos compatibles ({{ c.tokenAudit.porcentajeCumplimiento }}%)
+              </span>
+            </div>
+
+            <div class="table-responsive border rounded-3 bg-white">
+              <table class="table table-sm align-middle mb-0">
+                <thead class="bg-light text-muted small">
+                  <tr>
+                    <th class="py-2 px-3">Estilo / Token</th>
+                    <th class="py-2 px-3">Tu Configuración Real</th>
+                    <th class="py-2 px-3 text-center">Mínimo Exigido APCA</th>
+                    <th class="py-2 px-3 text-center">Estado</th>
+                    <th class="py-2 px-3">Alternativa Tipográfica (Mantener Color)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let audit of c.tokenAudit.audits">
+                    <td class="px-3 py-2">
+                      <span class="fw-bold text-dark">{{ audit.token.estilo }}</span>
+                      <span class="badge bg-light text-muted border ms-2" style="font-size: 0.65rem;">
+                        {{ audit.token.tipo_fuente || 'General' }}
+                      </span>
+                    </td>
+                    <td class="px-3 py-2 font-monospace small">
+                      <span class="fw-semibold">{{ audit.token.tamano_px }}px</span> / {{ formatPesoDisplay(audit.token.peso, audit.numericWeight) }}
+                      <span *ngIf="audit.token.tamano_px <= 13" class="badge bg-light text-secondary border ms-1" style="font-size: 0.6rem;">
+                        Texto corto
+                      </span>
+                    </td>
+                    <td class="px-3 py-2 text-center font-monospace small">
+                      <span *ngIf="audit.minRequiredPx" class="fw-bold">{{ audit.minRequiredPx }}px</span>
+                      <span *ngIf="!audit.minRequiredPx" class="text-muted">No disponible</span>
+                    </td>
+                    <td class="px-3 py-2 text-center">
+                      <span class="badge {{ audit.badgeClass }} px-2 py-1 font-monospace" style="font-size: 0.68rem;">
+                        <svg *ngIf="audit.cumple" xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="currentColor" class="me-1" viewBox="0 0 16 16">
+                          <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425z"/>
+                        </svg>
+                        <svg *ngIf="!audit.cumple" xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="currentColor" class="me-1" viewBox="0 0 16 16">
+                          <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+                        </svg>
+                        {{ audit.estadoLabel }}
+                      </span>
+                    </td>
+                    <td class="px-3 py-2 small">
+                      <span *ngIf="audit.cumple" class="text-success fw-medium">
+                        Tu tamaño supera el mínimo por {{ -audit.diferenciaPx }}px. Totalmente seguro.
+                      </span>
+                      <span *ngIf="!audit.cumple" class="text-dark">
+                        {{ audit.solucionTipografica }}
+                      </span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Tabla Universal de Pesos y Tamaños Mínimos del W3C -->
+          <div class="mb-2">
+            <label class="form-label fw-bold text-dark small mb-2">
+              Tabla Universal de Frecuencia Espacial APCA (Lookup Oficial W3C):
+            </label>
+            <div class="table-responsive border rounded-3 bg-white">
+              <table class="table table-sm table-striped align-middle mb-0 text-center">
+                <thead class="bg-light text-muted small">
+                  <tr>
+                    <th class="py-2" *ngFor="let req of c.evaluation.fontRequirements">
+                      w{{ req.weight }}
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="py-2 font-monospace" *ngFor="let req of c.evaluation.fontRequirements">
+                      <span *ngIf="req.status === 'allowed'" class="fw-bold text-success">
+                        {{ req.minSizePx }}px
+                      </span>
+                      <span *ngIf="req.status === 'non-text-only'" class="badge bg-secondary-subtle text-secondary" style="font-size: 0.65rem;">
+                        No texto
+                      </span>
+                      <span *ngIf="req.status === 'prohibited'" class="badge bg-danger-subtle text-danger" style="font-size: 0.65rem;">
+                        No apto
+                      </span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="small text-muted mt-2">
+            * Valores en píxeles (px) calculados según la tabla de interpolación espacial de APCA para visión estándar 20/20.
+          </div>
+        </div>
+
+        <div class="modal-footer bg-light border-top-0">
+          <button type="button" class="btn btn-secondary btn-sm" (click)="cerrarInspeccionTipografica()">
+            Cerrar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Backdrop for Inspector Modal -->
+  <div class="modal-backdrop fade show" *ngIf="selectedCell()"></div>
+
+</div>

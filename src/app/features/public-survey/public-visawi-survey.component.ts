@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterModule, ParamMap } from '@angular/router';
@@ -19,14 +19,17 @@ import {
   templateUrl: './public-visawi-survey.component.html',
   styleUrl: './public-visawi-survey.component.scss'
 })
-export class PublicVisawiSurveyComponent implements OnInit {
+export class PublicVisawiSurveyComponent implements OnInit, OnDestroy {
   private route: ActivatedRoute = inject(ActivatedRoute);
   private assessmentService: AssessmentService = inject(AssessmentService);
 
   projectId: number = 0;
+  surveyIdentifier: string = '';
   surveyInfo: VisawiPublicSurveyInfo | null = null;
   isLoading: boolean = true;
   errorMessage: string | null = null;
+  isSurveyClosed: boolean = false;
+  closedMessage: string = '';
 
   // Screen viewer
   selectedScreenId: number | null = null;
@@ -40,6 +43,7 @@ export class PublicVisawiSurveyComponent implements OnInit {
   currentDimensionIndex: number = 0;
   currentQuestionIndex: number = 0;
   questionViewMode: 'single' | 'compact' = 'single';
+  private autoAdvanceTimer: any = null;
 
   // Submission state
   isSubmitting: boolean = false;
@@ -50,31 +54,59 @@ export class PublicVisawiSurveyComponent implements OnInit {
     this.route.paramMap.subscribe((params: ParamMap) => {
       const idParam = params.get('projectId') || params.get('id');
       if (idParam) {
-        this.projectId = Number(idParam);
+        this.surveyIdentifier = idParam;
+        const num = Number(idParam);
+        if (!isNaN(num)) {
+          this.projectId = num;
+        }
         this.loadSurveyData();
       } else {
         this.isLoading = false;
-        this.errorMessage = 'Identificador de proyecto no especificado en el enlace.';
+        this.errorMessage = 'Identificador o token de evaluación no especificado en el enlace.';
       }
     });
+  }
+
+  ngOnDestroy(): void {
+    this.clearAutoAdvance();
+  }
+
+  clearAutoAdvance(): void {
+    if (this.autoAdvanceTimer) {
+      clearTimeout(this.autoAdvanceTimer);
+      this.autoAdvanceTimer = null;
+    }
   }
 
   loadSurveyData(): void {
     this.isLoading = true;
     this.errorMessage = null;
 
-    this.assessmentService.getPublicVisawiSurvey(this.projectId).subscribe({
+    const identifier = this.surveyIdentifier || this.projectId;
+    this.assessmentService.getPublicVisawiSurvey(identifier).subscribe({
       next: (data: VisawiPublicSurveyInfo) => {
         this.surveyInfo = data;
+        this.projectId = data.proyecto_id;
         this.isLoading = false;
-        if (data.pantallas && data.pantallas.length > 0) {
-          this.selectedScreenId = data.pantallas[0].id;
+        if (data.encuesta_activa === false) {
+          this.isSurveyClosed = true;
+          this.closedMessage = data.mensaje_cierre || 'La recepción de respuestas para este proyecto está cerrada temporal o definitivamente por el equipo de diseño.';
+        } else {
+          this.isSurveyClosed = false;
+          if (data.pantallas && data.pantallas.length > 0) {
+            this.selectedScreenId = data.pantallas[0].id;
+          }
         }
       },
       error: (err: any) => {
         console.error('Error al cargar la encuesta pública VisAWI:', err);
         this.isLoading = false;
-        this.errorMessage = 'No se pudo cargar la evaluación. Verifica que el enlace sea correcto y que el servidor esté activo.';
+        if (err.status === 403) {
+          this.isSurveyClosed = true;
+          this.closedMessage = err.error?.detail || 'Este cuestionario está cerrado y ya no admite nuevas respuestas.';
+        } else {
+          this.errorMessage = 'No se pudo cargar la evaluación. Verifica que el enlace sea correcto y que el servidor esté activo.';
+        }
       }
     });
   }
@@ -150,6 +182,7 @@ export class PublicVisawiSurveyComponent implements OnInit {
   }
 
   goToDimension(index: number): void {
+    this.clearAutoAdvance();
     if (index >= 0 && index < (this.surveyInfo?.dimensiones?.length || 4)) {
       this.currentDimensionIndex = index;
       this.currentQuestionIndex = 0;
@@ -157,12 +190,14 @@ export class PublicVisawiSurveyComponent implements OnInit {
   }
 
   goToQuestion(idx: number): void {
+    this.clearAutoAdvance();
     if (idx >= 0 && idx < this.currentDimensionItems.length) {
       this.currentQuestionIndex = idx;
     }
   }
 
   nextQuestion(): void {
+    this.clearAutoAdvance();
     if (this.currentQuestionIndex < this.currentDimensionItems.length - 1) {
       this.currentQuestionIndex++;
     } else if (this.currentDimensionIndex < (this.surveyInfo?.dimensiones?.length || 4) - 1) {
@@ -172,6 +207,7 @@ export class PublicVisawiSurveyComponent implements OnInit {
   }
 
   prevQuestion(): void {
+    this.clearAutoAdvance();
     if (this.currentQuestionIndex > 0) {
       this.currentQuestionIndex--;
     } else if (this.currentDimensionIndex > 0) {
@@ -181,6 +217,7 @@ export class PublicVisawiSurveyComponent implements OnInit {
   }
 
   nextDimension(): void {
+    this.clearAutoAdvance();
     if (this.currentDimensionIndex < (this.surveyInfo?.dimensiones?.length || 4) - 1) {
       this.currentDimensionIndex++;
       this.currentQuestionIndex = 0;
@@ -188,6 +225,7 @@ export class PublicVisawiSurveyComponent implements OnInit {
   }
 
   prevDimension(): void {
+    this.clearAutoAdvance();
     if (this.currentDimensionIndex > 0) {
       this.currentDimensionIndex--;
       this.currentQuestionIndex = 0;
@@ -196,13 +234,15 @@ export class PublicVisawiSurveyComponent implements OnInit {
 
   selectAnswer(itemId: number, value: number, autoAdvance: boolean = true): void {
     this.answers[itemId] = value;
+    this.clearAutoAdvance();
+
     if (autoAdvance && this.questionViewMode === 'single') {
       const isLastItemOfSurvey = this.currentDimensionIndex === (this.surveyInfo?.dimensiones?.length || 4) - 1
         && this.currentQuestionIndex === this.currentDimensionItems.length - 1;
       if (!isLastItemOfSurvey) {
-        setTimeout(() => {
+        this.autoAdvanceTimer = setTimeout(() => {
           this.nextQuestion();
-        }, 220);
+        }, 280);
       }
     }
   }
@@ -275,7 +315,7 @@ export class PublicVisawiSurveyComponent implements OnInit {
       respuestas: this.answers
     };
 
-    this.assessmentService.submitPublicVisawiSurvey(this.projectId, payload).subscribe({
+    this.assessmentService.submitPublicVisawiSurvey(this.surveyIdentifier || this.projectId, payload).subscribe({
       next: (response: VisawiPublicSubmissionResponse) => {
         this.submissionResult = response;
         this.isSubmitting = false;
@@ -285,7 +325,12 @@ export class PublicVisawiSurveyComponent implements OnInit {
       error: (err: any) => {
         console.error('Error al enviar respuestas:', err);
         this.isSubmitting = false;
-        alert('Ocurrió un error al enviar tu evaluación. Por favor intenta nuevamente.');
+        if (err.status === 403) {
+          this.isSurveyClosed = true;
+          this.closedMessage = err.error?.detail || 'El cuestionario ha sido cerrado y ya no acepta respuestas.';
+        } else {
+          alert('Ocurrió un error al enviar tu evaluación. Por favor intenta nuevamente.');
+        }
       }
     });
   }

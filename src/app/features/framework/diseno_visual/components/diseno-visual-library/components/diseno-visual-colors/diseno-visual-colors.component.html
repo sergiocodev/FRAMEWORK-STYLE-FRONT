@@ -1,0 +1,777 @@
+<!-- Paleta de colores -->
+<div class="bg-white rounded p-4 mb-4 shadow-sm border border-light">
+  <div class="d-flex justify-content-between align-items-center mb-1">
+    <h6 class="fw-bold d-flex align-items-center gap-2 mb-0">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="text-primary-blue"
+        viewBox="0 0 16 16">
+        <path
+          d="M8 5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zm4 3a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zM5.5 7a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm.5 6a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z" />
+        <path
+          d="M16 8c0 3.15-1.866 2.585-3.567 2.07C11.42 9.763 10.465 9.473 10 10c-.603.683-.475 1.819-.351 2.92C9.826 14.495 9.996 16 8 16a8 8 0 1 1 8-8zm-8 7c.611 0 .654-.171.655-.176.078-.146.124-.464.07-1.119-.014-.168-.037-.37-.061-.591-.052-.464-.112-1.005-.118-1.462-.01-.707.083-1.61.704-2.314.369-.417.845-.578 1.272-.618.404-.038.812.026 1.16.104.343.077.702.186 1.025.284l.028.008c.346.105.658.199.953.266.653.148.904.083.991.024C14.717 9.38 15 9.161 15 8a7 7 0 1 0-7 7z" />
+      </svg>
+      Paleta de colores
+    </h6>
+    <button class="btn btn-sm text-white d-flex align-items-center gap-2 shadow-sm rounded-2 px-3 fw-medium"
+      style="background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); border: none;" (click)="abrirModalMSSBOA()">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path
+          d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z" />
+        <path d="M5 3v4" />
+        <path d="M19 17v4" />
+        <path d="M3 5h4" />
+        <path d="M17 19h4" />
+      </svg>
+      Generar Paleta con MSSBOA
+    </button>
+  </div>
+  <div class="text-muted small mb-4">Define los colores principales de tu interfaz y verifica el contraste y la
+    accesibilidad.</div>
+
+  <!-- Panel de Contexto (Fase 1) -->
+  <div *ngIf="identidadMarca && (identidadMarca.tieneManual || identidadMarca.colores || identidadMarca.notas)"
+    class="border border-info bg-opacity-10 bg-info mb-4 p-3 d-flex gap-3 align-items-start rounded-3">
+    <div class="text-info mt-1">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="12" y1="16" x2="12" y2="12"></line>
+        <line x1="12" y1="8" x2="12.01" y2="8"></line>
+      </svg>
+    </div>
+    <div>
+      <h6 class="fw-bold mb-2 text-info" style="font-size: 0.85rem;">Inspiración de la Investigación (Fase 1)</h6>
+      <ul class="mb-0 text-secondary" style="font-size: 0.8rem; list-style-type: none; padding-left: 0;">
+        <li class="mb-1"><strong>Manual de marca:</strong> {{ identidadMarca.tieneManual ? 'Sí' : 'No' }}</li>
+        <li class="mb-1" *ngIf="identidadMarca.colores"><strong>Colores:</strong> {{ identidadMarca.colores }}</li>
+        <li *ngIf="identidadMarca.notas"><strong>Notas:</strong> {{ identidadMarca.notas }}</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="row gx-4">
+    <div class="col-xl-8 mb-4">
+      <div class="row gx-3 align-items-stretch">
+        <!-- Color Cards (4 por fila) -->
+        <div class="col-md-3 col-sm-6 mb-4" *ngFor="let color of colores()">
+          <div class="card h-100 border-light shadow-sm rounded-4 overflow-hidden">
+            <div class="color-swatch-header p-2 position-relative d-flex flex-column justify-content-end"
+              [style.background-color]="color.hex_code" style="height: 85px;">
+              <button
+                class="btn btn-sm position-absolute top-0 end-0 m-1 text-white border-0 opacity-75 hover-opacity-100 p-1"
+                (click)="abrirModalEliminar(color)" title="Eliminar"
+                [style.color]="contrastRatio(color.hex_code, '#ffffff') > 2.5 ? '#ffffff' : '#000000'">
+                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="currentColor" viewBox="0 0 16 16">
+                  <path
+                    d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
+                  <path fill-rule="evenodd"
+                    d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
+                </svg>
+              </button>
+              <div class="fw-bold font-monospace" style="font-size: 0.85rem;"
+                [style.color]="contrastRatio(color.hex_code, '#ffffff') > 2.5 ? '#ffffff' : '#000000'">
+                {{color.hex_code}}</div>
+            </div>
+            <div class="card-body p-2 d-flex flex-column justify-content-between">
+              <div>
+                <div class="mb-2">
+                  <div class="fw-bold text-dark text-truncate" style="font-size: 0.85rem;" [title]="color.nombre">
+                    {{color.nombre}}
+                  </div>
+                  <div class="mt-1">
+                    <span class="badge bg-light text-primary-blue border rounded-pill px-2 py-0 fw-normal text-truncate d-inline-block"
+                      style="font-size: 0.65rem; border-color: #e2e8f0 !important; background-color: #f1f5f9 !important; max-width: 100%;"
+                      [title]="color.token_name || 'color.token'">
+                      {{color.token_name || 'color.token'}}
+                    </span>
+                  </div>
+                </div>
+                <div class="d-flex align-items-center mb-2 border rounded px-2 py-1">
+                  <div class="rounded-circle me-1 flex-shrink-0 border" [style.background-color]="color.hex_code"
+                    style="width: 12px; height: 12px;"></div>
+                  <select class="form-select form-select-sm text-muted border-0 shadow-none p-0 w-100"
+                    style="font-size: 0.75rem;"
+                    [(ngModel)]="color.uso" (change)="actualizarUsoColor(color)">
+                    <option *ngFor="let rol of rolesDisponibles" [value]="rol">{{rol}}</option>
+                  </select>
+                </div>
+              </div>
+              <button class="btn btn-outline-secondary btn-sm px-2 py-1 d-flex align-items-center justify-content-center gap-1 w-100 mt-1"
+                style="font-size: 0.75rem;"
+                (click)="abrirModalColor(color)">
+                <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" fill="currentColor" viewBox="0 0 16 16">
+                  <path
+                    d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z" />
+                </svg>
+                Editar
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Agregar Color card (4 por fila) -->
+        <div class="col-md-3 col-sm-6 mb-4">
+          <div
+            class="card h-100 dash-border bg-white cursor-pointer d-flex flex-column align-items-center justify-content-center py-4"
+            (click)="abrirModalColor()" style="border-radius: 0.75rem; min-height: 180px;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"
+              class="mb-2 text-primary-blue" viewBox="0 0 16 16">
+              <path
+                d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+            </svg>
+            <span class="text-primary-blue fw-bold small">Agregar color</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Simulador UI (Regla 60-30-10) -->
+    <div class="col-xl-4 mb-4">
+      <div class="card border-0 rounded-4 h-100 p-4 shadow-sm"
+        [style.background-color]="getColorPorRol('Fondo', '#f8f9fa')"
+        [style.border]="'1px solid ' + getColorPorRol('Borde', '#dee2e6')">
+        <div class="d-flex align-items-center gap-2 mb-2">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor"
+            [style.color]="getColorPorRol('Texto principal', '#212529')" viewBox="0 0 16 16">
+            <path
+              d="M12.258 3h-8.51l-.083 2.46h.479c.26-1.544.758-1.783 2.693-1.845l.424-.013v7.827c0 .663-.144.82-1.3.923v.52h4.082v-.52c-1.162-.103-1.306-.26-1.306-.923V3.602l.431.013c1.934.062 2.434.301 2.693 1.846h.479L12.258 3z" />
+          </svg>
+          <h6 class="fw-bold mb-0" [style.color]="getColorPorRol('Texto principal', '#212529')">Regla 60-30-10</h6>
+        </div>
+        <p class="small mb-4" [style.color]="getColorPorRol('Texto secundario', '#6c757d')">Evalúa el equilibrio
+          estético de tus colores aplicados en una interfaz real.</p>
+
+        <!-- Fake UI Card (Superficie) -->
+        <div class="rounded-4 overflow-hidden shadow-sm mb-4"
+          [style.background-color]="getColorPorRol('Superficie', '#ffffff')"
+          [style.border]="'1px solid ' + getColorPorRol('Borde', '#dee2e6')">
+          <!-- Header -->
+          <div class="p-3 d-flex justify-content-between align-items-center border-bottom"
+            [style.border-color]="getColorPorRol('Borde', '#dee2e6') + ' !important'">
+            <div class="d-flex align-items-center gap-2">
+              <div class="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold"
+                [style.background-color]="getColorPorRol('Principal', '#0d6efd')"
+                [style.color]="contrastRatio(getColorPorRol('Principal', '#0d6efd'), '#ffffff') > 2.5 ? '#ffffff' : '#000000'"
+                style="width: 28px; height: 28px; font-size: 10px;">
+                UI
+              </div>
+              <div class="fw-bold" [style.color]="getColorPorRol('Texto principal', '#212529')">MiAplicación</div>
+              <span class="badge rounded-pill ms-2" style="font-size: 0.6rem;"
+                [style.background-color]="getColorPorRol('Secundario', '#6c757d')"
+                [style.color]="contrastRatio(getColorPorRol('Secundario', '#6c757d'), '#ffffff') > 2.5 ? '#ffffff' : '#000000'">Pro</span>
+            </div>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+              [style.color]="getColorPorRol('Texto secundario', '#6c757d')" viewBox="0 0 16 16">
+              <path fill-rule="evenodd"
+                d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z" />
+            </svg>
+          </div>
+          <!-- Body -->
+          <div class="p-4">
+            <h5 class="fw-bold mb-2" [style.color]="getColorPorRol('Texto principal', '#212529')">Bienvenido de nuevo
+            </h5>
+            <p class="small mb-3" [style.color]="getColorPorRol('Texto secundario', '#6c757d')">Esta tarjeta usa tus
+              colores: 60% Fondo, 30% Superficie y Textos, 10% Acento principal.</p>
+
+            <!-- Indicators -->
+            <div class="d-flex align-items-center gap-2 mb-3">
+              <div class="rounded-circle shadow-sm" [style.background-color]="getColorPorRol('Éxito', '#198754')"
+                style="width:12px; height:12px;" title="Éxito"></div>
+              <div class="rounded-circle shadow-sm" [style.background-color]="getColorPorRol('Advertencia', '#ffc107')"
+                style="width:12px; height:12px;" title="Advertencia"></div>
+              <div class="rounded-circle shadow-sm" [style.background-color]="getColorPorRol('Error', '#dc3545')"
+                style="width:12px; height:12px;" title="Error"></div>
+              <div class="rounded-circle shadow-sm" [style.background-color]="getColorPorRol('Información', '#0dcaf0')"
+                style="width:12px; height:12px;" title="Información"></div>
+              <a href="javascript:void(0)" class="small ms-auto text-decoration-none fw-bold"
+                [style.color]="getColorPorRol('Acento', '#0dcaf0')">Detalles &rarr;</a>
+            </div>
+
+            <button class="btn w-100 fw-bold border-0 shadow-sm"
+              [style.background-color]="getColorPorRol('Principal', '#0d6efd')"
+              [style.color]="contrastRatio(getColorPorRol('Principal', '#0d6efd'), '#ffffff') > 2.5 ? '#ffffff' : '#000000'">
+              Llamada a la acción
+            </button>
+          </div>
+        </div>
+
+        <!-- Proportions Legend -->
+        <div>
+          <div class="d-flex align-items-center mb-2">
+            <div class="rounded me-2 border" [style.background-color]="getColorPorRol('Fondo', '#f8f9fa')"
+              style="width: 16px; height: 16px;"></div>
+            <span class="small" [style.color]="getColorPorRol('Texto secundario', '#6c757d')"><strong
+                [style.color]="getColorPorRol('Texto principal', '#212529')">60%</strong> Fondo (Dominante)</span>
+          </div>
+          <div class="d-flex align-items-center mb-2">
+            <div class="rounded me-2 border" [style.background-color]="getColorPorRol('Superficie', '#ffffff')"
+              style="width: 16px; height: 16px;"></div>
+            <span class="small" [style.color]="getColorPorRol('Texto secundario', '#6c757d')"><strong
+                [style.color]="getColorPorRol('Texto principal', '#212529')">30%</strong> Superficie y Textos</span>
+          </div>
+          <div class="d-flex align-items-center mb-3">
+            <div class="rounded me-2 border" [style.background-color]="getColorPorRol('Principal', '#0d6efd')"
+              style="width: 16px; height: 16px;"></div>
+            <span class="small" [style.color]="getColorPorRol('Texto secundario', '#6c757d')"><strong
+                [style.color]="getColorPorRol('Texto principal', '#212529')">10%</strong> Principal (Acento)</span>
+          </div>
+          <div class="pt-2 border-top" [style.border-color]="getColorPorRol('Borde', '#dee2e6') + ' !important'">
+            <span class="small fw-bold d-block mb-2" [style.color]="getColorPorRol('Texto principal', '#212529')">Otros
+              roles aplicados:</span>
+            <div class="d-flex flex-wrap gap-2">
+              <span class="badge border fw-normal" [style.color]="getColorPorRol('Texto secundario', '#6c757d')"
+                [style.border-color]="getColorPorRol('Borde', '#dee2e6') + ' !important'">
+                <span class="d-inline-block rounded-circle me-1"
+                  [style.background-color]="getColorPorRol('Secundario', '#6c757d')"
+                  style="width:8px; height:8px;"></span> Secundario
+              </span>
+              <span class="badge border fw-normal" [style.color]="getColorPorRol('Texto secundario', '#6c757d')"
+                [style.border-color]="getColorPorRol('Borde', '#dee2e6') + ' !important'">
+                <span class="d-inline-block rounded-circle me-1"
+                  [style.background-color]="getColorPorRol('Acento', '#0dcaf0')" style="width:8px; height:8px;"></span>
+                Acento
+              </span>
+              <span class="badge border fw-normal" [style.color]="getColorPorRol('Texto secundario', '#6c757d')"
+                [style.border-color]="getColorPorRol('Borde', '#dee2e6') + ' !important'">
+                <span class="d-inline-block rounded-circle me-1"
+                  [style.background-color]="getColorPorRol('Éxito', '#198754')" style="width:8px; height:8px;"></span>
+                Estados (Éxito, Error...)
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modales -->
+<!-- Modal Agregar/Editar Color -->
+<div class="modal fade show" tabindex="-1" [style.display]="showColorModal ? 'block' : 'none'"
+  style="background-color: rgba(0,0,0,0.5);">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow">
+      <div class="modal-header border-bottom-0 pb-0">
+        <h5 class="modal-title fw-bold">{{isNewColor ? 'Agregar color' : 'Editar color'}}</h5>
+        <button type="button" class="btn-close" (click)="cerrarModalColor()"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label class="form-label small fw-medium text-muted mb-1">Nombre del token</label>
+          <input type="text" class="form-control form-control-sm" [(ngModel)]="editingColor.token_name"
+            placeholder="ej. color.primary">
+        </div>
+        <div class="mb-3">
+          <label class="form-label small fw-medium text-muted mb-1">Nombre visual</label>
+          <input type="text" class="form-control form-control-sm" [(ngModel)]="editingColor.nombre"
+            placeholder="ej. Principal">
+        </div>
+        <div class="mb-3">
+          <label class="form-label small fw-medium text-muted mb-1">Valor HEX</label>
+          <div class="input-group input-group-sm align-items-stretch">
+            <input type="color" class="form-control form-control-color p-1 border-end-0"
+              style="max-width: 40px; cursor: pointer;" [(ngModel)]="editingColor.hex_code" title="Seleccionar color">
+            <input type="text" class="form-control text-uppercase" [(ngModel)]="editingColor.hex_code"
+              placeholder="#000000">
+          </div>
+        </div>
+        <div class="mb-4">
+          <label class="form-label small fw-medium text-muted mb-1">Rol</label>
+          <select class="form-select form-select-sm" [(ngModel)]="editingColor.uso">
+            <option *ngFor="let rol of rolesDisponibles" [value]="rol">{{rol}}</option>
+          </select>
+        </div>
+
+        <!-- Inconsistencia Estética -->
+        <div *ngIf="saturacionInconsistente.isWarning"
+          class="alert alert-warning d-flex flex-column mb-3 py-2 px-3 border border-warning"
+          style="font-size: 0.85rem;">
+          <div class="d-flex align-items-start gap-2 mb-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+              class="mt-1 flex-shrink-0" viewBox="0 0 16 16">
+              <path
+                d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
+            </svg>
+            <div>
+              <strong>Inconsistencia Estética:</strong> Este color ({{saturacionInconsistente.currentSat}}% saturación)
+              desentona fuertemente con el resto de tu paleta (promedio {{saturacionInconsistente.avgSat}}% de
+              saturación).
+            </div>
+          </div>
+          <button class="btn btn-sm btn-outline-warning bg-warning bg-opacity-10 text-dark align-self-start fw-bold"
+            (click)="aplicarSaturacionSugerida()">
+            Armonizar color a {{saturacionInconsistente.suggestedHex}}
+          </button>
+        </div>
+
+        <label class="form-label small fw-medium text-muted mb-1">Vista previa</label>
+        <div class="rounded p-3 mb-2 d-flex align-items-center justify-content-center"
+          [style.background-color]="editingColor.hex_code" style="min-height: 60px;">
+          <span class="fw-bold"
+            [style.color]="contrastRatio(editingColor.hex_code || '#ffffff', '#ffffff') > 2.5 ? '#ffffff' : '#000000'">
+            {{editingColor.nombre}}
+          </span>
+        </div>
+      </div>
+      <div class="modal-footer border-top-0 pt-0">
+        <button type="button" class="btn btn-outline-secondary btn-sm" (click)="cerrarModalColor()">Cancelar</button>
+        <button type="button" class="btn btn-primary btn-sm bg-primary-blue border-0 px-4" (click)="guardarColor()">
+          {{isNewColor ? 'Agregar color' : 'Guardar cambios'}}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Eliminar Color -->
+<div class="modal fade show" tabindex="-1" [style.display]="showDeleteModal ? 'block' : 'none'"
+  style="background-color: rgba(0,0,0,0.5);">
+  <div class="modal-dialog modal-dialog-centered modal-sm">
+    <div class="modal-content border-0 shadow">
+      <div class="modal-body p-4 text-center">
+        <div class="text-danger mb-3">
+          <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+            <path
+              d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995z" />
+          </svg>
+        </div>
+        <h5 class="fw-bold mb-2">¿Eliminar color?</h5>
+
+        <div class="bg-light rounded p-3 text-start mb-3">
+          <div class="small text-muted mb-1">Estás eliminando:</div>
+          <div class="d-flex align-items-center gap-2 mb-2">
+            <div class="rounded-circle" [style.background-color]="colorToDelete?.hex_code"
+              style="width: 16px; height: 16px;"></div>
+            <span class="fw-medium">{{colorToDelete?.nombre}}</span>
+            <span class="text-muted small">({{colorToDelete?.hex_code}})</span>
+          </div>
+
+          <div class="small text-muted mt-3 mb-1">Este color está siendo utilizado por:</div>
+          <ul class="small mb-0 ps-3">
+            <li *ngIf="(colorToDelete?.usos_count || 0) > 0"><strong>{{colorToDelete?.usos_count}}</strong>
+              componentes/variables</li>
+            <li *ngIf="(colorToDelete?.usos_count || 0) === 0">Ningún componente (seguro eliminar)</li>
+          </ul>
+        </div>
+
+        <div class="alert alert-warning small py-2 px-3 text-start mb-4" *ngIf="(colorToDelete?.usos_count || 0) > 0">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="me-1 mb-1"
+            viewBox="0 0 16 16">
+            <path
+              d="M7.938 2.016A.13.13 0 0 1 8.002 2a.13.13 0 0 1 .063.016.15.15 0 0 1 .054.057l6.857 11.667c.036.06.035.124.002.183a.2.2 0 0 1-.054.06.1.1 0 0 1-.066.017H1.146a.1.1 0 0 1-.066-.017.2.2 0 0 1-.054-.06.18.18 0 0 1 .002-.183L7.884 2.073a.15.15 0 0 1 .054-.057zm1.044-.45a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767z" />
+            <path
+              d="M7.002 12a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 5.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0z" />
+          </svg> Para eliminarlo de forma segura, primero asigna otro color a los componentes que dependen de este
+          token.
+        </div>
+
+        <div class="d-flex gap-2 w-100">
+          <button type="button" class="btn btn-outline-secondary w-50" (click)="cerrarModalEliminar()">Cancelar</button>
+          <button type="button" class="btn btn-danger w-50" [disabled]="(colorToDelete?.usos_count || 0) > 0"
+            (click)="confirmarEliminarColor()">Eliminar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======================================================== -->
+<!-- MODAL: OPTIMIZADOR CROMÁTICO Y ESTÉTICO MSSBOA          -->
+<!-- ======================================================== -->
+<div class="modal fade show d-block" tabindex="-1" *ngIf="showMssboaModal"
+  style="background-color: rgba(15, 23, 42, 0.65); z-index: 1060; backdrop-filter: blur(4px);">
+  <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content shadow-lg border-0 rounded-4 overflow-hidden">
+
+      <!-- Modal Header with Gradient -->
+      <div class="modal-header border-0 text-white px-4 py-3"
+        style="background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4338ca 100%);">
+        <div class="d-flex align-items-center gap-3">
+          <div class="rounded-3 p-2 bg-white bg-opacity-10 shadow-sm">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+              class="text-warning">
+              <path
+                d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z" />
+              <path d="M5 3v4" />
+              <path d="M19 17v4" />
+              <path d="M3 5h4" />
+              <path d="M17 19h4" />
+            </svg>
+          </div>
+          <div>
+            <div class="d-flex align-items-center gap-2 mb-1">
+              <h5 class="modal-title fw-bold mb-0 text-white" style="font-size: 1.15rem;">Optimizador Cromático y
+                Estético MSSBOA</h5>
+              <span class="badge rounded-pill bg-warning text-dark fw-semibold px-2 py-0"
+                style="font-size: 0.68rem;">Bioinspirado (SBOA + GPSI + OBL)</span>
+            </div>
+            <p class="text-white-50 small mb-0" style="font-size: 0.78rem;">
+              Multi-Strategy Secretary Bird Optimization Algorithm: genera paletas armónicas con contraste WCAG
+              garantizado y equilibrio compositivo.
+            </p>
+          </div>
+        </div>
+        <button type="button" class="btn-close btn-close-white" (click)="cerrarModalMSSBOA()"></button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="modal-body p-4 bg-light bg-opacity-50">
+
+        <!-- Param Controls Card -->
+        <div class="card border-0 shadow-sm rounded-3 p-3 mb-4 bg-white">
+          <div class="row g-3 align-items-end">
+
+            <!-- Base Color Picker -->
+            <div class="col-md-3">
+              <label class="form-label small fw-semibold text-secondary mb-1 d-flex justify-content-between">
+                <span>Color Base Ancla</span>
+                <span class="text-muted font-monospace" style="font-size: 0.75rem;">{{ mssboaBaseHex }}</span>
+              </label>
+              <div class="d-flex align-items-center gap-2">
+                <input type="color" class="form-control form-control-color border-0 p-1 rounded-2 shadow-sm"
+                  style="width: 42px; height: 38px; cursor: pointer;" [(ngModel)]="mssboaBaseHex">
+                <input type="text" class="form-control form-control-sm font-monospace uppercase"
+                  [(ngModel)]="mssboaBaseHex" placeholder="#2563EB" style="max-width: 100px;">
+              </div>
+              <!-- Quick Brand Color pills -->
+              <div class="d-flex align-items-center gap-1 mt-1 flex-wrap" *ngIf="colores().length > 0">
+                <span class="text-muted" style="font-size: 0.65rem;">Sugeridos:</span>
+                <button *ngFor="let c of colores().slice(0, 4)" type="button"
+                  class="btn p-0 rounded-circle border shadow-xs" [style.background-color]="c.hex_code"
+                  style="width: 16px; height: 16px;" [title]="c.nombre + ' (' + c.hex_code + ')'"
+                  (click)="onSelectMSSBOABase(c.hex_code)">
+                </button>
+              </div>
+            </div>
+
+            <!-- Harmony Model Selector -->
+            <div class="col-md-3">
+              <label class="form-label small fw-semibold text-secondary mb-1">Modelo de Armonía</label>
+              <select class="form-select form-select-sm shadow-xs" [(ngModel)]="mssboaHarmonyType">
+                <option *ngFor="let h of mssboaHarmonyTypes" [value]="h.id">{{ h.label }}</option>
+              </select>
+            </div>
+
+            <!-- Theme Mode -->
+            <div class="col-md-2">
+              <label class="form-label small fw-semibold text-secondary mb-1">Tema UI</label>
+              <div class="btn-group w-100 btn-group-sm" role="group">
+                <input type="radio" class="btn-check" name="mssboaTheme" id="modeLight" value="light"
+                  [(ngModel)]="mssboaThemeMode">
+                <label class="btn btn-outline-secondary" for="modeLight">Claro</label>
+
+                <input type="radio" class="btn-check" name="mssboaTheme" id="modeDark" value="dark"
+                  [(ngModel)]="mssboaThemeMode">
+                <label class="btn btn-outline-secondary" for="modeDark">Oscuro</label>
+              </div>
+            </div>
+
+            <!-- WCAG Target -->
+            <div class="col-md-2">
+              <label class="form-label small fw-semibold text-secondary mb-1">Accesibilidad WCAG</label>
+              <select class="form-select form-select-sm shadow-xs" [(ngModel)]="mssboaWcagTarget">
+                <option value="AA">Nivel AA (&ge; 4.5:1)</option>
+                <option value="AAA">Nivel AAA (&ge; 7.0:1)</option>
+              </select>
+            </div>
+
+            <!-- Action Button -->
+            <div class="col-md-2">
+              <button
+                class="btn btn-primary btn-sm w-100 d-flex align-items-center justify-content-center gap-2 fw-semibold py-2 shadow-sm rounded-2"
+                style="background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); border: none;"
+                (click)="ejecutarMSSBOA()" [disabled]="mssboaIsOptimizing">
+                <span class="spinner-border spinner-border-sm" role="status" *ngIf="mssboaIsOptimizing"></span>
+                <svg *ngIf="!mssboaIsOptimizing" xmlns="http://www.w3.org/2000/svg" width="14" height="14"
+                  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round">
+                  <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                  <path d="M3 3v5h5" />
+                  <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" />
+                  <path d="M16 21h5v-5" />
+                </svg>
+                <span>{{ mssboaIsOptimizing ? 'Optimizando...' : 'Optimizar' }}</span>
+              </button>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Alert messages -->
+        <div
+          class="alert alert-success d-flex align-items-center gap-2 py-2 px-3 small rounded-3 mb-3 border-0 shadow-sm"
+          *ngIf="mssboaFeedbackMessage">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="text-success"
+            viewBox="0 0 16 16">
+            <path
+              d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z" />
+          </svg>
+          <span>{{ mssboaFeedbackMessage }}</span>
+        </div>
+
+        <!-- Loading State Indicator -->
+        <div class="card border-0 shadow-sm rounded-3 p-5 text-center bg-white" *ngIf="mssboaIsOptimizing">
+          <div class="spinner-grow text-primary mb-3" style="width: 3rem; height: 3rem;" role="status"></div>
+          <h6 class="fw-bold mb-1 text-dark">Simulando Dinámicas del Pájaro Secretario (MSSBOA)</h6>
+          <p class="text-muted small mb-0">
+            Explorando el espacio cromático multidimensional, aplicando reflexión mediante lentes y mutación adaptativa
+            de Cauchy-Gauss...
+          </p>
+        </div>
+
+        <!-- Optimization Results View -->
+        <div *ngIf="!mssboaIsOptimizing && mssboaResult" class="d-flex flex-column gap-4">
+
+          <!-- Metrics Scorecards Grid -->
+          <div class="row g-3">
+            <!-- Fitness Score -->
+            <div class="col-md-3 col-6">
+              <div class="card border-0 shadow-sm rounded-3 p-3 bg-white h-100 border-start border-4 border-primary">
+                <div class="text-muted small fw-medium text-uppercase"
+                  style="font-size: 0.7rem; letter-spacing: 0.5px;">Fitness Global</div>
+                <div class="d-flex align-items-baseline gap-2 mt-1">
+                  <span class="h3 fw-bold text-dark mb-0">{{ mssboaResult.metrics.fitness_score }}</span>
+                  <span class="badge bg-primary-subtle text-primary border-0 rounded-pill px-2"
+                    style="font-size: 0.7rem;">Óptimo</span>
+                </div>
+                <div class="text-muted" style="font-size: 0.7rem;">Convergencia en {{ mssboaResult.execution_time_ms }}
+                  ms</div>
+              </div>
+            </div>
+
+            <!-- Harmony Score -->
+            <div class="col-md-3 col-6">
+              <div class="card border-0 shadow-sm rounded-3 p-3 bg-white h-100 border-start border-4 border-info">
+                <div class="text-muted small fw-medium text-uppercase"
+                  style="font-size: 0.7rem; letter-spacing: 0.5px;">Armonía Cromática</div>
+                <div class="d-flex align-items-baseline gap-2 mt-1">
+                  <span class="h3 fw-bold text-info mb-0">{{ mssboaResult.metrics.harmony_score }}%</span>
+                </div>
+                <div class="text-muted" style="font-size: 0.7rem;">Modelo: {{ mssboaResult.metrics.harmony_template }}
+                </div>
+              </div>
+            </div>
+
+            <!-- Contrast Score -->
+            <div class="col-md-3 col-6">
+              <div class="card border-0 shadow-sm rounded-3 p-3 bg-white h-100 border-start border-4 border-success">
+                <div class="text-muted small fw-medium text-uppercase"
+                  style="font-size: 0.7rem; letter-spacing: 0.5px;">Contraste WCAG</div>
+                <div class="d-flex align-items-baseline gap-2 mt-1">
+                  <span class="h3 fw-bold text-success mb-0">{{ mssboaResult.metrics.min_contrast }}:1</span>
+                  <span class="badge bg-success-subtle text-success border-0 rounded-pill px-2"
+                    style="font-size: 0.7rem;" *ngIf="mssboaResult.metrics.wcag_compliant">
+                    Cumple {{ mssboaWcagTarget }}
+                  </span>
+                </div>
+                <div class="text-muted" style="font-size: 0.7rem;">Puntuación: {{ mssboaResult.metrics.contrast_score }}
+                  pts</div>
+              </div>
+            </div>
+
+            <!-- Diversity Score -->
+            <div class="col-md-3 col-6">
+              <div class="card border-0 shadow-sm rounded-3 p-3 bg-white h-100 border-start border-4 border-warning">
+                <div class="text-muted small fw-medium text-uppercase"
+                  style="font-size: 0.7rem; letter-spacing: 0.5px;">Diversidad Visual</div>
+                <div class="d-flex align-items-baseline gap-2 mt-1">
+                  <span class="h3 fw-bold text-warning mb-0">{{ mssboaResult.metrics.diversity_score }}%</span>
+                </div>
+                <div class="text-muted" style="font-size: 0.7rem;">Sin colapso perceptual de tonos</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Optimized Palette Swatches Grid -->
+          <div class="card border-0 shadow-sm rounded-3 p-3 bg-white">
+            <h6 class="fw-bold text-dark mb-3 d-flex align-items-center gap-2" style="font-size: 0.95rem;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="text-primary"
+                viewBox="0 0 16 16">
+                <path
+                  d="M8 5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zm4 3a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zM5.5 7a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm.5 6a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z" />
+              </svg>
+              Paleta Cromática Optimizada (12 Tokens de Sistema)
+            </h6>
+
+            <div class="row g-2">
+              <div *ngFor="let col of mssboaResult.colores" class="col-md-3 col-sm-6">
+                <div
+                  class="card border rounded-3 p-2 h-100 shadow-xs transition-all hover-shadow bg-light bg-opacity-25">
+                  <div class="d-flex align-items-center gap-2">
+                    <div class="rounded-3 shadow-xs border flex-shrink-0" [style.background-color]="col.hex_code"
+                      style="width: 44px; height: 44px;"></div>
+                    <div class="overflow-hidden flex-grow-1">
+                      <div class="d-flex justify-content-between align-items-center">
+                        <span class="badge bg-secondary-subtle text-secondary px-2 py-0 rounded"
+                          style="font-size: 0.65rem;">{{ col.uso }}</span>
+                        <span class="font-monospace fw-bold small text-dark">{{ col.hex_code }}</span>
+                      </div>
+                      <div class="text-truncate fw-semibold mt-1" style="font-size: 0.8rem;" [title]="col.nombre">{{
+                        col.nombre }}</div>
+                      <div class="text-muted font-monospace text-truncate" style="font-size: 0.65rem;">{{ col.token_name
+                        }}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Live UI Mockup Preview -->
+          <div class="card border-0 shadow-sm rounded-3 p-3 bg-white">
+            <h6 class="fw-bold text-dark mb-2 d-flex align-items-center gap-2" style="font-size: 0.95rem;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                class="text-success">
+                <rect x="2" y="3" width="20" height="14" rx="2" ry="2" />
+                <line x1="8" y1="21" x2="16" y2="21" />
+                <line x1="12" y1="17" x2="12" y2="21" />
+              </svg>
+              Maqueta de Interfaz en Vivo (Comprobación de Jerarquía y Estética)
+            </h6>
+            <p class="text-muted small mb-3" style="font-size: 0.78rem;">
+              Verificación directa de cómo interactúan las superficies, bordes, estados semánticos y textos generados por MSSBOA.
+            </p>
+
+            <!-- Dynamic UI Canvas -->
+            <div class="rounded-3 p-4 border" [style.background-color]="mssboaResult.colores[3].hex_code || '#F8FAFC'"
+              [style.color]="mssboaResult.colores[6].hex_code || '#0F172A'">
+              <div class="row g-3">
+
+                <!-- Card Component -->
+                <div class="col-md-7">
+                  <div class="p-3 rounded-3 shadow-sm"
+                    [style.background-color]="mssboaResult.colores[4].hex_code || '#FFFFFF'"
+                    [style.border]="'1px solid ' + (mssboaResult.colores[5].hex_code || '#E2E8F0')">
+                    <div class="d-flex flex-wrap gap-1 mb-2">
+                      <span class="badge rounded-pill px-2 py-0 fw-semibold"
+                        [style.background-color]="mssboaResult.colores[8].hex_code || '#10B981'"
+                        style="color: #ffffff; font-size: 0.65rem;">
+                        Éxito
+                      </span>
+                      <span class="badge rounded-pill px-2 py-0 fw-semibold"
+                        [style.background-color]="mssboaResult.colores[9].hex_code || '#F59E0B'"
+                        style="color: #ffffff; font-size: 0.65rem;">
+                        Advertencia
+                      </span>
+                      <span class="badge rounded-pill px-2 py-0 fw-semibold"
+                        [style.background-color]="mssboaResult.colores[10].hex_code || '#EF4444'"
+                        style="color: #ffffff; font-size: 0.65rem;">
+                        Error
+                      </span>
+                      <span class="badge rounded-pill px-2 py-0 fw-semibold"
+                        [style.background-color]="mssboaResult.colores[11].hex_code || '#06B6D4'"
+                        style="color: #ffffff; font-size: 0.65rem;">
+                        Info
+                      </span>
+                    </div>
+                    <h6 class="fw-bold mb-1" [style.color]="mssboaResult.colores[6].hex_code || '#0F172A'">
+                      Resumen Ejecutivo de Proyecto
+                    </h6>
+                    <p class="small mb-3" [style.color]="mssboaResult.colores[7].hex_code || '#64748B'"
+                      style="font-size: 0.8rem;">
+                      Este componente valida que la legibilidad de títulos y subtítulos supere los estándares WCAG sobre
+                      el fondo de superficie y bordes seleccionados.
+                    </p>
+                    <div class="d-flex flex-wrap gap-2">
+                      <button class="btn btn-sm px-3 fw-medium text-white shadow-xs"
+                        [style.background-color]="mssboaResult.colores[0].hex_code || '#2563EB'" style="border: none;">
+                        Acción Principal
+                      </button>
+                      <button class="btn btn-sm px-3 fw-medium text-white shadow-xs"
+                        [style.background-color]="mssboaResult.colores[1].hex_code || '#475569'" style="border: none;">
+                        Secundario
+                      </button>
+                      <button class="btn btn-sm px-3 fw-medium text-white shadow-xs"
+                        [style.background-color]="mssboaResult.colores[2].hex_code || '#3B82F6'" style="border: none;">
+                        Acento
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Secondary Visual Element -->
+                <div class="col-md-5">
+                  <div class="p-3 rounded-3 shadow-sm h-100 d-flex flex-column justify-content-between"
+                    [style.background-color]="mssboaResult.colores[4].hex_code || '#FFFFFF'"
+                    [style.border]="'1px solid ' + (mssboaResult.colores[5].hex_code || '#E2E8F0')">
+                    <div>
+                      <div class="d-flex align-items-center gap-2 mb-2">
+                        <div class="rounded-circle p-2"
+                          [style.background-color]="mssboaResult.colores[0].hex_code || '#2563EB'"
+                          style="color: white; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;">
+                          ✓
+                        </div>
+                        <span class="fw-bold small"
+                          [style.color]="mssboaResult.colores[6].hex_code || '#0F172A'">Armonía Garantizada</span>
+                      </div>
+                      <p class="small mb-0" [style.color]="mssboaResult.colores[7].hex_code || '#64748B'"
+                        style="font-size: 0.75rem;">
+                        12 Tokens de sistema calibrados en equilibrio cromático multiobjetivo mediante el algoritmo MSSBOA.
+                      </p>
+                    </div>
+                    <div class="mt-2 pt-2 border-top d-flex justify-content-between align-items-center"
+                      [style.border-color]="(mssboaResult.colores[5].hex_code || '#E2E8F0') + ' !important'">
+                      <span class="small font-monospace" [style.color]="mssboaResult.colores[7].hex_code || '#64748B'"
+                        style="font-size: 0.7rem;">
+                        Ratio WCAG: {{ mssboaResult.metrics.min_contrast }}:1
+                      </span>
+                      <span class="badge bg-light text-dark border" style="font-size: 0.65rem;">
+                        {{ mssboaThemeMode | titlecase }}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+          <!-- Application Options -->
+          <div class="card border-0 shadow-sm rounded-3 p-3 bg-white">
+            <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+              <div>
+                <h6 class="fw-bold mb-1 text-dark" style="font-size: 0.9rem;">Modo de Inserción en el Design System</h6>
+                <div class="d-flex align-items-center gap-3">
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="mssboaApplyMode" id="applyReplace"
+                      value="replace" [(ngModel)]="mssboaApplyMode">
+                    <label class="form-check-label small" for="applyReplace">
+                      <strong>Reemplazar paleta activa</strong> (Recomendado para coherencia global)
+                    </label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="mssboaApplyMode" id="applyAppend" value="append"
+                      [(ngModel)]="mssboaApplyMode">
+                    <label class="form-check-label small" for="applyAppend">
+                      Añadir como nuevos tokens adicionales
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="modal-footer bg-white border-top px-4 py-3 d-flex justify-content-between">
+        <button type="button" class="btn btn-outline-secondary px-4" (click)="cerrarModalMSSBOA()">Cerrar</button>
+        <button type="button" class="btn btn-success d-flex align-items-center gap-2 px-4 shadow-sm fw-semibold"
+          [disabled]="!mssboaResult || mssboaIsOptimizing" (click)="aplicarPaletaMSSBOA()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+            <path
+              d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z" />
+          </svg>
+          Aplicar al Design System
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+

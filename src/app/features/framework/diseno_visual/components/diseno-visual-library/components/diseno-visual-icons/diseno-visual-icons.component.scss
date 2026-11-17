@@ -1,0 +1,202 @@
+.text-primary-blue {
+  color: #2563eb !important;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.shadow-2xs {
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+// =========================================================================
+// TARJETA DE ÍCONO (Idéntica a la foto: con badge circular y tooltip inferior en hover)
+// =========================================================================
+.icon-card-item {
+  position: relative;
+  width: 58px;
+  height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  background-color: #ffffff;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  user-select: none;
+  margin-bottom: 6px;
+
+  .svg-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+
+    ::ng-deep svg {
+      width: 24px !important;
+      height: 24px !important;
+      stroke-width: var(--icon-stroke, 1.5px) !important;
+      transition: stroke-width 0.15s ease, transform 0.2s ease;
+
+      * {
+        stroke-width: var(--icon-stroke, 1.5px) !important;
+        vector-effect: non-scaling-stroke;
+      }
+    }
+  }
+
+  // Estado Seleccionado (Idéntico a la foto: fondo suave azul y borde azul)
+  &.is-selected {
+    border-color: #3b82f6 !important;
+    background-color: #eff6ff !important;
+    color: #2563eb !important;
+
+    .svg-container ::ng-deep svg {
+      color: #2563eb !important;
+    }
+  }
+
+  // Badge circular de check azul en la esquina superior derecha (como la foto)
+  .selected-check-badge {
+    position: absolute;
+    top: 3px;
+    right: 3px;
+    width: 17px;
+    height: 17px;
+    border-radius: 50%;
+    background-color: #2563eb;
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+    z-index: 5;
+    pointer-events: none;
+  }
+
+  // Botón para eliminar en hover
+  .delete-icon-btn {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background-color: #ef4444;
+    color: white;
+    font-size: 13px;
+    line-height: 1;
+    border: none;
+    padding: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+
+    &:hover {
+      background-color: #dc2626;
+      transform: scale(1.1);
+    }
+  }
+
+  // Tooltip / Píldora inferior oscura con el nombre del ícono (SOLO VISIBLE AL PASAR EL MOUSE)
+  .icon-token-overlay {
+    opacity: 0;
+    visibility: hidden;
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%) translateY(4px);
+    background: #1e293b;
+    color: #ffffff;
+    font-size: 0.65rem;
+    font-family: SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-weight: 500;
+    padding: 2px 7px;
+    border-radius: 4px;
+    white-space: nowrap;
+    pointer-events: none;
+    z-index: 30;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.25);
+    transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1), transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.2s;
+  }
+
+  // EFECTO HOVER: al pasar el mouse recién se visualiza el nombre
+  &:hover {
+    border-color: #93c5fd;
+    color: #2563eb;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px -2px rgba(37, 99, 235, 0.12);
+    z-index: 25;
+
+    &.is-selected {
+      border-color: #2563eb !important;
+      background-color: #e0edff !important;
+
+      // Al pasar el mouse en un seleccionado, mostrar la X en vez del check para quitarlo
+      .delete-icon-btn {
+        display: flex;
+      }
+      .selected-check-badge {
+        display: none;
+      }
+    }
+
+    .svg-container svg {
+      transform: scale(1.12);
+    }
+
+    // Se hace visible la píldora inferior con el nombre
+    .icon-token-overlay {
+      opacity: 1;
+      visibility: visible;
+      transform: translateX(-50%) translateY(0);
+    }
+  }
+}
+
+// Grilla del Catálogo
+.icon-grid-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(58px, 1fr));
+  gap: 0.5rem;
+  max-height: 250px;
+  overflow-y: auto;
+  padding: 6px 4px 14px 4px; // Espacio inferior para que el overlay en hover no se corte
+}
+
+// Panel de Íconos Seleccionados (El recuadro inferior derecho marcado en la foto)
+.selected-icons-panel {
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  min-height: 110px;
+
+  .empty-selection-box {
+    border-color: #cbd5e1 !important;
+    background-color: #ffffff;
+  }
+
+  .selected-icons-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(58px, 1fr));
+    gap: 0.5rem;
+    max-height: 140px;
+    overflow-y: auto;
+    padding: 6px 4px 14px 4px; // Espacio inferior para el overlay en hover
+  }
+}
+
+@media (min-width: 992px) {
+  .border-start-lg {
+    border-left: 1px solid #e2e8f0 !important;
+  }
+}
