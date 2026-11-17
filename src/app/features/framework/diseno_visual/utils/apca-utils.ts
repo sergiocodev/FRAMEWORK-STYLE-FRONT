@@ -1,3 +1,4 @@
+// APCA (Advanced Perceptual Contrast Algorithm) - WCAG 3 Candidate Standard
 import { calcAPCA, fontLookupAPCA } from 'apca-w3';
 import { TypographyItem } from '../services/diseno-visual.service';
 import { extractNumericWeight } from './typography-algorithms';
