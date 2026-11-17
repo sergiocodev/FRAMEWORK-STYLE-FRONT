@@ -967,7 +967,7 @@
                         <span>Módulo en {{ inspectingNode.icono || 'Pantalla' }}</span>
                       </span>
                     } @else if (inspectingNode.tipo === 'componente') {
-                      <span class="badge bg-purple bg-opacity-10 text-purple border border-purple border-opacity-25 rounded-pill px-2 py-1 small d-inline-flex align-items-center gap-1">
+                      <span class="badge bg-purple-subtle text-purple-emphasis border border-purple-subtle rounded-pill px-2 py-1 small d-inline-flex align-items-center gap-1">
                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                           <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
                           <polyline points="2 17 12 22 22 17"></polyline>
@@ -996,13 +996,13 @@
             </div>
 
             @if (inspectingNode.tipo === 'componente') {
-              <div class="px-4 py-2 bg-purple bg-opacity-10 border-bottom d-flex align-items-center gap-2 flex-shrink-0">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#7e22ce" stroke-width="2" class="flex-shrink-0">
+              <div class="px-4 py-2 bg-purple-subtle border-bottom border-purple-subtle d-flex align-items-center gap-2 flex-shrink-0">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#6b21a8" stroke-width="2" class="flex-shrink-0">
                   <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
                   <polyline points="2 17 12 22 22 17"></polyline>
                   <polyline points="2 12 12 17 22 12"></polyline>
                 </svg>
-                <div class="small text-purple" style="font-size: 0.72rem;">
+                <div class="small text-purple-emphasis" style="font-size: 0.72rem;">
                   <strong>Componente Reusable:</strong> Al validar la estética de este componente en baja fidelidad (proporciones áureas, alineación y touch targets), garantizas que cuando lo reutilices en cualquier pantalla o módulo mantenga una composición armónica y consistente.
                 </div>
               </div>
@@ -1223,14 +1223,14 @@
                     <button class="nav-link py-1 px-3 rounded-pill small fw-bold"
                             [ngClass]="activeInspectorTab === 'ngo' ? 'bg-primary text-white active shadow-xs' : 'text-secondary hover-bg-light'"
                             (click)="activeInspectorTab = 'ngo'">
-                      <span class="d-inline-flex align-items-center gap-1"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path><path d="M22 12A10 10 0 0 0 12 2v10z"></path></svg> Diagnóstico de Composición</span>
+                      <span class="d-inline-flex align-items-center gap-1"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path><path d="M22 12A10 10 0 0 0 12 2v10z"></path></svg> Diagnóstico de Composición Visual</span>
                     </button>
                   </li>
                   <li class="nav-item">
                     <button class="nav-link py-1 px-3 rounded-pill small fw-bold d-flex align-items-center gap-1"
                             [ngClass]="activeInspectorTab === 'restructure' ? 'btn-indigo text-white active shadow-xs' : 'text-indigo bg-indigo-light hover-bg-light'"
                             (click)="activeInspectorTab = 'restructure'">
-                      <span class="d-inline-flex align-items-center gap-1"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg> Optimizar Layout Móvil</span>
+                      <span class="d-inline-flex align-items-center gap-1"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg> Optimización de Layout Móvil</span>
                     </button>
                   </li>
                 </ul>
@@ -1339,7 +1339,7 @@
                           <div>
                             <div class="fw-bold text-dark small mb-1">Diagnóstico de Composición Visual</div>
                             <div class="text-secondary" style="font-size: 0.72rem;">
-                              Evaluación matemática de equilibrio, simetría y balance visual (Recomendado para Web y Desktop).
+                              Evaluación matemática de equilibrio, simetría y balance visual para interfaces (Web, Desktop y Móvil).
                             </div>
                           </div>
                           <button class="btn btn-sm btn-primary rounded-pill px-3 py-1 fw-bold shadow-xs d-flex align-items-center gap-1"
@@ -1357,11 +1357,11 @@
 
                       <!-- Leyenda de Rangos de Calidad Estética -->
                       <div class="p-3 bg-white rounded-4 border shadow-xs">
-                        <div class="small fw-bold text-dark mb-1" style="font-size: 0.75rem;">Escala de Calidad de Composición:</div>
+                        <div class="small fw-bold text-dark mb-1" style="font-size: 0.75rem;">Escala de Calidad de Composición Visual:</div>
                         <div class="d-flex flex-column gap-1 text-secondary" style="font-size: 0.72rem;">
                           <div class="d-flex align-items-center gap-2">
                             <span class="badge bg-danger rounded-pill px-2 py-1" style="min-width: 65px;">0% – 49%</span>
-                            <span class="text-dark"><strong>Calidad Baja:</strong> Desbalance notorio, asimetría o sobrecarga de elementos.</span>
+                            <span class="text-dark"><strong>Calidad Baja:</strong> Desbalance notorio, asimetría o sobrecarga en la composición.</span>
                           </div>
                           <div class="d-flex align-items-center gap-2">
                             <span class="badge bg-warning text-dark rounded-pill px-2 py-1" style="min-width: 65px;">50% – 74%</span>
@@ -1472,7 +1472,7 @@
                       <div class="p-2 px-3 bg-primary bg-opacity-10 border border-primary border-opacity-25 rounded-3 d-flex align-items-center gap-2">
                         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" class="flex-shrink-0"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
                         <div class="small text-primary-emphasis" style="font-size: 0.74rem;">
-                          <strong>Exclusivo para Wireframes Móviles:</strong> Diseñado específicamente para pantallas de smartphones (Android y Material Design). Para pantallas web amplias o de escritorio, utiliza la pestaña <em>Diagnóstico de Composición</em>.
+                          <strong>Exclusivo para Wireframes Móviles:</strong> Herramienta de optimización ergonómica y estructural para smartphones. Detecta defectos de layout móvil y reestructura los widgets aplicando proporción áurea y retícula simétrica de 8dp. Para pantallas Web o de Escritorio, utiliza la pestaña <em>Diagnóstico de Composición Visual</em>.
                         </div>
                       </div>
 
@@ -1480,10 +1480,10 @@
                       <div class="p-3 bg-indigo-light border border-indigo rounded-4 d-flex align-items-center justify-content-between">
                         <div>
                           <div class="fw-bold text-indigo small mb-1 d-flex align-items-center gap-1">
-                            <span>✨ Optimización de Layout Móvil</span>
+                            <span>📱 Reestructuración Ergonómica Móvil</span>
                           </div>
                           <div class="text-secondary" style="font-size: 0.72rem;">
-                            Evalúa el wireframe actual y calcula una retícula con proporción áurea (1.618) y paddings simétricos.
+                            Detecta defectos de espaciado, sobrecarga y tamaño táctil, calculando una retícula optimizada.
                           </div>
                         </div>
                         <button class="btn btn-sm btn-indigo rounded-pill px-3 py-1 fw-bold shadow-xs d-flex align-items-center gap-1"
@@ -1493,7 +1493,7 @@
                             <span class="spinner-border spinner-border-sm" role="status"></span>
                             <span>Optimizando...</span>
                           } @else {
-                            <span class="d-inline-flex align-items-center gap-1"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"></path></svg> Analizar y Optimizar</span>
+                            <span class="d-inline-flex align-items-center gap-1"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"></path></svg> Reestructurar Layout</span>
                           }
                         </button>
                       </div>
@@ -1558,22 +1558,22 @@
                           <div class="p-3 bg-white rounded-4 border shadow-xs">
                             <div class="d-flex align-items-center justify-content-between mb-2">
                               <div>
-                                <div class="fw-bold text-dark small">Puntaje Estructural Actual</div>
-                                <div class="text-muted" style="font-size: 0.7rem;">Nivel de dispersión medido en tu wireframe original</div>
+                                <div class="fw-bold text-dark small">Puntaje de Dispersión Estructural</div>
+                                <div class="text-muted" style="font-size: 0.7rem;">Métrica de dispersión de alineación, márgenes y paddings del layout</div>
                               </div>
                               <span class="badge rounded-pill px-3 py-1 fw-bold fs-6" [ngClass]="getStructuralScoreBadge(restructuringResult.score_estructural.original).class">
                                 {{ restructuringResult.score_estructural.original }} · {{ getStructuralScoreBadge(restructuringResult.score_estructural.original).label }}
                               </span>
                             </div>
                             <div class="small text-secondary" style="font-size: 0.72rem;">
-                              Tu diseño cuenta con {{ restructuringResult.original_boxes.length }} elementos detectados. La vista previa izquierda resalta en rojo los elementos de tu wireframe.
+                              Tu diseño cuenta con {{ restructuringResult.original_boxes.length }} elementos detectados. La vista previa resalta en rojo las cajas de tu wireframe.
                             </div>
                           </div>
 
                           <!-- Semáforo de Defectos Detectados en el Diseño Actual -->
                           <div class="p-3 bg-white rounded-4 border shadow-xs">
                             <h6 class="small fw-bold text-dark mb-2 d-flex align-items-center justify-content-between">
-                              <span>Defectos Detectados en el Wireframe Actual</span>
+                              <span>Defectos Estructurales Detectados</span>
                               <span class="badge rounded-pill bg-light text-secondary border">
                                 {{ restructuringResult.defectos_detectados.length }} detectados
                               </span>
@@ -1613,8 +1613,10 @@
                             <div class="row g-2">
                               @for (q of restructuringResult.cuadrantes; track q.codigo) {
                                 <div class="col-6">
-                                  <div class="quadrant-box p-2 rounded-3 border text-center"
-                                       [ngClass]="q.estado === 'saturado' ? 'border-danger bg-danger bg-opacity-10' : 'bg-light'">
+                                  <div class="quadrant-box p-2 rounded-3 border text-center cursor-pointer hover-shadow-xs transition-all"
+                                       [ngClass]="q.estado === 'saturado' ? 'border-danger bg-danger bg-opacity-10' : 'bg-light hover-bg-light'"
+                                       (click)="setRestructuringStep('optimizado'); filterQuadrant(q.codigo)"
+                                       title="Clic para ver y podar elementos en {{ q.codigo }}">
                                     <div class="fw-bold small" style="font-size: 0.75rem;">{{ q.codigo }}: {{ q.nombre }}</div>
                                     <div class="fs-6 fw-bold" [ngClass]="q.estado === 'saturado' ? 'text-danger' : 'text-dark'">
                                       {{ q.elementos_count }} elems ({{ q.porcentaje }}%)
@@ -1623,6 +1625,9 @@
                                          [ngClass]="q.estado === 'saturado' ? 'bg-danger text-white' : q.estado === 'desbalanceado' ? 'bg-warning text-dark' : 'bg-success text-white'"
                                          style="font-size: 0.62rem;">
                                       {{ q.estado | titlecase }}
+                                    </div>
+                                    <div class="text-indigo small mt-1" style="font-size: 0.62rem;">
+                                      <span>Podar widgets ✂️</span>
                                     </div>
                                   </div>
                                 </div>
@@ -1692,11 +1697,11 @@
                           <div class="p-3 bg-white rounded-4 border shadow-xs">
                             <div class="d-flex align-items-center justify-content-between mb-2">
                               <div>
-                                <h6 class="small fw-bold text-dark mb-0">Balance de Cuadrantes & Podado</h6>
-                                <div class="text-muted" style="font-size: 0.68rem;">Haz clic en un cuadrante para filtrar o podar elementos no esenciales.</div>
+                                <h6 class="small fw-bold text-dark mb-0">Balance de Cuadrantes & Podado Interactivo</h6>
+                                <div class="text-muted" style="font-size: 0.68rem;">Haz clic en un cuadrante para listar sus widgets y podar elementos secundarios.</div>
                               </div>
                               @if (selectedQuadrantFilter !== 'ALL') {
-                                <button class="btn btn-xs btn-outline-secondary py-0 px-2" (click)="filterQuadrant('ALL')">
+                                <button class="btn btn-xs btn-outline-secondary py-0 px-2 rounded-pill" (click)="filterQuadrant('ALL')">
                                   Ver Todos
                                 </button>
                               }
@@ -1705,11 +1710,11 @@
                             <div class="row g-2 mb-2">
                               @for (q of restructuringResult.cuadrantes; track q.codigo) {
                                 <div class="col-6">
-                                  <div class="quadrant-box p-2 rounded-3 border text-center cursor-pointer"
+                                  <div class="quadrant-box p-2 rounded-3 border text-center cursor-pointer transition-all"
                                        [ngClass]="{
-                                         'active': selectedQuadrantFilter === q.codigo,
+                                         'border-primary bg-primary bg-opacity-10 shadow-xs': selectedQuadrantFilter === q.codigo,
                                          'border-danger bg-danger bg-opacity-10': q.estado === 'saturado' && selectedQuadrantFilter !== q.codigo,
-                                         'bg-light': q.estado !== 'saturado' && selectedQuadrantFilter !== q.codigo
+                                         'bg-light hover-bg-light': q.estado !== 'saturado' && selectedQuadrantFilter !== q.codigo
                                        }"
                                        (click)="filterQuadrant(q.codigo)">
                                     <div class="fw-bold small" style="font-size: 0.75rem;">{{ q.codigo }}: {{ q.nombre }}</div>
@@ -1721,27 +1726,47 @@
                                          style="font-size: 0.62rem;">
                                       {{ q.estado | titlecase }}
                                     </div>
+                                    <div class="mt-1 small" [ngClass]="selectedQuadrantFilter === q.codigo ? 'text-primary fw-bold' : 'text-muted'" style="font-size: 0.62rem;">
+                                      {{ selectedQuadrantFilter === q.codigo ? '✓ Seleccionado' : 'Clic para editar' }}
+                                    </div>
                                   </div>
                                 </div>
                               }
                             </div>
 
+                            <!-- Si no hay cuadrante seleccionado, dar instrucción clara -->
+                            @if (selectedQuadrantFilter === 'ALL') {
+                              <div class="p-2 bg-light rounded-3 border text-center text-secondary small" style="font-size: 0.72rem;">
+                                👆 Haz clic en cualquiera de los 4 cuadrantes para desplegar sus widgets y desmarcar los que desees podar del lienzo.
+                              </div>
+                            }
+
                             <!-- Lista de Elementos del Cuadrante Seleccionado para Podado -->
                             @if (selectedQuadrantFilter !== 'ALL') {
                               <div class="p-2 bg-light rounded-3 border">
-                                <div class="small fw-bold text-dark mb-1" style="font-size: 0.72rem;">
-                                  Elementos en {{ selectedQuadrantFilter }} (Desmarca para podar del layout):
+                                <div class="d-flex align-items-center justify-content-between mb-2">
+                                  <div class="small fw-bold text-dark" style="font-size: 0.72rem;">
+                                    Widgets en {{ selectedQuadrantFilter }} (Desmarca para podar del layout):
+                                  </div>
+                                  <span class="badge bg-secondary rounded-pill" style="font-size: 0.62rem;">
+                                    {{ getFilteredOriginalBoxes().length }} widgets
+                                  </span>
                                 </div>
-                                <div class="d-flex flex-column gap-1" style="max-height: 120px; overflow-y: auto;">
+                                <div class="d-flex flex-column gap-1" style="max-height: 140px; overflow-y: auto;">
                                   @for (elem of getFilteredOriginalBoxes(); track elem.id) {
-                                    <label class="d-flex align-items-center justify-content-between p-1 bg-white rounded border small cursor-pointer" style="font-size: 0.7rem;">
+                                    <label class="d-flex align-items-center justify-content-between p-1 bg-white rounded border small cursor-pointer hover-bg-light" style="font-size: 0.7rem;">
                                       <div class="d-flex align-items-center gap-2">
                                         <input type="checkbox"
+                                               class="form-check-input mt-0 cursor-pointer"
                                                [checked]="!isElementPruned(elem.id)"
                                                (change)="togglePruneElement(elem.id)">
-                                        <span>Widget [{{ elem.id }}] - {{ elem.w }}×{{ elem.h }} px</span>
+                                        <span [ngClass]="isElementPruned(elem.id) ? 'text-decoration-line-through text-muted' : 'text-dark fw-medium'">
+                                          Widget [{{ elem.id }}] — {{ elem.w }}×{{ elem.h }} px
+                                        </span>
                                       </div>
-                                      <span class="text-muted" style="font-size: 0.65rem;">({{ elem.x }}, {{ elem.y }})</span>
+                                      <span class="badge" [ngClass]="isElementPruned(elem.id) ? 'bg-danger text-white' : 'bg-light text-muted'" style="font-size: 0.62rem;">
+                                        {{ isElementPruned(elem.id) ? '✂️ Podado' : '(' + elem.x + ', ' + elem.y + ')' }}
+                                      </span>
                                     </label>
                                   }
                                 </div>
@@ -1761,6 +1786,14 @@
                                   </div>
                                   <div class="text-secondary mb-1" style="font-size: 0.72rem;">{{ rec.descripcion }}</div>
                                   <div class="text-indigo fw-medium d-inline-flex align-items-center gap-1" style="font-size: 0.68rem;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path></svg> <span>{{ rec.beneficio }}</span></div>
+                                  @if (rec.id === 'rec_om') {
+                                    <div class="mt-1">
+                                      <button class="btn btn-xs btn-outline-indigo rounded-pill py-0 px-2 fw-medium"
+                                              (click)="filterQuadrant('Q1')">
+                                        ✂️ Abrir herramienta de podado
+                                      </button>
+                                    </div>
+                                  }
                                 </div>
                               }
                             </div>
@@ -1771,16 +1804,8 @@
                       }
 
                       @if (!restructuringResult && !isLoadingRestructuring && !restructuringError) {
-                        <div class="text-center p-4 bg-light rounded-4 border border-dashed">
-                          <div class="mb-2 text-primary"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg></div>
-                          <h6 class="fw-bold text-dark mb-1">Optimización de Layout Móvil</h6>
-                          <p class="text-secondary small mb-3" style="font-size: 0.75rem;">
-                            Evalúa tu wireframe móvil, diagnostica sus defectos y obtén una propuesta con cuadrícula armónica en un solo clic.
-                          </p>
-                          <button class="btn btn-sm btn-indigo rounded-pill px-4 py-2 fw-medium shadow-xs"
-                                  (click)="runRestructuring()">
-                            <span class="d-inline-flex align-items-center gap-2"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"></path></svg> Analizar y Optimizar Wireframe</span>
-                          </button>
+                        <div class="text-center p-3 text-secondary small bg-light rounded-3 border">
+                          Presiona <strong>Reestructurar Layout</strong> en la cabecera superior para analizar los defectos estructurales y calcular la cuadrícula optimizada.
                         </div>
                       }
 

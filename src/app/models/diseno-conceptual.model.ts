@@ -137,18 +137,6 @@ export interface RestructuringResult {
   };
   original_boxes: BoundingBoxElemento[];
   restructured_boxes: BoundingBoxElemento[];
-  ngo_comparativa: {
-    balance_old: number;
-    balance_new: number;
-    regularidad_old: number;
-    regularidad_new: number;
-    simplicidad_old: number;
-    simplicidad_new: number;
-    unidad_old: number;
-    unidad_new: number;
-    global_old: number;
-    global_new: number;
-  };
   recomendaciones: RecomendacionMaterial[];
   css_export?: string;
 }

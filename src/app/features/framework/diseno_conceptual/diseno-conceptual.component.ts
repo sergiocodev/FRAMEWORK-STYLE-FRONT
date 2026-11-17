@@ -856,7 +856,7 @@ export class DisenoConceptualComponent implements OnInit, OnDestroy {
       if (this.selectedQuadrantFilter !== 'ALL' && b.cuadrante !== this.selectedQuadrantFilter) {
         return false;
       }
-      return !this.isElementPruned(b.id);
+      return true;
     });
   }
 
