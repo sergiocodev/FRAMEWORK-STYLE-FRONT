@@ -19,7 +19,10 @@ import {
   BoundingBoxElemento,
   DefectoEstructural,
   CuadranteInfo,
-  RecomendacionMaterial
+  RecomendacionMaterial,
+  MulticriteriaLayoutResult,
+  MulticriteriaRadarPoint,
+  MulticriteriaMetricaItem
 } from '../../../models/diseno-conceptual.model';
 import { Phase } from '../../../shared/components/stepper/stepper.component';
 import { environment } from '../../../../environments/environment';
@@ -108,7 +111,14 @@ export class DisenoConceptualComponent implements OnInit, OnDestroy {
   inspectingWireframe: Wireframe | null = null;
   activeWireframeChecklist: WireframeChecklistItem[] = [];
   newChecklistItemText = '';
-  activeInspectorTab: 'aesthetic' | 'functional' | 'ngo' | 'restructure' = 'aesthetic';
+  activeInspectorTab: 'aesthetic' | 'functional' | 'ngo' | 'restructure' | 'multicriteria' = 'aesthetic';
+
+  // --- Evaluación Multicriterio de Layout (Regresión y Entropía) state ---
+  multicriteriaResult: MulticriteriaLayoutResult | null = null;
+  isLoadingMulticriteria = false;
+  multicriteriaError: string | null = null;
+  showMulticriteriaBoxes = true;
+  showMulticriteriaQuadrants = true;
 
   // --- MUIDesigner 2022 Aesthetic Restructuring state ---
   restructuringResult: RestructuringResult | null = null;
@@ -604,13 +614,22 @@ export class DisenoConceptualComponent implements OnInit, OnDestroy {
   }
 
   // --- INSPECTOR MODAL (VALIDACIÓN ESTÉTICA Y REQUISITOS) ---
-  openInspector(nodo: NodoPantalla, event?: Event): void {
+  openInspector(nodo: NodoPantalla, event?: Event, preserveTab: boolean = false): void {
     if (event) event.stopPropagation();
 
+    const currentTab = this.activeInspectorTab;
     this.inspectingNode = nodo;
     this.inspectingWireframe = this.getWireframeForNode(nodo.id) || null;
-    this.activeInspectorTab = 'aesthetic';
+    this.activeInspectorTab = preserveTab ? currentTab : 'aesthetic';
     this.showInspectorModal = true;
+
+    // Limpiar errores y estados de interacción previos al cambiar de pantalla
+    this.ngoError = null;
+    this.restructuringError = null;
+    this.multicriteriaError = null;
+    this.prunedElementIds.clear();
+    this.selectedQuadrantFilter = 'ALL';
+    this.restructuringStep = 'diagnostico';
 
     if (this.inspectingWireframe?.id) {
       const wfId = this.inspectingWireframe.id;
@@ -630,9 +649,20 @@ export class DisenoConceptualComponent implements OnInit, OnDestroy {
         this.restructuringResult = null;
       }
 
+      // Recuperar evaluación multicriterio previa si existe en storage
+      const savedMulti = localStorage.getItem(`multicriteria_eval_${this.projectId}_${wfId}`);
+      if (savedMulti) {
+        try { this.multicriteriaResult = JSON.parse(savedMulti); } catch (e) { this.multicriteriaResult = null; }
+      } else {
+        this.multicriteriaResult = null;
+      }
+
       this.loadChecklistForWireframe(wfId);
     } else {
       this.activeWireframeChecklist = [];
+      this.ngoResult = null;
+      this.restructuringResult = null;
+      this.multicriteriaResult = null;
     }
   }
 
@@ -648,6 +678,9 @@ export class DisenoConceptualComponent implements OnInit, OnDestroy {
     this.prunedElementIds.clear();
     this.selectedQuadrantFilter = 'ALL';
     this.restructuringStep = 'diagnostico';
+    this.multicriteriaResult = null;
+    this.multicriteriaError = null;
+    this.isLoadingMulticriteria = false;
   }
 
   loadChecklistForWireframe(wireframeId: number): void {
@@ -725,7 +758,7 @@ export class DisenoConceptualComponent implements OnInit, OnDestroy {
     if (targetIndex >= this.nodos.length) targetIndex = 0;
 
     const targetNode = this.nodos[targetIndex];
-    this.openInspector(targetNode);
+    this.openInspector(targetNode, undefined, true);
   }
 
   getAestheticChecklistStats(): { completed: number, total: number, percent: number } {
@@ -934,6 +967,118 @@ export class DisenoConceptualComponent implements OnInit, OnDestroy {
   get unassignedModules(): NodoPantalla[] {
     const screenNames = new Set(this.availableScreens.map(s => s.nombre));
     return this.nodos.filter(n => n.tipo === 'modulo' && (!n.icono || !screenNames.has(n.icono)));
+  }
+
+  // --- EVALUACIÓN MULTICRITERIO DE LAYOUT (REGRESIÓN & ENTROPÍA) ---
+  evaluateMulticriteria(): void {
+    if (!this.inspectingWireframe?.id) return;
+    this.isLoadingMulticriteria = true;
+    this.multicriteriaResult = null;
+    this.multicriteriaError = null;
+
+    this.disenoService.evaluateWireframeMulticriteria(this.projectId, this.inspectingWireframe.id).subscribe({
+      next: (result) => {
+        this.multicriteriaResult = result;
+        this.isLoadingMulticriteria = false;
+        if (this.inspectingWireframe?.id) {
+          localStorage.setItem(`multicriteria_eval_${this.projectId}_${this.inspectingWireframe.id}`, JSON.stringify(result));
+          this.updateWireframeEvaluationCache(this.inspectingWireframe.id, this.activeWireframeChecklist);
+        }
+      },
+      error: (err) => {
+        this.multicriteriaError = err?.error?.detail || 'Error al calcular la evaluación multicriterio.';
+        this.isLoadingMulticriteria = false;
+      }
+    });
+  }
+
+  toggleMulticriteriaBoxes(): void {
+    this.showMulticriteriaBoxes = !this.showMulticriteriaBoxes;
+  }
+
+  toggleMulticriteriaQuadrants(): void {
+    this.showMulticriteriaQuadrants = !this.showMulticriteriaQuadrants;
+  }
+
+  getMulticriteriaMetricList(): MulticriteriaMetricaItem[] {
+    if (!this.multicriteriaResult?.interpretaciones) return [];
+    return Object.values(this.multicriteriaResult.interpretaciones);
+  }
+
+  getMulticriteriaQualityBadgeClass(level: string): string {
+    switch (level) {
+      case 'Óptima': return 'bg-success text-white';
+      case 'Alta': return 'bg-primary text-white';
+      case 'Media': return 'bg-warning text-dark';
+      case 'Baja': return 'bg-danger text-white';
+      default: return 'bg-secondary text-white';
+    }
+  }
+
+  // --- SVG RADAR HELPERS ---
+  getRadarPolygonPoints(radarData?: MulticriteriaRadarPoint[], center = 160, radius = 95): string {
+    if (!radarData || radarData.length === 0) return '';
+    const n = radarData.length;
+    const angleStep = (Math.PI * 2) / n;
+    return radarData.map((d, i) => {
+      const angle = i * angleStep - Math.PI / 2;
+      const r = Math.min(Math.max(d.valor || 0, 0), 1) * radius;
+      const x = center + r * Math.cos(angle);
+      const y = center + r * Math.sin(angle);
+      return `${x.toFixed(1)},${y.toFixed(1)}`;
+    }).join(' ');
+  }
+
+  getRadarGridPoints(fraction: number, center = 160, radius = 95): string {
+    const n = 7;
+    const angleStep = (Math.PI * 2) / n;
+    const points: string[] = [];
+    for (let i = 0; i < n; i++) {
+      const angle = i * angleStep - Math.PI / 2;
+      const r = fraction * radius;
+      const x = center + r * Math.cos(angle);
+      const y = center + r * Math.sin(angle);
+      points.push(`${x.toFixed(1)},${y.toFixed(1)}`);
+    }
+    return points.join(' ');
+  }
+
+  getRadarAxisLine(index: number, total = 7, center = 160, radius = 95): { x1: number; y1: number; x2: number; y2: number } {
+    const angleStep = (Math.PI * 2) / total;
+    const angle = index * angleStep - Math.PI / 2;
+    return {
+      x1: center,
+      y1: center,
+      x2: Number((center + radius * Math.cos(angle)).toFixed(1)),
+      y2: Number((center + radius * Math.sin(angle)).toFixed(1))
+    };
+  }
+
+  getRadarLabelPosition(index: number, total = 7, center = 160, radius = 95, offset = 26): { x: number; y: number; anchor: string; dy: string } {
+    const angleStep = (Math.PI * 2) / total;
+    const angle = index * angleStep - Math.PI / 2;
+    const r = radius + offset;
+    const x = Number((center + r * Math.cos(angle)).toFixed(1));
+    const y = Number((center + r * Math.sin(angle)).toFixed(1));
+    let anchor = 'middle';
+    if (Math.cos(angle) > 0.25) anchor = 'start';
+    else if (Math.cos(angle) < -0.25) anchor = 'end';
+    
+    let dy = '0.35em';
+    if (Math.sin(angle) < -0.7) dy = '0';
+    else if (Math.sin(angle) > 0.7) dy = '0.8em';
+
+    return { x, y, anchor, dy };
+  }
+
+  getRadarPointCoord(index: number, value: number, total = 7, center = 160, radius = 95): { x: number; y: number } {
+    const angleStep = (Math.PI * 2) / total;
+    const angle = index * angleStep - Math.PI / 2;
+    const r = Math.min(Math.max(value || 0, 0), 1) * radius;
+    return {
+      x: Number((center + r * Math.cos(angle)).toFixed(1)),
+      y: Number((center + r * Math.sin(angle)).toFixed(1))
+    };
   }
 
   // --- AVANZAR A FASE 3 ---

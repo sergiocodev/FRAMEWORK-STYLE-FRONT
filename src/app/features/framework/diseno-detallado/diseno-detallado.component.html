@@ -46,294 +46,598 @@
   </div>
 
   <!-- Phase Header / Stepper -->
-  <div class="container-fluid mb-1">
+  <div class="container-fluid mb-3">
     <div class="bg-white rounded p-3 shadow-sm border border-light">
       <div class="d-flex align-items-center gap-3">
-        <div class="header-icon-container" style="background-color: rgba(37, 99, 235, 0.1); color: #2563EB; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; border-radius: 12px;">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        <div class="header-icon-container" style="background-color: rgba(37, 99, 235, 0.1); color: #2563EB; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border-radius: 12px;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
             stroke-linecap="round" stroke-linejoin="round">
             <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
             <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
           </svg>
         </div>
         <div>
-          <h4 class="mb-1 fw-bold d-flex align-items-center gap-2">
+          <h5 class="mb-0 fw-bold d-flex align-items-center gap-2">
             Fase 4: Diseño Detallado
-          </h4>
-          <div class="text-muted" style="font-size: 0.9rem;">
+          </h5>
+          <div class="text-muted" style="font-size: 0.85rem;">
             <span class="fw-medium text-secondary-emphasis">Cliente:</span> <span class="opacity-75 me-2">{{ project?.client || 'Cliente Interno' }}</span> | 
-            <span class="ms-2">Vincula la estructura con los estilos utilizando herramientas de diseño.</span>
+            <span class="ms-1">Vincula la estructura conceptual con el sistema de diseño visual (Fase 3) para crear prototipos de alta fidelidad.</span>
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Main Content -->
-  <div class="container-fluid pt-2 pb-4 flex-grow-1 d-flex flex-column overflow-hidden">
+  <!-- Main Content Layout (3 Columns, Clean, Balanced) -->
+  <div class="container-fluid pb-4 flex-grow-1 d-flex flex-column">
+    <div class="row g-3 flex-grow-1 align-items-stretch">
+      
+      <!-- Left Column: Pantallas del Proyecto -->
+      <div [ngClass]="isSidebarOpen ? 'col-12 col-lg-4 col-xl-3' : 'col-auto'" class="d-flex flex-column">
+        @if (isSidebarOpen) {
+          <div class="bg-white rounded-4 shadow-sm border p-3 h-100 d-flex flex-column">
+            
+            <!-- Header Toolbar: Anti-overflow layout -->
+            <div class="d-flex align-items-center justify-content-between mb-3 gap-2">
+              <h6 class="fw-bold text-dark mb-0 text-nowrap" style="font-size: 0.88rem;">Pantallas</h6>
+              <div class="d-flex align-items-center gap-1 flex-shrink-0">
+                <button class="btn btn-sm btn-outline-secondary py-1 px-2 fw-medium rounded-pill text-nowrap d-flex align-items-center gap-1" 
+                        (click)="syncScreensFromPhase2()" 
+                        [disabled]="isSyncingPhase2" 
+                        title="Sincronizar y actualizar con las pantallas de la Fase 2"
+                        style="font-size: 0.72rem;">
+                  @if (isSyncingPhase2) {
+                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="width: 10px; height: 10px;"></span>
+                  } @else {
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path></svg>
+                  }
+                  <span>Sincronizar</span>
+                </button>
+                <button class="btn btn-sm btn-primary py-1 px-2.5 fw-medium rounded-pill text-nowrap d-flex align-items-center gap-1" 
+                        (click)="addScreen()" 
+                        style="font-size: 0.72rem;" 
+                        title="Crear nueva pantalla">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                  <span>Añadir</span>
+                </button>
+                <button class="btn btn-sm btn-link text-secondary p-1" (click)="isSidebarOpen = false" title="Ocultar panel">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                </button>
+              </div>
+            </div>
+          
+            <!-- Search & Filter -->
+            <div class="d-flex gap-2 mb-2">
+              <div class="position-relative flex-grow-1">
+                <svg class="position-absolute text-secondary" style="top: 9px; left: 10px;" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                <input type="text" class="form-control form-control-sm ps-5 bg-light border-0" placeholder="Buscar pantalla..." [(ngModel)]="searchQuery">
+              </div>
+              <select class="form-select form-select-sm bg-light border-0 fw-medium" style="width: auto; font-size: 0.75rem;" [(ngModel)]="selectedPriorityFilter">
+                <option value="todas">Todas</option>
+                <option value="alta">Alta</option>
+                <option value="media">Media</option>
+                <option value="baja">Baja</option>
+              </select>
+            </div>
 
-  <div class="row g-4">
-    
-    <!-- Left Column: Pantallas -->
-    <div [ngClass]="isSidebarOpen ? 'col-12 col-xl-3' : 'col-auto'" class="align-self-start" style="position: sticky; top: 1.5rem; z-index: 5;">
-      @if (isSidebarOpen) {
-        <div class="d-flex flex-column h-100 transition-all">
-          <div class="d-flex align-items-center justify-content-between mb-3">
-            <h6 class="fw-bold text-dark mb-0">Pantallas del proyecto</h6>
+            <!-- Priority Filter Pills (Refined, high contrast, brand cohesive) -->
+            <div class="d-flex gap-1.5 mb-3 overflow-auto pb-1">
+              <button class="btn btn-xs rounded-pill px-2.5 py-1 border text-nowrap fw-medium transition-all" 
+                      [ngClass]="selectedPriorityFilter === 'todas' ? 'btn-primary text-white shadow-xs' : 'btn-light text-secondary border-light-subtle'"
+                      style="font-size: 0.72rem;"
+                      (click)="selectedPriorityFilter = 'todas'">
+                Todas ({{ screens.length }})
+              </button>
+              <button class="btn btn-xs rounded-pill px-2.5 py-1 border text-nowrap fw-medium transition-all d-inline-flex align-items-center gap-1" 
+                      [ngClass]="selectedPriorityFilter === 'alta' ? 'btn-danger text-white shadow-xs' : 'btn-light text-danger border-danger-subtle'"
+                      style="font-size: 0.72rem;"
+                      (click)="selectedPriorityFilter = 'alta'">
+                <span class="rounded-circle" [ngClass]="selectedPriorityFilter === 'alta' ? 'bg-white' : 'bg-danger'" style="width: 6px; height: 6px;"></span>
+                Alta ({{ highPriorityCount }})
+              </button>
+              <button class="btn btn-xs rounded-pill px-2.5 py-1 border text-nowrap fw-medium transition-all d-inline-flex align-items-center gap-1" 
+                      [ngClass]="selectedPriorityFilter === 'media' ? 'btn-warning text-dark shadow-xs' : 'btn-light text-warning-emphasis border-warning-subtle'"
+                      style="font-size: 0.72rem;"
+                      (click)="selectedPriorityFilter = 'media'">
+                <span class="rounded-circle" [ngClass]="selectedPriorityFilter === 'media' ? 'bg-dark' : 'bg-warning'" style="width: 6px; height: 6px;"></span>
+                Media ({{ mediumPriorityCount }})
+              </button>
+              <button class="btn btn-xs rounded-pill px-2.5 py-1 border text-nowrap fw-medium transition-all d-inline-flex align-items-center gap-1" 
+                      [ngClass]="selectedPriorityFilter === 'baja' ? 'btn-secondary text-white shadow-xs' : 'btn-light text-secondary border-secondary-subtle'"
+                      style="font-size: 0.72rem;"
+                      (click)="selectedPriorityFilter = 'baja'">
+                <span class="rounded-circle" [ngClass]="selectedPriorityFilter === 'baja' ? 'bg-white' : 'bg-secondary'" style="width: 6px; height: 6px;"></span>
+                Baja ({{ lowPriorityCount }})
+              </button>
+            </div>
+
+            <!-- Screens List -->
+            @if (filteredScreens.length > 0) {
+              <div class="d-flex flex-column gap-2 overflow-auto flex-grow-1" style="max-height: calc(100vh - 310px);">
+                @for (screen of filteredScreens; track screen.id; let i = $index) {
+                  <div class="p-2.5 bg-light bg-opacity-50 rounded-3 border cursor-pointer transition-all hover-shadow-sm d-flex align-items-center justify-content-between group"
+                       [ngClass]="{'border-primary bg-white shadow-sm': selectedScreenId === screen.id}"
+                       (click)="selectScreen(screen.id)">
+                    
+                    <div class="d-flex align-items-center gap-2.5 overflow-hidden">
+                      <div class="bg-white p-2 rounded-2 text-primary border shadow-xs flex-shrink-0">
+                        @if (screen.icon === 'home') {
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                        } @else if (screen.icon === 'log-in') {
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path><polyline points="10 17 15 12 10 7"></polyline><line x1="15" y1="12" x2="3" y2="12"></line></svg>
+                        } @else if (screen.icon === 'user') {
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                        } @else if (screen.icon === 'folder') {
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+                        } @else if (screen.icon === 'settings') {
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                        } @else {
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect></svg>
+                        }
+                      </div>
+                      <div class="flex-grow-1 overflow-hidden" style="min-width: 0;">
+                        @if (editingScreenId === screen.id) {
+                          <div class="d-flex align-items-center gap-1" (click)="$event.stopPropagation()">
+                            <input type="text" class="form-control form-control-sm border-primary py-0 px-1" [(ngModel)]="editingTitle" (keyup.enter)="saveEdit(screen, $event)" (keyup.escape)="cancelEdit($event)" style="font-size: 0.8rem;">
+                            <button class="btn btn-xs btn-primary p-1" (click)="saveEdit(screen, $event)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+                          </div>
+                        } @else {
+                          <div class="d-flex align-items-center gap-1.5">
+                            <span class="text-dark fw-bold text-truncate" style="font-size: 0.82rem;" [class.text-primary]="selectedScreenId === screen.id">
+                              {{ (i + 1).toString().padStart(2, '0') }}. {{ screen.title }}
+                            </span>
+                            <button class="btn btn-link p-0 text-secondary opacity-50 hover-opacity-100" (click)="startEditing(screen, $event)" title="Renombrar">
+                              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                            </button>
+                          </div>
+                        }
+                        
+                        <!-- Badges with Standard SVG Icons (No emojis) -->
+                        <div class="d-flex align-items-center gap-1 mt-1 flex-wrap">
+                          @if (screen.prioridad === 'alta') {
+                            <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-1.5 py-0.5 fw-semibold d-inline-flex align-items-center gap-1" style="font-size: 0.62rem;">
+                              <span class="rounded-circle bg-danger" style="width: 5px; height: 5px;"></span> Alta
+                            </span>
+                          } @else if (screen.prioridad === 'media') {
+                            <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle px-1.5 py-0.5 fw-semibold d-inline-flex align-items-center gap-1" style="font-size: 0.62rem;">
+                              <span class="rounded-circle bg-warning" style="width: 5px; height: 5px;"></span> Media
+                            </span>
+                          } @else {
+                            <span class="badge bg-secondary-subtle text-secondary border px-1.5 py-0.5 fw-semibold d-inline-flex align-items-center gap-1" style="font-size: 0.62rem;">
+                              <span class="rounded-circle bg-secondary" style="width: 5px; height: 5px;"></span> Baja
+                            </span>
+                          }
+
+                          @if (screen.tieneWireframe) {
+                            <span class="badge bg-white text-secondary border px-1.5 py-0.5 d-inline-flex align-items-center gap-1" style="font-size: 0.6rem;" title="Tiene wireframe conceptual de Fase 2">
+                              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
+                              <span>Wireframe</span>
+                            </span>
+                          }
+                          @if (screen.image || screen.tieneDiseno) {
+                            <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-1.5 py-0.5 d-inline-flex align-items-center gap-1" style="font-size: 0.6rem;">
+                              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+                              <span>Prototipo</span>
+                            </span>
+                          }
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div class="d-flex align-items-center gap-1 flex-shrink-0">
+                      @if (screen.status === 'Verificada') {
+                        <span class="badge bg-success bg-opacity-10 text-success border border-success fw-normal px-1.5 py-0.5" style="font-size: 0.65rem;">Verificada</span>
+                      } @else if (screen.status === 'En revisión') {
+                        <span class="badge bg-warning bg-opacity-10 text-warning border border-warning fw-normal px-1.5 py-0.5" style="font-size: 0.65rem;">En revisión</span>
+                      } @else {
+                        <span class="badge bg-secondary bg-opacity-10 text-secondary border fw-normal px-1.5 py-0.5" style="font-size: 0.65rem;">Pendiente</span>
+                      }
+                      <button class="btn btn-link text-danger p-0 ms-1 opacity-50 hover-opacity-100" (click)="deleteScreen(screen.id, $event)" title="Eliminar pantalla">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                      </button>
+                    </div>
+                  </div>
+                }
+              </div>
+            } @else {
+              <!-- Empty screens state with ONE clear action -->
+              <div class="text-center p-4 border rounded-3 bg-light d-flex flex-column align-items-center justify-content-center flex-grow-1">
+                <div class="bg-primary bg-opacity-10 text-primary rounded-circle p-3 mb-2">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
+                </div>
+                <h6 class="fw-bold text-dark mb-1">No hay pantallas en la lista</h6>
+                <p class="text-secondary small mb-3" style="font-size: 0.78rem;">Importa automáticamente las pantallas y wireframes definidos en la Fase 2.</p>
+                <button class="btn btn-sm btn-primary rounded-pill px-3 shadow-sm d-flex align-items-center gap-1.5" (click)="syncScreensFromPhase2()" [disabled]="isSyncingPhase2">
+                  @if (isSyncingPhase2) {
+                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                  } @else {
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path></svg>
+                  }
+                  <span>Importar pantallas de Fase 2</span>
+                </button>
+              </div>
+            }
+
+          </div>
+        } @else {
+          <div class="h-100">
+            <button class="btn btn-white border rounded-3 shadow-sm p-2 d-flex flex-column align-items-center gap-2" (click)="isSidebarOpen = true" title="Mostrar pantallas" style="width: 44px;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-secondary"><polyline points="9 18 15 12 9 6"></polyline></svg>
+              <span class="text-secondary fw-bold" style="writing-mode: vertical-rl; transform: rotate(180deg); font-size: 0.72rem; letter-spacing: 2px;">PANTALLAS</span>
+            </button>
+          </div>
+        }
+      </div>
+
+      <!-- Middle Column: Lienzo y Visor de Diseño (Hero Section) -->
+      <div class="col-12" [ngClass]="isSidebarOpen ? 'col-lg-8 col-xl-6' : 'col-lg-8 col-xl-8 flex-grow-1'">
+        <div class="bg-white rounded-4 shadow-sm border p-3 p-md-4 h-100 d-flex flex-column" style="min-height: 680px;">
+          
+          <!-- Canvas Header & View Switcher (Standard SVG Icons) -->
+          <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3 pb-2 border-bottom">
             <div>
-              <button class="btn btn-sm btn-primary py-1 px-3 fw-medium rounded-pill me-2" (click)="addScreen()" style="font-size: 0.75rem;">+ Añadir pantalla</button>
-              <button class="btn btn-sm btn-link text-secondary p-0" (click)="isSidebarOpen = false" title="Ocultar pantallas">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg>
+              <div class="d-flex align-items-center gap-2">
+                <h5 class="fw-bold text-dark mb-0 text-truncate" style="max-width: 260px;">{{ currentScreen?.title || 'Ninguna pantalla seleccionada' }}</h5>
+                @if (currentScreen?.prioridad === 'alta') {
+                  <span class="badge bg-danger-subtle text-danger border border-danger-subtle fw-semibold d-inline-flex align-items-center gap-1" style="font-size: 0.72rem;">
+                    <span class="rounded-circle bg-danger" style="width: 6px; height: 6px;"></span> Prioridad Alta
+                  </span>
+                } @else if (currentScreen?.prioridad === 'media') {
+                  <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle fw-semibold d-inline-flex align-items-center gap-1" style="font-size: 0.72rem;">
+                    <span class="rounded-circle bg-warning" style="width: 6px; height: 6px;"></span> Prioridad Media
+                  </span>
+                } @else if (currentScreen?.prioridad === 'baja') {
+                  <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle fw-semibold d-inline-flex align-items-center gap-1" style="font-size: 0.72rem;">
+                    <span class="rounded-circle bg-secondary" style="width: 6px; height: 6px;"></span> Prioridad Baja
+                  </span>
+                }
+              </div>
+              <span class="text-secondary small" style="font-size: 0.78rem;">Sube y contrasta el prototipo de alta fidelidad con el wireframe de Fase 2</span>
+            </div>
+
+            <!-- Mode Switcher with Clean SVG Icons -->
+            <div class="btn-group btn-group-sm p-1 bg-light border rounded-pill shadow-xs" role="group">
+              <button type="button" class="btn btn-sm rounded-pill px-3 py-1 fw-medium d-inline-flex align-items-center gap-1.5"
+                      [ngClass]="activeViewMode === 'prototype' ? 'btn-primary text-white shadow-sm' : 'btn-light border-0 text-secondary'"
+                      (click)="setViewMode('prototype')"
+                      style="font-size: 0.75rem;">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+                <span>Prototipo</span>
+              </button>
+              <button type="button" class="btn btn-sm rounded-pill px-3 py-1 fw-medium d-inline-flex align-items-center gap-1.5"
+                      [ngClass]="activeViewMode === 'wireframe' ? 'btn-primary text-white shadow-sm' : 'btn-light border-0 text-secondary'"
+                      (click)="setViewMode('wireframe')"
+                      style="font-size: 0.75rem;">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
+                <span>Wireframe Fase 2</span>
+              </button>
+              <button type="button" class="btn btn-sm rounded-pill px-3 py-1 fw-medium d-inline-flex align-items-center gap-1.5"
+                      [ngClass]="activeViewMode === 'split' ? 'btn-primary text-white shadow-sm' : 'btn-light border-0 text-secondary'"
+                      (click)="setViewMode('split')"
+                      style="font-size: 0.75rem;">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 16v1a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h11a2 2 0 0 1 2 2v1"></path><path d="M18 8h4a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"></path></svg>
+                <span>Comparativa</span>
               </button>
             </div>
           </div>
-        
-        <div class="d-flex gap-2 mb-3">
-          <div class="position-relative flex-grow-1">
-            <svg class="position-absolute text-secondary" style="top: 10px; left: 10px;" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-            <input type="text" class="form-control form-control-sm ps-5 bg-white border" placeholder="Buscar pantalla..." [(ngModel)]="searchQuery">
-          </div>
-          <select class="form-select form-select-sm bg-white border" style="width: auto;">
-            <option>Todas</option>
-          </select>
-        </div>
 
-        <div class="d-flex flex-column gap-2 overflow-auto" style="max-height: 70vh;">
-          @for (screen of filteredScreens; track screen.id; let i = $index) {
-            <div class="p-3 bg-white rounded-3 border cursor-pointer transition-all hover-shadow-sm d-flex align-items-center justify-content-between group"
-                 [ngClass]="{'border-primary shadow-sm': selectedScreenId === screen.id}"
-                 (click)="selectScreen(screen.id)">
-              
-              <div class="d-flex align-items-center gap-3">
-                <div class="bg-light p-2 rounded text-primary">
-                  <!-- Dynamic icon based on ID for visual variety -->
-                  @if (screen.icon === 'home') {
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
-                  } @else if (screen.icon === 'log-in') {
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path><polyline points="10 17 15 12 10 7"></polyline><line x1="15" y1="12" x2="3" y2="12"></line></svg>
-                  } @else if (screen.icon === 'user-plus') {
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="20" y1="8" x2="20" y2="14"></line><line x1="23" y1="11" x2="17" y2="11"></line></svg>
-                  } @else if (screen.icon === 'layout') {
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
-                  } @else if (screen.icon === 'user') {
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-                  } @else if (screen.icon === 'folder') {
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
-                  } @else if (screen.icon === 'settings') {
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
-                  } @else {
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect></svg>
-                  }
+          <!-- Canvas Interactive Area -->
+          <div class="flex-grow-1 bg-light rounded-3 border overflow-hidden position-relative d-flex flex-column align-items-center justify-content-center p-2" style="min-height: 540px;">
+            
+            @if (currentScreen?.isAnalyzing) {
+              <!-- Loading Overlay -->
+              <div class="position-absolute w-100 h-100 bg-white bg-opacity-75 d-flex flex-column align-items-center justify-content-center" style="z-index: 10;">
+                <div class="spinner-border text-primary mb-3" style="width: 2.5rem; height: 2.5rem;" role="status">
+                  <span class="visually-hidden">Analizando...</span>
                 </div>
-                <div class="flex-grow-1" style="min-width: 0;">
-                  @if (editingScreenId === screen.id) {
-                    <div class="d-flex align-items-center gap-1 mb-1" (click)="$event.stopPropagation()">
-                      <span class="text-secondary fw-bold" style="font-size: 0.9rem;">{{ (i + 1).toString().padStart(2, '0') }}.</span>
-                      <input type="text" class="form-control form-control-sm border-primary" [(ngModel)]="editingTitle" (keyup.enter)="saveEdit(screen, $event)" (keyup.escape)="cancelEdit($event)" style="font-size: 0.85rem; padding: 2px 6px;">
-                      <button class="btn btn-sm btn-primary p-1 d-flex align-items-center justify-content-center" (click)="saveEdit(screen, $event)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
-                      <button class="btn btn-sm btn-light border p-1 d-flex align-items-center justify-content-center" (click)="cancelEdit($event)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
-                    </div>
-                  } @else {
-                    <div class="d-flex align-items-center gap-2 mb-1 group-title">
-                      <h6 class="mb-0 text-dark fw-bold text-truncate" style="font-size: 0.9rem; max-width: 150px;" [class.text-primary]="selectedScreenId === screen.id">
-                        {{ (i + 1).toString().padStart(2, '0') }}. {{ screen.title }}
-                      </h6>
-                      <button class="btn btn-link p-0 text-secondary transition-all hover-primary" (click)="startEditing(screen, $event)" title="Editar nombre">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                <h6 class="fw-bold text-dark mb-1">Analizando diseño con IA...</h6>
+                <p class="text-secondary small">Evaluando aplicación de tokens de la Fase 3.</p>
+              </div>
+            }
+
+            <!-- MODE 1: PROTOTYPE -->
+            @if (activeViewMode === 'prototype') {
+              @if (currentScreen?.image) {
+                <!-- Prototipo Cargado -->
+                <div class="w-100 h-100 position-relative group d-flex align-items-center justify-content-center">
+                  <img [src]="currentScreen?.image" alt="Prototipo de {{ currentScreen?.title }}" class="img-fluid w-100 h-100 object-fit-contain p-2">
+                  <div class="position-absolute top-0 end-0 p-3 group-hover-opacity-100 transition-all">
+                    <button class="btn btn-sm btn-danger shadow d-flex align-items-center gap-1.5 rounded-pill px-3 py-1.5" (click)="clearImage()" style="font-size: 0.75rem;">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"></path><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                      Borrar y resubir
+                    </button>
+                  </div>
+                </div>
+              } @else {
+                <!-- Estado Vacío: Dropzone para subir prototipo -->
+                <div class="w-100 h-100 d-flex flex-column align-items-center justify-content-center p-4 cursor-pointer transition-all border-2 border-dashed rounded-3"
+                     (click)="fileInput.click()"
+                     (dragover)="onDragOver($event)"
+                     (dragleave)="onDragLeave($event)"
+                     (drop)="onDrop($event)"
+                     [ngClass]="isDragging ? 'bg-primary bg-opacity-10 border-primary' : 'bg-white border-secondary-subtle'">
+                  <input type="file" #fileInput (change)="onFileSelected($event)" accept=".png,.jpg,.jpeg" style="display: none;">
+                  
+                  <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-inline-flex p-3.5 mb-3 transition-all" [class.scale-110]="isDragging">
+                    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                  </div>
+                  <h6 class="fw-bold text-dark mb-1">Sube el prototipo en alta fidelidad</h6>
+                  <p class="text-secondary small mb-2 text-center" style="max-width: 380px; font-size: 0.8rem;">
+                    Arrastra y suelta tu diseño con los tokens de estilo de la Fase 3 aplicados (colores, tipografías e iconografía), o haz clic aquí.
+                  </p>
+                  
+                  @if (currentScreen?.tieneWireframe) {
+                    <div class="mt-2 p-2 bg-light rounded-3 border d-flex align-items-center gap-2" (click)="$event.stopPropagation()">
+                      <span class="text-secondary small d-flex align-items-center gap-1" style="font-size: 0.75rem;">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                        Wireframe conceptual disponible:
+                      </span>
+                      <button class="btn btn-xs btn-outline-primary rounded-pill px-2.5 py-0.5 d-flex align-items-center gap-1" (click)="setViewMode('wireframe')" style="font-size: 0.72rem;">
+                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect></svg>
+                        Ver Wireframe Fase 2
                       </button>
                     </div>
                   }
-                  <div class="text-secondary" style="font-size: 0.65rem;">Última actualización: {{ screen.lastUpdate }}</div>
+                </div>
+              }
+            }
+
+            <!-- MODE 2: WIREFRAME DE FASE 2 -->
+            @else if (activeViewMode === 'wireframe') {
+              
+              <!-- Si el usuario está cambiando o vinculando el wireframe -->
+              @if (isChangingWireframe || !currentScreen?.tieneWireframe) {
+                <div class="bg-white border rounded-3 p-3 shadow-xs mb-3 w-100" style="max-width: 580px;">
+                  <div class="d-flex align-items-center justify-content-between mb-2">
+                    <div class="d-flex align-items-center gap-1.5">
+                      <span class="badge bg-primary-subtle text-primary border border-primary-subtle d-inline-flex align-items-center gap-1" style="font-size: 0.7rem;">
+                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+                        Vinculación
+                      </span>
+                      <span class="fw-bold text-dark small" style="font-size: 0.8rem;">Selecciona el wireframe de Fase 2:</span>
+                    </div>
+                    @if (currentScreen?.tieneWireframe) {
+                      <button class="btn btn-link text-secondary p-0 small text-decoration-none" (click)="cancelChangingWireframe()" style="font-size: 0.75rem;">✕ Cancelar</button>
+                    }
+                  </div>
+                  
+                  @if (availableWireframes.length > 0) {
+                    <div class="d-flex align-items-center gap-2">
+                      <select class="form-select form-select-sm border bg-light text-dark fw-medium" [(ngModel)]="selectedWireframeToLink" style="font-size: 0.8rem;">
+                        <option [ngValue]="null" disabled selected>Elige un wireframe de la lista...</option>
+                        @for (wf of availableWireframes; track wf.id) {
+                          <option [value]="wf.id">
+                            {{ wf.nombre_archivo }} {{ wf.nodo_nombre ? '(actualmente en: ' + wf.nodo_nombre + ')' : '' }}
+                          </option>
+                        }
+                      </select>
+                      <button class="btn btn-sm btn-primary text-nowrap rounded-3 px-3 fw-medium" (click)="linkCurrentScreenToWireframe()" [disabled]="!selectedWireframeToLink" style="font-size: 0.78rem;">
+                        Guardar
+                      </button>
+                    </div>
+                  } @else {
+                    <div class="text-center p-2 text-muted small">No hay wireframes disponibles para vincular.</div>
+                  }
+                </div>
+              }
+
+              <!-- Toolbar con nombre de wireframe y botón de cambiar/desvincular -->
+              @if (currentScreen?.tieneWireframe && !isChangingWireframe) {
+                <div class="d-flex align-items-center justify-content-between w-100 bg-white border rounded-3 p-2 px-3 mb-2 shadow-xs">
+                  <div class="d-flex align-items-center gap-2 overflow-hidden">
+                    <span class="badge bg-light text-secondary border fw-medium d-inline-flex align-items-center gap-1" style="font-size: 0.72rem;">
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect></svg>
+                      Wireframe Fase 2
+                    </span>
+                    <span class="text-dark small fw-semibold text-truncate" style="max-width: 250px;">{{ currentScreen?.wireframeNombre || 'Wireframe asignado' }}</span>
+                  </div>
+                  <div class="d-flex align-items-center gap-1.5 flex-shrink-0">
+                    <button class="btn btn-xs btn-outline-primary d-flex align-items-center gap-1 rounded-pill px-2.5 py-1" (click)="startChangingWireframe()" style="font-size: 0.72rem;" title="Cambiar a otro wireframe de la Fase 2">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                      Cambiar
+                    </button>
+                    <button class="btn btn-xs btn-outline-danger d-flex align-items-center gap-1 rounded-pill px-2 py-1" (click)="unlinkCurrentScreenWireframe()" title="Desvincular wireframe de esta pantalla" style="font-size: 0.72rem;">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                      Desvincular
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Imagen del wireframe -->
+                <div class="w-100 flex-grow-1 position-relative d-flex align-items-center justify-content-center p-2">
+                  <img [src]="currentScreen?.wireframeUrl" alt="Wireframe Fase 2 de {{ currentScreen?.title }}" class="img-fluid w-100 h-100 object-fit-contain bg-white rounded border p-2 shadow-xs">
+                </div>
+              }
+            }
+
+            <!-- MODE 3: COMPARATIVA LADO A LADO -->
+            @else if (activeViewMode === 'split') {
+              <div class="w-100 h-100 d-flex flex-column flex-lg-row gap-2 p-1">
+                <!-- Left: Wireframe Fase 2 -->
+                <div class="flex-fill bg-white border rounded-3 p-2 d-flex flex-column position-relative" style="min-height: 240px;">
+                  <div class="d-flex align-items-center justify-content-between mb-2 pb-1 border-bottom">
+                    <span class="badge bg-light text-secondary border fw-medium d-inline-flex align-items-center gap-1" style="font-size: 0.72rem;">
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect></svg>
+                      Fase 2: Wireframe
+                    </span>
+                    @if (currentScreen?.tieneWireframe) {
+                      <button class="btn btn-link text-primary p-0 small text-decoration-none" (click)="setViewMode('wireframe'); startChangingWireframe()" style="font-size: 0.7rem;">Cambiar</button>
+                    }
+                  </div>
+                  <div class="flex-grow-1 d-flex align-items-center justify-content-center overflow-hidden">
+                    @if (currentScreen?.wireframeUrl) {
+                      <img [src]="currentScreen?.wireframeUrl" alt="Wireframe Fase 2" class="img-fluid w-100 h-100 object-fit-contain">
+                    } @else {
+                      <div class="text-center p-3">
+                        <span class="text-muted small d-block mb-1">Sin wireframe vinculado</span>
+                        <button class="btn btn-xs btn-outline-primary" (click)="setViewMode('wireframe')">Vincular wireframe</button>
+                      </div>
+                    }
+                  </div>
+                </div>
+                <!-- Right: Prototipo Alta Fidelidad Fase 4 -->
+                <div class="flex-fill bg-white border border-primary-subtle rounded-3 p-2 d-flex flex-column position-relative" style="min-height: 240px;">
+                  <div class="d-flex align-items-center justify-content-between mb-2 pb-1 border-bottom">
+                    <span class="badge bg-primary-subtle text-primary border border-primary-subtle fw-medium d-inline-flex align-items-center gap-1" style="font-size: 0.72rem;">
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon></svg>
+                      Fase 4: Prototipo
+                    </span>
+                    <span class="badge bg-success-subtle text-success" style="font-size: 0.65rem;">Alta Fidelidad</span>
+                  </div>
+                  <div class="flex-grow-1 d-flex align-items-center justify-content-center overflow-hidden">
+                    @if (currentScreen?.image) {
+                      <img [src]="currentScreen?.image" alt="Prototipo Fase 4" class="img-fluid w-100 h-100 object-fit-contain">
+                    } @else {
+                      <div class="text-center p-3">
+                        <span class="text-muted small d-block mb-2">Sin prototipo cargado aún</span>
+                        <button class="btn btn-xs btn-outline-primary" (click)="setViewMode('prototype')">Subir diseño</button>
+                      </div>
+                    }
+                  </div>
                 </div>
               </div>
-              
-              <div class="d-flex align-items-center gap-2">
-                @if (screen.status === 'Verificada') {
-                  <span class="badge bg-success bg-opacity-10 text-success border border-success fw-normal px-2 py-1" style="font-size: 0.7rem;">{{ screen.status }}</span>
-                } @else if (screen.status === 'En revisión') {
-                  <span class="badge bg-warning bg-opacity-10 text-warning border border-warning fw-normal px-2 py-1" style="font-size: 0.7rem;">{{ screen.status }}</span>
-                } @else {
-                  <span class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary fw-normal px-2 py-1" style="font-size: 0.7rem;">{{ screen.status }}</span>
-                }
-                <!-- Botón de eliminar -->
-                <button class="btn btn-link text-danger p-0 hover-danger transition-all ms-2" 
-                        title="Eliminar pantalla"
-                        (click)="deleteScreen(screen.id, $event)">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-                </button>
-              </div>
-            </div>
-          }
+            }
+
+          </div>
         </div>
       </div>
-      } @else {
-        <div class="h-100">
-          <button class="btn btn-white border rounded-3 shadow-sm p-2 d-flex flex-column align-items-center gap-2" (click)="isSidebarOpen = true" title="Mostrar pantallas" style="width: 48px;">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-secondary"><polyline points="9 18 15 12 9 6"></polyline></svg>
-            <span class="text-secondary fw-bold" style="writing-mode: vertical-rl; transform: rotate(180deg); font-size: 0.75rem; letter-spacing: 2px;">PANTALLAS</span>
-          </button>
-        </div>
-      }
-    </div>
 
-    <!-- Middle Column: Vista Previa -->
-    <div class="col-12 align-self-start" [ngClass]="isSidebarOpen ? 'col-xl-5' : 'col-xl-7 flex-grow-1'" style="position: sticky; top: 1.5rem; height: calc(100vh - 3rem); z-index: 5;">
-      <div class="bg-white rounded-4 shadow-sm border p-4 h-100 d-flex flex-column">
-        <div class="d-flex align-items-center justify-content-between mb-3">
-          <h6 class="fw-bold text-dark mb-0">Vista previa del diseño: {{ currentScreen?.title || 'Ninguna pantalla seleccionada' }}</h6>
-        </div>
+      <!-- Right Column: Validación de Guía de Estilos y Alertas IA -->
+      <div class="col-12 col-xl-3 d-flex flex-column gap-3">
+        
+        <!-- Card 1: Validación de Guía de Estilos (Fase 3) -->
+        <div class="bg-white rounded-4 shadow-sm border p-3 p-md-4">
+          <div class="d-flex align-items-center gap-2 mb-1">
+            <svg class="text-primary" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+            <h6 class="fw-bold mb-0 text-dark">Validación de Guía de Estilos (Fase 3)</h6>
+          </div>
+          <p class="small text-secondary mb-3" style="font-size: 0.78rem;">Verifica la correcta aplicación de los tokens de color, tipografía y componentes acordados en la Fase 3.</p>
 
-        <!-- Visor dinámico -->
-        <div class="flex-grow-1 bg-light rounded-3 border overflow-hidden position-relative d-flex align-items-center justify-content-center">
-          
-          @if (currentScreen?.isAnalyzing) {
-            <!-- Overlay de carga IA -->
-            <div class="position-absolute w-100 h-100 bg-white bg-opacity-75 d-flex flex-column align-items-center justify-content-center" style="z-index: 10;">
-              <div class="spinner-border text-primary mb-3" style="width: 3rem; height: 3rem;" role="status">
-                <span class="visually-hidden">Analizando...</span>
-              </div>
-              <h5 class="fw-bold text-dark mb-1">Analizando diseño con IA...</h5>
-              <p class="text-secondary small">Evaluando colores, tipografías y estructura.</p>
+          <!-- Barra de Progreso de Cumplimiento -->
+          <div class="bg-light p-2.5 rounded-3 border mb-3">
+            <div class="d-flex align-items-center justify-content-between mb-1.5">
+              <span class="fw-semibold text-dark small" style="font-size: 0.78rem;">Cumplimiento de Estilos</span>
+              <span class="badge" [ngClass]="checklistStats.percent === 100 ? 'bg-success text-white' : 'bg-primary text-white'" style="font-size: 0.72rem;">
+                {{ checklistStats.completed }} de {{ checklistStats.total }} ({{ checklistStats.percent }}%)
+              </span>
             </div>
-          }
+            <div class="progress" style="height: 6px;">
+              <div class="progress-bar transition-all" 
+                   [ngClass]="checklistStats.percent === 100 ? 'bg-success' : 'bg-primary'"
+                   role="progressbar" 
+                   [style.width.%]="checklistStats.percent" 
+                   [attr.aria-valuenow]="checklistStats.percent" 
+                   aria-valuemin="0" 
+                   aria-valuemax="100"></div>
+            </div>
+          </div>
 
-          @if (currentScreen?.image) {
-            <!-- Imagen subida -->
-            <div class="w-100 h-100 position-relative group">
-              <img [src]="currentScreen?.image" alt="Diseño de {{ currentScreen?.title }}" class="img-fluid w-100 h-100 object-fit-contain p-2">
-              <div class="position-absolute top-0 end-0 p-3 group-hover-opacity-100 transition-all">
-                <button class="btn btn-sm btn-danger shadow d-flex align-items-center gap-2 rounded-pill px-3" (click)="clearImage()">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"></path><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-                  Borrar y resubir
-                </button>
-              </div>
+          <div class="border rounded p-1.5 d-flex align-items-center gap-2 mb-3 bg-light">
+            <div class="bg-white p-1 rounded border shadow-xs text-primary">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+            </div>
+            <select class="form-select form-select-sm border-0 bg-transparent shadow-none fw-bold text-dark px-1" [(ngModel)]="selectedScreenId" (change)="selectScreen(selectedScreenId)" style="font-size: 0.8rem;">
+              @for (s of screens; track s.id) {
+                <option [value]="s.id">{{ s.title }} ({{ s.prioridad | uppercase }})</option>
+              }
+            </select>
+          </div>
+
+          <!-- Checklist Items con Swatches Visuales de Color -->
+          @if (checklists.length > 0) {
+            <div class="d-flex flex-column gap-2 mb-3 overflow-auto" style="max-height: 280px;">
+              @for (item of checklists; track item.id) {
+                <div class="d-flex align-items-start gap-2 p-2 rounded border bg-light bg-opacity-50 hover-shadow-xs transition-all cursor-pointer"
+                     (click)="toggleCheck(item)">
+                  <div class="form-check mt-0.5">
+                    <input class="form-check-input cursor-pointer shadow-none" 
+                           [ngClass]="item.checked ? 'bg-success border-success' : 'border-secondary'" 
+                           type="checkbox" 
+                           [checked]="item.checked" 
+                           (change)="toggleCheck(item); $event.stopPropagation()">
+                  </div>
+                  
+                  <!-- Color swatch si es un token de color -->
+                  @if (getColorFromLabel(item.label)) {
+                    <span class="rounded-circle border mt-1 flex-shrink-0 shadow-xs" 
+                          [style.backgroundColor]="getColorFromLabel(item.label)" 
+                          style="width: 13px; height: 13px; display: inline-block;"></span>
+                  }
+
+                  <label class="form-check-label w-100 cursor-pointer user-select-none fw-medium text-dark mb-0" style="font-size: 0.8rem; line-height: 1.3;">
+                    {{ item.label }}
+                  </label>
+                </div>
+              }
             </div>
           } @else {
-            <!-- Estado Vacío y Zona de Subida -->
-            <div class="w-100 h-100 d-flex flex-column align-items-center justify-content-center p-4 cursor-pointer transition-all"
-                 (click)="fileInput.click()"
-                 (dragover)="onDragOver($event)"
-                 (dragleave)="onDragLeave($event)"
-                 (drop)="onDrop($event)"
-                 [ngClass]="isDragging ? 'bg-primary bg-opacity-25 border-2 border-primary border-dashed' : 'bg-transparent border-0'">
-              <input type="file" #fileInput (change)="onFileSelected($event)" accept=".png,.jpg,.jpeg" style="display: none;">
-              
-              <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-inline-flex p-4 mb-3 transition-all" [class.scale-110]="isDragging">
-                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
-              </div>
-              <h5 class="fw-bold text-dark mb-2">Sube tus prototipos o diseños detallados</h5>
-              <p class="text-secondary small mb-1">Arrastra y suelta imágenes, prototipos o archivos aquí, o haz clic para explorar.</p>
-              <p class="text-secondary opacity-75 small mb-0" style="font-size: 0.75rem;">Soporta PNG, JPG, JPEG (Máx. 10MB)</p>
+            <div class="text-center p-3 border border-dashed rounded-3 bg-light mb-3 text-secondary small" style="font-size: 0.78rem;">
+              Sube un prototipo de alta fidelidad en el lienzo central para habilitar la validación automática de la guía de estilos.
             </div>
           }
-        </div>
-      </div>
-    </div>
 
-    <!-- Right Column: Checklists y Alertas -->
-    <div class="col-12 col-xl-4 d-flex flex-column gap-4">
-      
-      <!-- Chequeo de aplicación -->
-      <div class="bg-white rounded-4 shadow-sm border p-4">
-        <div class="d-flex align-items-center gap-2 mb-3">
-          <svg class="text-primary" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-          <h6 class="fw-bold mb-0 text-dark">Chequeo de aplicación</h6>
-        </div>
-        <p class="small text-secondary mb-3">Selecciona una pantalla para verificar que se hayan aplicado los estilos de la Fase 3 (colores, tipografías, iconografía, etc.).</p>
-
-        <div class="border rounded p-2 d-flex align-items-center gap-2 mb-4 bg-light">
-          <div class="bg-white p-1 rounded border shadow-sm text-primary">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-          </div>
-          <select class="form-select form-select-sm border-0 bg-transparent shadow-none fw-bold text-dark px-1" [(ngModel)]="selectedScreenId">
-            @for (s of screens; track s.id) {
-              <option [value]="s.id">{{ s.title }}</option>
-            }
-          </select>
-        </div>
-
-        <div class="d-flex flex-column gap-2 mb-4">
-          @for (item of checklists; track item.id) {
-            <div class="d-flex align-items-start gap-3">
-              <div class="form-check mt-1">
-                <input class="form-check-input cursor-pointer shadow-none" [ngClass]="item.checked ? 'bg-success border-success' : 'border-secondary'" type="checkbox" [checked]="item.checked" (change)="toggleCheck(item)">
+          @if (currentScreen?.status === 'Verificada' || isAllChecked && checklists.length > 0) {
+            <div class="bg-success bg-opacity-10 border border-success rounded-3 p-2.5 d-flex align-items-center gap-2 mb-2">
+              <div class="bg-success rounded-circle text-white p-1 d-flex flex-shrink-0">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
               </div>
-              <label class="form-check-label w-100 cursor-pointer user-select-none fw-medium text-dark" style="font-size: 0.85rem;" (click)="toggleCheck(item)">
-                {{ item.label }}
-              </label>
+              <div>
+                <h6 class="fw-bold text-success mb-0" style="font-size: 0.82rem;">Pantalla Verificada</h6>
+                <p class="mb-0 text-success opacity-75 small" style="font-size: 0.7rem;">Cumple con los estilos de la Fase 3.</p>
+              </div>
             </div>
+            <button class="btn btn-outline-secondary w-100 fw-bold btn-sm py-1.5" (click)="toggleMarkVerified()">
+              Marcar como en revisión
+            </button>
+          } @else {
+            <button class="btn btn-primary w-100 fw-bold btn-sm py-1.5 shadow-sm" (click)="toggleMarkVerified()" [disabled]="!currentScreen?.image">
+              Marcar como verificado
+            </button>
           }
         </div>
 
-        @if (isAllChecked) {
-          <div class="bg-success bg-opacity-10 border border-success rounded-3 p-3 d-flex align-items-center gap-3 mb-3">
-            <div class="bg-success rounded-circle text-white p-1 d-flex">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        <!-- Card 2: Alertas Inteligentes (IA) -->
+        <div class="bg-white rounded-4 shadow-sm border p-3 p-md-4">
+          <div class="d-flex align-items-center justify-content-between mb-2">
+            <div class="d-flex align-items-center gap-2">
+              <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center fw-bold" style="width: 22px; height: 22px; font-size: 0.62rem;">IA</div>
+              <h6 class="fw-bold mb-0 text-dark" style="font-size: 0.88rem;">Alertas inteligentes</h6>
             </div>
-            <div>
-              <h6 class="fw-bold text-success mb-1">Verificado</h6>
-              <p class="mb-0 text-success opacity-75 small" style="font-size: 0.75rem;">La pantalla cumple con los estilos definidos en la guía visual.</p>
-            </div>
+            <span class="badge bg-light text-secondary border px-2 py-0.5" style="font-size: 0.65rem;">Automático</span>
           </div>
-          <button class="btn btn-outline-primary w-100 fw-bold">Marcar como no verificado</button>
-        } @else {
-          <button class="btn btn-primary w-100 fw-bold">Marcar como verificado</button>
-        }
-      </div>
-
-      <!-- Alertas Inteligentes (IA) -->
-      <div class="bg-white rounded-4 shadow-sm border p-4">
-        <div class="d-flex align-items-center justify-content-between mb-3">
-          <div class="d-flex align-items-center gap-2">
-            <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center fw-bold" style="width: 24px; height: 24px; font-size: 0.65rem;">IA</div>
-            <h6 class="fw-bold mb-0 text-dark">Alertas inteligentes</h6>
-          </div>
-          <a href="#" class="small text-primary text-decoration-none fw-medium">Ver todas</a>
-        </div>
-        
-        @if (currentScreen?.alerts && currentScreen!.alerts!.length > 0) {
-          <div class="d-flex flex-column gap-3">
-            @for (alert of currentScreen!.alerts; track alert.id) {
-              <div class="d-flex gap-3">
-                <div class="bg-light border rounded p-3 d-flex flex-column align-items-center justify-content-center gap-2" style="min-width: 120px;">
-                  <span class="fw-bold small text-dark text-center" style="font-size: 0.65rem;">{{ alert.element }}</span>
-                </div>
-                <div class="flex-grow-1">
-                  <div class="d-flex gap-2 align-items-start mb-2">
+          
+          @if (currentScreen?.alerts && currentScreen!.alerts!.length > 0) {
+            <div class="d-flex flex-column gap-2 overflow-auto" style="max-height: 220px;">
+              @for (alert of currentScreen!.alerts; track alert.id) {
+                <div class="p-2 border rounded-3 bg-light bg-opacity-50">
+                  <div class="d-flex gap-1.5 align-items-start mb-1">
                     @if (alert.type === 'error') {
-                      <svg class="text-danger mt-1 flex-shrink-0" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-                      <p class="text-danger fw-medium small mb-0" style="font-size: 0.8rem;">{{ alert.message }}</p>
+                      <svg class="text-danger mt-0.5 flex-shrink-0" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                      <span class="text-danger fw-semibold" style="font-size: 0.75rem;">{{ alert.message }}</span>
                     } @else {
-                      <svg class="mt-1 flex-shrink-0" style="color: #c2410c;" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
-                      <p class="fw-medium small mb-0" style="color: #c2410c; font-size: 0.8rem;">{{ alert.message }}</p>
+                      <svg class="mt-0.5 flex-shrink-0" style="color: #c2410c;" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                      <span class="fw-semibold" style="color: #c2410c; font-size: 0.75rem;">{{ alert.message }}</span>
                     }
                   </div>
-                  <div class="ps-4">
-                    @if (alert.detected) {
-                    <div class="d-flex justify-content-between align-items-center mb-1">
-                      <span class="small text-secondary" style="font-size: 0.7rem;">Detectado:</span>
-                      <span class="small fw-bold text-dark" style="font-size: 0.75rem;">{{ alert.detected }}</span>
+                  @if (alert.detected || alert.expected) {
+                    <div class="d-flex justify-content-between align-items-center text-muted" style="font-size: 0.68rem;">
+                      <span>Detectado: <strong>{{ alert.detected }}</strong></span>
+                      <span>Esperado: <strong [class.text-danger]="alert.type === 'error'">{{ alert.expected }}</strong></span>
                     </div>
-                    }
-                    @if (alert.expected) {
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                      <span class="small text-secondary" style="font-size: 0.7rem;">Esperado:</span>
-                      <span class="small fw-bold" [ngClass]="alert.type === 'error' ? 'text-danger' : ''" [style.color]="alert.type !== 'error' ? '#c2410c' : null" style="font-size: 0.75rem;">{{ alert.expected }}</span>
-                    </div>
-                    }
-                  </div>
+                  }
                 </div>
-              </div>
-            }
-          </div>
-        } @else {
-          <div class="text-center p-3 text-secondary small border border-dashed rounded-3 bg-light">
-            No hay alertas para esta pantalla. Sube un diseño para que la IA lo analice.
-          </div>
-        }
-      </div>
+              }
+            </div>
+          } @else {
+            <div class="text-center p-2.5 text-secondary small border border-dashed rounded-3 bg-light" style="font-size: 0.75rem;">
+              No hay alertas para esta pantalla. Sube un prototipo para el análisis automatizado.
+            </div>
+          }
+        </div>
 
       </div>
+
     </div>
   </div>
 </div>

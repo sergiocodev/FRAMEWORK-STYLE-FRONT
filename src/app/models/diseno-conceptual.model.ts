@@ -140,3 +140,49 @@ export interface RestructuringResult {
   recomendaciones: RecomendacionMaterial[];
   css_export?: string;
 }
+
+// ============================================================================
+// MODELOS DE EVALUACIÓN MULTICRITERIO DE LAYOUT (REGRESIÓN & ENTROPÍA)
+// ============================================================================
+
+export interface MulticriteriaMetricaItem {
+  codigo: 'DE' | 'VS' | 'BA' | 'PR' | 'UN' | 'SI' | 'SE';
+  nombre: string;
+  formula: string;
+  valor: number;
+  porcentaje: number;
+  estado: 'óptimo' | 'aceptable' | 'mejorable';
+  color: 'success' | 'warning' | 'danger';
+  peso_entropia: number;
+  peso_regresion: number;
+  descripcion: string;
+}
+
+export interface MulticriteriaRadarPoint {
+  eje: string;
+  label: string;
+  valor: number;
+  porcentaje: number;
+}
+
+export interface MulticriteriaLayoutResult {
+  frame: { width: number; height: number };
+  total_elementos: number;
+  metricas: {
+    DE: number;
+    VS: number;
+    BA: number;
+    PR: number;
+    UN: number;
+    SI: number;
+    SE: number;
+  };
+  score_regresion: number;
+  score_entropia: number;
+  score_global: number;
+  nivel_calidad: 'Óptima' | 'Alta' | 'Media' | 'Baja';
+  radar_data: MulticriteriaRadarPoint[];
+  interpretaciones: { [key: string]: MulticriteriaMetricaItem };
+  elementos: BoundingBoxElemento[];
+}
+

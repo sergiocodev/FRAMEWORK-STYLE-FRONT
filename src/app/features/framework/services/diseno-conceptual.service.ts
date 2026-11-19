@@ -1,9 +1,9 @@
-﻿import { Injectable, inject } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, Subject } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import {
-  NodoPantalla, NodoConexion, ContenidoItem, Wireframe, DisenoConceptualChecklistItem, WireframeChecklistItem, RestructuringResult
+  NodoPantalla, NodoConexion, ContenidoItem, Wireframe, DisenoConceptualChecklistItem, WireframeChecklistItem, RestructuringResult, MulticriteriaLayoutResult
 } from '../../../models/diseno-conceptual.model';
 
 @Injectable({
@@ -151,6 +151,14 @@ export class DisenoConceptualService {
   restructureWireframe(projectId: number, wireframeId: number): Observable<RestructuringResult> {
     return this.http.post<RestructuringResult>(
       this.getBaseUrl(projectId) + '/wireframes/' + wireframeId + '/reestructurar-estetica',
+      {}
+    );
+  }
+
+  // --- EVALUACION MULTICRITERIO DE LAYOUT (REGRESION Y ENTROPIA) ---
+  evaluateWireframeMulticriteria(projectId: number, wireframeId: number): Observable<MulticriteriaLayoutResult> {
+    return this.http.post<MulticriteriaLayoutResult>(
+      this.getBaseUrl(projectId) + '/wireframes/' + wireframeId + '/evaluar-multicriterio',
       {}
     );
   }
