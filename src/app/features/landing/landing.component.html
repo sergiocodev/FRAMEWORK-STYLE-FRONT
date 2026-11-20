@@ -1,334 +1,1127 @@
-<div class="landing-page text-light" style="background-color: #09090B; min-height: 100vh; overflow-x: hidden;">
-  <!-- Navbar -->
-  <nav class="navbar navbar-expand-md fixed-top border-bottom border-light border-opacity-10 py-3"
-    style="background: rgba(9, 9, 11, 0.7); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);">
-    <div class="container">
-      <a class="navbar-brand d-flex align-items-center gap-2 text-light text-decoration-none fw-bold" href="#">
-        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M16 2L2 9.5L16 17L30 9.5L16 2Z" fill="url(#paint0_linear)" />
-          <path d="M2 22.5L16 30L30 22.5" stroke="url(#paint1_linear)" stroke-width="3" stroke-linecap="round"
-            stroke-linejoin="round" />
-          <path d="M2 16L16 23.5L30 16" stroke="url(#paint2_linear)" stroke-width="3" stroke-linecap="round"
-            stroke-linejoin="round" />
-          <defs>
-            <linearGradient id="paint0_linear" x1="2" y1="9.5" x2="30" y2="9.5" gradientUnits="userSpaceOnUse">
-              <stop stop-color="#FF3366" />
-              <stop offset="1" stop-color="#7C3AED" />
-            </linearGradient>
-            <linearGradient id="paint1_linear" x1="2" y1="26.25" x2="30" y2="26.25" gradientUnits="userSpaceOnUse">
-              <stop stop-color="#FF3366" />
-              <stop offset="1" stop-color="#7C3AED" />
-            </linearGradient>
-            <linearGradient id="paint2_linear" x1="2" y1="19.75" x2="30" y2="19.75" gradientUnits="userSpaceOnUse">
-              <stop stop-color="#FF3366" />
-              <stop offset="1" stop-color="#7C3AED" />
-            </linearGradient>
-          </defs>
-        </svg>
-        <span class="fs-6" style="letter-spacing: -0.5px;">STYLE Framework</span>
-      </a>
+<div class="devtools-landing" [class.dark-theme]="(themeService.isDarkTheme$ | async) ?? true">
 
-      <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
-        aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon" style="filter: invert(1);"></span>
-      </button>
+  <!-- ============================================================ -->
+  <!-- 1. STICKY DEVELOPER NAVBAR                                  -->
+  <!-- ============================================================ -->
+  <header class="dev-nav-header fixed-top">
+    <div class="container d-flex align-items-center justify-content-between">
 
-      <div class="collapse navbar-collapse" id="navbarContent">
-        <ul class="navbar-nav mx-auto mb-2 mb-md-0 gap-3">
-          <li class="nav-item"><a class="nav-link custom-nav-link" href="#inicio">Inicio</a></li>
-          <li class="nav-item"><a class="nav-link custom-nav-link" href="#que-es-style">¿Qué es STYLE?</a></li>
-          <li class="nav-item"><a class="nav-link custom-nav-link" href="#beneficios">Beneficios</a></li>
-          <li class="nav-item"><a class="nav-link custom-nav-link" href="#recursos">Recursos</a></li>
-          <li class="nav-item"><a class="nav-link custom-nav-link" href="#precios">Precios</a></li>
-        </ul>
-        <div class="d-flex align-items-center gap-3">
-          <a routerLink="/login" class="btn-premium-ghost">Iniciar sesión</a>
-          <a routerLink="/register" class="btn-premium-gradient">Empezar gratis</a>
-        </div>
-      </div>
-    </div>
-  </nav>
-
-  <!-- Hero Section -->
-  <section class="hero position-relative overflow-hidden" style="padding-top: 160px; padding-bottom: 100px;">
-    <div class="hero-bg-grid"></div>
-    <div class="hero-glow"></div>
-
-    <div class="container position-relative z-1">
-      <div class="text-center mx-auto" style="max-width: 800px;">
-
-        <h1 class="fw-bolder mb-4 lh-1" style="font-size: clamp(48px, 6vw, 72px); letter-spacing: -2px;">
-          Diseña interfaces gráficas <br />
-          con <span class="text-gradient">propósito y estética</span>
-        </h1>
-
-        <p class="text-secondary mb-5 mx-auto" style="font-size: 18px; line-height: 1.6; max-width: 600px;">
-          Un marco de trabajo metodológico diseñado para guiarte desde la investigación
-          hasta la evaluación heurística. Garantiza que tus interfaces sean visualmente
-          extraordinarias y centradas en el usuario.
-        </p>
-
-        <div class="d-flex flex-column flex-sm-row justify-content-center gap-3 mb-5 pb-4">
-          <a routerLink="/register"
-            class="btn hero-btn-neon btn-lg fw-semibold rounded-3 px-4 py-3 d-inline-flex align-items-center justify-content-center gap-2">
-            Comenzar proyecto
-            <svg class="hero-btn-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-              stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="5" y1="12" x2="19" y2="12"></line>
-              <polyline points="12 5 19 12 12 19"></polyline>
-            </svg>
-          </a>
-          <a href="#fases"
-            class="btn hero-btn-ghost-glow btn-lg fw-semibold rounded-3 px-4 py-3 d-inline-flex align-items-center justify-content-center">
-            Explorar metodología
-          </a>
-        </div>
-      </div>
-
-      <!-- Canvas / Editor Mockup -->
-      <div class="hero-mockup-wrapper mx-auto" style="max-width: 1200px; perspective: 1000px;">
-        <div class="editor-window">
-          <!-- Editor Header -->
-          <div class="editor-header">
-            <div class="window-controls">
-              <span></span><span></span><span></span>
-            </div>
-            <div class="editor-tabs">
-              <div class="tab active">Investigación.fig</div>
-              <div class="tab">Wireframes.fig</div>
-              <div class="tab">Componentes.fig</div>
-            </div>
-            <div class="editor-tools">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
-              </svg>
-              <span>100%</span>
-            </div>
+      <!-- Brand & Tag -->
+      <div class="d-flex align-items-center gap-3">
+        <a routerLink="/" class="dev-brand text-decoration-none d-flex align-items-center gap-2">
+          <div class="brand-glyph">
+            <span class="glyph-bracket">&lt;</span>
+            <span class="glyph-core">STYLE</span>
+            <span class="glyph-slash">/</span>
+            <span class="glyph-bracket">&gt;</span>
           </div>
-
-          <!-- Editor Body -->
-          <div class="editor-body">
-            <!-- Sidebar Left -->
-            <div class="editor-sidebar-left">
-              <div class="sidebar-section">
-                <div class="section-title">FASES DEL FRAMEWORK</div>
-                <div class="layer-item active"><span class="icon d-flex align-items-center"><svg width="14" height="14"
-                      viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                      stroke-linejoin="round">
-                      <circle cx="11" cy="11" r="8"></circle>
-                      <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                    </svg></span> 1. Investigación</div>
-                <div class="layer-item"><span class="icon d-flex align-items-center"><svg width="14" height="14"
-                      viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                      stroke-linejoin="round">
-                      <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                      <line x1="3" y1="9" x2="21" y2="9"></line>
-                      <line x1="9" y1="21" x2="9" y2="9"></line>
-                    </svg></span> 2. Diseño Conceptual</div>
-                <div class="layer-item"><span class="icon d-flex align-items-center"><svg width="14" height="14"
-                      viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                      stroke-linejoin="round">
-                      <circle cx="13.5" cy="6.5" r=".5" />
-                      <circle cx="17.5" cy="10.5" r=".5" />
-                      <circle cx="8.5" cy="7.5" r=".5" />
-                      <circle cx="6.5" cy="12.5" r=".5" />
-                      <path
-                        d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z" />
-                    </svg></span> 3. Diseño Visual</div>
-                <div class="layer-item"><span class="icon d-flex align-items-center"><svg width="14" height="14"
-                      viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                      stroke-linejoin="round">
-                      <path
-                        d="M12 3l1.912 5.813a2 2 0 001.275 1.275L21 12l-5.813 1.912a2 2 0 00-1.275 1.275L12 21l-1.912-5.813a2 2 0 00-1.275-1.275L3 12l5.813-1.912a2 2 0 001.275-1.275L12 3z" />
-                    </svg></span> 4. Diseño Detallado</div>
-                <div class="layer-item"><span class="icon d-flex align-items-center"><svg width="14" height="14"
-                      viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                      stroke-linejoin="round">
-                      <line x1="18" y1="20" x2="18" y2="10"></line>
-                      <line x1="12" y1="20" x2="12" y2="4"></line>
-                      <line x1="6" y1="20" x2="6" y2="14"></line>
-                    </svg></span> 5. Evaluación Estética</div>
-              </div>
-            </div>
-
-            <!-- Main Canvas -->
-            <div class="editor-canvas">
-              <div class="canvas-grid"></div>
-
-              <!-- Artboard -->
-              <div class="artboard floating-element">
-                <div class="artboard-label">Dashboard_App_Final</div>
-                <div class="artboard-content">
-                  <div class="mock-nav"></div>
-                  <div class="mock-content-row">
-                    <div class="mock-card pink-glow"></div>
-                    <div class="mock-card purple-glow"></div>
-                    <div class="mock-card blue-glow"></div>
-                  </div>
-                  <div class="mock-content-large"></div>
-                </div>
-              </div>
-
-              <!-- Floating UI Elements -->
-              <div class="floating-palette">
-                <div class="color-swatch" style="background: #FF3366"></div>
-                <div class="color-swatch" style="background: #7C3AED"></div>
-                <div class="color-swatch" style="background: #10B981"></div>
-                <div class="color-swatch" style="background: #F59E0B"></div>
-              </div>
-
-              <div class="cursor-mockup">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M5.5 3.5L19.5 10.5L12 13L15.5 21L12.5 22.5L9 14.5L3.5 17L5.5 3.5Z" fill="#111" stroke="white"
-                    stroke-width="2" />
-                </svg>
-                <div class="cursor-tag">Jorge B.</div>
-              </div>
-            </div>
-
-            <!-- Sidebar Right -->
-            <div class="editor-sidebar-right">
-              <div class="sidebar-section">
-                <div class="section-title">EVALUACIÓN HEURÍSTICA</div>
-
-                <div class="prop-panel">
-                  <div class="prop-label">Contraste (WCAG)</div>
-                  <div class="prop-bar">
-                    <div class="fill success" style="width: 100%"></div>
-                  </div>
-                  <div class="prop-value">Aprobado (AAA)</div>
-                </div>
-
-                <div class="prop-panel">
-                  <div class="prop-label">Jerarquía Visual</div>
-                  <div class="prop-bar">
-                    <div class="fill warning" style="width: 85%"></div>
-                  </div>
-                  <div class="prop-value">Óptima</div>
-                </div>
-
-                <div class="prop-panel">
-                  <div class="prop-label">Espaciado y Retícula</div>
-                  <div class="prop-bar">
-                    <div class="fill success" style="width: 95%"></div>
-                  </div>
-                  <div class="prop-value">Consistente</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Phases Section (Bento Box) -->
-  <section id="fases" class="container py-5" style="padding-top: 100px !important;">
-    <div class="text-center mb-5 mx-auto" style="max-width: 600px;">
-      <h2 class="fw-bolder mb-3" style="font-size: 40px; letter-spacing: -1px;">Las 5 fases de STYLE</h2>
-      <p class="text-secondary fs-5">Una metodología iterativa que abarca desde la conceptualización hasta la validación
-        estética final.</p>
-    </div>
-
-    <div class="bento-grid">
-      <!-- Fase 1 -->
-      <div class="bento-card phase-1 col-span-2">
-        <div class="card-content">
-          <div class="phase-number text-uppercase">Fase 01</div>
-          <h3 class="fw-bold h4">Investigación</h3>
-          <p class="text-secondary small">Comprende el problema, analiza referencias y documenta las expectativas y
-            necesidades de los usuarios mediante entrevistas y revisión documental.</p>
-        </div>
-        <div class="card-visual">
-          <div class="mock-doc">
-            <div class="line"></div>
-            <div class="line short"></div>
-            <div class="line"></div>
-            <div class="line medium"></div>
-          </div>
-        </div>
+        </a>
       </div>
 
-      <!-- Fase 2 -->
-      <div class="bento-card phase-2">
-        <div class="card-content">
-          <div class="phase-number text-uppercase">Fase 02</div>
-          <h3 class="fw-bold h4">Diseño Conceptual</h3>
-          <p class="text-secondary small">Organiza la estructura de la interfaz, prioriza los contenidos y elabora
-            wireframes de baja fidelidad.</p>
-        </div>
-        <div class="card-visual wireframe-mock">
-          <div class="wire-box head"></div>
-          <div class="wire-box body"></div>
-        </div>
-      </div>
+      <!-- Center Nav Links -->
+      <nav class="d-none d-lg-flex align-items-center gap-4 dev-nav-links">
+        <a href="#fases" class="dev-link">
+          <span class="syntax-keyword font-mono">01.</span> Fases
+        </a>
+        <a href="#code-previews" class="dev-link">
+          <span class="syntax-function font-mono">02.</span> Tokens Exportados
+        </a>
+        <a href="#comparison" class="dev-link">
+          <span class="syntax-string font-mono">03.</span> Comparativa
+        </a>
+        <a href="#integrations" class="dev-link">
+          <span class="syntax-prop font-mono">04.</span> Compatibilidad
+        </a>
+        <a href="#documentation" class="dev-link highlight-docs">
+          <span class="syntax-number font-mono">05.</span> Documentación
+          <span class="docs-pulse"></span>
+        </a>
+      </nav>
 
-      <!-- Fase 3 -->
-      <div class="bento-card phase-3">
-        <div class="card-content">
-          <div class="phase-number text-uppercase">Fase 03</div>
-          <h3 class="fw-bold h4">Diseño Visual</h3>
-          <p class="text-secondary small">Define la dirección estética: paletas de colores, sistemas tipográficos y
-            componentes visuales que representarán la identidad institucional.</p>
-        </div>
-        <div class="card-visual palette-mock">
-          <div class="circle c1"></div>
-          <div class="circle c2"></div>
-          <div class="circle c3"></div>
-          <div class="typography-mock">Aa</div>
-        </div>
-      </div>
+      <!-- Right Action Tools -->
+      <div class="d-flex align-items-center gap-2 gap-sm-3">
+        <!-- Theme Toggle Switch -->
+        <button type="button" class="btn-theme-toggle" (click)="themeService.toggleTheme()"
+          title="Cambiar entre modo oscuro y modo claro" aria-label="Cambiar tema">
+          <i class="bi" [class.bi-moon-stars-fill]="(themeService.isDarkTheme$ | async)"
+            [class.bi-sun-fill]="!(themeService.isDarkTheme$ | async)"></i>
+        </button>
 
-      <!-- Fase 4 -->
-      <div class="bento-card phase-4 col-span-2">
-        <div class="card-content">
-          <div class="phase-number text-uppercase">Fase 04</div>
-          <h3 class="fw-bold h4">Diseño Detallado</h3>
-          <p class="text-secondary small">Transforma los wireframes en un prototipo visual de alta fidelidad, aplicando
-            los lineamientos establecidos en la guía visual.</p>
-        </div>
-        <div class="card-visual hifi-mock">
-          <div class="hifi-screen">
-            <div class="hifi-header"></div>
-            <div class="hifi-body">
-              <div class="hifi-img"></div>
-              <div class="hifi-text"></div>
-              <div class="hifi-btn"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Fase 5 -->
-      <div class="bento-card phase-5 col-span-3">
-        <div class="card-content text-center mx-auto" style="max-width: 700px;">
-          <div class="phase-number text-uppercase">Fase 05</div>
-          <h3 class="fw-bold h4">Evaluación Estética</h3>
-          <p class="text-secondary small">Valora la interfaz mediante métodos heurísticos, pruebas A/B o cuestionarios
-            VisAWI para garantizar que el diseño sea atractivo y usable.</p>
-        </div>
-        <div class="card-visual chart-mock">
-          <div class="bar h100"></div>
-          <div class="bar h60"></div>
-          <div class="bar h80"></div>
-          <div class="bar h40"></div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- CTA Section -->
-  <section class="bottom-cta text-center py-5 border-top border-light border-opacity-10"
-    style="background: linear-gradient(180deg, transparent, rgba(124, 58, 237, 0.05)); padding-top: 100px !important; padding-bottom: 100px !important;">
-    <div class="container">
-      <div class="mx-auto" style="max-width: 600px;">
-        <h2 class="fw-bolder mb-3" style="font-size: 36px; letter-spacing: -1px;">Transforma tu forma de diseñar</h2>
-        <p class="text-secondary fs-6 mb-5">Aplica el framework STYLE hoy mismo y asegura la calidad visual de todas tus
-          interfaces.</p>
-        <a routerLink="/register" class="btn btn-light btn-lg fw-semibold rounded-3 px-5 py-3 custom-btn-light">
-          Crear cuenta gratis
+        <!-- Auth Actions -->
+        <a routerLink="/login" class="btn-dev-ghost text-decoration-none d-none d-md-inline-block">
+          Iniciar sesión
+        </a>
+        <a routerLink="/register" class="btn-dev-primary text-decoration-none">
+          <span>Abrir asistente</span>
+          <i class="bi bi-arrow-right"></i>
         </a>
       </div>
     </div>
+  </header>
+
+  <!-- ============================================================ -->
+  <!-- 2. HERO SECTION                                              -->
+  <!-- ============================================================ -->
+  <section class="hero-section position-relative">
+    <div class="hero-grid-overlay"></div>
+    <div class="hero-glow-sphere"></div>
+
+    <div class="container position-relative z-2">
+      <div class="text-center mx-auto hero-content-wrapper">
+
+        <!-- Live Assistant Status Pill -->
+        <div class="d-inline-flex align-items-center gap-2 status-pill mb-4">
+          <span class="status-indicator"></span>
+          <span class="status-text font-mono">Software Asistente Web</span>
+          <span class="status-sep">|</span>
+          <span class="status-accent font-mono">Buenas Prácticas Estéticas GUI</span>
+        </div>
+
+        <!-- Hero Headline -->
+        <h1 class="hero-headline">
+          Tu asistente de buenas prácticas para <br class="d-none d-md-block" />
+          diseñar <span class="syntax-highlight-text">GUIs con buena estética</span>
+        </h1>
+
+        <!-- Hero Subtitle -->
+        <p class="hero-lead mx-auto">
+          STYLE es un <strong>software asistente
+            interactivo</strong>
+          que te guía paso a paso por 5 fases metodológicas —desde la investigación hasta la validación con
+          <strong>WCAG 2.2</strong>, <strong>VisAWI</strong>, <strong>Calista AI</strong> y <strong>Topología Gestalt
+            (TDA)</strong>—
+          y exporta tus tokens listos en CSS, Tailwind, SCSS y JSON.
+        </p>
+
+        <!-- Minimal Interactive 5-Phase Pipeline Strip -->
+        <div class="workflow-strip-wrapper mx-auto mb-4">
+          <div class="workflow-strip-header d-flex align-items-center justify-content-between px-3 py-2">
+            <span class="font-mono text-xs text-muted">
+              <span class="syntax-comment">//</span> flujo asistido en navegador
+            </span>
+            <span class="font-mono text-xs syntax-string">● listo para usar</span>
+          </div>
+          <div class="workflow-strip-body font-mono text-xs">
+            <a href="#fases" (click)="setPhase(1)" class="wf-node text-decoration-none">
+              <span class="syntax-function">01</span> Investigación
+            </a>
+            <span class="wf-arrow">→</span>
+            <a href="#fases" (click)="setPhase(2)" class="wf-node text-decoration-none">
+              <span class="syntax-keyword">02</span> Conceptual
+            </a>
+            <span class="wf-arrow">→</span>
+            <a href="#fases" (click)="setPhase(3)" class="wf-node text-decoration-none">
+              <span class="syntax-prop">03</span> Visual
+            </a>
+            <span class="wf-arrow">→</span>
+            <a href="#fases" (click)="setPhase(4)" class="wf-node text-decoration-none">
+              <span class="syntax-number">04</span> Detallado
+            </a>
+            <span class="wf-arrow">→</span>
+            <a href="#fases" (click)="setPhase(5)" class="wf-node text-decoration-none">
+              <span class="syntax-string">05</span> Evaluación
+            </a>
+          </div>
+        </div>
+
+        <!-- Primary Action Links -->
+        <div class="d-flex flex-wrap align-items-center justify-content-center gap-3 mb-5">
+          <a routerLink="/register" class="btn-hero-cta text-decoration-none">
+            <i class="bi bi-stars me-2"></i>
+            <span>Comenzar Proyecto Gratis</span>
+            <i class="bi bi-chevron-right ms-2 font-mono"></i>
+          </a>
+          <a href="#documentation" class="btn-hero-docs text-decoration-none">
+            <i class="bi bi-book-half me-2 syntax-function"></i>
+            <span>Ver Documentación</span>
+            <span class="badge-key font-mono ms-2">Guías 1–5</span>
+          </a>
+        </div>
+
+        <!-- Key Metrics Strip with Syntax Highlighting Colors -->
+        <div class="hero-metrics-strip d-flex flex-wrap justify-content-center gap-3 gap-md-4">
+          <div class="metric-pill">
+            <span class="syntax-string font-mono me-1">●</span>
+            <span class="metric-label">Color &amp; Accesibilidad:</span>
+            <span class="metric-value font-mono syntax-string">60-30-10 · WCAG 2.2 AAA</span>
+          </div>
+          <div class="metric-pill">
+            <span class="syntax-function font-mono me-1">◆</span>
+            <span class="metric-label">Topología Espacial:</span>
+            <span class="metric-value font-mono syntax-function">Gestalt TDA (0-PD / 1-PD)</span>
+          </div>
+          <div class="metric-pill">
+            <span class="syntax-keyword font-mono me-1">▲</span>
+            <span class="metric-label">Tipografía Asistida:</span>
+            <span class="metric-value font-mono syntax-keyword">Choi &amp; Hyun (2024)</span>
+          </div>
+          <div class="metric-pill">
+            <span class="syntax-number font-mono me-1">■</span>
+            <span class="metric-label">Auditoría Estética:</span>
+            <span class="metric-value font-mono syntax-number">VisAWI + Calista AI</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
   </section>
+
+  <!-- ============================================================ -->
+  <!-- 3. LAS 5 FASES DEL ASISTENTE STYLE (PIPELINE INTERACTIVO)    -->
+  <!-- ============================================================ -->
+  <section id="fases" class="phases-section py-5 position-relative">
+    <div class="container position-relative z-2">
+
+      <!-- Section Header -->
+      <div class="section-badge-wrapper text-center mb-3">
+        <span class="section-pill font-mono">
+          <span class="syntax-keyword">//</span> 01. METODOLOGÍA ASISTIDA EN 5 FASES
+        </span>
+      </div>
+      <h2 class="section-title text-center mb-3">
+        Buenas prácticas guiadas de <span class="syntax-keyword">principio a fin</span>
+      </h2>
+      <p class="section-desc text-center mx-auto mb-5">
+        Cada fase del asistente incorpora validaciones, criterios técnicos y recomendaciones accionables
+        para garantizar interfaces visualmente equilibradas, legibles y coherentes.
+      </p>
+
+      <!-- Phase Navigation Steps Bar -->
+      <div class="phases-step-nav d-flex justify-content-between mb-4">
+        <button *ngFor="let p of frameworkPhases" type="button" class="phase-step-btn"
+          [class.active]="selectedPhase() === p.number" (click)="setPhase(p.number)">
+          <div class="step-num font-mono">FASE 0{{ p.number }}</div>
+          <div class="step-name fw-bold">{{ p.name }}</div>
+          <div class="step-sub text-xs">{{ p.subtext }}</div>
+          <div class="step-indicator-bar" [style.background-color]="p.syntaxColor"></div>
+        </button>
+      </div>
+
+      <!-- Active Phase Detail Card -->
+      <div *ngFor="let p of frameworkPhases">
+        <div *ngIf="selectedPhase() === p.number" class="phase-detail-card p-4 p-md-5 mb-5">
+          <div class="row align-items-center gy-4">
+
+            <div class="col-lg-7">
+              <div class="d-flex align-items-center gap-2 mb-2 font-mono text-xs" [style.color]="p.syntaxColor">
+                <i class="bi bi-check-circle-fill"></i>
+                <span class="text-uppercase fw-bold">Fase 0{{ p.number }} · {{ p.name }} — {{ p.subtext }}</span>
+              </div>
+              <h3 class="h3 fw-bolder text-light mb-3">{{ p.tagline }}</h3>
+              <p class="text-secondary mb-4 leading-relaxed">{{ p.description }}</p>
+
+              <!-- Deliverables Badges -->
+              <div class="mb-4">
+                <div class="text-muted font-mono text-xs text-uppercase mb-2">Módulos y Entregables del Asistente:</div>
+                <div class="d-flex flex-wrap gap-2">
+                  <span *ngFor="let d of p.deliverables" class="badge-deliverable font-mono text-xs">
+                    <i class="bi bi-check2 me-1" [style.color]="p.syntaxColor"></i>{{ d }}
+                  </span>
+                </div>
+              </div>
+
+              <!-- Best Practices Badges -->
+              <div>
+                <div class="text-muted font-mono text-xs text-uppercase mb-2">Buenas Prácticas y Validaciones:</div>
+                <div class="d-flex flex-wrap gap-2">
+                  <span *ngFor="let b of p.bestPractices" class="badge-algorithm font-mono text-xs">
+                    <i class="bi bi-shield-check me-1 syntax-function"></i>{{ b }}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Visual Assistant Preview -->
+            <div class="col-lg-5">
+              <div class="phase-blueprint-box p-3 p-md-4">
+                <div
+                  class="blueprint-header d-flex align-items-center justify-content-between mb-3 pb-2 border-bottom border-secondary border-opacity-25">
+                  <span class="font-mono text-xs text-muted">asistente.fase0{{ p.number }}.preview</span>
+                  <span class="badge-status-ok font-mono text-xs">BUENAS PRÁCTICAS</span>
+                </div>
+
+                <!-- Fase 1 Graphic -->
+                <div *ngIf="p.number === 1" class="blueprint-graphic font-mono text-xs">
+                  <div class="blueprint-row"><span class="syntax-comment">/* Resumen de Investigación */</span></div>
+                  <div class="blueprint-row"><span class="syntax-prop">necesidad</span>: <span
+                      class="syntax-string">"Dashboard analítico claro"</span></div>
+                  <div class="blueprint-row"><span class="syntax-prop">usuarios</span>: [<span
+                      class="syntax-string">"Analistas"</span>, <span class="syntax-string">"Equipo Dev"</span>]</div>
+                  <div class="blueprint-row"><span class="syntax-prop">expectativa</span>: <span
+                      class="syntax-string">"Minimalista · Alto contraste"</span></div>
+                  <div class="mt-3 p-2 border border-info border-opacity-25 rounded bg-dark bg-opacity-50">
+                    <span class="syntax-function">✔ Contexto documentado para Fase 2</span>
+                  </div>
+                </div>
+
+                <!-- Fase 2 Graphic -->
+                <div *ngIf="p.number === 2" class="blueprint-graphic font-mono text-xs">
+                  <div class="wireframe-schematic">
+                    <div class="wire-header mb-2"></div>
+                    <div class="row g-2 mb-2">
+                      <div class="col-4">
+                        <div class="wire-box"></div>
+                      </div>
+                      <div class="col-8">
+                        <div class="wire-box"></div>
+                      </div>
+                    </div>
+                    <div class="wire-footer"></div>
+                  </div>
+                  <div class="mt-2 text-center text-muted">Estructura jerárquica + Flujos + Wireframes Lo-Fi</div>
+                </div>
+
+                <!-- Fase 3 Graphic -->
+                <div *ngIf="p.number === 3" class="blueprint-graphic font-mono text-xs">
+                  <div class="color-bars mb-3">
+                    <div class="c-bar bar-60" style="background: #2563EB;" title="60% Dominante">60%</div>
+                    <div class="c-bar bar-30" style="background: #7C3AED;" title="30% Secundario">30%</div>
+                    <div class="c-bar bar-10" style="background: #10B981;" title="10% Acento">10%</div>
+                  </div>
+                  <div class="d-flex justify-content-between text-muted mb-2">
+                    <span>Contraste WCAG 2.2:</span> <span class="syntax-string fw-bold">7.4:1 AAA</span>
+                  </div>
+                  <div class="d-flex justify-content-between text-muted mb-2">
+                    <span>Escala Tipográfica:</span> <span class="syntax-function fw-bold">Major Third (1.25)</span>
+                  </div>
+                  <div class="d-flex justify-content-between text-muted">
+                    <span>Exportación:</span> <span class="syntax-prop fw-bold">CSS · Tailwind · SCSS · JSON</span>
+                  </div>
+                </div>
+
+                <!-- Fase 4 Graphic -->
+                <div *ngIf="p.number === 4" class="blueprint-graphic font-mono text-xs">
+                  <div
+                    class="hifi-component-preview p-2 border border-secondary border-opacity-25 rounded bg-dark mb-2">
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                      <span class="syntax-number">Alerta resuelta · Pantalla_Home</span>
+                      <span class="badge-status-ok">0 alertas</span>
+                    </div>
+                    <div class="text-secondary">Colores, tipografía, iconos y espaciado coinciden al 100% con Fase 3.
+                    </div>
+                  </div>
+                  <div class="syntax-string text-center">✔ Checklist de consistencia Hi-Fi aprobado</div>
+                </div>
+
+                <!-- Fase 5 Graphic -->
+                <div *ngIf="p.number === 5" class="blueprint-graphic font-mono text-xs">
+                  <div class="eval-metrics-grid mb-2">
+                    <div class="metric-box">
+                      <div class="text-muted">VisAWI</div>
+                      <div class="syntax-string fw-bold fs-6">6.58 / 7</div>
+                    </div>
+                    <div class="metric-box">
+                      <div class="text-muted">Calista AI</div>
+                      <div class="syntax-function fw-bold fs-6">94% Alta</div>
+                    </div>
+                    <div class="metric-box">
+                      <div class="text-muted">Gestalt TDA</div>
+                      <div class="syntax-keyword fw-bold fs-6">0 Ruido</div>
+                    </div>
+                  </div>
+                  <div class="text-center text-success fw-bold">Evaluación Estética Científica Aprobada</div>
+                </div>
+
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- 4. CODE SNIPPET PREVIEWS: TOKENS Y REPORTES EXPORTADOS       -->
+  <!-- ============================================================ -->
+  <section id="code-previews" class="code-section py-5 position-relative">
+    <div class="container position-relative z-2">
+
+      <!-- Section Header -->
+      <div class="section-badge-wrapper text-center mb-3">
+        <span class="section-pill font-mono">
+          <span class="syntax-function">//</span> 02. SALIDAS DE CÓDIGO EXPORTABLES (SIN PAQUETES)
+        </span>
+      </div>
+      <h2 class="section-title text-center mb-3">
+        Diseña en el asistente, <span class="syntax-function">copia el código limpio</span>
+      </h2>
+      <p class="section-desc text-center mx-auto mb-5">
+        Sin dependencias externas ni configuraciones complejas. STYLE traduce tus decisiones estéticas
+        de Fase 3 y tus evaluaciones de Fase 5 en archivos estándar listos para tu proyecto.
+      </p>
+
+      <!-- Code Window Component -->
+      <div class="code-window mx-auto">
+
+        <!-- Window Chrome / Titlebar -->
+        <div class="code-window-header">
+          <!-- Traffic Lights -->
+          <div class="window-traffic-lights">
+            <span class="dot dot-close"></span>
+            <span class="dot dot-minimize"></span>
+            <span class="dot dot-expand"></span>
+          </div>
+
+          <!-- Code Tabs -->
+          <div class="code-tabs-list">
+            <button type="button" class="code-tab" [class.active]="activeTab() === 'css'" (click)="setActiveTab('css')">
+              <i class="bi bi-filetype-css font-mono syntax-function me-2"></i>
+              <span>tokens.css</span>
+            </button>
+
+            <button type="button" class="code-tab" [class.active]="activeTab() === 'tailwind'"
+              (click)="setActiveTab('tailwind')">
+              <i class="bi bi-wind font-mono syntax-string me-2"></i>
+              <span>tailwind.config.js</span>
+            </button>
+
+            <button type="button" class="code-tab" [class.active]="activeTab() === 'scss'"
+              (click)="setActiveTab('scss')">
+              <i class="bi bi-filetype-scss font-mono syntax-prop me-2"></i>
+              <span>_tokens.scss</span>
+            </button>
+
+            <button type="button" class="code-tab" [class.active]="activeTab() === 'dtcg'"
+              (click)="setActiveTab('dtcg')">
+              <i class="bi bi-filetype-json font-mono syntax-number me-2"></i>
+              <span>tokens.dtcg.json</span>
+            </button>
+
+            <button type="button" class="code-tab" [class.active]="activeTab() === 'report'"
+              (click)="setActiveTab('report')">
+              <i class="bi bi-clipboard2-data font-mono syntax-keyword me-2"></i>
+              <span>evaluacion.json</span>
+              <span class="tab-live-badge">Fase 5</span>
+            </button>
+          </div>
+
+          <!-- Right Window Actions -->
+          <div class="code-window-actions ms-auto d-flex align-items-center gap-2">
+            <span class="code-lang-pill font-mono d-none d-sm-inline-block">
+              {{ codeSnippets[activeTab()].language }}
+            </span>
+            <button type="button" class="btn-window-copy" (click)="copyActiveSnippet()" title="Copiar código exportado">
+              <i class="bi" [class.bi-clipboard]="copiedSnippet() !== activeTab()"
+                [class.bi-check2]="copiedSnippet() === activeTab()"></i>
+              <span class="font-mono text-xs d-none d-sm-inline">{{ copiedSnippet() === activeTab() ? 'Copiado' :
+                'Copiar' }}</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Window Description Bar -->
+        <div class="code-window-subbar d-flex flex-wrap align-items-center justify-content-between gap-2 px-3 py-2">
+          <div class="d-flex align-items-center gap-2 text-muted font-mono text-xs">
+            <span class="syntax-prop">origen:</span>
+            <span class="text-light">{{ codeSnippets[activeTab()].phaseOrigin }}</span>
+            <span class="mx-1 d-none d-md-inline">•</span>
+            <span class="text-secondary d-none d-md-inline">{{ codeSnippets[activeTab()].description }}</span>
+          </div>
+          <button *ngIf="activeTab() !== 'report'" type="button" class="btn-run-simulation font-mono text-xs"
+            (click)="runReportPreview()">
+            <i class="bi bi-bar-chart-fill syntax-string me-1"></i> Ver Reporte Fase 5
+          </button>
+        </div>
+
+        <!-- Code Body with Syntax Highlighting -->
+        <div class="code-window-body">
+
+          <!-- TAB 1: CSS VARIABLES -->
+          <div *ngIf="activeTab() === 'css'" class="code-block font-mono">
+            <div class="code-row"><span class="line-num">1</span><span class="syntax-comment">/* Auto-generado desde
+                STYLE · BrandBook Showcase (Fase 3) */</span></div>
+            <div class="code-row"><span class="line-num">2</span><span class="syntax-keyword">:root</span> &#123;</div>
+            <div class="code-row"><span class="line-num">3</span> <span class="syntax-comment">/* Paleta Armónica (Regla
+                60-30-10 + Contraste WCAG AAA) */</span></div>
+            <div class="code-row"><span class="line-num">4</span> <span class="syntax-prop">--color-principal</span>:
+              <span class="syntax-string">#2563EB</span>;
+            </div>
+            <div class="code-row"><span class="line-num">5</span> <span
+                class="syntax-prop">--color-principal-rgb</span>: <span class="syntax-number">37</span>, <span
+                class="syntax-number">99</span>, <span class="syntax-number">235</span>;</div>
+            <div class="code-row"><span class="line-num">6</span> <span class="syntax-prop">--color-secundario</span>:
+              <span class="syntax-string">#7C3AED</span>;
+            </div>
+            <div class="code-row"><span class="line-num">7</span> <span class="syntax-prop">--color-acento</span>: <span
+                class="syntax-string">#10B981</span>;</div>
+            <div class="code-row"><span class="line-num">8</span> <span class="syntax-prop">--color-fondo</span>: <span
+                class="syntax-string">#090D16</span>;</div>
+            <div class="code-row"><span class="line-num">9</span> <span
+                class="syntax-prop">--color-texto-principal</span>: <span class="syntax-string">#F8FAFC</span>;</div>
+            <div class="code-row"><span class="line-num">10</span>&nbsp;</div>
+            <div class="code-row"><span class="line-num">11</span> <span class="syntax-comment">/* Tipografía Modular
+                &amp; Optical Tracking (Choi &amp; Hyun 2024) */</span></div>
+            <div class="code-row"><span class="line-num">12</span> <span class="syntax-prop">--font-primary</span>:
+              <span class="syntax-string">'Inter'</span>, <span class="syntax-function">sans-serif</span>;
+            </div>
+            <div class="code-row"><span class="line-num">13</span> <span class="syntax-prop">--font-mono</span>: <span
+                class="syntax-string">'JetBrains Mono'</span>, <span class="syntax-function">monospace</span>;</div>
+            <div class="code-row"><span class="line-num">14</span> <span class="syntax-prop">--tracking-h1</span>: <span
+                class="syntax-number">-0.022em</span>;</div>
+            <div class="code-row"><span class="line-num">15</span> <span class="syntax-prop">--line-height-body</span>:
+              <span class="syntax-number">1.6</span>;
+            </div>
+            <div class="code-row"><span class="line-num">16</span>&nbsp;</div>
+            <div class="code-row"><span class="line-num">17</span> <span class="syntax-comment">/* Retícula 12 columnas
+                &amp; Escala de Espaciado (Base 8px) */</span></div>
+            <div class="code-row"><span class="line-num">18</span> <span class="syntax-prop">--spacing-sm</span>: <span
+                class="syntax-number">8px</span>; <span class="syntax-prop">--spacing-md</span>: <span
+                class="syntax-number">16px</span>; <span class="syntax-prop">--radius-base</span>: <span
+                class="syntax-number">8px</span>;</div>
+            <div class="code-row"><span class="line-num">19</span> <span class="syntax-prop">--grid-columns</span>:
+              <span class="syntax-number">12</span>; <span class="syntax-prop">--grid-gutter</span>: <span
+                class="syntax-number">16px</span>;
+            </div>
+            <div class="code-row"><span class="line-num">20</span>&#125;</div>
+          </div>
+
+          <!-- TAB 2: TAILWIND CONFIG -->
+          <div *ngIf="activeTab() === 'tailwind'" class="code-block font-mono">
+            <div class="code-row"><span class="line-num">1</span><span class="syntax-comment">// Auto-generado desde
+                STYLE · Asistente de Diseño Visual (Fase 3)</span></div>
+            <div class="code-row"><span class="line-num">2</span><span class="syntax-comment">/** &#64;type
+                &#123;import('tailwindcss').Config&#125; */</span></div>
+            <div class="code-row"><span class="line-num">3</span><span class="syntax-keyword">export default</span>
+              &#123;</div>
+            <div class="code-row"><span class="line-num">4</span> <span class="syntax-prop">theme</span>: &#123;</div>
+            <div class="code-row"><span class="line-num">5</span> <span class="syntax-prop">extend</span>: &#123;</div>
+            <div class="code-row"><span class="line-num">6</span> <span class="syntax-prop">colors</span>: &#123;</div>
+            <div class="code-row"><span class="line-num">7</span> <span class="syntax-prop">principal</span>: <span
+                class="syntax-string">'#2563EB'</span>,</div>
+            <div class="code-row"><span class="line-num">8</span> <span class="syntax-prop">secundario</span>: <span
+                class="syntax-string">'#7C3AED'</span>,</div>
+            <div class="code-row"><span class="line-num">9</span> <span class="syntax-prop">acento</span>: <span
+                class="syntax-string">'#10B981'</span>,</div>
+            <div class="code-row"><span class="line-num">10</span> <span class="syntax-prop">fondo</span>: <span
+                class="syntax-string">'#090D16'</span>,</div>
+            <div class="code-row"><span class="line-num">11</span> <span class="syntax-prop">superficie</span>: <span
+                class="syntax-string">'#0F1523'</span></div>
+            <div class="code-row"><span class="line-num">12</span> &#125;,</div>
+            <div class="code-row"><span class="line-num">13</span> <span class="syntax-prop">fontFamily</span>: &#123;
+            </div>
+            <div class="code-row"><span class="line-num">14</span> <span class="syntax-prop">sans</span>: [<span
+                class="syntax-string">'Inter'</span>, <span class="syntax-string">'sans-serif'</span>],</div>
+            <div class="code-row"><span class="line-num">15</span> <span class="syntax-prop">mono</span>: [<span
+                class="syntax-string">'JetBrains Mono'</span>, <span class="syntax-string">'monospace'</span>]</div>
+            <div class="code-row"><span class="line-num">16</span> &#125;,</div>
+            <div class="code-row"><span class="line-num">17</span> <span class="syntax-prop">borderRadius</span>: &#123;
+              <span class="syntax-prop">base</span>: <span class="syntax-string">'8px'</span> &#125;,
+            </div>
+            <div class="code-row"><span class="line-num">18</span> <span class="syntax-prop">spacing</span>: &#123;
+              <span class="syntax-prop">gutter</span>: <span class="syntax-string">'16px'</span> &#125;
+            </div>
+            <div class="code-row"><span class="line-num">19</span> &#125;</div>
+            <div class="code-row"><span class="line-num">20</span> &#125;</div>
+            <div class="code-row"><span class="line-num">21</span>&#125;;</div>
+          </div>
+
+          <!-- TAB 3: SCSS TOKENS -->
+          <div *ngIf="activeTab() === 'scss'" class="code-block font-mono">
+            <div class="code-row"><span class="line-num">1</span><span class="syntax-comment">// Auto-generado desde
+                STYLE · BrandBook Showcase (Fase 3)</span></div>
+            <div class="code-row"><span class="line-num">2</span><span class="syntax-comment">// Paleta Semántica y
+                Escala Tonal 50–900</span></div>
+            <div class="code-row"><span class="line-num">3</span><span class="syntax-prop">$color-principal</span>:
+              <span class="syntax-string">#2563EB</span>;
+            </div>
+            <div class="code-row"><span class="line-num">4</span><span class="syntax-prop">$color-principal-100</span>:
+              <span class="syntax-string">#DBEAFE</span>;
+            </div>
+            <div class="code-row"><span class="line-num">5</span><span class="syntax-prop">$color-principal-500</span>:
+              <span class="syntax-string">#2563EB</span>;
+            </div>
+            <div class="code-row"><span class="line-num">6</span><span class="syntax-prop">$color-principal-900</span>:
+              <span class="syntax-string">#1E3A8A</span>;
+            </div>
+            <div class="code-row"><span class="line-num">7</span>&nbsp;</div>
+            <div class="code-row"><span class="line-num">8</span><span class="syntax-prop">$color-secundario</span>:
+              <span class="syntax-string">#7C3AED</span>;
+            </div>
+            <div class="code-row"><span class="line-num">9</span><span class="syntax-prop">$color-acento</span>: <span
+                class="syntax-string">#10B981</span>;</div>
+            <div class="code-row"><span class="line-num">10</span><span class="syntax-prop">$color-fondo</span>: <span
+                class="syntax-string">#090D16</span>;</div>
+            <div class="code-row"><span class="line-num">11</span>&nbsp;</div>
+            <div class="code-row"><span class="line-num">12</span><span class="syntax-comment">// Tipografía y Ritmo
+                Vertical (Escala Major Third 1.25)</span></div>
+            <div class="code-row"><span class="line-num">13</span><span class="syntax-prop">$font-primary</span>: <span
+                class="syntax-string">'Inter'</span>, <span class="syntax-function">sans-serif</span>;</div>
+            <div class="code-row"><span class="line-num">14</span><span class="syntax-prop">$font-size-base</span>:
+              <span class="syntax-number">16px</span>;
+            </div>
+            <div class="code-row"><span class="line-num">15</span><span class="syntax-prop">$scale-ratio</span>: <span
+                class="syntax-number">1.25</span>;</div>
+            <div class="code-row"><span class="line-num">16</span>&nbsp;</div>
+            <div class="code-row"><span class="line-num">17</span><span class="syntax-comment">// Espaciado y
+                Geometría</span></div>
+            <div class="code-row"><span class="line-num">18</span><span class="syntax-prop">$spacing-base</span>: <span
+                class="syntax-number">8px</span>;</div>
+            <div class="code-row"><span class="line-num">19</span><span class="syntax-prop">$radius-base</span>: <span
+                class="syntax-number">8px</span>;</div>
+            <div class="code-row"><span class="line-num">20</span><span class="syntax-prop">$icon-stroke</span>: <span
+                class="syntax-number">1.5px</span>;</div>
+          </div>
+
+          <!-- TAB 4: W3C DTCG JSON -->
+          <div *ngIf="activeTab() === 'dtcg'" class="code-block font-mono">
+            <div class="code-row"><span class="line-num">1</span>&#123;</div>
+            <div class="code-row"><span class="line-num">2</span> <span class="syntax-prop">"color"</span>: &#123;</div>
+            <div class="code-row"><span class="line-num">3</span> <span class="syntax-prop">"principal"</span>: &#123;
+            </div>
+            <div class="code-row"><span class="line-num">4</span> <span class="syntax-function">"$value"</span>: <span
+                class="syntax-string">"#2563EB"</span>,</div>
+            <div class="code-row"><span class="line-num">5</span> <span class="syntax-function">"$type"</span>: <span
+                class="syntax-string">"color"</span>,</div>
+            <div class="code-row"><span class="line-num">6</span> <span class="syntax-function">"$description"</span>:
+              <span class="syntax-string">"Color principal (60%) validado con contraste WCAG 2.2 AAA"</span>
+            </div>
+            <div class="code-row"><span class="line-num">7</span> &#125;,</div>
+            <div class="code-row"><span class="line-num">8</span> <span class="syntax-prop">"acento"</span>: &#123;
+            </div>
+            <div class="code-row"><span class="line-num">9</span> <span class="syntax-function">"$value"</span>: <span
+                class="syntax-string">"#10B981"</span>,</div>
+            <div class="code-row"><span class="line-num">10</span> <span class="syntax-function">"$type"</span>: <span
+                class="syntax-string">"color"</span>,</div>
+            <div class="code-row"><span class="line-num">11</span> <span class="syntax-function">"$description"</span>:
+              <span class="syntax-string">"Color de acento (10%) para acciones primarias"</span>
+            </div>
+            <div class="code-row"><span class="line-num">12</span> &#125;</div>
+            <div class="code-row"><span class="line-num">13</span> &#125;,</div>
+            <div class="code-row"><span class="line-num">14</span> <span class="syntax-prop">"typography"</span>: &#123;
+            </div>
+            <div class="code-row"><span class="line-num">15</span> <span class="syntax-prop">"heading"</span>: &#123;
+            </div>
+            <div class="code-row"><span class="line-num">16</span> <span class="syntax-function">"$value"</span>: &#123;
+              <span class="syntax-prop">"fontFamily"</span>: <span class="syntax-string">"Inter"</span>, <span
+                class="syntax-prop">"fontWeight"</span>: <span class="syntax-number">700</span>, <span
+                class="syntax-prop">"letterSpacing"</span>: <span class="syntax-string">"-0.022em"</span> &#125;,
+            </div>
+            <div class="code-row"><span class="line-num">17</span> <span class="syntax-function">"$type"</span>: <span
+                class="syntax-string">"typography"</span></div>
+            <div class="code-row"><span class="line-num">18</span> &#125;</div>
+            <div class="code-row"><span class="line-num">19</span> &#125;,</div>
+            <div class="code-row"><span class="line-num">20</span> <span class="syntax-prop">"spacing"</span>: &#123;
+              <span class="syntax-prop">"md"</span>: &#123; <span class="syntax-function">"$value"</span>: <span
+                class="syntax-string">"16px"</span>, <span class="syntax-function">"$type"</span>: <span
+                class="syntax-string">"dimension"</span> &#125; &#125;
+            </div>
+            <div class="code-row"><span class="line-num">21</span>&#125;</div>
+          </div>
+
+          <!-- TAB 5: REPORTE FASE 5 (EVALUACIÓN ESTÉTICA) -->
+          <div *ngIf="activeTab() === 'report'" class="code-block font-mono output-log">
+            <div class="output-spinner-bar mb-3" *ngIf="isSimulating()">
+              <span class="spinner-grow spinner-grow-sm text-info me-2"></span>
+              <span class="syntax-function">Consolidando resultados de VisAWI, Calista AI y Topología Gestalt
+                TDA...</span>
+            </div>
+
+            <div *ngIf="!isSimulating()">
+              <div class="code-row"><span class="line-num">1</span>&#123;</div>
+              <div class="code-row"><span class="line-num">2</span> <span class="syntax-prop">"proyecto"</span>: <span
+                  class="syntax-string">"Dashboard Analítico FinTech"</span>,</div>
+              <div class="code-row"><span class="line-num">3</span> <span class="syntax-prop">"score_estetico"</span>:
+                <span class="syntax-number">94.6</span>, <span class="syntax-comment">// Nivel de madurez:
+                  Excepcional</span>
+              </div>
+              <div class="code-row"><span class="line-num">4</span> <span class="syntax-prop">"visawi_metricas"</span>:
+                &#123;</div>
+              <div class="code-row"><span class="line-num">5</span> <span class="syntax-prop">"simplicidad"</span>:
+                <span class="syntax-number">6.7</span>, <span class="syntax-prop">"claridad"</span>: <span
+                  class="syntax-number">6.8</span>, <span class="syntax-prop">"diversidad"</span>: <span
+                  class="syntax-number">6.2</span>, <span class="syntax-prop">"armonia"</span>: <span
+                  class="syntax-number">6.6</span>,
+              </div>
+              <div class="code-row"><span class="line-num">6</span> <span class="syntax-prop">"score_global"</span>:
+                <span class="syntax-number">6.58</span> <span class="syntax-comment">// Escala psicométrica 1.0 -
+                  7.0</span>
+              </div>
+              <div class="code-row"><span class="line-num">7</span> &#125;,</div>
+              <div class="code-row"><span class="line-num">8</span> <span class="syntax-prop">"calista_ai"</span>:
+                &#123;</div>
+              <div class="code-row"><span class="line-num">9</span> <span class="syntax-prop">"categoria"</span>: <span
+                  class="syntax-string">"Alta"</span>, <span class="syntax-prop">"balance_visual"</span>: <span
+                  class="syntax-number">94.2</span>, <span class="syntax-prop">"armonia_color"</span>: <span
+                  class="syntax-number">96.0</span></div>
+              <div class="code-row"><span class="line-num">10</span> &#125;,</div>
+              <div class="code-row"><span class="line-num">11</span> <span
+                  class="syntax-prop">"topologia_gestalt_tda"</span>: &#123;</div>
+              <div class="code-row"><span class="line-num">12</span> <span class="syntax-prop">"componentes_0pd"</span>:
+                <span class="syntax-number">4</span>, <span class="syntax-prop">"ciclos_h1_ruido"</span>: <span
+                  class="syntax-number">0</span>, <span class="syntax-prop">"estado"</span>: <span
+                  class="syntax-string">"Aprobado"</span>
+              </div>
+              <div class="code-row"><span class="line-num">13</span> &#125;,</div>
+              <div class="code-row"><span class="line-num">14</span> <span
+                  class="syntax-prop">"hallazgos_criticos"</span>: <span class="syntax-number">0</span></div>
+              <div class="code-row"><span class="line-num">15</span>&#125;</div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- 5. FEATURE COMPARISON TABLE                                  -->
+  <!-- ============================================================ -->
+  <section id="comparison" class="comparison-section py-5 position-relative">
+    <div class="container position-relative z-2">
+
+      <!-- Section Header -->
+      <div class="section-badge-wrapper text-center mb-3">
+        <span class="section-pill font-mono">
+          <span class="syntax-string">//</span> 03. COMPARATIVA DE ENFOQUES
+        </span>
+      </div>
+      <h2 class="section-title text-center mb-3">
+        Un asistente especializado vs. <span class="syntax-string">enfoques aislados</span>
+      </h2>
+      <p class="section-desc text-center mx-auto mb-5">
+        Descubre cómo el asistente guiado de STYLE une buenas prácticas de diseño visual, accesibilidad y evaluación
+        científica en un solo lugar.
+      </p>
+
+      <!-- Matrix Table Card -->
+      <div class="comparison-table-wrapper mx-auto">
+        <div class="table-responsive">
+          <table class="table dev-table align-middle">
+            <thead>
+              <tr>
+                <th scope="col" class="th-feature">
+                  <span class="font-mono text-xs text-muted">BUENA PRÁCTICA / CAPACIDAD</span>
+                </th>
+                <th scope="col" class="th-style text-center">
+                  <div class="th-style-box">
+                    <span class="badge-featured font-mono">ASISTENTE INTEGRAL</span>
+                    <div class="d-flex align-items-center justify-content-center gap-1 mt-1">
+                      <span class="syntax-keyword font-mono">&lt;</span>
+                      <span class="fw-bold text-white">STYLE Asistente</span>
+                      <span class="syntax-keyword font-mono">/&gt;</span>
+                    </div>
+                  </div>
+                </th>
+                <th scope="col" class="th-comp text-center">
+                  <span class="font-mono text-xs text-muted">Diseño por Intuición</span>
+                </th>
+                <th scope="col" class="th-comp text-center">
+                  <span class="font-mono text-xs text-muted">Figma Solo</span>
+                </th>
+                <th scope="col" class="th-comp text-center">
+                  <span class="font-mono text-xs text-muted">Checkers Aislados</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of comparisonFeatures">
+                <!-- Feature Name & Description -->
+                <td class="td-feature">
+                  <div class="feature-name fw-semibold text-light">{{ item.name }}</div>
+                  <div class="feature-sub text-muted text-xs">{{ item.description }}</div>
+                </td>
+
+                <!-- STYLE Assistant (Featured) -->
+                <td class="td-style text-center">
+                  <div class="d-flex align-items-center justify-content-center gap-2">
+                    <i class="bi bi-check-circle-fill text-success fs-5"></i>
+                    <span class="font-mono text-xs fw-semibold text-light">{{ item.style.text }}</span>
+                  </div>
+                  <span class="badge-feature-pill font-mono">{{ item.style.badge }}</span>
+                </td>
+
+                <!-- Intuition -->
+                <td class="td-comp text-center">
+                  <div class="d-flex align-items-center justify-content-center gap-1 text-muted text-xs font-mono">
+                    <i *ngIf="item.intuition.supported" class="bi bi-check2 text-warning"></i>
+                    <i *ngIf="!item.intuition.supported" class="bi bi-x-circle text-muted"></i>
+                    <span>{{ item.intuition.text }}</span>
+                  </div>
+                </td>
+
+                <!-- Figma Alone -->
+                <td class="td-comp text-center">
+                  <div class="d-flex align-items-center justify-content-center gap-1 text-muted text-xs font-mono">
+                    <i *ngIf="item.figma.supported" class="bi bi-check2 text-info"></i>
+                    <i *ngIf="!item.figma.supported" class="bi bi-dash-circle text-muted"></i>
+                    <span>{{ item.figma.text }}</span>
+                  </div>
+                </td>
+
+                <!-- Isolated Checkers -->
+                <td class="td-comp text-center">
+                  <div class="d-flex align-items-center justify-content-center gap-1 text-muted text-xs font-mono">
+                    <i *ngIf="item.checkers.supported" class="bi bi-check2 text-warning"></i>
+                    <i *ngIf="!item.checkers.supported" class="bi bi-x-circle text-muted"></i>
+                    <span>{{ item.checkers.text }}</span>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Comparison Table Footer Note -->
+        <div
+          class="comparison-footer d-flex flex-wrap align-items-center justify-content-between p-3 border-top border-light border-opacity-10">
+          <div class="d-flex align-items-center gap-2 text-muted font-mono text-xs">
+            <i class="bi bi-info-circle syntax-function"></i>
+            <span>Fundamentado en WCAG 2.2, VisAWI (Muck et al.), Modelo Calista (Delitzas et al., 2023) y Choi &amp;
+              Hyun (Nature 2024).</span>
+          </div>
+          <a href="#documentation" class="dev-link-accent font-mono text-xs text-decoration-none">
+            Explorar guías científicas <i class="bi bi-arrow-right"></i>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- 6. COMPATIBILITY & INTEGRATION LOGOS                         -->
+  <!-- ============================================================ -->
+  <section id="integrations" class="integrations-section py-5 position-relative">
+    <div class="container position-relative z-2">
+
+      <!-- Section Header -->
+      <div class="section-badge-wrapper text-center mb-3">
+        <span class="section-pill font-mono">
+          <span class="syntax-prop">//</span> 04. FORMATOS Y ECOSISTEMA COMPATIBLE
+        </span>
+      </div>
+      <h2 class="section-title text-center mb-3">
+        Compatible con las herramientas que <span class="syntax-prop">ya utilizas</span>
+      </h2>
+      <p class="section-desc text-center mx-auto mb-5">
+        Exporta directamente a formatos estándar de frontend e importa prototipos desde tu herramienta de diseño
+        favorita para auditarlos.
+      </p>
+
+      <!-- Integrations Grid -->
+      <div class="integrations-grid">
+        <div *ngFor="let item of integrations" class="integration-card" (click)="selectIntegration(item)">
+          <div class="card-top d-flex align-items-center justify-content-between mb-3">
+            <div class="integration-icon-wrap" [attr.data-icon]="item.svgIcon">
+
+              <!-- SVG: CSS3 -->
+              <svg *ngIf="item.svgIcon === 'css'" width="26" height="26" viewBox="0 0 24 24" fill="currentColor">
+                <path
+                  d="M3 2l1.6 17.8L12 22l7.4-2.2L21 2H3zm14.3 5.7l-.5 5.4L12 14.5l-4.8-1.4-.3-3.1h2.2l.2 1.6 2.7.7 2.7-.7.3-2.9H6.7l-.2-2.2h11l-.2 1.2z" />
+              </svg>
+
+              <!-- SVG: Tailwind CSS -->
+              <svg *ngIf="item.svgIcon === 'tailwind'" width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+                <path
+                  d="M12.001 4.8c-3.2 0-5.2 1.6-6 4.8 1.2-1.6 2.6-2.2 4.2-1.8.913.228 1.565.89 2.288 1.624C13.666 10.618 15.027 12 18.001 12c3.2 0 5.2-1.6 6-4.8-1.2 1.6-2.6 2.2-4.2 1.8-.913-.228-1.565-.89-2.288-1.624C16.337 6.182 14.976 4.8 12.001 4.8zm-6 7.2c-3.2 0-5.2 1.6-6 4.8 1.2-1.6 2.6-2.2 4.2-1.8.913.228 1.565.89 2.288 1.624 1.177 1.194 2.538 2.576 5.512 2.576 3.2 0 5.2-1.6 6-4.8-1.2 1.6-2.6 2.2-4.2 1.8-.913-.228-1.565-.89-2.288-1.624C10.337 13.382 8.976 12 6.001 12z" />
+              </svg>
+
+              <!-- SVG: SCSS -->
+              <svg *ngIf="item.svgIcon === 'scss'" width="26" height="26" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M7 8l-4 4 4 4" />
+                <path d="M17 8l4 4-4 4" />
+                <path d="M14 4l-4 16" />
+              </svg>
+
+              <!-- SVG: W3C DTCG JSON -->
+              <svg *ngIf="item.svgIcon === 'json'" width="26" height="26" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M8 3H7a2 2 0 0 0-2 2v5a2 2 0 0 1-2 2 2 2 0 0 1 2 2v5c0 1.1.9 2 2 2h1" />
+                <path d="M16 21h1a2 2 0 0 0 2-2v-5c0-1.1.9-2 2-2a2 2 0 0 1-2-2V5a2 2 0 0 0-2-2h-1" />
+              </svg>
+
+              <!-- SVG: Figma -->
+              <svg *ngIf="item.svgIcon === 'figma'" width="26" height="26" viewBox="0 0 24 24" fill="none">
+                <path d="M8 24C10.2091 24 12 22.2091 12 20V16H8C5.79086 16 4 17.7909 4 20C4 22.2091 5.79086 24 8 24Z"
+                  fill="#0ACF83" />
+                <path d="M4 12C4 9.79086 5.79086 8 8 8H12V16H8C5.79086 16 4 14.2091 4 12Z" fill="#A259FF" />
+                <path d="M4 4C4 1.79086 5.79086 0 8 0H12V8H8C5.79086 8 4 6.20914 4 4Z" fill="#F24E1E" />
+                <path d="M12 0H16C18.2091 0 20 1.79086 20 4C20 6.20914 18.2091 8 16 8H12V0Z" fill="#FF7262" />
+                <path
+                  d="M20 12C20 14.2091 18.2091 16 16 16C13.7909 16 12 14.2091 12 12C12 9.79086 13.7909 8 16 8C18.2091 8 20 9.79086 20 12Z"
+                  fill="#1ABCFE" />
+              </svg>
+
+              <!-- SVG: Iconify -->
+              <svg *ngIf="item.svgIcon === 'iconify'" width="26" height="26" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2">
+                <rect x="3" y="3" width="7" height="7" rx="1.5" />
+                <rect x="14" y="3" width="7" height="7" rx="1.5" />
+                <rect x="14" y="14" width="7" height="7" rx="1.5" />
+                <circle cx="6.5" cy="17.5" r="3.5" />
+              </svg>
+
+              <!-- SVG: Google Fonts -->
+              <svg *ngIf="item.svgIcon === 'fonts'" width="26" height="26" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="4 7 4 4 20 4 20 7" />
+                <line x1="9" y1="20" x2="15" y2="20" />
+                <line x1="12" y1="4" x2="12" y2="20" />
+              </svg>
+
+              <!-- SVG: WCAG 2.2 -->
+              <svg *ngIf="item.svgIcon === 'wcag'" width="26" height="26" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="9" />
+                <path d="M12 3v18" />
+                <path d="M12 3a9 9 0 0 1 0 18" fill="currentColor" fill-opacity="0.35" />
+              </svg>
+
+              <!-- SVG: Encuesta VisAWI -->
+              <svg *ngIf="item.svgIcon === 'survey'" width="26" height="26" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 11l3 3L22 4" />
+                <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+              </svg>
+
+            </div>
+            <span class="badge-integ font-mono">{{ item.badge }}</span>
+          </div>
+
+          <h3 class="integration-title h6 fw-bold mb-1">{{ item.name }}</h3>
+          <div class="integration-category font-mono text-xs text-muted mb-2">{{ item.category }}</div>
+          <p class="integration-desc text-secondary text-xs mb-3">{{ item.description }}</p>
+
+          <div class="integration-code-preview font-mono text-xs">
+            <code>{{ item.exampleOutput }}</code>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- 7. DOCUMENTATION & BEST PRACTICES GUIDES SECTION             -->
+  <!-- ============================================================ -->
+  <section id="documentation" class="docs-section py-5 position-relative">
+    <div class="container position-relative z-2">
+
+      <!-- Section Header -->
+      <div class="section-badge-wrapper text-center mb-3">
+        <span class="section-pill font-mono">
+          <span class="syntax-number">//</span> 05. DOCUMENTACIÓN Y GUÍAS DE BUENAS PRÁCTICAS
+        </span>
+      </div>
+      <h2 class="section-title text-center mb-3">
+        Documentación metodológica y <span class="syntax-number">guías de uso</span>
+      </h2>
+      <p class="section-desc text-center mx-auto mb-4">
+        Consulta las bases científicas y recomendaciones prácticas detrás de cada fase del asistente STYLE.
+      </p>
+
+      <!-- Docs Search / Filter Bar -->
+      <div class="docs-search-bar mx-auto mb-5">
+        <div class="input-group">
+          <span class="input-group-text font-mono syntax-function">
+            <i class="bi bi-search"></i>
+          </span>
+          <input type="text" class="form-control font-mono"
+            placeholder="Buscar guías (ej. 'visawi', 'gestalt', '60-30-10', 'wcag', 'calista', 'tailwind')..."
+            [ngModel]="docsFilter()" (ngModelChange)="docsFilter.set($event)">
+          <button *ngIf="docsFilter()" type="button" class="input-group-text font-mono text-xs text-muted border-0"
+            (click)="docsFilter.set('')" title="Limpiar filtro">
+            <i class="bi bi-x-lg"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Documentation Guides Cards -->
+      <div class="row g-4 mb-5">
+        <div *ngFor="let doc of filteredDocGuides()" class="col-md-6">
+          <div class="doc-card h-100">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+              <span class="doc-category font-mono text-xs">{{ doc.category }}</span>
+              <div class="d-flex align-items-center gap-2">
+                <span class="doc-read-time font-mono text-xs text-muted">{{ doc.readTime }}</span>
+                <span class="badge-doc-tag font-mono">{{ doc.badge }}</span>
+              </div>
+            </div>
+
+            <h3 class="doc-title h5 fw-bold mb-2">
+              <a [href]="doc.path" (click)="doc.phaseNumber ? setPhase(doc.phaseNumber) : null"
+                class="text-decoration-none text-light">
+                {{ doc.title }}
+              </a>
+            </h3>
+
+            <p class="doc-description text-secondary text-sm mb-4">
+              {{ doc.description }}
+            </p>
+
+            <div class="doc-micro-snippet font-mono text-xs mb-3">
+              <span class="syntax-cmd">→</span> <code>{{ doc.rulePreview }}</code>
+            </div>
+
+            <a [href]="doc.path" (click)="doc.phaseNumber ? setPhase(doc.phaseNumber) : null"
+              class="doc-link-action font-mono text-xs text-decoration-none d-inline-flex align-items-center gap-2">
+              <span>Explorar guía</span>
+              <i class="bi bi-arrow-right"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Comprehensive Documentation Callout Banner -->
+      <div class="docs-banner-card mx-auto p-4 p-md-5">
+        <div class="row align-items-center gy-4">
+          <div class="col-lg-8">
+            <div class="d-flex align-items-center gap-2 mb-2 font-mono text-xs syntax-function">
+              <i class="bi bi-book"></i>
+              <span>ASISTENTE INTERACTIVO DE DISEÑO ESTÉTICO GUI</span>
+            </div>
+            <h3 class="fw-bolder mb-2 h4 text-light">¿Listo para mejorar la estética de tu próxima interfaz?</h3>
+            <p class="text-secondary mb-0 text-sm">
+              Crea tu cuenta gratis y recorre las 5 fases con el asistente STYLE: desde el contexto inicial
+              hasta la evaluación con VisAWI, Calista AI y Topología Gestalt.
+            </p>
+          </div>
+          <div class="col-lg-4 text-lg-end">
+            <a routerLink="/register"
+              class="btn-dev-primary text-decoration-none px-4 py-3 d-inline-flex align-items-center gap-2">
+              <i class="bi bi-rocket-takeoff-fill"></i>
+              <span>Crear Proyecto Gratis</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- 8. MINIMAL DEVELOPER FOOTER                                  -->
+  <!-- ============================================================ -->
+  <footer class="dev-footer py-5 border-top border-light border-opacity-10 position-relative">
+    <div class="container position-relative z-2">
+      <div class="row gy-4 mb-5">
+
+        <!-- Brand & Assistant Summary -->
+        <div class="col-lg-4">
+          <div class="d-flex align-items-center gap-2 mb-3">
+            <div class="brand-glyph">
+              <span class="glyph-bracket">&lt;</span>
+              <span class="glyph-core">STYLE</span>
+              <span class="glyph-slash">/</span>
+              <span class="glyph-bracket">&gt;</span>
+            </div>
+            <span class="fw-bold font-mono text-light">STYLE Asistente</span>
+          </div>
+          <p class="text-secondary text-xs font-mono mb-3" style="max-width: 340px; line-height: 1.6;">
+            Software asistente con buenas prácticas para diseñar interfaces gráficas (GUI) con propósito,
+            accesibilidad WCAG 2.2 y estética científicamente validada.
+          </p>
+          <div class="system-status-indicator font-mono text-xs d-inline-flex align-items-center gap-2">
+            <span class="live-dot"></span>
+            <span class="text-light">Asistente Web · 5 Fases Activas</span>
+          </div>
+        </div>
+
+        <!-- Footer Column: Las 5 Fases -->
+        <div class="col-6 col-md-3 col-lg-2">
+          <h4 class="footer-heading font-mono text-xs text-muted text-uppercase mb-3">Las 5 Fases</h4>
+          <ul class="list-unstyled footer-links font-mono text-xs">
+            <li><a href="#fases" (click)="setPhase(1)" class="footer-link">01. Investigación</a></li>
+            <li><a href="#fases" (click)="setPhase(2)" class="footer-link">02. Diseño Conceptual</a></li>
+            <li><a href="#fases" (click)="setPhase(3)" class="footer-link">03. Diseño Visual</a></li>
+            <li><a href="#fases" (click)="setPhase(4)" class="footer-link">04. Diseño Detallado</a></li>
+            <li><a href="#fases" (click)="setPhase(5)" class="footer-link">05. Evaluación Estética</a></li>
+          </ul>
+        </div>
+
+        <!-- Footer Column: Modelos Científicos -->
+        <div class="col-6 col-md-3 col-lg-2">
+          <h4 class="footer-heading font-mono text-xs text-muted text-uppercase mb-3">Evaluación GUI</h4>
+          <ul class="list-unstyled footer-links font-mono text-xs">
+            <li><a href="#documentation" class="footer-link">Revisión Heurística</a></li>
+            <li><a href="#documentation" class="footer-link">VisAWI Psicométrico</a></li>
+            <li><a href="#documentation" class="footer-link">Modelo Calista AI</a></li>
+            <li><a href="#documentation" class="footer-link">Topología Gestalt TDA</a></li>
+            <li><a href="#documentation" class="footer-link">WCAG 2.2 &amp; APCA</a></li>
+          </ul>
+        </div>
+
+        <!-- Footer Column: Exportaciones -->
+        <div class="col-6 col-md-3 col-lg-2">
+          <h4 class="footer-heading font-mono text-xs text-muted text-uppercase mb-3">Exportaciones</h4>
+          <ul class="list-unstyled footer-links font-mono text-xs">
+            <li><a href="#code-previews" (click)="setActiveTab('css')" class="footer-link">CSS Variables</a></li>
+            <li><a href="#code-previews" (click)="setActiveTab('tailwind')" class="footer-link">Tailwind Config</a></li>
+            <li><a href="#code-previews" (click)="setActiveTab('scss')" class="footer-link">SCSS Tokens</a></li>
+            <li><a href="#code-previews" (click)="setActiveTab('dtcg')" class="footer-link">W3C DTCG JSON</a></li>
+            <li><a href="#code-previews" (click)="setActiveTab('report')" class="footer-link">Reporte Estético</a></li>
+          </ul>
+        </div>
+
+        <!-- Footer Column: Acceso -->
+        <div class="col-6 col-md-3 col-lg-2">
+          <h4 class="footer-heading font-mono text-xs text-muted text-uppercase mb-3">Plataforma</h4>
+          <ul class="list-unstyled footer-links font-mono text-xs">
+            <li><a href="#documentation" class="footer-link">Documentación</a></li>
+            <li><a href="#comparison" class="footer-link">Comparativa</a></li>
+            <li><a routerLink="/login" class="footer-link">Iniciar Sesión</a></li>
+            <li><a routerLink="/register" class="footer-link">Crear Cuenta</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Bottom Bar -->
+      <div
+        class="footer-bottom-bar d-flex flex-wrap align-items-center justify-content-between pt-4 border-top border-light border-opacity-10 text-muted font-mono text-xs">
+        <div>
+          <span>&copy; 2026 STYLE Framework · Software asistente de buenas prácticas para diseño estético GUI.</span>
+        </div>
+        <div class="d-flex align-items-center gap-3 mt-2 mt-sm-0">
+          <span>Modo {{ (themeService.isDarkTheme$ | async) ? 'Oscuro' : 'Claro' }}</span>
+          <span class="syntax-string">●</span>
+          <span>5 Fases Metodológicas</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ============================================================ -->
+  <!-- 9. MODAL DE DETALLE PARA COMPATIBILIDAD / FORMATOS           -->
+  <!-- ============================================================ -->
+  <div *ngIf="activeIntegration()" class="modal-backdrop-custom" (click)="closeIntegrationModal()">
+    <div class="modal-card-custom" (click)="$event.stopPropagation()">
+      <div class="d-flex align-items-center justify-content-between mb-3">
+        <div class="d-flex align-items-center gap-2">
+          <span class="badge-featured font-mono">{{ activeIntegration()?.category }}</span>
+          <h4 class="h5 fw-bold mb-0 text-light">{{ activeIntegration()?.name }}</h4>
+        </div>
+        <button type="button" class="btn-close-custom" (click)="closeIntegrationModal()" aria-label="Cerrar">
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </div>
+
+      <p class="text-secondary text-sm mb-4">{{ activeIntegration()?.description }}</p>
+
+      <div class="code-box-modal font-mono text-xs p-3 mb-4">
+        <div class="d-flex align-items-center justify-content-between mb-2">
+          <span class="text-muted">// Ejemplo de salida o flujo en STYLE</span>
+          <button type="button" class="btn-window-copy"
+            (click)="copyIntegrationExample(activeIntegration()?.exampleOutput || '')">
+            <i class="bi" [class.bi-clipboard]="!copiedIntegration()" [class.bi-check2]="copiedIntegration()"></i>
+            <span>{{ copiedIntegration() ? 'Copiado' : 'Copiar' }}</span>
+          </button>
+        </div>
+        <div class="syntax-string fw-bold">{{ activeIntegration()?.exampleOutput }}</div>
+      </div>
+
+      <div class="d-flex justify-content-end gap-2">
+        <button type="button" class="btn-dev-ghost" (click)="closeIntegrationModal()">Cerrar</button>
+        <a href="#code-previews" class="btn-dev-primary text-decoration-none" (click)="closeIntegrationModal()">
+          <span>Ver ejemplos exportados</span>
+          <i class="bi bi-arrow-right"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+
 </div>
