@@ -118,7 +118,7 @@ export class DisenoConceptualComponent implements OnInit, OnDestroy {
   isLoadingMulticriteria = false;
   multicriteriaError: string | null = null;
   showMulticriteriaBoxes = true;
-  showMulticriteriaQuadrants = true;
+  showMulticriteriaQuadrants = false;
 
   // --- MUIDesigner 2022 Aesthetic Restructuring state ---
   restructuringResult: RestructuringResult | null = null;
@@ -136,7 +136,7 @@ export class DisenoConceptualComponent implements OnInit, OnDestroy {
 
   // Controles de superposición para Diagnóstico de Composición (Web / General):
   showNgoBoxes = true;
-  showNgoQuadrants = true;
+  showNgoQuadrants = false;
 
   // --- Ngo 2003 metrics state ---
   ngoResult: any = null;
@@ -1013,6 +1013,44 @@ export class DisenoConceptualComponent implements OnInit, OnDestroy {
       case 'Baja': return 'bg-danger text-white';
       default: return 'bg-secondary text-white';
     }
+  }
+
+  getMulticriteriaRelevancia(item: MulticriteriaMetricaItem): { label: string; badgeClass: string; icon: string } {
+    if (item.nivel_relevancia === 'Alta' || item.codigo === 'VS' || item.codigo === 'SI' || item.codigo === 'PR') {
+      return { label: 'Alta Relevancia', badgeClass: 'bg-primary-subtle text-primary border border-primary-subtle', icon: '⭐' };
+    }
+    if (item.nivel_relevancia === 'Media' || item.codigo === 'BA' || item.codigo === 'UN') {
+      return { label: 'Relevancia Media', badgeClass: 'bg-warning-subtle text-warning-emphasis border border-warning-subtle', icon: '✦' };
+    }
+    return { label: 'Relevancia Secundaria', badgeClass: 'bg-light text-secondary border', icon: '•' };
+  }
+
+  getMulticriteriaMetricName(item: MulticriteriaMetricaItem): string {
+    const names: Record<string, string> = {
+      DE: 'Espacio Libre y Densidad',
+      VS: 'Simetría Izquierda / Derecha',
+      BA: 'Equilibrio Visual (Balance)',
+      PR: 'Proporción y Formas',
+      UN: 'Uniformidad de Márgenes',
+      SI: 'Alineación en Filas y Columnas',
+      SE: 'Secuencia de Lectura'
+    };
+    return names[item.codigo] || item.nombre;
+  }
+
+  getMulticriteriaMetricDescription(item: MulticriteriaMetricaItem): string {
+    if (item.codigo === 'DE') {
+      return 'Mide la proporción entre contenido y espacios vacíos. Lo ideal es que cerca del 50% sea contenido y el resto espacio libre para una lectura cómoda y descansada.';
+    }
+    return item.descripcion;
+  }
+
+  getPercepcionImpactText(item: MulticriteriaMetricaItem): string {
+    const absVal = Math.abs(item.peso_regresion);
+    if (item.codigo === 'VS' || item.codigo === 'SI') return `${absVal}% · Muy Alto`;
+    if (item.codigo === 'PR') return `${absVal}% · Alto`;
+    if (item.codigo === 'BA' || item.codigo === 'UN') return `${absVal}% · Moderado`;
+    return `${absVal}% · Secundario`;
   }
 
   // --- SVG RADAR HELPERS ---

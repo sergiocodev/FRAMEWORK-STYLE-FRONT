@@ -1025,11 +1025,6 @@
                                 (click)="toggleNgoBoxes()">
                           <span class="d-inline-flex align-items-center gap-1"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"></rect><path d="M9 3v18M15 3v18"></path></svg> Cajas de Elementos ({{ ngoResult.elementos.length }})</span>
                         </button>
-                        <button type="button" class="btn btn-sm py-1 px-3 d-flex align-items-center gap-1 fw-medium"
-                                [ngClass]="showNgoQuadrants ? 'btn-indigo text-white' : 'btn-outline-secondary'"
-                                (click)="toggleNgoQuadrants()">
-                          <span class="d-inline-flex align-items-center gap-1"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"></rect><line x1="3" y1="12" x2="21" y2="12"></line><line x1="12" y1="3" x2="12" y2="21"></line></svg> Ejes de Cuadrantes</span>
-                        </button>
                       </div>
                       <div class="small text-secondary" style="font-size: 0.72rem;">
                         Lienzo: {{ ngoResult.frame.width }}×{{ ngoResult.frame.height }} px
@@ -1087,11 +1082,6 @@
                                 (click)="toggleMulticriteriaBoxes()">
                           <span class="d-inline-flex align-items-center gap-1"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"></rect><path d="M9 3v18M15 3v18"></path></svg> Cajas ({{ multicriteriaResult.elementos.length }})</span>
                         </button>
-                        <button type="button" class="btn btn-sm py-1 px-3 d-flex align-items-center gap-1 fw-medium"
-                                [ngClass]="showMulticriteriaQuadrants ? 'btn-primary text-white' : 'btn-outline-secondary'"
-                                (click)="toggleMulticriteriaQuadrants()">
-                          <span class="d-inline-flex align-items-center gap-1"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"></rect><line x1="3" y1="12" x2="21" y2="12"></line><line x1="12" y1="3" x2="12" y2="21"></line></svg> Ejes Cuadrantes</span>
-                        </button>
                       </div>
                       <div class="small text-secondary" style="font-size: 0.72rem;">
                         Lienzo: {{ multicriteriaResult.frame.width }}×{{ multicriteriaResult.frame.height }} px
@@ -1114,28 +1104,6 @@
                              preserveAspectRatio="none"
                              style="z-index: 10;">
                           
-                          <!-- Ejes y etiquetas de los 4 cuadrantes -->
-                          @if (showNgoQuadrants) {
-                            <line [attr.x1]="ngoResult.frame.width / 2" y1="0"
-                                  [attr.x2]="ngoResult.frame.width / 2" [attr.y2]="ngoResult.frame.height"
-                                  stroke="#3b82f6" stroke-width="2.5" stroke-dasharray="8,6" opacity="0.65" />
-                            <line x1="0" [attr.y1]="ngoResult.frame.height / 2"
-                                  [attr.x2]="ngoResult.frame.width" [attr.y2]="ngoResult.frame.height / 2"
-                                  stroke="#3b82f6" stroke-width="2.5" stroke-dasharray="8,6" opacity="0.65" />
-
-                            <rect x="12" y="12" width="130" height="26" rx="4" fill="rgba(37, 99, 235, 0.85)" />
-                            <text x="20" y="30" fill="#ffffff" font-size="14" font-weight="bold">Q1 (Sup-Izq)</text>
-
-                            <rect [attr.x]="(ngoResult.frame.width / 2) + 12" y="12" width="130" height="26" rx="4" fill="rgba(37, 99, 235, 0.85)" />
-                            <text [attr.x]="(ngoResult.frame.width / 2) + 20" y="30" fill="#ffffff" font-size="14" font-weight="bold">Q2 (Sup-Der)</text>
-
-                            <rect x="12" [attr.y]="(ngoResult.frame.height / 2) + 12" width="130" height="26" rx="4" fill="rgba(37, 99, 235, 0.85)" />
-                            <text x="20" [attr.y]="(ngoResult.frame.height / 2) + 30" fill="#ffffff" font-size="14" font-weight="bold">Q3 (Inf-Izq)</text>
-
-                            <rect [attr.x]="(ngoResult.frame.width / 2) + 12" [attr.y]="(ngoResult.frame.height / 2) + 12" width="130" height="26" rx="4" fill="rgba(37, 99, 235, 0.85)" />
-                            <text [attr.x]="(ngoResult.frame.width / 2) + 20" [attr.y]="(ngoResult.frame.height / 2) + 30" fill="#ffffff" font-size="14" font-weight="bold">Q4 (Inf-Der)</text>
-                          }
-
                           <!-- Cajas de Elementos Detectados -->
                           @if (showNgoBoxes) {
                             @for (elem of ngoResult.elementos; track elem.id) {
@@ -1201,28 +1169,6 @@
                              [attr.viewBox]="'0 0 ' + multicriteriaResult.frame.width + ' ' + multicriteriaResult.frame.height"
                              preserveAspectRatio="none"
                              style="z-index: 10;">
-
-                          <!-- Ejes y etiquetas de los 4 cuadrantes -->
-                          @if (showMulticriteriaQuadrants) {
-                            <line [attr.x1]="multicriteriaResult.frame.width / 2" y1="0"
-                                  [attr.x2]="multicriteriaResult.frame.width / 2" [attr.y2]="multicriteriaResult.frame.height"
-                                  stroke="#0284c7" stroke-width="2.5" stroke-dasharray="8,6" opacity="0.65" />
-                            <line x1="0" [attr.y1]="multicriteriaResult.frame.height / 2"
-                                  [attr.x2]="multicriteriaResult.frame.width" [attr.y2]="multicriteriaResult.frame.height / 2"
-                                  stroke="#0284c7" stroke-width="2.5" stroke-dasharray="8,6" opacity="0.65" />
-
-                            <rect x="12" y="12" width="130" height="26" rx="4" fill="rgba(2, 132, 199, 0.85)" />
-                            <text x="20" y="30" fill="#ffffff" font-size="14" font-weight="bold">Q1 (Sup-Izq)</text>
-
-                            <rect [attr.x]="(multicriteriaResult.frame.width / 2) + 12" y="12" width="130" height="26" rx="4" fill="rgba(2, 132, 199, 0.85)" />
-                            <text [attr.x]="(multicriteriaResult.frame.width / 2) + 20" y="30" fill="#ffffff" font-size="14" font-weight="bold">Q2 (Sup-Der)</text>
-
-                            <rect x="12" [attr.y]="(multicriteriaResult.frame.height / 2) + 12" width="130" height="26" rx="4" fill="rgba(2, 132, 199, 0.85)" />
-                            <text x="20" [attr.y]="(multicriteriaResult.frame.height / 2) + 30" fill="#ffffff" font-size="14" font-weight="bold">Q3 (Inf-Izq)</text>
-
-                            <rect [attr.x]="(multicriteriaResult.frame.width / 2) + 12" [attr.y]="(multicriteriaResult.frame.height / 2) + 12" width="130" height="26" rx="4" fill="rgba(2, 132, 199, 0.85)" />
-                            <text [attr.x]="(multicriteriaResult.frame.width / 2) + 20" [attr.y]="(multicriteriaResult.frame.height / 2) + 30" fill="#ffffff" font-size="14" font-weight="bold">Q4 (Inf-Der)</text>
-                          }
 
                           <!-- Cajas de Elementos Detectados -->
                           @if (showMulticriteriaBoxes) {
@@ -2067,7 +2013,7 @@
                                 </div>
                               </div>
                               <div class="text-secondary" style="font-size: 0.8rem; line-height: 1.45;">
-                                <strong>¿Qué es?:</strong> Ajuste estadístico calibrado con usuarios reales. Evalúa la satisfacción visual dando mayor prioridad a la simetría izquierda-derecha (+54.9%) y la alineación de columnas (+48.3%).
+                                <strong>Enfoque Perceptual:</strong> Mide qué tan agradable y ordenado resulta el diseño para los usuarios, priorizando fuertemente la simetría y la correcta alineación en filas y columnas.
                               </div>
                             </div>
                           </div>
@@ -2089,7 +2035,7 @@
                                 </div>
                               </div>
                               <div class="text-secondary" style="font-size: 0.8rem; line-height: 1.45;">
-                                <strong>¿Qué es?:</strong> Cálculo matemático objetivo sin sesgo humano. Mide la consistencia y predictibilidad del espacio, dando más peso a la densidad equilibrada (22.7%) y las proporciones (17.8%).
+                                <strong>Enfoque de Cuadrícula:</strong> Evalúa la regularidad matemática de los espacios y márgenes, verificando que la interfaz no esté sobrecargada y que los tamaños sean consistentes.
                               </div>
                             </div>
                           </div>
@@ -2180,46 +2126,52 @@
                           </div>
 
                           @for (item of getMulticriteriaMetricList(); track item.codigo) {
-                            <div class="p-3 bg-white border rounded-3 shadow-xs">
-                              <div class="d-flex justify-content-between align-items-start mb-1">
-                                <div>
-                                  <div class="d-flex align-items-center gap-2">
-                                    <span class="badge bg-primary-subtle text-primary fw-bold" style="font-size: 0.78rem;">{{ item.codigo }}</span>
-                                    <span class="fw-bold text-dark" style="font-size: 0.88rem;">{{ item.nombre }}</span>
-                                  </div>
-                                  <span class="badge bg-light text-secondary border font-monospace py-0 px-1 mt-1" style="font-size: 0.74rem;">Fórmula: {{ item.formula }}</span>
+                            <div class="p-2 px-3 bg-white border rounded-3 shadow-xs">
+                              <div class="d-flex justify-content-between align-items-center mb-1 gap-2">
+                                <div class="d-flex align-items-center gap-1 flex-wrap">
+                                  <span class="badge bg-primary-subtle text-primary fw-bold" style="font-size: 0.78rem;">{{ item.codigo }}</span>
+                                  <span class="fw-bold text-dark" style="font-size: 0.86rem;">{{ getMulticriteriaMetricName(item) }}</span>
+                                  <span class="badge rounded-pill fw-semibold" [ngClass]="getMulticriteriaRelevancia(item).badgeClass" style="font-size: 0.70rem;">
+                                    {{ getMulticriteriaRelevancia(item).icon }} {{ getMulticriteriaRelevancia(item).label }}
+                                  </span>
                                 </div>
-                                <div class="text-end">
+                                <div class="d-flex align-items-center gap-1 flex-shrink-0">
                                   <span class="badge" [ngClass]="item.color === 'success' ? 'bg-success text-white' : item.color === 'warning' ? 'bg-warning text-dark' : 'bg-danger text-white'" style="font-size: 0.74rem;">
                                     {{ item.estado | uppercase }}
                                   </span>
-                                  <div class="fw-bold small text-dark mt-1" style="font-size: 0.86rem;">{{ item.porcentaje }}%</div>
+                                  <span class="fw-bold text-dark ms-1" style="font-size: 0.86rem;">{{ item.porcentaje }}%</span>
                                 </div>
                               </div>
 
                               <!-- Barra de progreso -->
-                              <div class="progress my-2" style="height: 6px;">
+                              <div class="progress my-1" style="height: 5px;">
                                 <div class="progress-bar"
                                      [ngClass]="item.color === 'success' ? 'bg-success' : item.color === 'warning' ? 'bg-warning' : 'bg-danger'"
                                      [style.width.%]="item.porcentaje"></div>
                               </div>
 
-                              <div class="text-secondary" style="font-size: 0.82rem; line-height: 1.45;">
-                                {{ item.descripcion }}
+                              <div class="text-secondary" style="font-size: 0.80rem; line-height: 1.4;">
+                                {{ getMulticriteriaMetricDescription(item) }}
                               </div>
 
-                              <!-- Ponderaciones en los modelos -->
-                              <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mt-2 pt-2 border-top text-secondary" style="font-size: 0.78rem;">
-                                <div>
-                                  <span>Impacto en la vista del usuario: </span>
-                                  <strong class="text-dark">{{ item.peso_regresion > 0 ? '+' : '' }}{{ item.peso_regresion }}%</strong>
-                                  <span class="ms-1 badge rounded-pill" [ngClass]="item.peso_regresion >= 30 ? 'bg-primary-subtle text-primary' : item.peso_regresion >= 0 ? 'bg-light text-dark' : 'bg-light text-secondary'" style="font-size: 0.72rem;">
-                                    {{ item.peso_regresion >= 30 ? 'Muy Relevante' : item.peso_regresion >= 0 ? 'Moderado' : 'Secundario' }}
-                                  </span>
+                              <!-- Ponderaciones en los modelos (Regresión vs Entropía) -->
+                              <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mt-2 pt-2 border-top text-secondary" style="font-size: 0.76rem;">
+                                <div class="d-flex align-items-center gap-1">
+                                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-primary flex-shrink-0">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                  </svg>
+                                  <span>Percepción:</span>
+                                  <strong class="text-dark">{{ getPercepcionImpactText(item) }}</strong>
                                 </div>
-                                <div>
-                                  <span>Importancia en la retícula: </span>
-                                  <strong class="text-dark">{{ item.peso_entropia }}%</strong>
+
+                                <div class="d-flex align-items-center gap-1">
+                                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-info flex-shrink-0">
+                                    <rect x="3" y="3" width="18" height="18" rx="2"></rect>
+                                    <path d="M3 9h18M3 15h18M9 3v18M15 3v18"></path>
+                                  </svg>
+                                  <span>Retícula:</span>
+                                  <strong class="text-dark">{{ item.peso_entropia }}% de peso</strong>
                                 </div>
                               </div>
                             </div>

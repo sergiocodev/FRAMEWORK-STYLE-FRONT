@@ -155,6 +155,7 @@ export interface MulticriteriaMetricaItem {
   color: 'success' | 'warning' | 'danger';
   peso_entropia: number;
   peso_regresion: number;
+  nivel_relevancia?: string;
   descripcion: string;
 }
 
