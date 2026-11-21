@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { DisenoDetalladoService, Fase4Pantalla, DisenoDetalladoArchivo } from '../services/diseno-detallado.service';
+import { DisenoDetalladoService, Fase4Pantalla, DisenoDetalladoArchivo, WireframeDisponible } from '../services/diseno-detallado.service';
 import { ProjectService } from '../../../core/services/project.service';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 
@@ -34,6 +34,8 @@ export class DisenoDetalladoComponent implements OnInit {
 
   projectId = 1;
   isCompleting = false;
+  isSyncingPhase2 = false;
+  isChangingWireframe = false;
   project: any = {};
   phases: any[] = [];
   headerBreadcrumbs: any[] = [];
@@ -46,14 +48,13 @@ export class DisenoDetalladoComponent implements OnInit {
   }
   
   screens: Fase4Pantalla[] = [];
+  availableWireframes: WireframeDisponible[] = [];
   selectedScreenId: string = '';
+  selectedPriorityFilter: 'todas' | 'alta' | 'media' | 'baja' = 'todas';
+  activeViewMode: 'prototype' | 'wireframe' | 'split' = 'prototype';
+  selectedWireframeToLink: number | null = null;
 
-  checklists: ChecklistItem[] = [
-    { id: 'c1', label: 'Colores aplicados correctamente', checked: false },
-    { id: 'c2', label: 'Tipografías aplicadas correctamente', checked: false },
-    { id: 'c3', label: 'Iconografía aplicada correctamente', checked: false },
-    { id: 'c4', label: 'Espaciado y alineación correcta', checked: false }
-  ];
+  checklists: ChecklistItem[] = [];
 
   isSidebarOpen = true;
   isDragging = false;
@@ -76,6 +77,7 @@ export class DisenoDetalladoComponent implements OnInit {
       }
       this.fetchProject(this.projectId);
       this.loadScreens();
+      this.loadAvailableWireframes();
     });
   }
   
@@ -110,40 +112,75 @@ export class DisenoDetalladoComponent implements OnInit {
     });
   }
 
+  loadAvailableWireframes() {
+    this.disenoService.getAvailableWireframes(this.projectId).subscribe({
+      next: (wfs) => {
+        this.availableWireframes = wfs;
+      },
+      error: (err) => console.error('Error cargando wireframes disponibles', err)
+    });
+  }
+
   loadScreens() {
     this.disenoService.getScreens(this.projectId).subscribe({
       next: (data) => {
-        // Map backend screens to frontend model
         this.screens = data.map(n => ({
           ...n,
-          id: n.id.toString(), // frontend expects string id for UI tracking
+          id: n.id.toString(),
           _dbId: n.id,
           title: n.nombre,
-          icon: n.icono || 'file',
-          status: 'Pendiente', // default until we load design
-          lastUpdate: new Date().toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' })
+          icon: n.icono || 'layout',
+          prioridad: (n.prioridad || 'media').toLowerCase() as 'alta' | 'media' | 'baja',
+          status: n.estado_diseno === 'verificado' ? 'Verificada' : (n.estado_diseno === 'en_revision' ? 'En revisión' : 'Pendiente'),
+          lastUpdate: new Date().toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' }),
+          tieneWireframe: n.tiene_wireframe,
+          wireframeUrl: n.wireframe_url ? (environment.apiUrl + (n.wireframe_url.startsWith('/') ? '' : '/') + n.wireframe_url) : undefined,
+          wireframeId: n.wireframe_id,
+          wireframeNombre: n.wireframe_nombre,
+          tieneDiseno: n.tiene_diseno,
+          image: n.diseno_url ? (environment.apiUrl + (n.diseno_url.startsWith('/') ? '' : '/') + n.diseno_url) : undefined,
+          totalAlertas: n.total_alertas || 0,
+          totalChecklists: n.total_checklists || 0,
+          checklistsAprobados: n.checklists_aprobados || 0
         }));
-        if (this.screens.length > 0 && !this.selectedScreenId) {
-          this.selectedScreenId = this.screens[0].id;
-          this.loadDesignForScreen(this.screens[0]);
-        } else if (this.currentScreen) {
-           this.loadDesignForScreen(this.currentScreen);
+
+        if (this.screens.length > 0) {
+          const exists = this.screens.some(s => s.id === this.selectedScreenId);
+          if (!exists) {
+            this.selectedScreenId = this.screens[0].id;
+          }
+          const current = this.currentScreen;
+          if (current) {
+            this.loadDesignForScreen(current);
+          }
+        } else {
+          this.selectedScreenId = '';
+          this.checklists = [];
         }
       },
       error: (err) => console.error('Error loading screens', err)
     });
   }
 
-  // Se llama cuando el usuario hace clic en una pantalla
   selectScreen(id: string) {
     this.selectedScreenId = id;
+    this.isChangingWireframe = false;
+    this.selectedWireframeToLink = null;
     const screen = this.currentScreen;
-    if (screen && !screen.image) {
+    if (screen) {
       this.loadDesignForScreen(screen);
     }
   }
 
   loadDesignForScreen(screen: Fase4Pantalla) {
+    this.checklists = [];
+
+    if (!screen.tieneDiseno && !screen.image) {
+      screen.image = undefined;
+      screen.alerts = [];
+      return;
+    }
+
     this.disenoService.getDesign(this.projectId, screen._dbId).subscribe({
       next: (design) => {
         if (design && design.archivo_url) {
@@ -173,26 +210,150 @@ export class DisenoDetalladoComponent implements OnInit {
         }
       },
       error: (err) => {
-        // Reset checklist to empty if no design exists
         this.checklists = [];
         if (err.status !== 404) console.error('Error loading design', err);
       }
     });
   }
 
-  get filteredScreens() {
-    if (!this.searchQuery) return this.screens;
-    const lower = this.searchQuery.toLowerCase();
-    return this.screens.filter(s => s.title.toLowerCase().includes(lower));
+  syncScreensFromPhase2() {
+    this.isSyncingPhase2 = true;
+    this.disenoService.syncFromPhase2(this.projectId).subscribe({
+      next: () => {
+        this.isSyncingPhase2 = false;
+        this.loadScreens();
+        this.loadAvailableWireframes();
+      },
+      error: (err) => {
+        this.isSyncingPhase2 = false;
+        console.error('Error al sincronizar con Fase 2', err);
+      }
+    });
   }
 
-  get isAllChecked() {
-    return this.checklists.every(c => c.checked);
+  startChangingWireframe() {
+    this.isChangingWireframe = true;
+    this.selectedWireframeToLink = this.currentScreen?.wireframeId || null;
+  }
+
+  cancelChangingWireframe() {
+    this.isChangingWireframe = false;
+    this.selectedWireframeToLink = null;
+  }
+
+  linkCurrentScreenToWireframe() {
+    const screen = this.currentScreen;
+    if (!screen || !this.selectedWireframeToLink) return;
+
+    this.disenoService.linkWireframe(this.projectId, screen._dbId, this.selectedWireframeToLink).subscribe({
+      next: (res) => {
+        screen.tieneWireframe = true;
+        screen.wireframeUrl = environment.apiUrl + (res.wireframe_url.startsWith('/') ? '' : '/') + res.wireframe_url;
+        screen.wireframeId = res.wireframe_id;
+        screen.wireframeNombre = res.nombre_archivo;
+        this.isChangingWireframe = false;
+        this.selectedWireframeToLink = null;
+        this.loadAvailableWireframes();
+      },
+      error: (err) => console.error('Error al vincular wireframe', err)
+    });
+  }
+
+  unlinkCurrentScreenWireframe() {
+    const screen = this.currentScreen;
+    if (!screen) return;
+
+    if (!confirm(`¿Estás seguro de desvincular el wireframe de la pantalla "${screen.title}"?`)) {
+      return;
+    }
+
+    this.disenoService.unlinkWireframe(this.projectId, screen._dbId).subscribe({
+      next: () => {
+        screen.tieneWireframe = false;
+        screen.wireframeUrl = undefined;
+        screen.wireframeId = undefined;
+        screen.wireframeNombre = undefined;
+        this.isChangingWireframe = false;
+        this.selectedWireframeToLink = null;
+        this.loadAvailableWireframes();
+      },
+      error: (err) => console.error('Error al desvincular wireframe', err)
+    });
+  }
+
+  getColorFromLabel(label: string): string | null {
+    const match = label.match(/#(?:[0-9a-fA-F]{3}){1,2}\b/);
+    return match ? match[0] : null;
+  }
+
+  get filteredScreens(): Fase4Pantalla[] {
+    let list = this.screens;
+    if (this.selectedPriorityFilter !== 'todas') {
+      list = list.filter(s => s.prioridad === this.selectedPriorityFilter);
+    }
+    if (this.searchQuery) {
+      const lower = this.searchQuery.toLowerCase();
+      list = list.filter(s => s.title.toLowerCase().includes(lower));
+    }
+    return list;
+  }
+
+  get isAllChecked(): boolean {
+    return this.checklists.length > 0 && this.checklists.every(c => c.checked);
+  }
+
+  get checklistStats(): { completed: number, total: number, percent: number } {
+    const total = this.checklists.length;
+    if (total === 0) return { completed: 0, total: 0, percent: 0 };
+    const completed = this.checklists.filter(c => c.checked).length;
+    const percent = Math.round((completed / total) * 100);
+    return { completed, total, percent };
+  }
+
+  get highPriorityCount(): number {
+    return this.screens.filter(s => s.prioridad === 'alta').length;
+  }
+
+  get mediumPriorityCount(): number {
+    return this.screens.filter(s => s.prioridad === 'media').length;
+  }
+
+  get lowPriorityCount(): number {
+    return this.screens.filter(s => s.prioridad === 'baja').length;
+  }
+
+  get verifiedScreensCount(): number {
+    return this.screens.filter(s => s.status === 'Verificada').length;
+  }
+
+  get prototypedScreensCount(): number {
+    return this.screens.filter(s => !!s.image).length;
   }
 
   toggleCheck(item: ChecklistItem) {
-    item.checked = !item.checked;
-    this.updateScreenStatus();
+    const screen = this.currentScreen;
+    if (!screen) return;
+
+    const previousChecked = item.checked;
+    const nextChecked = !previousChecked;
+    item.checked = nextChecked;
+
+    const estadoBackend = nextChecked ? 'aprobado' : 'rechazado';
+    const itemIdNum = Number(item.id);
+
+    if (!isNaN(itemIdNum) && itemIdNum > 0) {
+      this.disenoService.updateChecklistItem(this.projectId, screen._dbId, itemIdNum, estadoBackend).subscribe({
+        next: (res) => {
+          screen.status = res.diseno_estado === 'verificado' ? 'Verificada' : 'En revisión';
+        },
+        error: (err) => {
+          console.error('Error al guardar estado de validación:', err);
+          item.checked = previousChecked;
+        }
+      });
+    } else {
+      this.updateScreenStatus();
+    }
   }
   
   get currentScreen(): Fase4Pantalla | undefined {
@@ -210,9 +371,29 @@ export class DisenoDetalladoComponent implements OnInit {
     }
   }
 
+  toggleMarkVerified() {
+    const screen = this.currentScreen;
+    if (!screen || !screen.image) return;
+
+    const targetEstado = screen.status === 'Verificada' ? 'en_revision' : 'verificado';
+    this.disenoService.updateDesignStatus(this.projectId, screen._dbId, targetEstado).subscribe({
+      next: (res) => {
+        screen.status = res.estado === 'verificado' ? 'Verificada' : 'En revisión';
+        if (screen.status === 'Verificada') {
+          this.checklists.forEach(c => c.checked = true);
+        }
+      },
+      error: (err) => console.error('Error cambiando estado de diseño:', err)
+    });
+  }
+
+  setViewMode(mode: 'prototype' | 'wireframe' | 'split') {
+    this.activeViewMode = mode;
+  }
+
   addScreen() {
     const newName = 'Nueva pantalla';
-    this.disenoService.createScreen(this.projectId, { nombre: newName, icono: 'file' }).subscribe({
+    this.disenoService.createScreen(this.projectId, { nombre: newName, icono: 'file', prioridad: 'alta' }).subscribe({
       next: (n) => {
         const newScreen: Fase4Pantalla = {
           id: n.id.toString(),
@@ -220,9 +401,12 @@ export class DisenoDetalladoComponent implements OnInit {
           proyecto_id: n.proyecto_id,
           fase_creacion: n.fase_creacion,
           title: n.nombre,
+          prioridad: 'alta',
           status: 'Pendiente',
           lastUpdate: new Date().toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' }),
-          icon: n.icono || 'file'
+          icon: n.icono || 'file',
+          tieneWireframe: false,
+          tieneDiseno: false
         };
         this.screens.push(newScreen);
         this.selectScreen(newScreen.id);
@@ -236,7 +420,6 @@ export class DisenoDetalladoComponent implements OnInit {
     const screen = this.screens.find(s => s.id === id);
     if (!screen) return;
     
-    // Todas las pantallas cargadas aquí son exclusivas de Fase 4, así que se pueden borrar sin afectar Fase 2.
     this.disenoService.deleteScreen(this.projectId, screen._dbId).subscribe({
       next: () => {
         this.screens = this.screens.filter(s => s.id !== id);
@@ -245,12 +428,12 @@ export class DisenoDetalladoComponent implements OnInit {
            if (first) this.selectScreen(first.id);
            else this.selectedScreenId = '';
         }
+        this.loadAvailableWireframes();
       },
       error: (err) => console.error('Error deleting screen', err)
     });
   }
 
-  // --- Title Editing Logic ---
   startEditing(screen: Fase4Pantalla, event: Event) {
     event.stopPropagation();
     this.editingScreenId = screen.id;
@@ -273,7 +456,7 @@ export class DisenoDetalladoComponent implements OnInit {
     if (this.editingTitle !== screen.title) {
       const newTitle = this.editingTitle.trim();
       this.disenoService.updateScreen(this.projectId, screen._dbId, { nombre: newTitle }).subscribe({
-        next: (updated) => {
+        next: () => {
           screen.title = newTitle;
           this.editingScreenId = null;
         },
@@ -284,7 +467,6 @@ export class DisenoDetalladoComponent implements OnInit {
     }
   }
 
-  // --- File Upload Logic ---
   onDragOver(event: DragEvent) {
     event.preventDefault();
     event.stopPropagation();
@@ -319,22 +501,20 @@ export class DisenoDetalladoComponent implements OnInit {
 
     screen.isAnalyzing = true;
     screen.alerts = [];
-    this.checklists.forEach(c => c.checked = false);
+    this.checklists = [];
 
-    // Guardar preview local rápido
     const reader = new FileReader();
     reader.onload = (e: any) => {
       screen.image = e.target.result;
     };
     reader.readAsDataURL(file);
 
-    // Subir al backend
     this.disenoService.uploadDesign(this.projectId, screen._dbId, file).subscribe({
       next: (design) => {
         screen.isAnalyzing = false;
+        screen.tieneDiseno = true;
         screen.status = design.estado === 'verificado' ? 'Verificada' : 'En revisión';
         
-        // Cargar alertas de la IA
         if (design.alertas && design.alertas.length > 0) {
           screen.alerts = design.alertas.map((a: any) => ({
             id: a.id.toString(),
@@ -370,9 +550,10 @@ export class DisenoDetalladoComponent implements OnInit {
       this.disenoService.deleteDesign(this.projectId, screen._dbId).subscribe({
         next: () => {
           screen.image = undefined;
+          screen.tieneDiseno = false;
           screen.alerts = [];
           screen.status = 'Pendiente';
-          this.checklists.forEach(c => c.checked = false);
+          this.checklists = [];
         },
         error: (err) => console.error('Error clearing design', err)
       });
@@ -382,8 +563,7 @@ export class DisenoDetalladoComponent implements OnInit {
   completePhase(): void {
     if (!this.projectId) return;
 
-    // Validación básica: Al menos una pantalla con diseño (imagen)
-    const hasDesigns = this.screens.some(s => !!s.image);
+    const hasDesigns = this.screens.some(s => !!s.image || s.tieneDiseno);
     if (!hasDesigns) {
       alert('Por favor sube al menos el diseño detallado de una pantalla antes de continuar.');
       return;

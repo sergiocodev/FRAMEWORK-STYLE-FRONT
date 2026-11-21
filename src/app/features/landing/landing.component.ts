@@ -455,7 +455,7 @@ $icon-stroke: 1.5px;`
     },
     {
       id: 'wcag',
-      name: 'Estándar WCAG 2.2 & APCA',
+      name: 'Estándar WCAG 2.2',
       category: 'Accesibilidad Integrada',
       description: 'Verificación instantánea de ratios de contraste AA y AAA sobre cada par de texto y superficie de tu paleta.',
       badge: 'Ratio ≥ 7.0:1 AAA',
