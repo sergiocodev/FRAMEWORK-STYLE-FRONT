@@ -179,9 +179,11 @@ export interface MulticriteriaLayoutResult {
     SE: number;
   };
   score_regresion: number;
+  score_regresion_raw?: number;
   score_entropia: number;
-  score_global: number;
-  nivel_calidad: 'Óptima' | 'Alta' | 'Media' | 'Baja';
+  score_entropia_raw?: number;
+  score_global?: number;
+  nivel_calidad?: string;
   radar_data: MulticriteriaRadarPoint[];
   interpretaciones: { [key: string]: MulticriteriaMetricaItem };
   elementos: BoundingBoxElemento[];
