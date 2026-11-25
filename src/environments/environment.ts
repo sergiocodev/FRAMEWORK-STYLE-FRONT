@@ -1,7 +1,7 @@
 export const environment = {
   production: false,
   // URL de tu Backend en Contabo VPS con HTTPS
-  backendProductionUrl: 'https://sslip.io',
+  backendProductionUrl: 'https://style-api.158.220.119.68.sslip.io',
 
   get apiUrl(): string {
     if (typeof window !== 'undefined' && window.location && window.location.hostname) {
