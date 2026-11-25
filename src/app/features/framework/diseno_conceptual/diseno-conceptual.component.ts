@@ -111,7 +111,7 @@ export class DisenoConceptualComponent implements OnInit, OnDestroy {
   inspectingWireframe: Wireframe | null = null;
   activeWireframeChecklist: WireframeChecklistItem[] = [];
   newChecklistItemText = '';
-  activeInspectorTab: 'aesthetic' | 'functional' | 'ngo' | 'restructure' | 'multicriteria' = 'aesthetic';
+  activeInspectorTab: 'aesthetic' | 'functional' | 'ngo' | 'multicriteria' = 'aesthetic';
 
   // --- Evaluación Multicriterio de Layout (Regresión y Entropía) state ---
   multicriteriaResult: MulticriteriaLayoutResult | null = null;

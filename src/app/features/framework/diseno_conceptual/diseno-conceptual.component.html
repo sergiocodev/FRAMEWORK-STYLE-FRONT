@@ -1032,46 +1032,6 @@
                     </div>
                   }
 
-                  <!-- BARRA DE HERRAMIENTAS VISUALES: REESTRUCTURACIÓN MÓVIL -->
-                  @if (activeInspectorTab === 'restructure' && restructuringResult) {
-                    <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3 p-2 bg-white rounded-3 border shadow-xs flex-shrink-0">
-                      <div class="d-flex align-items-center gap-1">
-                        <span class="small text-secondary me-1 fw-bold" style="font-size: 0.72rem;">MODO VISTA:</span>
-                        <div class="btn-group btn-group-sm" role="group">
-                          <button type="button" class="btn btn-xs py-1 px-2 fw-medium"
-                                  [ngClass]="overlayViewMode === 'none' ? 'btn-dark' : 'btn-outline-secondary'"
-                                  (click)="setOverlayViewMode('none')">
-                            <span class="d-inline-flex align-items-center gap-1"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg> Ocultar</span>
-                          </button>
-                          <button type="button" class="btn btn-xs py-1 px-2 fw-medium"
-                                  [ngClass]="overlayViewMode === 'original' ? 'btn-danger text-white' : 'btn-outline-danger'"
-                                  (click)="setOverlayViewMode('original')">
-                            <span class="d-inline-flex align-items-center gap-1"><svg width="9" height="9" viewBox="0 0 10 10" fill="#ef4444"><circle cx="5" cy="5" r="5"></circle></svg> Original</span>
-                          </button>
-                          <button type="button" class="btn btn-xs py-1 px-2 fw-medium"
-                                  [ngClass]="overlayViewMode === 'restructured' ? 'btn-success text-white' : 'btn-outline-success'"
-                                  (click)="setOverlayViewMode('restructured')">
-                            <span class="d-inline-flex align-items-center gap-1"><svg width="9" height="9" viewBox="0 0 10 10" fill="#10b981"><circle cx="5" cy="5" r="5"></circle></svg> Reestructurado</span>
-                          </button>
-                          <button type="button" class="btn btn-xs py-1 px-2 fw-medium"
-                                  [ngClass]="overlayViewMode === 'comparison' ? 'btn-primary text-white' : 'btn-outline-primary'"
-                                  (click)="setOverlayViewMode('comparison')">
-                            <span class="d-inline-flex align-items-center gap-1"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="3" x2="12" y2="21"></line><polyline points="8 8 4 14 12 14"></polyline><polyline points="16 8 12 14 20 14"></polyline></svg> Comparativa</span>
-                          </button>
-                        </div>
-                      </div>
-
-                      <div class="d-flex align-items-center gap-2">
-                        <button type="button" class="btn btn-sm py-1 px-2 d-flex align-items-center gap-1 fw-medium"
-                                [ngClass]="showQuadrantsGuide ? 'btn-indigo text-white' : 'btn-outline-secondary'"
-                                (click)="toggleQuadrantGuide()"
-                                title="Mostrar / ocultar guías de los 4 cuadrantes">
-                          <span class="d-inline-flex align-items-center gap-1"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"></rect><line x1="3" y1="12" x2="21" y2="12"></line><line x1="12" y1="3" x2="12" y2="21"></line></svg> Cuadrantes</span>
-                        </button>
-                      </div>
-                    </div>
-                  }
-
                   <!-- BARRA DE HERRAMIENTAS VISUALES: EVALUACIÓN MULTICRITERIO -->
                   @if (activeInspectorTab === 'multicriteria' && multicriteriaResult) {
                     <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3 p-2 bg-white rounded-3 border shadow-xs flex-shrink-0">
@@ -1110,54 +1070,6 @@
                               <rect [attr.x]="elem.x" [attr.y]="elem.y" [attr.width]="elem.w" [attr.height]="elem.h"
                                     fill="rgba(59, 130, 246, 0.12)" stroke="#2563eb" stroke-width="2" rx="4" />
                               <circle [attr.cx]="elem.x + 6" [attr.cy]="elem.y + 6" r="3.5" fill="#1d4ed8" />
-                            }
-                          }
-                        </svg>
-                      }
-
-                      <!-- OVERLAY PARA OPTIMIZACIÓN DE LAYOUT MÓVIL -->
-                      @if (activeInspectorTab === 'restructure' && restructuringResult && overlayViewMode !== 'none') {
-                        <svg class="position-absolute top-0 start-0 w-100 h-100 pointer-events-none"
-                             [attr.viewBox]="'0 0 ' + restructuringResult.frame.width + ' ' + restructuringResult.frame.height"
-                             preserveAspectRatio="none"
-                             style="z-index: 10;">
-                        
-                          <!-- Guías de los 4 Cuadrantes -->
-                          @if (showQuadrantsGuide) {
-                            <line [attr.x1]="restructuringResult.frame.width / 2" y1="0"
-                                  [attr.x2]="restructuringResult.frame.width / 2" [attr.y2]="restructuringResult.frame.height"
-                                  stroke="#6366f1" stroke-width="2.5" stroke-dasharray="8,6" opacity="0.6" />
-                            <line x1="0" [attr.y1]="restructuringResult.frame.height / 2"
-                                  [attr.x2]="restructuringResult.frame.width" [attr.y2]="restructuringResult.frame.height / 2"
-                                  stroke="#6366f1" stroke-width="2.5" stroke-dasharray="8,6" opacity="0.6" />
-                            
-                            <rect x="12" y="12" width="130" height="26" rx="4" fill="rgba(99, 102, 241, 0.85)" />
-                            <text x="20" y="30" fill="#ffffff" font-size="14" font-weight="bold">Q1 (Sup-Izq)</text>
-
-                            <rect [attr.x]="(restructuringResult.frame.width / 2) + 12" y="12" width="130" height="26" rx="4" fill="rgba(99, 102, 241, 0.85)" />
-                            <text [attr.x]="(restructuringResult.frame.width / 2) + 20" y="30" fill="#ffffff" font-size="14" font-weight="bold">Q2 (Sup-Der)</text>
-
-                            <rect x="12" [attr.y]="(restructuringResult.frame.height / 2) + 12" width="130" height="26" rx="4" fill="rgba(99, 102, 241, 0.85)" />
-                            <text x="20" [attr.y]="(restructuringResult.frame.height / 2) + 30" fill="#ffffff" font-size="14" font-weight="bold">Q3 (Inf-Izq)</text>
-
-                            <rect [attr.x]="(restructuringResult.frame.width / 2) + 12" [attr.y]="(restructuringResult.frame.height / 2) + 12" width="130" height="26" rx="4" fill="rgba(99, 102, 241, 0.85)" />
-                            <text [attr.x]="(restructuringResult.frame.width / 2) + 20" [attr.y]="(restructuringResult.frame.height / 2) + 30" fill="#ffffff" font-size="14" font-weight="bold">Q4 (Inf-Der)</text>
-                          }
-
-                          <!-- Cajas Originales (Rojo punteado) -->
-                          @if (overlayViewMode === 'original' || overlayViewMode === 'comparison') {
-                            @for (box of getFilteredOriginalBoxes(); track box.id) {
-                              <rect [attr.x]="box.x" [attr.y]="box.y" [attr.width]="box.w" [attr.height]="box.h"
-                                    fill="rgba(239, 68, 68, 0.12)" stroke="#ef4444" stroke-width="2.5" rx="4" stroke-dasharray="6,3" />
-                            }
-                          }
-
-                          <!-- Cajas Reestructuradas (Verde armónico con proporción áurea) -->
-                          @if (overlayViewMode === 'restructured' || overlayViewMode === 'comparison') {
-                            @for (box of getFilteredRestructuredBoxes(); track box.id) {
-                              <rect [attr.x]="box.x" [attr.y]="box.y" [attr.width]="box.w" [attr.height]="box.h"
-                                    fill="rgba(16, 185, 129, 0.22)" stroke="#10b981" stroke-width="2.5" rx="6" />
-                              <circle [attr.cx]="box.x + 8" [attr.cy]="box.y + 8" r="4" fill="#059669" />
                             }
                           }
                         </svg>
@@ -1255,7 +1167,7 @@
                     <span class="text-dark text-uppercase fw-bold" style="font-size: 0.78rem; letter-spacing: 0.5px;">
                       2. Evaluación Automática de Retícula
                     </span>
-                    <span class="badge bg-light text-secondary border py-1 px-2 fw-semibold" style="font-size: 0.72rem;">3 Métodos</span>
+                    <span class="badge bg-light text-secondary border py-1 px-2 fw-semibold" style="font-size: 0.72rem;">2 Métodos</span>
                   </div>
                   <div class="d-flex gap-2">
                     <!-- Tab 3: Diagnóstico de Composición Visual -->
@@ -1275,24 +1187,7 @@
                       </div>
                     </button>
 
-                    <!-- Tab 4: Optimización de Layout Móvil -->
-                    <button type="button" 
-                            class="btn btn-sm flex-fill py-2 px-2 rounded-3 text-center transition-all border"
-                            [ngClass]="activeInspectorTab === 'restructure' ? 'btn-primary text-white shadow-xs fw-bold border-primary' : 'bg-light text-dark hover-bg-white border-light-subtle shadow-xs'"
-                            (click)="activeInspectorTab = 'restructure'">
-                      <div class="d-flex flex-column align-items-center gap-1">
-                        <div class="d-flex align-items-center gap-1">
-                          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
-                            <line x1="12" y1="18" x2="12.01" y2="18"></line>
-                          </svg>
-                          <span class="fw-bold" style="font-size: 0.84rem;">Layout Móvil</span>
-                        </div>
-                        <span [ngClass]="activeInspectorTab === 'restructure' ? 'text-white text-opacity-75' : 'text-secondary fw-medium'" style="font-size: 0.74rem;">Retícula 8dp</span>
-                      </div>
-                    </button>
-
-                    <!-- Tab 5: Evaluación Multicriterio -->
+                    <!-- Tab 4: Evaluación Multicriterio (Wang et al., 2024) -->
                     <button type="button" 
                             class="btn btn-sm flex-fill py-2 px-2 rounded-3 text-center transition-all border"
                             [ngClass]="activeInspectorTab === 'multicriteria' ? 'btn-primary text-white shadow-xs fw-bold border-primary' : 'bg-light text-dark hover-bg-white border-light-subtle shadow-xs'"
@@ -1305,7 +1200,7 @@
                           </svg>
                           <span class="fw-bold" style="font-size: 0.84rem;">Multicriterio</span>
                         </div>
-                        <span [ngClass]="activeInspectorTab === 'multicriteria' ? 'text-white text-opacity-75' : 'text-secondary fw-medium'" style="font-size: 0.74rem;">Radar + Regresión</span>
+                        <span [ngClass]="activeInspectorTab === 'multicriteria' ? 'text-white text-opacity-75' : 'text-secondary fw-medium'" style="font-size: 0.74rem;">MRA + Entropía</span>
                       </div>
                     </button>
                   </div>
@@ -1539,371 +1434,8 @@
                   </div>
                 }
 
-                <!-- TAB 4: OPTIMIZACIÓN DE LAYOUT MÓVIL (ANDROID / MATERIAL DESIGN) -->
-                @if (activeInspectorTab === 'restructure') {
-                  <div class="d-flex flex-column gap-3">
+                <!-- TAB 4: EVALUACIÓN MULTICRITERIO DE LAYOUT (REGRESIÓN & ENTROPÍA - WANG ET AL., 2024) -->
 
-                    @if (!inspectingWireframe) {
-                      <div class="text-center p-4 bg-light rounded-4 border border-dashed">
-                        <div class="text-muted mb-2"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg></div>
-                        <h6 class="fw-bold text-dark mb-1">Sin Wireframe Adjunto</h6>
-                        <p class="text-secondary small mb-0">Adjunta una imagen a esta pantalla para optimizar su layout móvil.</p>
-                      </div>
-                    } @else {
-
-                      <!-- AVISO DESTACADO DE EXCLUSIVIDAD MÓVIL -->
-                      <div class="p-2 px-3 bg-primary bg-opacity-10 border border-primary border-opacity-25 rounded-3 d-flex align-items-center gap-2">
-                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" class="flex-shrink-0"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
-                        <div class="small text-primary-emphasis" style="font-size: 0.82rem; line-height: 1.45;">
-                          <strong>Exclusivo para Wireframes Móviles:</strong> Herramienta de optimización ergonómica y estructural para smartphones. Detecta defectos de layout móvil y reestructura los widgets aplicando proporción áurea y retícula simétrica de 8dp. Para pantallas Web o de Escritorio, utiliza la pestaña <em>Diagnóstico de Composición Visual</em>.
-                        </div>
-                      </div>
-
-                      <!-- Card Encabezado y Acción Principal -->
-                      <div class="p-3 bg-primary bg-opacity-10 border border-primary border-opacity-25 rounded-4 d-flex align-items-center justify-content-between">
-                        <div>
-                          <div class="fw-bold text-primary mb-1 d-flex align-items-center gap-1" style="font-size: 0.9rem;">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                              <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
-                              <line x1="12" y1="18" x2="12.01" y2="18"></line>
-                            </svg>
-                            <span>Optimización de Layout Móvil</span>
-                          </div>
-                          <div class="text-secondary" style="font-size: 0.82rem; line-height: 1.4;">
-                            Detecta defectos de espaciado, sobrecarga y tamaño táctil, calculando una retícula optimizada de 8dp.
-                          </div>
-                        </div>
-                        <button class="btn btn-sm btn-primary rounded-pill px-3 py-1 fw-bold shadow-xs d-flex align-items-center gap-1"
-                                (click)="runRestructuring()"
-                                [disabled]="isLoadingRestructuring">
-                          @if (isLoadingRestructuring) {
-                            <span class="spinner-border spinner-border-sm" role="status"></span>
-                            <span>Optimizando...</span>
-                          } @else {
-                            <span class="d-inline-flex align-items-center gap-1"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"></path></svg> {{ restructuringResult ? 'Re-evaluar Layout' : 'Optimizar Layout' }}</span>
-                          }
-                        </button>
-                      </div>
-
-                      <!-- Leyenda de Escala de Dispersión Estructural -->
-                      <div class="p-3 bg-white rounded-4 border shadow-xs">
-                        <div class="fw-bold text-dark mb-2" style="font-size: 0.84rem;">Escala de Dispersión Estructural (Layout):</div>
-                        <div class="d-flex flex-column gap-1 text-secondary" style="font-size: 0.82rem;">
-                          <div class="d-flex align-items-center gap-2">
-                            <span class="badge bg-success rounded-pill px-2 py-1" style="min-width: 70px; font-size: 0.76rem;">1.0 – 4.0</span>
-                            <span class="text-dark"><strong>Óptima:</strong> Dispersión mínima, alineación limpia y márgenes simétricos.</span>
-                          </div>
-                          <div class="d-flex align-items-center gap-2">
-                            <span class="badge bg-warning text-dark rounded-pill px-2 py-1" style="min-width: 70px; font-size: 0.76rem;">4.1 – 7.9</span>
-                            <span class="text-dark"><strong>Aceptable / Regular:</strong> Márgenes heterogéneos o paddings con disparidad.</span>
-                          </div>
-                          <div class="d-flex align-items-center gap-2">
-                            <span class="badge bg-danger rounded-pill px-2 py-1" style="min-width: 70px; font-size: 0.76rem;">≥ 8.0</span>
-                            <span class="text-dark"><strong>Alta Dispersión:</strong> Desalineación acusada respecto a la cuadrícula.</span>
-                          </div>
-                        </div>
-                      </div>
-
-                      @if (restructuringError) {
-                        <div class="alert alert-danger py-2 px-3 small rounded-3 mb-0">
-                          <span class="d-inline-flex align-items-center gap-1"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg> {{ restructuringError }}</span>
-                        </div>
-                      }
-
-                      @if (isLoadingRestructuring) {
-                        <div class="text-center p-4 bg-light rounded-4 border">
-                          <div class="spinner-border text-indigo mb-2" role="status"></div>
-                          <div class="fw-bold text-dark" style="font-size: 0.88rem;">Calculando Reestructuración Ergonómica...</div>
-                          <div class="text-secondary mt-1" style="font-size: 0.8rem;">
-                            Analizando touch targets ergonómicos, proporción áurea y alineación de márgenes simétricos.
-                          </div>
-                        </div>
-                      }
-
-                      @if (restructuringResult && !isLoadingRestructuring) {
-
-                        <!-- SWITCHER DE PASOS: 1. Diagnóstico Actual vs 2. Propuesta Optimizada -->
-                        <div class="d-flex p-1 bg-light rounded-pill border gap-1 shadow-xs">
-                          <button type="button" class="btn btn-sm flex-fill rounded-pill py-1 fw-bold transition-all"
-                                  style="font-size: 0.82rem;"
-                                  [ngClass]="restructuringStep === 'diagnostico' ? 'bg-white text-dark shadow-sm border' : 'text-secondary border-0'"
-                                  (click)="setRestructuringStep('diagnostico')">
-                            1. Diagnóstico del Wireframe Actual
-                          </button>
-                          <button type="button" class="btn btn-sm flex-fill rounded-pill py-1 fw-bold transition-all"
-                                  style="font-size: 0.82rem;"
-                                  [ngClass]="restructuringStep === 'optimizado' ? 'btn-indigo text-white shadow-sm' : 'text-secondary border-0'"
-                                  (click)="setRestructuringStep('optimizado')">
-                            2. Propuesta Optimizada & Comparativa
-                          </button>
-                        </div>
-
-                        <!-- ============================================== -->
-                        <!-- PASO 1: DIAGNÓSTICO DEL DISEÑO ACTUAL (ORIGINAL) -->
-                        <!-- ============================================== -->
-                        @if (restructuringStep === 'diagnostico') {
-                          
-                          <!-- Score Actual -->
-                          <div class="p-3 bg-white rounded-4 border shadow-xs">
-                            <div class="d-flex align-items-center justify-content-between mb-2">
-                              <div>
-                                <div class="fw-bold text-dark" style="font-size: 0.88rem;">Puntaje de Dispersión Estructural</div>
-                                <div class="text-muted" style="font-size: 0.78rem;">Métrica de dispersión de alineación, márgenes y paddings del layout</div>
-                              </div>
-                              <span class="badge rounded-pill px-3 py-1 fw-bold fs-6" [ngClass]="getStructuralScoreBadge(restructuringResult.score_estructural.original).class">
-                                {{ restructuringResult.score_estructural.original }} · {{ getStructuralScoreBadge(restructuringResult.score_estructural.original).label }}
-                              </span>
-                            </div>
-                            <div class="text-secondary" style="font-size: 0.8rem; line-height: 1.4;">
-                              Tu diseño cuenta con {{ restructuringResult.original_boxes.length }} elementos detectados. La vista previa resalta en rojo las cajas de tu wireframe.
-                            </div>
-                          </div>
-
-                          <!-- Semáforo de Defectos Detectados en el Diseño Actual -->
-                          <div class="p-3 bg-white rounded-4 border shadow-xs">
-                            <h6 class="fw-bold text-dark mb-2 d-flex align-items-center justify-content-between" style="font-size: 0.86rem;">
-                              <span>Defectos Estructurales Detectados</span>
-                              <span class="badge rounded-pill bg-light text-secondary border fw-semibold" style="font-size: 0.75rem;">
-                                {{ restructuringResult.defectos_detectados.length }} detectados
-                              </span>
-                            </h6>
-
-                            <div class="d-flex flex-column gap-2">
-                              @if (restructuringResult.defectos_detectados.length === 0) {
-                                <div class="p-2 bg-success bg-opacity-10 rounded-3 border border-success border-opacity-25 text-success small d-flex align-items-center gap-2">
-                                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                                  <span><strong>¡Excelente estructura!</strong> No se detectaron defectos de alineación o margen en tu wireframe.</span>
-                                </div>
-                              } @else {
-                                @for (defecto of restructuringResult.defectos_detectados; track defecto.code) {
-                                  <div class="defect-card p-2 rounded-3 border"
-                                       [ngClass]="defecto.severidad === 'alta' ? 'bg-danger bg-opacity-10 border-danger border-opacity-25 text-danger' : 'bg-warning bg-opacity-10 border-warning border-opacity-25 text-dark'">
-                                    <div class="d-flex align-items-center justify-content-between mb-1">
-                                      <span class="fw-bold d-flex align-items-center gap-1" style="font-size: 0.84rem;">
-                                        <svg width="12" height="12" viewBox="0 0 10 10" [attr.fill]="defecto.severidad === 'alta' ? '#ef4444' : '#f59e0b'"><circle cx="5" cy="5" r="5"></circle></svg>
-                                        <span>[{{ defecto.code }}] {{ defecto.nombre }}</span>
-                                      </span>
-                                      <span class="badge rounded-pill" [ngClass]="defecto.severidad === 'alta' ? 'bg-danger text-white' : 'bg-warning text-dark'" style="font-size: 0.72rem;">
-                                        {{ defecto.severidad | uppercase }}
-                                      </span>
-                                    </div>
-                                    <div class="text-secondary" style="font-size: 0.8rem; line-height: 1.35;">{{ defecto.descripcion }}</div>
-                                  </div>
-                                }
-                              }
-                            </div>
-                          </div>
-
-                          <!-- Balance de Cuadrantes Actual -->
-                          <div class="p-3 bg-white rounded-4 border shadow-xs">
-                            <h6 class="fw-bold text-dark mb-1" style="font-size: 0.86rem;">Distribución de Elementos por Cuadrantes</h6>
-                            <div class="text-muted mb-2" style="font-size: 0.78rem;">Porcentaje de elementos distribuidos en la pantalla móvil</div>
-
-                            <div class="row g-2">
-                              @for (q of restructuringResult.cuadrantes; track q.codigo) {
-                                <div class="col-6">
-                                  <div class="quadrant-box p-2 rounded-3 border text-center cursor-pointer hover-shadow-xs transition-all"
-                                       [ngClass]="q.estado === 'saturado' ? 'border-danger bg-danger bg-opacity-10' : 'bg-light hover-bg-light'"
-                                       (click)="setRestructuringStep('optimizado'); filterQuadrant(q.codigo)"
-                                       title="Clic para ver y podar elementos en {{ q.codigo }}">
-                                    <div class="fw-bold text-dark" style="font-size: 0.82rem;">{{ q.codigo }}: {{ q.nombre }}</div>
-                                    <div class="fs-6 fw-bold" [ngClass]="q.estado === 'saturado' ? 'text-danger' : 'text-dark'">
-                                      {{ q.elementos_count }} elems ({{ q.porcentaje }}%)
-                                    </div>
-                                    <div class="badge rounded-pill mt-1"
-                                         [ngClass]="q.estado === 'saturado' ? 'bg-danger text-white' : q.estado === 'desbalanceado' ? 'bg-warning text-dark' : 'bg-success text-white'"
-                                         style="font-size: 0.74rem;">
-                                      {{ q.estado | titlecase }}
-                                    </div>
-                                    <div class="text-indigo small mt-1" style="font-size: 0.75rem;">
-                                      <span>Podar widgets ✂️</span>
-                                    </div>
-                                  </div>
-                                </div>
-                              }
-                            </div>
-                          </div>
-
-                          <!-- Callout a la Acción de Optimización -->
-                          <div class="p-3 bg-indigo-light rounded-4 border border-indigo text-center">
-                            <div class="fw-bold text-indigo mb-1" style="font-size: 0.88rem;">¿Deseas corregir estos defectos y ver el diseño optimizado?</div>
-                            <div class="text-secondary mb-3" style="font-size: 0.82rem; line-height: 1.4;">
-                              Calcularemos una retícula unificada con proporciones áureas (1.618), touch targets ergonómicos y márgenes simétricos.
-                            </div>
-                            <button class="btn btn-sm btn-indigo rounded-pill px-4 py-2 fw-bold shadow-xs"
-                                    (click)="applyRestructuringProposal()">
-                              <span class="d-inline-flex align-items-center gap-2" style="font-size: 0.84rem;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"></path></svg> Ver Propuesta Reestructurada y Comparativa <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span>
-                            </button>
-                          </div>
-
-                        }
-
-                        <!-- ============================================== -->
-                        <!-- PASO 2: PROPUESTA OPTIMIZADA Y COMPARATIVA    -->
-                        <!-- ============================================== -->
-                        @if (restructuringStep === 'optimizado') {
-
-                          <!-- Botón Volver al Diagnóstico -->
-                          <div class="d-flex align-items-center justify-content-between">
-                            <button class="btn btn-xs btn-outline-secondary rounded-pill py-1 px-3 d-inline-flex align-items-center gap-1"
-                                    (click)="setRestructuringStep('diagnostico')">
-                              <span class="d-inline-flex align-items-center gap-1" style="font-size: 0.8rem;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg> Volver al Diagnóstico Inicial</span>
-                            </button>
-                            <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 rounded-pill px-3 py-1 fw-bold" style="font-size: 0.8rem;">
-                              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="me-1"><polyline points="20 6 9 17 4 12"></polyline></svg> +{{ restructuringResult.score_estructural.mejora_porcentaje }}% Mejora de Dispersión
-                            </span>
-                          </div>
-
-                          <!-- Comparativa de Score: Original vs Reestructurado -->
-                          <div class="p-3 bg-white rounded-4 border shadow-xs">
-                            <div class="d-flex align-items-center justify-content-between mb-2">
-                              <div>
-                                <span class="badge bg-indigo-light text-indigo border border-indigo rounded-pill px-2 py-1 fw-bold" style="font-size: 0.8rem;">
-                                  <span class="d-inline-flex align-items-center gap-1"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg> Comparativa de Dispersión Estructural</span>
-                                </span>
-                                <div class="text-muted mt-1" style="font-size: 0.78rem;">
-                                  Menor dispersión = Mayor armonía, simetría y alineación de cuadrícula.
-                                </div>
-                              </div>
-                            </div>
-
-                            <div class="row g-2 align-items-center text-center mt-1">
-                              <div class="col-5 p-2 bg-light rounded-3 border">
-                                <div class="text-secondary" style="font-size: 0.78rem;">Original</div>
-                                <div class="fs-5 fw-bold text-danger">{{ restructuringResult.score_estructural.original }}</div>
-                                <div class="text-muted" style="font-size: 0.74rem;">Paddings irregulares</div>
-                              </div>
-                              <div class="col-2 text-secondary d-flex justify-content-center align-items-center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></div>
-                              <div class="col-5 p-2 bg-success bg-opacity-10 rounded-3 border border-success border-opacity-25">
-                                <div class="text-success fw-medium" style="font-size: 0.78rem;">Reestructurado</div>
-                                <div class="fs-5 fw-bold text-success">{{ restructuringResult.score_estructural.reestructurado }}</div>
-                                <div class="text-success" style="font-size: 0.74rem;">Cuadrícula unificada</div>
-                              </div>
-                            </div>
-                          </div>
-
-                          <!-- Herramienta de Podado por Cuadrantes (Quadrant Pruning) -->
-                          <div class="p-3 bg-white rounded-4 border shadow-xs">
-                            <div class="d-flex align-items-center justify-content-between mb-2">
-                              <div>
-                                <h6 class="fw-bold text-dark mb-0" style="font-size: 0.86rem;">Balance de Cuadrantes & Podado Interactivo</h6>
-                                <div class="text-muted" style="font-size: 0.78rem;">Haz clic en un cuadrante para listar sus widgets y podar elementos secundarios.</div>
-                              </div>
-                              @if (selectedQuadrantFilter !== 'ALL') {
-                                <button class="btn btn-xs btn-outline-secondary py-0 px-2 rounded-pill" style="font-size: 0.76rem;" (click)="filterQuadrant('ALL')">
-                                  Ver Todos
-                                </button>
-                              }
-                            </div>
-
-                            <div class="row g-2 mb-2">
-                              @for (q of restructuringResult.cuadrantes; track q.codigo) {
-                                <div class="col-6">
-                                  <div class="quadrant-box p-2 rounded-3 border text-center cursor-pointer transition-all"
-                                       [ngClass]="{
-                                         'border-primary bg-primary bg-opacity-10 shadow-xs': selectedQuadrantFilter === q.codigo,
-                                         'border-danger bg-danger bg-opacity-10': q.estado === 'saturado' && selectedQuadrantFilter !== q.codigo,
-                                         'bg-light hover-bg-light': q.estado !== 'saturado' && selectedQuadrantFilter !== q.codigo
-                                       }"
-                                       (click)="filterQuadrant(q.codigo)">
-                                    <div class="fw-bold text-dark" style="font-size: 0.82rem;">{{ q.codigo }}: {{ q.nombre }}</div>
-                                    <div class="fs-6 fw-bold" [ngClass]="q.estado === 'saturado' ? 'text-danger' : 'text-dark'">
-                                      {{ q.elementos_count }} elems ({{ q.porcentaje }}%)
-                                    </div>
-                                    <div class="badge rounded-pill mt-1"
-                                         [ngClass]="q.estado === 'saturado' ? 'bg-danger text-white' : q.estado === 'desbalanceado' ? 'bg-warning text-dark' : 'bg-success text-white'"
-                                         style="font-size: 0.74rem;">
-                                      {{ q.estado | titlecase }}
-                                    </div>
-                                    <div class="mt-1" [ngClass]="selectedQuadrantFilter === q.codigo ? 'text-primary fw-bold' : 'text-muted'" style="font-size: 0.75rem;">
-                                      {{ selectedQuadrantFilter === q.codigo ? '✓ Seleccionado' : 'Clic para editar' }}
-                                    </div>
-                                  </div>
-                                </div>
-                              }
-                            </div>
-
-                            <!-- Si no hay cuadrante seleccionado, dar instrucción clara -->
-                            @if (selectedQuadrantFilter === 'ALL') {
-                              <div class="p-2 bg-light rounded-3 border text-center text-secondary" style="font-size: 0.8rem;">
-                                👆 Haz clic en cualquiera de los 4 cuadrantes para desplegar sus widgets y desmarcar los que desees podar del lienzo.
-                              </div>
-                            }
-
-                            <!-- Lista de Elementos del Cuadrante Seleccionado para Podado -->
-                            @if (selectedQuadrantFilter !== 'ALL') {
-                              <div class="p-2 bg-light rounded-3 border">
-                                <div class="d-flex align-items-center justify-content-between mb-2">
-                                  <div class="fw-bold text-dark" style="font-size: 0.8rem;">
-                                    Widgets en {{ selectedQuadrantFilter }} (Desmarca para podar del layout):
-                                  </div>
-                                  <span class="badge bg-secondary rounded-pill" style="font-size: 0.74rem;">
-                                    {{ getFilteredOriginalBoxes().length }} widgets
-                                  </span>
-                                </div>
-                                <div class="d-flex flex-column gap-1" style="max-height: 140px; overflow-y: auto;">
-                                  @for (elem of getFilteredOriginalBoxes(); track elem.id) {
-                                    <label class="d-flex align-items-center justify-content-between p-1 bg-white rounded border cursor-pointer hover-bg-light" style="font-size: 0.78rem;">
-                                      <div class="d-flex align-items-center gap-2">
-                                        <input type="checkbox"
-                                               class="form-check-input mt-0 cursor-pointer"
-                                               [checked]="!isElementPruned(elem.id)"
-                                               (change)="togglePruneElement(elem.id)">
-                                        <span [ngClass]="isElementPruned(elem.id) ? 'text-decoration-line-through text-muted' : 'text-dark fw-medium'">
-                                          Widget [{{ elem.id }}] — {{ elem.w }}×{{ elem.h }} px
-                                        </span>
-                                      </div>
-                                      <span class="badge" [ngClass]="isElementPruned(elem.id) ? 'bg-danger text-white' : 'bg-light text-muted'" style="font-size: 0.72rem;">
-                                        {{ isElementPruned(elem.id) ? '✂️ Podado' : '(' + elem.x + ', ' + elem.y + ')' }}
-                                      </span>
-                                    </label>
-                                  }
-                                </div>
-                              </div>
-                            }
-                          </div>
-
-                          <!-- Recomendaciones Material Design -->
-                          <div class="p-3 bg-white rounded-4 border shadow-xs">
-                            <h6 class="fw-bold text-dark mb-2" style="font-size: 0.86rem;">Recomendaciones Ergonómicas Material Design</h6>
-                            <div class="d-flex flex-column gap-2">
-                              @for (rec of restructuringResult.recomendaciones; track rec.id) {
-                                <div class="p-2 bg-light rounded-3 border">
-                                  <div class="d-flex align-items-center gap-2 fw-bold text-dark mb-1" style="font-size: 0.84rem;">
-                                    <span>{{ rec.icono }}</span>
-                                    <span>{{ rec.titulo }}</span>
-                                  </div>
-                                  <div class="text-secondary mb-1" style="font-size: 0.8rem; line-height: 1.35;">{{ rec.descripcion }}</div>
-                                  <div class="text-indigo fw-medium d-inline-flex align-items-center gap-1" style="font-size: 0.76rem;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path></svg> <span>{{ rec.beneficio }}</span></div>
-                                  @if (rec.id === 'rec_om') {
-                                    <div class="mt-1">
-                                      <button class="btn btn-xs btn-outline-indigo rounded-pill py-0 px-2 fw-medium"
-                                              style="font-size: 0.76rem;"
-                                              (click)="filterQuadrant('Q1')">
-                                        ✂️ Abrir herramienta de podado
-                                      </button>
-                                    </div>
-                                  }
-                                </div>
-                              }
-                            </div>
-                          </div>
-
-                        }
-
-                      }
-
-                      @if (!restructuringResult && !isLoadingRestructuring && !restructuringError) {
-                        <div class="text-center p-3 text-secondary small bg-light rounded-3 border">
-                          Presiona <strong>Reestructurar Layout</strong> en la cabecera superior para analizar los defectos estructurales y calcular la cuadrícula optimizada.
-                        </div>
-                      }
-
-                    }
-                  </div>
-                }
-
-                <!-- TAB 5: EVALUACIÓN MULTICRITERIO DE LAYOUT (REGRESIÓN & ENTROPÍA) -->
                 @if (activeInspectorTab === 'multicriteria') {
                   <div class="d-flex flex-column gap-3">
 
@@ -1928,10 +1460,10 @@
                               <polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2"></polygon>
                               <circle cx="12" cy="12" r="3"></circle>
                             </svg>
-                            <span>Evaluación Multicriterio de Layout</span>
+                            <span>Evaluación Multicriterio de Layout (Wang et al., 2024)</span>
                           </div>
                           <div class="text-secondary" style="font-size: 0.82rem; line-height: 1.4;">
-                            Modelo dual de Regresión Lineal Múltiple (percepción humana) y Método de Entropía de Shannon (orden reticular).
+                            Modelo dual de Regresión Lineal Múltiple (percepción humana, Ec. 22) y Método de Entropía de Shannon (orden reticular, Ec. 32).
                           </div>
                         </div>
 
@@ -1950,29 +1482,6 @@
                             }
                           </button>
                         }
-                      </div>
-
-                      <!-- Escala de Calidad Estética Multicriterio -->
-                      <div class="p-3 bg-white rounded-4 border shadow-xs">
-                        <div class="fw-bold text-dark mb-2" style="font-size: 0.84rem;">Escala de Calidad Estética Multicriterio:</div>
-                        <div class="d-flex flex-column gap-1 text-secondary" style="font-size: 0.82rem;">
-                          <div class="d-flex align-items-center gap-2">
-                            <span class="badge bg-success rounded-pill px-2 py-1" style="min-width: 70px; font-size: 0.76rem;">85% – 100%</span>
-                            <span class="text-dark"><strong>Calidad Óptima:</strong> Simetría bilateral, balance de masas y proporciones canónicas sobresalientes.</span>
-                          </div>
-                          <div class="d-flex align-items-center gap-2">
-                            <span class="badge bg-primary rounded-pill px-2 py-1" style="min-width: 70px; font-size: 0.76rem;">70% – 84%</span>
-                            <span class="text-dark"><strong>Calidad Alta:</strong> Estructura estética sólida, balance armónico y orden visual consistente.</span>
-                          </div>
-                          <div class="d-flex align-items-center gap-2">
-                            <span class="badge bg-warning text-dark rounded-pill px-2 py-1" style="min-width: 70px; font-size: 0.76rem;">50% – 69%</span>
-                            <span class="text-dark"><strong>Calidad Media:</strong> Distribución aceptable con margen de optimización en retícula y alineación.</span>
-                          </div>
-                          <div class="d-flex align-items-center gap-2">
-                            <span class="badge bg-danger rounded-pill px-2 py-1" style="min-width: 70px; font-size: 0.76rem;">0% – 49%</span>
-                            <span class="text-dark"><strong>Calidad Baja:</strong> Desbalance notorio, asimetría acusada o dispersión de espacios.</span>
-                          </div>
-                        </div>
                       </div>
 
                       @if (multicriteriaError) {
@@ -1994,62 +1503,69 @@
 
                       @if (multicriteriaResult) {
 
-                        <!-- Resumen de Puntuaciones Sintéticas (Regresión Lineal vs Método de Entropía) -->
+                        <!-- Resumen de Puntuaciones Sintéticas del Paper (MRA vs Entropía - Wang et al., 2024) -->
                         <div class="row g-2">
-                          <!-- Modelo 1: Regresión Lineal Múltiple (Percepción Humana) -->
+                          <!-- Modelo 1: Regresión Lineal Múltiple (MRA, Ec. 22) -->
                           <div class="col-6">
                             <div class="p-3 bg-light rounded-3 border h-100 d-flex flex-column justify-content-between">
                               <div>
                                 <div class="d-flex align-items-center justify-content-between mb-1">
-                                  <span class="text-primary fw-bold" style="font-size: 0.78rem;">REGRESIÓN LINEAL</span>
-                                  <span class="badge bg-primary text-white" style="font-size: 0.72rem;">Percepción Humana</span>
+                                  <span class="text-primary fw-bold" style="font-size: 0.78rem;">ÍNDICE MRA</span>
+                                  <span class="badge bg-primary text-white" style="font-size: 0.72rem;">Percepción Humana (Ec. 22)</span>
                                 </div>
-                                <div class="fw-bold text-dark" style="font-size: 0.86rem;">Modelo de Regresión Múltiple</div>
-                                <div class="d-flex align-items-baseline gap-1 my-1">
+                                <div class="fw-bold text-dark" style="font-size: 0.86rem;">Regresión Lineal Múltiple</div>
+                                <div class="d-flex align-items-baseline gap-2 my-1">
                                   <span class="fs-4 fw-bold text-primary">{{ multicriteriaResult.score_regresion }}%</span>
+                                  @if (multicriteriaResult.score_regresion_raw !== undefined) {
+                                    <span class="text-secondary small fw-medium">({{ multicriteriaResult.score_regresion_raw }})</span>
+                                  }
                                 </div>
                                 <div class="progress mb-2" style="height: 6px;">
                                   <div class="progress-bar bg-primary" [style.width.%]="multicriteriaResult.score_regresion"></div>
                                 </div>
                               </div>
                               <div class="text-secondary" style="font-size: 0.8rem; line-height: 1.45;">
-                                <strong>Enfoque Perceptual:</strong> Mide qué tan agradable y ordenado resulta el diseño para los usuarios, priorizando fuertemente la simetría y la correcta alineación en filas y columnas.
+                                <strong>Enfoque Perceptual:</strong> Modela las calificaciones estéticas humanas recogidas mediante escala Likert. Da mayor ponderación a la simetría vertical (<span class="font-monospace text-dark">0.549</span>) y a la simplicidad/alineación (<span class="font-monospace text-dark">0.483</span>).
                               </div>
                             </div>
                           </div>
 
-                          <!-- Modelo 2: Método de Entropía de Shannon (Orden Matemático) -->
+                          <!-- Modelo 2: Método de Entropía de Shannon (EM, Ec. 32) -->
                           <div class="col-6">
                             <div class="p-3 bg-light rounded-3 border h-100 d-flex flex-column justify-content-between">
                               <div>
                                 <div class="d-flex align-items-center justify-content-between mb-1">
-                                  <span class="text-info fw-bold" style="font-size: 0.78rem;">MÉTODO DE ENTROPÍA</span>
-                                  <span class="badge bg-info text-white" style="font-size: 0.72rem;">Orden de Retícula</span>
+                                  <span class="text-info fw-bold" style="font-size: 0.78rem;">ÍNDICE EM</span>
+                                  <span class="badge bg-info text-white" style="font-size: 0.72rem;">Orden de Retícula (Ec. 32)</span>
                                 </div>
-                                <div class="fw-bold text-dark" style="font-size: 0.86rem;">Entropía de la Información</div>
-                                <div class="d-flex align-items-baseline gap-1 my-1">
+                                <div class="fw-bold text-dark" style="font-size: 0.86rem;">Método de Entropía (EWM)</div>
+                                <div class="d-flex align-items-baseline gap-2 my-1">
                                   <span class="fs-4 fw-bold text-info">{{ multicriteriaResult.score_entropia }}%</span>
+                                  @if (multicriteriaResult.score_entropia_raw !== undefined) {
+                                    <span class="text-secondary small fw-medium">({{ multicriteriaResult.score_entropia_raw }})</span>
+                                  }
                                 </div>
                                 <div class="progress mb-2" style="height: 6px;">
                                   <div class="progress-bar bg-info" [style.width.%]="multicriteriaResult.score_entropia"></div>
                                 </div>
                               </div>
                               <div class="text-secondary" style="font-size: 0.8rem; line-height: 1.45;">
-                                <strong>Enfoque de Cuadrícula:</strong> Evalúa la regularidad matemática de los espacios y márgenes, verificando que la interfaz no esté sobrecargada y que los tamaños sean consistentes.
+                                <strong>Enfoque de Información:</strong> Ponderación matemática objetiva libre de sesgo humano basada en la entropía de Shannon. Prioriza la densidad de espacio libre (<span class="font-monospace text-dark">0.227</span>) y las proporciones armónicas (<span class="font-monospace text-dark">0.178</span>).
                               </div>
                             </div>
                           </div>
                         </div>
 
-                        <!-- Barra de Calidad Consolidada -->
-                        <div class="p-2 px-3 bg-white border rounded-3 d-flex align-items-center justify-content-between">
-                          <div class="d-flex align-items-center gap-2">
-                            <span class="fw-bold text-dark" style="font-size: 0.88rem;">Calidad Estética Global:</span>
-                            <span class="badge" [ngClass]="getMulticriteriaQualityBadgeClass(multicriteriaResult.nivel_calidad)" style="font-size: 0.78rem;">
-                              {{ multicriteriaResult.nivel_calidad }}
-                            </span>
-                          </div>
-                          <span class="fs-6 fw-bold text-primary">{{ multicriteriaResult.score_global }}%</span>
+                        <!-- Nota explicativa metodológica según el paper -->
+                        <div class="p-2 px-3 bg-light border rounded-3 d-flex align-items-center gap-2">
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-secondary flex-shrink-0">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="16" x2="12" y2="12"></line>
+                            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                          </svg>
+                          <span class="text-secondary" style="font-size: 0.79rem; line-height: 1.4;">
+                            <strong>Metodología Wang et al. (2024):</strong> Los índices MRA y EM son modelos sintéticos complementarios e independientes para evaluación estética de retícula. El paper evalúa cada diseño en escala continua para análisis de calidad e iteración de layouts.
+                          </span>
                         </div>
 
                         <!-- Gráfico de Radar Interactivo de 7 Ejes (SVG) -->
