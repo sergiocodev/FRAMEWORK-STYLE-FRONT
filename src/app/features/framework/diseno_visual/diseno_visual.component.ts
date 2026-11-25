@@ -1,8 +1,8 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DisenoVisualHeaderComponent, Phase } from './components/diseno-visual-header/diseno-visual-header.component';
-import { DisenoVisualLibraryComponent } from './components/diseno-visual-library/diseno-visual-library.component';
+import { DisenoVisualLibraryComponent, SystemTab } from './components/diseno-visual-library/diseno-visual-library.component';
 import { DisenoVisualPreviewComponent } from './components/diseno-visual-preview/diseno-visual-preview.component';
 import { ModalComponent } from '../../../shared/components/modal/modal.component';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
@@ -24,6 +24,8 @@ import { DisenoVisualService } from './services/diseno-visual.service';
   styleUrls: ['./diseno_visual.component.scss']
 })
 export class DisenoVisualComponent implements OnInit {
+  @ViewChild(DisenoVisualLibraryComponent) libraryComponent?: DisenoVisualLibraryComponent;
+
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private projectService = inject(ProjectService);
@@ -34,14 +36,30 @@ export class DisenoVisualComponent implements OnInit {
   phases: Phase[] = [];
   currentProjectId: number = 0;
   isCompleting: boolean = false;
+  validationError: string | null = null;
 
   headerBreadcrumbs: any[] = [];
   
   get formattedStatus(): string {
-    const status = this.project?.status;
+    const status = this.project?.status || this.project?.estado;
     if (!status) return 'En progreso';
     const formatted = status.replace(/_/g, ' ');
     return formatted.charAt(0).toUpperCase() + formatted.slice(1).toLowerCase();
+  }
+
+  // Dynamic progress across the 5 systems of Visual Design
+  get completedSystemsCount(): number {
+    let count = 0;
+    if ((this.disenoVisualService.colores() || []).length > 0) count++;
+    if ((this.disenoVisualService.tipografias() || []).length > 0) count++;
+    if ((this.disenoVisualService.colores() || []).length >= 2) count++;
+    if (this.disenoVisualService.config()?.libreria_iconos) count++;
+    if (this.disenoVisualService.config()?.escala_espaciado_base) count++;
+    return count;
+  }
+
+  get totalProgressPercentage(): number {
+    return Math.round((this.completedSystemsCount / 5) * 100);
   }
 
   ngOnInit() {
@@ -91,6 +109,14 @@ export class DisenoVisualComponent implements OnInit {
     this.isPreviewModalOpen = false;
   }
 
+  goToSystem(tab: SystemTab): void {
+    if (this.libraryComponent) {
+      this.libraryComponent.setTab(tab);
+      this.validationError = null;
+      window.scrollTo({ top: 120, behavior: 'smooth' });
+    }
+  }
+
   completePhase(): void {
     if (!this.currentProjectId) return;
 
@@ -99,7 +125,14 @@ export class DisenoVisualComponent implements OnInit {
     const typos = this.disenoVisualService.tipografias();
     
     if (colors.length === 0 || typos.length === 0) {
-      alert('Por favor agrega al menos un color y una tipografía a tu biblioteca de estilos antes de continuar.');
+      if (colors.length === 0) {
+        this.validationError = 'Debes registrar al menos un color institucional en tu paleta antes de avanzar.';
+        this.goToSystem('colors');
+      } else {
+        this.validationError = 'Debes configurar al menos una familia tipográfica en la biblioteca antes de avanzar.';
+        this.goToSystem('typography');
+      }
+      setTimeout(() => this.validationError = null, 7000);
       return;
     }
 
@@ -113,7 +146,7 @@ export class DisenoVisualComponent implements OnInit {
       error: (err) => {
         console.error('Error al avanzar fase', err);
         this.isCompleting = false;
-        alert('Ocurrió un error al intentar avanzar de fase.');
+        this.validationError = 'Ocurrió un error al intentar avanzar de fase en el servidor.';
       }
     });
   }

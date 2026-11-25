@@ -11,10 +11,12 @@ import { InvestigationUsersComponent } from './components/investigation-users/in
 import { InvestigationResourcesComponent } from './components/investigation-resources/investigation-resources.component';
 import { InvestigationPreviewComponent } from './components/investigation-preview/investigation-preview.component';
 import { ModalComponent } from '../../../shared/components/modal/modal.component';
-import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
+//import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 
 import { ProjectService } from '../../../core/services/project.service';
 import { InvestigationService } from '../services/investigation.service';
+
+export type InvestigationSection = 'necesidad' | 'expectativas' | 'usuarios' | 'recursos';
 
 @Component({
   selector: 'app-investigation',
@@ -28,8 +30,7 @@ import { InvestigationService } from '../services/investigation.service';
     InvestigationUsersComponent,
     InvestigationResourcesComponent,
     InvestigationPreviewComponent,
-    ModalComponent,
-    PageHeaderComponent
+    ModalComponent
   ],
   templateUrl: './investigation.component.html',
   styleUrls: ['./investigation.component.scss']
@@ -79,7 +80,7 @@ export class InvestigationComponent implements OnInit {
   get analisisActual() { return this._analisisActual; }
   set analisisActual(v) { this._analisisActual = v; this.triggerAutoSave(); }
 
-  usuarios: any[] = []; // Currently not handled by simple autosave payload
+  usuarios: any[] = [];
   recursos: any[] = [];
 
   private _restricciones: string = '';
@@ -92,19 +93,54 @@ export class InvestigationComponent implements OnInit {
 
   private saveSubject = new Subject<void>();
 
-  // Mobile Tabs State (Removido ya que usamos Modal)
-
-  // Sidebar State
-  activeSection: 'necesidad' | 'expectativas' | 'usuarios' | 'recursos' = 'necesidad';
+  // Navigation State
+  activeSection: InvestigationSection = 'necesidad';
+  readonly sectionsOrder: InvestigationSection[] = ['necesidad', 'expectativas', 'usuarios', 'recursos'];
 
   // Modal State
   isModalOpen: boolean = false;
+
+  // Validation feedback
+  validationError: string | null = null;
 
   // Save State
   currentProjectId: number = 0;
   isSaving: boolean = false;
   saveSuccess: boolean = false;
   isCompleting: boolean = false;
+
+  // Computed Progress Helpers
+  isSectionComplete(section: InvestigationSection): boolean {
+    switch (section) {
+      case 'necesidad':
+        return Boolean(this.problema?.trim() && this.objetivo?.trim());
+      case 'expectativas':
+        return Boolean(this.expectativas?.trim() || this.referencias?.length > 0 || this.analisisActual?.trim());
+      case 'usuarios':
+        return Boolean(this.usuarios?.length > 0);
+      case 'recursos':
+        return Boolean(this.recursos?.length > 0 || this.restricciones?.trim() || this.identidadMarca?.colores?.trim() || this.identidadMarca?.tieneManual);
+      default:
+        return false;
+    }
+  }
+
+  get completedSectionsCount(): number {
+    let count = 0;
+    if (this.isSectionComplete('necesidad')) count++;
+    if (this.isSectionComplete('expectativas')) count++;
+    if (this.isSectionComplete('usuarios')) count++;
+    if (this.isSectionComplete('recursos')) count++;
+    return count;
+  }
+
+  get totalProgressPercentage(): number {
+    return Math.round((this.completedSectionsCount / this.sectionsOrder.length) * 100);
+  }
+
+  get currentSectionIndex(): number {
+    return this.sectionsOrder.indexOf(this.activeSection);
+  }
 
   ngOnInit(): void {
     // Setup autosave
@@ -158,7 +194,7 @@ export class InvestigationComponent implements OnInit {
         ];
 
         // Map Informe
-        this.problema = data.informe.problema || 'Sin descripción detallada';
+        this.problema = data.informe.problema || '';
         this.objetivo = data.informe.objetivo || '';
         this.producto = data.informe.producto || '';
         this.expectativas = data.informe.expectativas || '';
@@ -215,8 +251,25 @@ export class InvestigationComponent implements OnInit {
     }
   }
 
-  setActiveSection(section: 'necesidad' | 'expectativas' | 'usuarios' | 'recursos'): void {
+  setActiveSection(section: InvestigationSection): void {
     this.activeSection = section;
+    this.validationError = null;
+  }
+
+  goToNextSection(): void {
+    const currentIndex = this.currentSectionIndex;
+    if (currentIndex < this.sectionsOrder.length - 1) {
+      this.activeSection = this.sectionsOrder[currentIndex + 1];
+      window.scrollTo({ top: 120, behavior: 'smooth' });
+    }
+  }
+
+  goToPrevSection(): void {
+    const currentIndex = this.currentSectionIndex;
+    if (currentIndex > 0) {
+      this.activeSection = this.sectionsOrder[currentIndex - 1];
+      window.scrollTo({ top: 120, behavior: 'smooth' });
+    }
   }
 
   saveChanges(): void {
@@ -253,7 +306,9 @@ export class InvestigationComponent implements OnInit {
     if (!this.currentProjectId) return;
 
     if (!this.problema.trim() || !this.objetivo.trim()) {
-      alert('Por favor completa al menos el Problema y el Objetivo antes de continuar.');
+      this.validationError = 'Por favor completa al menos el "Problema o Necesidad" y el "Objetivo del Proyecto" antes de avanzar a la Fase 2.';
+      this.activeSection = 'necesidad';
+      setTimeout(() => this.validationError = null, 6000);
       return;
     }
 
@@ -267,7 +322,7 @@ export class InvestigationComponent implements OnInit {
       error: (err) => {
         console.error('Error al avanzar fase', err);
         this.isCompleting = false;
-        alert('Ocurrió un error al intentar avanzar de fase.');
+        this.validationError = 'Ocurrió un error al intentar avanzar de fase en el servidor.';
       }
     });
   }

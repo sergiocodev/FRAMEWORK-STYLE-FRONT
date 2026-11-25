@@ -23,17 +23,34 @@ export class InvestigationResourcesComponent {
   @Input() identidadMarca: { tieneManual: boolean, colores: string, notas: string } = { tieneManual: false, colores: '', notas: '' };
   @Output() identidadMarcaChange = new EventEmitter<any>();
 
+  @Output() prev = new EventEmitter<void>();
+  @Output() openPreview = new EventEmitter<void>();
+  @Output() complete = new EventEmitter<void>();
+
   isDragging = false;
+  isUploading = false;
 
   onRestriccionesChange(value: string) {
     this.restricciones = value;
     this.restriccionesChange.emit(this.restricciones);
   }
 
+  appendPrompt(text: string) {
+    const current = this.restricciones ? this.restricciones.trim() + ' ' : '';
+    this.onRestriccionesChange(current + text);
+  }
+
   onIdentidadMarcaChange() {
-    // Create new reference to trigger change detection
     this.identidadMarca = { ...this.identidadMarca };
     this.identidadMarcaChange.emit(this.identidadMarca);
+  }
+
+  // Parse color hex codes to show live color chips
+  get colorSwatches(): string[] {
+    if (!this.identidadMarca?.colores) return [];
+    const hexRegex = /#(?:[0-9a-fA-F]{3}){1,2}\b/g;
+    const matches = this.identidadMarca.colores.match(hexRegex);
+    return matches ? Array.from(new Set(matches)) : [];
   }
 
   onDragOver(event: DragEvent) {
@@ -70,6 +87,8 @@ export class InvestigationResourcesComponent {
       return;
     }
 
+    this.isUploading = true;
+
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
       const type = file.name.endsWith('.pdf') ? 'pdf' : 
@@ -77,29 +96,28 @@ export class InvestigationResourcesComponent {
                    
       const sizeMB = (file.size / (1024 * 1024)).toFixed(1) + ' MB';
 
-      // Añadimos el archivo temporalmente (podríamos ponerle un estado de 'cargando')
       const newRecurso = {
         name: file.name,
         size: sizeMB,
         type: type,
         file: file,
-        id: null // Se llenará cuando responda el backend
+        id: null
       };
       
       this.recursos.push(newRecurso);
       this.emitRecursosChange();
 
-      // Subimos físicamente
       this.investigationService.uploadRecurso(this.projectId, file).subscribe({
         next: (response: any) => {
-          newRecurso.id = response.id; // Guardamos el ID real de la base de datos
+          newRecurso.id = response.id;
           this.emitRecursosChange();
+          this.isUploading = false;
         },
         error: (err) => {
           console.error('Error uploading recurso:', err);
-          // Opcional: removerlo si falla
           this.recursos = this.recursos.filter(r => r !== newRecurso);
           this.emitRecursosChange();
+          this.isUploading = false;
           alert('Hubo un error al subir el archivo: ' + file.name);
         }
       });
@@ -109,7 +127,6 @@ export class InvestigationResourcesComponent {
   removeFile(index: number) {
     const fileToRemove = this.recursos[index];
     
-    // Si tiene un ID real, lo eliminamos del backend
     if (fileToRemove.id && this.projectId) {
       this.investigationService.deleteRecurso(this.projectId, fileToRemove.id).subscribe({
         next: () => {
@@ -122,7 +139,6 @@ export class InvestigationResourcesComponent {
         }
       });
     } else {
-      // Si no tiene ID (aún no ha subido o hubo error), solo lo removemos localmente
       this.recursos.splice(index, 1);
       this.emitRecursosChange();
     }
@@ -131,5 +147,17 @@ export class InvestigationResourcesComponent {
   private emitRecursosChange() {
     this.recursos = [...this.recursos];
     this.recursosChange.emit(this.recursos);
+  }
+
+  onPrev() {
+    this.prev.emit();
+  }
+
+  onOpenPreview() {
+    this.openPreview.emit();
+  }
+
+  onComplete() {
+    this.complete.emit();
   }
 }

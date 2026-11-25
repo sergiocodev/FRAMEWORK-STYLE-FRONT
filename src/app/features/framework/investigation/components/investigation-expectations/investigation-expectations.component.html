@@ -1,76 +1,305 @@
-<div class="expectations-card bg-white rounded-4 shadow-sm border p-4 mb-3 flex-shrink-0">
-  <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-4">
-    <div class="card-header-content w-100">
-      <div class="d-flex align-items-center gap-3 mb-2">
-        <h6 class="card-title fw-bold mb-0">Expectativas y Referencias</h6>
+<div class="expectations-section d-flex flex-column h-100">
+
+  <!-- Top Hero Header -->
+  <div class="section-hero mb-4">
+    <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-2">
+      <div class="d-flex align-items-center gap-2">
+        <span class="badge rounded-pill bg-primary-subtle text-primary border-0 px-3 py-1 fw-semibold" style="font-size: 0.75rem;">
+          Paso 2 de 4
+        </span>
+        <span class="badge rounded-pill bg-light text-secondary border px-2 py-1 fw-medium" style="font-size: 0.72rem;">
+          Dirección Visual & Benchmarking
+        </span>
       </div>
-      <p class="card-description mb-0">
-        Define qué espera el cliente del diseño y adjunta enlaces de inspiración o interfaces actuales a mejorar.
-      </p>
-    </div>
-  </div>
 
-  <div class="mb-4">
-    <label class="form-label fw-medium mb-2" style="font-size: 0.95rem;">Expectativas del Cliente</label>
-    <div class="textarea-wrapper">
-      <textarea class="form-control custom-textarea" rows="3" placeholder="Ej. Diseño minimalista, elegante, moderno..."
-        [ngModel]="expectativas" (ngModelChange)="onExpectativasChange($event)"></textarea>
-    </div>
-  </div>
-
-  <div class="mb-4">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-      <label class="form-label fw-medium mb-0" style="font-size: 0.95rem;">Referencias (Inspiración)</label>
-      <input type="file" #fileInput (change)="onFileSelected($event)" accept="image/*" class="d-none">
-      <button (click)="fileInput.click()"
-        class="btn btn-custom-soft-primary btn-sm d-flex align-items-center gap-2 px-3 py-2">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-          stroke-linecap="round" stroke-linejoin="round">
-          <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-          <circle cx="8.5" cy="8.5" r="1.5"></circle>
-          <polyline points="21 15 16 10 5 21"></polyline>
+      <div class="text-muted small d-flex align-items-center gap-1" style="font-size: 0.8rem;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
         </svg>
-        <span style="font-size: 0.85rem;">Añadir imagen</span>
-      </button>
+        <span>Tiempo estimado: ~4 min</span>
+      </div>
     </div>
 
-    <div *ngIf="referencias.length === 0" class="text-secondary small fst-italic mb-3">
-      No hay referencias añadidas.
+    <h5 class="fw-bold text-dark mb-1 d-flex align-items-center gap-2">
+      Expectativas y Referencias de Inspiración
+    </h5>
+    <p class="text-secondary mb-0" style="font-size: 0.9rem; line-height: 1.5;">
+      Define el tono estético y los requerimientos visuales del cliente, recopila referencias visuales y documenta el estado actual si es un rediseño.
+    </p>
+  </div>
+
+  <!-- Fields Container -->
+  <div class="form-fields-container d-flex flex-column gap-4 flex-grow-1">
+
+    <!-- 1. Expectativas del Cliente -->
+    <div class="card-field p-3 p-md-4 rounded-4 border bg-white shadow-sm transition-all"
+         [class.is-completed]="expectativas && expectativas.trim().length > 0">
+      
+      <div class="d-flex align-items-start justify-content-between gap-2 mb-2">
+        <div>
+          <label class="form-label fw-bold text-dark mb-1" style="font-size: 0.92rem;">
+            1. Expectativas Estéticas y de Experiencia
+          </label>
+          <p class="text-muted mb-0 small" style="font-size: 0.82rem;">
+            ¿Qué sensaciones, tono de diseño y nivel de sofisticación espera percibir el cliente?
+          </p>
+        </div>
+
+        @if (expectativas && expectativas.trim().length > 0) {
+        <span class="badge bg-success-subtle text-success border-0 rounded-pill px-2 py-1 d-flex align-items-center gap-1" style="font-size: 0.72rem;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+          Definido
+        </span>
+        }
+      </div>
+
+      <!-- Quick Suggestion Chips -->
+      <div class="prompt-chips d-flex flex-wrap gap-1 mb-2">
+        <span class="chips-label text-muted small me-1">Estilos:</span>
+        <button type="button" class="btn-chip" (click)="appendPrompt('expectativas', 'Diseño minimalista, moderno, con amplio espacio en blanco y tipografía limpia.')">
+          + Minimalista & Moderno
+        </button>
+        <button type="button" class="btn-chip" (click)="appendPrompt('expectativas', 'Interfaz profesional estilo SaaS corporativo con alta legibilidad y jerarquía visual estricta.')">
+          + Enterprise SaaS
+        </button>
+        <button type="button" class="btn-chip" (click)="appendPrompt('expectativas', 'Modo oscuro elegante, acentos vibrantes y microinteracciones fluidas.')">
+          + Dark Mode Premium
+        </button>
+      </div>
+
+      <div class="textarea-wrapper position-relative">
+        <textarea class="form-control modern-textarea" rows="3"
+                  placeholder="Ej: El cliente espera una interfaz limpia, tipo dashboard de Stripe/Linear, con bordes redondeados suaves, tipografía moderna y paleta sobria..."
+                  [ngModel]="expectativas" 
+                  (ngModelChange)="onExpectativasChange($event)"></textarea>
+
+        <div class="textarea-footer d-flex justify-content-between align-items-center mt-2 px-1">
+          <span class="text-muted small" style="font-size: 0.75rem;">
+            Establece expectativas de look & feel.
+          </span>
+          <span class="char-counter small text-muted" style="font-size: 0.75rem;">
+            {{ expectativas.length }} caracteres
+          </span>
+        </div>
+      </div>
     </div>
 
-    <div class="d-flex flex-column gap-3">
-      <div *ngFor="let ref of referencias; let i = index" class="p-3 border rounded-3 bg-light">
-        <div class="d-flex gap-3 align-items-start mb-3">
-          <div class="textarea-wrapper flex-grow-1 d-flex gap-3">
-            <input type="text" class="form-control custom-input w-50"
-              placeholder="URL de la imagen (o selecciona un archivo)" [(ngModel)]="ref.url"
-              (ngModelChange)="onReferenciaChange()">
-            <input type="text" class="form-control custom-input w-50" placeholder="Notas sobre qué rescatar"
-              [(ngModel)]="ref.notas" (ngModelChange)="onReferenciaChange()">
+    <!-- 2. Referencias Visuales e Inspiración -->
+    <div class="card-field p-3 p-md-4 rounded-4 border bg-white shadow-sm transition-all"
+         [class.is-completed]="referencias.length > 0">
+      
+      <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-3">
+        <div>
+          <div class="d-flex align-items-center gap-2">
+            <label class="form-label fw-bold text-dark mb-0" style="font-size: 0.92rem;">
+              2. Referencias de Inspiración Visual
+            </label>
+            <span class="badge bg-secondary-subtle text-secondary border-0 rounded-pill px-2 py-0 fw-semibold" style="font-size: 0.72rem;">
+              {{ referencias.length }} {{ referencias.length === 1 ? 'referencia' : 'referencias' }}
+            </span>
           </div>
-          <button class="btn btn-icon-danger flex-shrink-0" (click)="removeReferencia(i)" title="Eliminar">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-              stroke-linecap="round" stroke-linejoin="round">
-              <path d="M3 6h18"></path>
-              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+          <p class="text-muted mb-0 small" style="font-size: 0.82rem;">
+            Adjunta enlaces o capturas de interfaces existentes que sirvan de benchmark visual.
+          </p>
+        </div>
+
+        <div class="d-flex align-items-center gap-2">
+          <!-- Hidden file input for screenshot upload -->
+          <input type="file" #fileInput (change)="onFileSelected($event)" accept="image/*" class="d-none">
+          
+          <button type="button" class="btn btn-sm btn-outline-secondary d-flex align-items-center gap-1 rounded-3 px-3 py-1-5"
+                  (click)="addReferencia()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
             </svg>
+            <span>Añadir Enlace</span>
+          </button>
+
+          <button type="button" class="btn btn-sm btn-subtle-primary d-flex align-items-center gap-1 rounded-3 px-3 py-1-5"
+                  (click)="fileInput.click()" [disabled]="isUploadingImage">
+            @if (isUploadingImage) {
+            <span class="spinner-border spinner-border-sm text-primary" role="status"></span>
+            <span>Subiendo...</span>
+            } @else {
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+              <circle cx="8.5" cy="8.5" r="1.5"></circle>
+              <polyline points="21 15 16 10 5 21"></polyline>
+            </svg>
+            <span>Subir Captura</span>
+            }
           </button>
         </div>
-        <div *ngIf="ref.url" class="text-center bg-white rounded-3 p-2 border">
-          <img [src]="getImageUrl(ref.url)" alt="Referencia" style="max-height: 250px; object-fit: contain;"
-            class="rounded-2 img-fluid">
+      </div>
+
+      <!-- Empty State -->
+      @if (referencias.length === 0) {
+      <div class="empty-references-box p-4 rounded-3 text-center border border-dashed">
+        <div class="empty-icon-circle mx-auto mb-2">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+            <polyline points="21 15 16 10 5 21"></polyline>
+          </svg>
+        </div>
+        <h6 class="fw-semibold text-dark mb-1" style="font-size: 0.9rem;">No hay referencias agregadas</h6>
+        <p class="text-muted small mb-3" style="max-width: 420px; margin: 0 auto; font-size: 0.8rem;">
+          Agrega capturas de pantalla o URLs de Dribbble, Mobbin, Behance o productos reales para guiar el estilo gráfico.
+        </p>
+        <div class="d-flex justify-content-center gap-2">
+          <button type="button" class="btn btn-sm btn-subtle-primary px-3" (click)="fileInput.click()">
+            Subir una imagen
+          </button>
+          <button type="button" class="btn btn-sm btn-outline-secondary px-3" (click)="addReferencia()">
+            Pegar un enlace
+          </button>
+        </div>
+      </div>
+      }
+
+      <!-- References List -->
+      @if (referencias.length > 0) {
+      <div class="d-flex flex-column gap-3">
+        <div *ngFor="let ref of referencias; let i = index" 
+             class="reference-card p-3 rounded-3 border bg-light-subtle transition-all">
+          
+          <div class="d-flex flex-column flex-md-row gap-3 align-items-start">
+            
+            <!-- Thumbnail if URL exists and is an image -->
+            @if (ref.url) {
+            <div class="ref-thumbnail-container flex-shrink-0 bg-white rounded-3 border overflow-hidden position-relative">
+              <img [src]="getImageUrl(ref.url)" alt="Referencia" class="ref-thumb-img"
+                   (error)="$any($event.target).style.display='none'">
+              <a [href]="getImageUrl(ref.url)" target="_blank" rel="noopener" 
+                 class="thumb-overlay d-flex align-items-center justify-content-center text-white" title="Abrir en pestaña nueva">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                  <polyline points="15 3 21 3 21 9"></polyline>
+                  <line x1="10" y1="14" x2="21" y2="3"></line>
+                </svg>
+              </a>
+            </div>
+            }
+
+            <!-- Inputs -->
+            <div class="flex-grow-1 w-100 d-flex flex-column gap-2">
+              <div>
+                <label class="form-label text-muted small mb-1 fw-medium" style="font-size: 0.75rem;">URL o Enlace de Referencia</label>
+                <div class="input-group input-group-sm">
+                  <span class="input-group-text bg-white border-end-0 text-muted">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                      <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                    </svg>
+                  </span>
+                  <input type="text" class="form-control border-start-0 ps-1"
+                         placeholder="https://dribbble.com/... o ruta de la captura"
+                         [(ngModel)]="ref.url" (ngModelChange)="onReferenciaChange()">
+                </div>
+              </div>
+
+              <div>
+                <label class="form-label text-muted small mb-1 fw-medium" style="font-size: 0.75rem;">¿Qué rescatar de esta interfaz?</label>
+                <input type="text" class="form-control form-control-sm"
+                       placeholder="Ej: Paleta de color, estilo de tarjetas, sistema de navegación lateral..."
+                       [(ngModel)]="ref.notas" (ngModelChange)="onReferenciaChange()">
+              </div>
+            </div>
+
+            <!-- Delete Action -->
+            <button type="button" class="btn btn-icon-danger flex-shrink-0" (click)="removeReferencia(i)" title="Eliminar referencia">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="3 6 5 6 21 6"></polyline>
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+              </svg>
+            </button>
+          </div>
+
+        </div>
+      </div>
+      }
+    </div>
+
+    <!-- 3. Análisis de Situación Actual -->
+    <div class="card-field p-3 p-md-4 rounded-4 border bg-white shadow-sm transition-all"
+         [class.is-completed]="analisisActual && analisisActual.trim().length > 0">
+      
+      <div class="d-flex align-items-start justify-content-between gap-2 mb-2">
+        <div>
+          <label class="form-label fw-bold text-dark mb-1" style="font-size: 0.92rem;">
+            3. Análisis de Situación Actual (Rediseño)
+          </label>
+          <p class="text-muted mb-0 small" style="font-size: 0.82rem;">
+            Si el proyecto reemplaza o mejora una interfaz existente, documenta qué aspectos funcionan y cuáles fallan.
+          </p>
+        </div>
+
+        @if (analisisActual && analisisActual.trim().length > 0) {
+        <span class="badge bg-success-subtle text-success border-0 rounded-pill px-2 py-1 d-flex align-items-center gap-1" style="font-size: 0.72rem;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+          Registrado
+        </span>
+        }
+      </div>
+
+      <!-- Quick Suggestion Chips -->
+      <div class="prompt-chips d-flex flex-wrap gap-1 mb-2">
+        <span class="chips-label text-muted small me-1">Diagnósticos:</span>
+        <button type="button" class="btn-chip" (click)="appendPrompt('analisisActual', 'La interfaz actual sufre de baja legibilidad y densidad de información excesiva.')">
+          + Densidad excesiva
+        </button>
+        <button type="button" class="btn-chip" (click)="appendPrompt('analisisActual', 'Los usuarios reportan confusión al buscar opciones dentro del menú principal.')">
+          + Menú poco claro
+        </button>
+        <button type="button" class="btn-chip" (click)="appendPrompt('analisisActual', 'Diseño no adaptativo que se desconfigura en pantallas menores a 1200px.')">
+          + Problemas responsivos
+        </button>
+      </div>
+
+      <div class="textarea-wrapper position-relative">
+        <textarea class="form-control modern-textarea" rows="3"
+                  placeholder="Ej: El sistema actual cuenta con buena lógica de datos pero sufre de un diseño desactualizado, bajo contraste en textos secundarios y ausencia de estados vacíos..."
+                  [ngModel]="analisisActual" 
+                  (ngModelChange)="onAnalisisActualChange($event)"></textarea>
+
+        <div class="textarea-footer d-flex justify-content-between align-items-center mt-2 px-1">
+          <span class="text-muted small" style="font-size: 0.75rem;">
+            Identifica qué preservar y qué reestructurar.
+          </span>
+          <span class="char-counter small text-muted" style="font-size: 0.75rem;">
+            {{ analisisActual.length }} caracteres
+          </span>
         </div>
       </div>
     </div>
+
   </div>
 
-  <div>
-    <label class="form-label fw-medium mb-2" style="font-size: 0.95rem;">Análisis de Situación Actual</label>
-    <div class="textarea-wrapper">
-      <textarea class="form-control custom-textarea" rows="3"
-        placeholder="Si es un rediseño, indica qué funciona y qué está fallando actualmente." [ngModel]="analisisActual"
-        (ngModelChange)="onAnalisisActualChange($event)"></textarea>
-    </div>
+  <!-- Bottom Navigation -->
+  <div class="section-footer mt-4 pt-3 border-top d-flex flex-wrap align-items-center justify-content-between gap-3">
+    <button type="button" class="btn btn-outline-secondary px-3 py-2 d-flex align-items-center gap-2 rounded-3"
+            (click)="onPrev()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="19" y1="12" x2="5" y2="12"></line>
+        <polyline points="12 19 5 12 12 5"></polyline>
+      </svg>
+      <span>Volver a Necesidad</span>
+    </button>
+
+    <button type="button" class="btn btn-primary-gradient px-4 py-2 d-flex align-items-center gap-2 shadow-sm rounded-3"
+            (click)="onNext()">
+      <span class="fw-medium">Continuar a Usuarios</span>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="5" y1="12" x2="19" y2="12"></line>
+        <polyline points="12 5 19 12 12 19"></polyline>
+      </svg>
+    </button>
   </div>
 
 </div>

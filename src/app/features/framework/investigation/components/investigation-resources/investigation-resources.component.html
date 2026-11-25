@@ -1,121 +1,305 @@
-<div class="resources-card bg-white rounded-4 shadow-sm border p-4 mb-3 flex-shrink-0">
-  <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-4">
-    <div class="card-header-content">
-      <div class="d-flex align-items-center gap-3 mb-2">
-        <h6 class="card-title fw-bold mb-0">Recursos y Restricciones</h6>
+<div class="resources-section d-flex flex-column h-100">
+
+  <!-- Top Hero Header -->
+  <div class="section-hero mb-4">
+    <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-2">
+      <div class="d-flex align-items-center gap-2">
+        <span class="badge rounded-pill bg-primary-subtle text-primary border-0 px-3 py-1 fw-semibold" style="font-size: 0.75rem;">
+          Paso 4 de 4
+        </span>
+        <span class="badge rounded-pill bg-light text-secondary border px-2 py-1 fw-medium" style="font-size: 0.72rem;">
+          Entorno & Factibilidad
+        </span>
       </div>
-      <p class="card-description mb-0">
-        Registra restricciones técnicas, detalles de marca y adjunta los recursos útiles.
-      </p>
-    </div>
-  </div>
 
-  <div class="mb-4">
-    <label class="form-label fw-medium mb-1" style="font-size: 0.85rem;">Restricciones Técnicas</label>
-    <div class="textarea-wrapper">
-      <textarea class="form-control custom-textarea" rows="2"
-        placeholder="Plataformas (Web, iOS), resoluciones, tecnologías requeridas, etc." [ngModel]="restricciones"
-        (ngModelChange)="onRestriccionesChange($event)"></textarea>
-    </div>
-  </div>
-
-  <div class="mb-4 p-3 bg-light rounded-3 border">
-    <label class="form-label fw-medium mb-3 d-block" style="font-size: 0.85rem;">Identidad Institucional</label>
-
-    <div class="form-check form-switch mb-3">
-      <input class="form-check-input" type="checkbox" id="tieneManual" [(ngModel)]="identidadMarca.tieneManual"
-        (ngModelChange)="onIdentidadMarcaChange()">
-      <label class="form-check-label ms-2" for="tieneManual" style="font-size: 0.85rem;">¿Cuenta con manual de marca o
-        lineamientos visuales?</label>
+      <div class="text-muted small d-flex align-items-center gap-1" style="font-size: 0.8rem;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        <span>Tiempo estimado: ~3 min</span>
+      </div>
     </div>
 
-    <div class="mb-3">
-      <label class="form-label text-secondary mb-1" style="font-size: 0.75rem;">Colores Principales</label>
-      <input type="text" class="form-control custom-input" placeholder="Ej. Azul primario (#003366), Naranja secundario"
-        [(ngModel)]="identidadMarca.colores" (ngModelChange)="onIdentidadMarcaChange()">
-    </div>
-
-    <div>
-      <label class="form-label text-secondary mb-1" style="font-size: 0.75rem;">Otras notas de marca (Tipografía,
-        logo)</label>
-      <input type="text" class="form-control custom-input"
-        placeholder="Ej. Usar logo en versión blanca, tipografía Arial" [(ngModel)]="identidadMarca.notas"
-        (ngModelChange)="onIdentidadMarcaChange()">
-    </div>
-  </div>
-
-  <label class="form-label fw-medium mb-2" style="font-size: 0.85rem;">Archivos Adjuntos</label>
-  <!-- Drag and Drop Area -->
-  <div class="upload-zone mb-4" [class.is-dragging]="isDragging" (dragover)="onDragOver($event)"
-    (dragleave)="onDragLeave($event)" (drop)="onDrop($event)" (click)="fileInput.click()">
-
-    <input type="file" #fileInput multiple class="d-none" (change)="onFileSelected($event)">
-
-    <div class="upload-icon-circle mb-3">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-        stroke-linecap="round" stroke-linejoin="round">
-        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-        <polyline points="17 8 12 3 7 8"></polyline>
-        <line x1="12" y1="3" x2="12" y2="15"></line>
-      </svg>
-    </div>
-    <h6 class="upload-title mb-1">Arrastra y suelta tus archivos aquí</h6>
-    <p class="upload-subtitle mb-2">o haz clic para seleccionar</p>
-    <p class="upload-meta mb-0">
-      Formatos permitidos: PDF, PNG, JPG, ZIP <span class="mx-1 opacity-50">•</span> Tamaño máximo: 10 MB
+    <h5 class="fw-bold text-dark mb-1 d-flex align-items-center gap-2">
+      Recursos, Restricciones y Marca
+    </h5>
+    <p class="text-secondary mb-0" style="font-size: 0.9rem; line-height: 1.5;">
+      Registra las limitaciones técnicas, lineamientos de identidad visual y adjunta los documentos o manuales de marca relevantes.
     </p>
   </div>
 
-  <!-- Uploaded Files List -->
-  <div class="row g-3">
-    <div class="col-12 col-md-6 col-lg-4" *ngFor="let file of recursos; let i = index">
-      <div class="file-card d-flex align-items-center justify-content-between p-3">
-        <div class="d-flex align-items-center gap-3 overflow-hidden">
+  <!-- Form Fields Grid -->
+  <div class="form-fields-container d-flex flex-column gap-4 flex-grow-1">
 
-          <div class="file-icon-box pdf" *ngIf="file.type === 'pdf'">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-              stroke-linecap="round" stroke-linejoin="round">
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-              <polyline points="14 2 14 8 20 8"></polyline>
-              <line x1="16" y1="13" x2="8" y2="13"></line>
-              <line x1="16" y1="17" x2="8" y2="17"></line>
-              <polyline points="10 9 9 9 8 9"></polyline>
+    <!-- 1. Restricciones Técnicas -->
+    <div class="card-field p-3 p-md-4 rounded-4 border bg-white shadow-sm transition-all"
+         [class.is-completed]="restricciones && restricciones.trim().length > 0">
+      
+      <div class="d-flex align-items-start justify-content-between gap-2 mb-2">
+        <div>
+          <label class="form-label fw-bold text-dark mb-1" style="font-size: 0.92rem;">
+            1. Restricciones Técnicas y Tecnológicas
+          </label>
+          <p class="text-muted mb-0 small" style="font-size: 0.82rem;">
+            Plataformas objetivo, resoluciones mínimas, librerías frontend, accesibilidad o limitantes de red.
+          </p>
+        </div>
+
+        @if (restricciones && restricciones.trim().length > 0) {
+        <span class="badge bg-success-subtle text-success border-0 rounded-pill px-2 py-1 d-flex align-items-center gap-1" style="font-size: 0.72rem;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+          Registrado
+        </span>
+        }
+      </div>
+
+      <!-- Quick Suggestion Chips -->
+      <div class="prompt-chips d-flex flex-wrap gap-1 mb-2">
+        <span class="chips-label text-muted small me-1">Sugerencias:</span>
+        <button type="button" class="btn-chip" (click)="appendPrompt('Diseño adaptable a dispositivos móviles (>=375px) y escritorio (>=1440px).')">
+          + Responsive Mobile & Desktop
+        </button>
+        <button type="button" class="btn-chip" (click)="appendPrompt('Cumplimiento estricto de pautas de accesibilidad WCAG 2.1 nivel AA.')">
+          + Accesibilidad WCAG AA
+        </button>
+        <button type="button" class="btn-chip" (click)="appendPrompt('Stack frontend basado en Angular con Bootstrap / SCSS.')">
+          + Stack Angular & SCSS
+        </button>
+      </div>
+
+      <div class="textarea-wrapper position-relative">
+        <textarea class="form-control modern-textarea" rows="3"
+                  placeholder="Ej: La aplicación debe ser 100% responsiva, soportar navegadores modernos (Chrome, Safari, Edge) y cumplir contraste mínimo 4.5:1 para accesibilidad..."
+                  [ngModel]="restricciones" 
+                  (ngModelChange)="onRestriccionesChange($event)"></textarea>
+
+        <div class="textarea-footer d-flex justify-content-between align-items-center mt-2 px-1">
+          <span class="text-muted small" style="font-size: 0.75rem;">
+            Define los límites para evitar reprocesos de diseño.
+          </span>
+          <span class="char-counter small text-muted" style="font-size: 0.75rem;">
+            {{ restricciones.length }} caracteres
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Identidad Institucional y Marca -->
+    <div class="card-field p-3 p-md-4 rounded-4 border bg-white shadow-sm transition-all"
+         [class.is-completed]="identidadMarca.tieneManual || identidadMarca.colores || identidadMarca.notas">
+      
+      <div class="d-flex align-items-start justify-content-between gap-2 mb-3">
+        <div>
+          <label class="form-label fw-bold text-dark mb-1" style="font-size: 0.92rem;">
+            2. Identidad Institucional y Lineamientos de Marca
+          </label>
+          <p class="text-muted mb-0 small" style="font-size: 0.82rem;">
+            Indica si existe un manual de marca formal, los colores institucionales y notas sobre logotipo o tipografía.
+          </p>
+        </div>
+      </div>
+
+      <!-- Toggle Switch Card -->
+      <div class="brand-toggle-card p-3 rounded-3 border bg-light-subtle mb-3 d-flex align-items-center justify-content-between">
+        <div class="d-flex align-items-center gap-3">
+          <div class="brand-icon-box">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
             </svg>
           </div>
-
-          <div class="file-icon-box image" *ngIf="file.type === 'image'">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-              stroke-linecap="round" stroke-linejoin="round">
-              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-              <circle cx="8.5" cy="8.5" r="1.5"></circle>
-              <polyline points="21 15 16 10 5 21"></polyline>
-            </svg>
-          </div>
-
-          <div class="file-icon-box zip" *ngIf="file.type === 'zip'">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-              stroke-linecap="round" stroke-linejoin="round">
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-              <polyline points="14 2 14 8 20 8"></polyline>
-              <line x1="12" y1="18" x2="12" y2="12"></line>
-              <line x1="9" y1="15" x2="15" y2="15"></line>
-            </svg>
-          </div>
-
-          <div class="overflow-hidden">
-            <h6 class="file-name text-truncate mb-0" [title]="file.name">{{ file.name }}</h6>
-            <p class="file-size mb-0">{{ file.size }}</p>
+          <div>
+            <label class="form-check-label fw-semibold text-dark mb-0 d-block" for="tieneManual" style="font-size: 0.88rem; cursor: pointer;">
+              ¿Cuenta con manual de marca o lineamientos visuales oficiales?
+            </label>
+            <span class="text-muted small" style="font-size: 0.78rem;">
+              Activa si el cliente dispone de paleta, tipografías y logo estandarizados.
+            </span>
           </div>
         </div>
 
-        <button (click)="removeFile(i)" class="btn btn-icon-danger ms-2 flex-shrink-0" title="Eliminar">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-            stroke-linecap="round" stroke-linejoin="round">
-            <line x1="18" y1="6" x2="6" y2="18"></line>
-            <line x1="6" y1="6" x2="18" y2="18"></line>
-          </svg>
-        </button>
+        <div class="form-check form-switch m-0">
+          <input class="form-check-input custom-switch" type="checkbox" id="tieneManual" 
+                 [(ngModel)]="identidadMarca.tieneManual" (ngModelChange)="onIdentidadMarcaChange()">
+        </div>
       </div>
+
+      <div class="row g-3">
+        <!-- Colores Principales -->
+        <div class="col-12 col-md-6">
+          <div class="p-3 rounded-3 border bg-light-subtle h-100">
+            <div class="d-flex align-items-center justify-content-between mb-1">
+              <label class="form-label text-dark fw-medium mb-0 small" style="font-size: 0.82rem;">
+                Colores Principales
+              </label>
+              <!-- Live Swatches -->
+              <div class="color-swatches-preview d-flex align-items-center gap-1" *ngIf="colorSwatches.length > 0">
+                <span class="swatch-circle" *ngFor="let color of colorSwatches" 
+                      [style.background-color]="color" [title]="color"></span>
+              </div>
+            </div>
+            <p class="text-muted small mb-2" style="font-size: 0.75rem;">Códigos HEX o nombres de color</p>
+            <input type="text" class="form-control form-control-sm modern-input"
+                   placeholder="Ej: Primario #FF3366, Secundario #7C3AED, Fondo #F8FAFC"
+                   [(ngModel)]="identidadMarca.colores" (ngModelChange)="onIdentidadMarcaChange()">
+          </div>
+        </div>
+
+        <!-- Notas de Marca -->
+        <div class="col-12 col-md-6">
+          <div class="p-3 rounded-3 border bg-light-subtle h-100">
+            <label class="form-label text-dark fw-medium mb-1 small" style="font-size: 0.82rem;">
+              Notas de Marca (Tipografía, Logo)
+            </label>
+            <p class="text-muted small mb-2" style="font-size: 0.75rem;">Reglas de uso del logo o tipografía corporativa</p>
+            <input type="text" class="form-control form-control-sm modern-input"
+                   placeholder="Ej: Usar tipografía Inter, logotipo en versión monocromática..."
+                   [(ngModel)]="identidadMarca.notas" (ngModelChange)="onIdentidadMarcaChange()">
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 3. Archivos y Documentos Adjuntos -->
+    <div class="card-field p-3 p-md-4 rounded-4 border bg-white shadow-sm transition-all"
+         [class.is-completed]="recursos.length > 0">
+      
+      <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+        <div>
+          <div class="d-flex align-items-center gap-2">
+            <label class="form-label fw-bold text-dark mb-0" style="font-size: 0.92rem;">
+              3. Archivos, Manuales y Documentos de Apoyo
+            </label>
+            <span class="badge bg-secondary-subtle text-secondary border-0 rounded-pill px-2 py-0 fw-semibold" style="font-size: 0.72rem;">
+              {{ recursos.length }} {{ recursos.length === 1 ? 'archivo' : 'archivos' }}
+            </span>
+          </div>
+          <p class="text-muted mb-0 small" style="font-size: 0.82rem;">
+            Adjunta manuales de marca PDF, paquetes de iconos ZIP, capturas o requerimientos técnicos.
+          </p>
+        </div>
+
+        @if (isUploading) {
+        <span class="badge bg-primary-subtle text-primary border-0 rounded-pill px-3 py-1 d-flex align-items-center gap-2">
+          <span class="spinner-border spinner-border-sm" role="status"></span>
+          Subiendo archivo...
+        </span>
+        }
+      </div>
+
+      <!-- Drag & Drop Upload Zone -->
+      <div class="upload-zone mb-3 p-4 rounded-4 text-center border border-dashed transition-all cursor-pointer"
+           [class.is-dragging]="isDragging"
+           (dragover)="onDragOver($event)"
+           (dragleave)="onDragLeave($event)"
+           (drop)="onDrop($event)"
+           (click)="fileInput.click()">
+        
+        <input type="file" #fileInput multiple class="d-none" (change)="onFileSelected($event)">
+
+        <div class="upload-icon-circle mx-auto mb-2">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="17 8 12 3 7 8"></polyline>
+            <line x1="12" y1="3" x2="12" y2="15"></line>
+          </svg>
+        </div>
+
+        <h6 class="fw-bold text-dark mb-1" style="font-size: 0.95rem;">
+          Arrastra y suelta tus archivos aquí, o <span class="text-primary text-decoration-underline">explora tu equipo</span>
+        </h6>
+        <p class="text-muted small mb-0" style="font-size: 0.8rem;">
+          Formatos compatibles: <strong>PDF, PNG, JPG, SVG, ZIP</strong> · Tamaño máximo: 10 MB por archivo
+        </p>
+      </div>
+
+      <!-- Uploaded Files List -->
+      @if (recursos.length > 0) {
+      <div class="row g-3">
+        <div class="col-12 col-md-6 col-lg-4" *ngFor="let file of recursos; let i = index">
+          <div class="file-card d-flex align-items-center justify-content-between p-3 rounded-3 border bg-light-subtle transition-all">
+            
+            <div class="d-flex align-items-center gap-2 overflow-hidden">
+              <div class="file-icon-box" [ngClass]="file.type">
+                @if (file.type === 'pdf') {
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                  <polyline points="14 2 14 8 20 8"></polyline>
+                  <line x1="16" y1="13" x2="8" y2="13"></line>
+                  <line x1="16" y1="17" x2="8" y2="17"></line>
+                  <polyline points="10 9 9 9 8 9"></polyline>
+                </svg>
+                } @else if (file.type === 'image') {
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                  <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                  <polyline points="21 15 16 10 5 21"></polyline>
+                </svg>
+                } @else {
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                  <polyline points="14 2 14 8 20 8"></polyline>
+                  <line x1="12" y1="18" x2="12" y2="12"></line>
+                  <line x1="9" y1="15" x2="15" y2="15"></line>
+                </svg>
+                }
+              </div>
+
+              <div class="overflow-hidden">
+                <h6 class="file-name text-truncate mb-0 fw-medium text-dark" style="font-size: 0.85rem;" [title]="file.name">
+                  {{ file.name }}
+                </h6>
+                <span class="file-size text-muted small" style="font-size: 0.72rem;">{{ file.size }}</span>
+              </div>
+            </div>
+
+            <button type="button" class="btn btn-icon-danger flex-shrink-0 ms-2" (click)="removeFile(i)" title="Eliminar archivo">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+      }
+
+    </div>
+
+  </div>
+
+  <!-- Bottom Navigation & Completion Bar -->
+  <div class="section-footer mt-4 pt-3 border-top d-flex flex-wrap align-items-center justify-content-between gap-3">
+    <button type="button" class="btn btn-outline-secondary px-3 py-2 d-flex align-items-center gap-2 rounded-3"
+            (click)="onPrev()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="19" y1="12" x2="5" y2="12"></line>
+        <polyline points="12 19 5 12 12 5"></polyline>
+      </svg>
+      <span>Volver a Usuarios</span>
+    </button>
+
+    <div class="d-flex align-items-center gap-2">
+      <button type="button" class="btn btn-outline-primary px-3 py-2 d-flex align-items-center gap-2 rounded-3 fw-medium"
+              (click)="onOpenPreview()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+          <circle cx="12" cy="12" r="3"></circle>
+        </svg>
+        <span>Vista Previa del Informe</span>
+      </button>
+
+      <button type="button" class="btn btn-primary-gradient px-4 py-2 d-flex align-items-center gap-2 shadow-sm rounded-3"
+              (click)="onComplete()">
+        <span class="fw-semibold">Finalizar Fase 1</span>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+      </button>
     </div>
   </div>
+
 </div>

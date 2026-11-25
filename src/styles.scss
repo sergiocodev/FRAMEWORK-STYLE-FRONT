@@ -360,9 +360,7 @@ body {
   body.modal-propuesta-open {
     /* 1. Ocultar absolutamente todo el cascarón de la app */
     .app-layout-sidebar,
-    .app-layout-header,
     app-sidebar,
-    app-header,
     app-page-header,
     app-diseno-header,
     .diseno-container > .container-fluid,

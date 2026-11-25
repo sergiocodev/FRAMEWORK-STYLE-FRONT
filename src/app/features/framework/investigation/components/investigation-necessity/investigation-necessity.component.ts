@@ -19,6 +19,8 @@ export class InvestigationNecessityComponent {
   @Input() producto: string = '';
   @Output() productoChange = new EventEmitter<string>();
 
+  @Output() next = new EventEmitter<void>();
+
   onProblemaChange(value: string) {
     this.problema = value;
     this.problemaChange.emit(this.problema);
@@ -32,5 +34,22 @@ export class InvestigationNecessityComponent {
   onProductoChange(value: string) {
     this.producto = value;
     this.productoChange.emit(this.producto);
+  }
+
+  appendPrompt(field: 'problema' | 'objetivo' | 'producto', text: string) {
+    if (field === 'problema') {
+      const current = this.problema ? this.problema.trim() + ' ' : '';
+      this.onProblemaChange(current + text);
+    } else if (field === 'objetivo') {
+      const current = this.objetivo ? this.objetivo.trim() + ' ' : '';
+      this.onObjetivoChange(current + text);
+    } else if (field === 'producto') {
+      const current = this.producto ? this.producto.trim() + ' ' : '';
+      this.onProductoChange(current + text);
+    }
+  }
+
+  onNext() {
+    this.next.emit();
   }
 }

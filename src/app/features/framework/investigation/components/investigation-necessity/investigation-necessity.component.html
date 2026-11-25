@@ -1,39 +1,225 @@
-<div class="necessity-card bg-white rounded-4 shadow-sm border p-4 mb-3 flex-shrink-0">
-  <div class="d-flex justify-content-between align-items-center mb-3">
-    <div class="d-flex align-items-center gap-3">
-      <h6 class="card-title fw-bold mb-0">Comprender el proyecto</h6>
+<div class="necessity-section d-flex flex-column h-100">
+  
+  <!-- Section Top Banner -->
+  <div class="section-hero mb-4">
+    <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-2">
+      <div class="d-flex align-items-center gap-2">
+        <span class="badge rounded-pill bg-primary-subtle text-primary border-0 px-3 py-1 fw-semibold" style="font-size: 0.75rem;">
+          Paso 1 de 4
+        </span>
+        <span class="badge rounded-pill bg-light text-secondary border px-2 py-1 fw-medium" style="font-size: 0.72rem;">
+          Fundacional
+        </span>
+      </div>
+
+      <div class="text-muted small d-flex align-items-center gap-1" style="font-size: 0.8rem;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        <span>Tiempo estimado: ~3 min</span>
+      </div>
     </div>
+
+    <h5 class="fw-bold text-dark mb-1 d-flex align-items-center gap-2">
+      Comprender la Necesidad y el Problema
+    </h5>
+    <p class="text-secondary mb-0" style="font-size: 0.9rem; line-height: 1.5;">
+      Define con claridad el origen del proyecto, qué dolor o fricción se busca erradicar y qué tipo de producto o interfaz se diseñará.
+    </p>
   </div>
 
-  <p class="card-description mb-4">
-    Describe el problema que origina el proyecto, su objetivo principal y las características del producto o módulo a
-    diseñar.
-  </p>
+  <!-- Form Fields Grid -->
+  <div class="form-fields-container d-flex flex-column gap-4 flex-grow-1">
 
-  <div class="mb-4">
-    <label class="form-label fw-medium mb-1" style="font-size: 0.85rem;">Problema o Necesidad</label>
-    <div class="textarea-wrapper">
-      <textarea class="form-control custom-textarea" rows="3" placeholder="¿Qué problema o necesidad se busca resolver?"
-        [ngModel]="problema" (ngModelChange)="onProblemaChange($event)"></textarea>
+    <!-- 1. Problema o Necesidad -->
+    <div class="card-field p-3 p-md-4 rounded-4 border bg-white shadow-sm transition-all"
+         [class.is-completed]="problema && problema.trim().length > 0">
+      
+      <div class="d-flex align-items-start justify-content-between gap-2 mb-2">
+        <div>
+          <label class="form-label fw-bold text-dark mb-1 d-flex align-items-center gap-2" style="font-size: 0.92rem;">
+            <span>1. Problema o Necesidad Raíz</span>
+            <span class="text-danger" title="Campo requerido">*</span>
+          </label>
+          <p class="text-muted mb-0 small" style="font-size: 0.82rem;">
+            ¿Qué problema específico enfrentan los usuarios o el negocio actualmente?
+          </p>
+        </div>
+
+        @if (problema && problema.trim().length > 0) {
+        <span class="badge bg-success-subtle text-success border-0 rounded-pill px-2 py-1 d-flex align-items-center gap-1" style="font-size: 0.72rem;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+          Completado
+        </span>
+        }
+      </div>
+
+      <!-- Quick Suggestion Chips -->
+      <div class="prompt-chips d-flex flex-wrap gap-1 mb-2">
+        <span class="chips-label text-muted small me-1">Sugerencias:</span>
+        <button type="button" class="btn-chip" (click)="appendPrompt('problema', 'Flujo de registro y autenticación complejo que genera alta deserción.')">
+          + Fricción en registro
+        </button>
+        <button type="button" class="btn-chip" (click)="appendPrompt('problema', 'Falta de visualización clara de métricas clave para la toma de decisiones.')">
+          + Falta de visibilidad
+        </button>
+        <button type="button" class="btn-chip" (click)="appendPrompt('problema', 'Interfaz sobrecargada que dificulta la navegación en dispositivos móviles.')">
+          + Sobrecarga visual
+        </button>
+      </div>
+
+      <div class="textarea-wrapper position-relative">
+        <textarea class="form-control modern-textarea" rows="3"
+                  placeholder="Ej: Los usuarios se sienten abrumados por la cantidad de pasos requeridos para completar una transacción y abandonan el proceso..."
+                  [ngModel]="problema" 
+                  (ngModelChange)="onProblemaChange($event)"></textarea>
+        
+        <div class="textarea-footer d-flex justify-content-between align-items-center mt-2 px-1">
+          <span class="text-muted small" style="font-size: 0.75rem;">
+            Sé específico con el dolor del usuario.
+          </span>
+          <span class="char-counter small text-muted" style="font-size: 0.75rem;">
+            {{ problema.length }} caracteres
+          </span>
+        </div>
+      </div>
     </div>
+
+    <!-- 2. Objetivo del Proyecto -->
+    <div class="card-field p-3 p-md-4 rounded-4 border bg-white shadow-sm transition-all"
+         [class.is-completed]="objetivo && objetivo.trim().length > 0">
+      
+      <div class="d-flex align-items-start justify-content-between gap-2 mb-2">
+        <div>
+          <label class="form-label fw-bold text-dark mb-1 d-flex align-items-center gap-2" style="font-size: 0.92rem;">
+            <span>2. Objetivo del Proyecto</span>
+            <span class="text-danger" title="Campo requerido">*</span>
+          </label>
+          <p class="text-muted mb-0 small" style="font-size: 0.82rem;">
+            ¿Qué resultado medible o transformación de experiencia se busca alcanzar?
+          </p>
+        </div>
+
+        @if (objetivo && objetivo.trim().length > 0) {
+        <span class="badge bg-success-subtle text-success border-0 rounded-pill px-2 py-1 d-flex align-items-center gap-1" style="font-size: 0.72rem;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+          Completado
+        </span>
+        }
+      </div>
+
+      <!-- Quick Suggestion Chips -->
+      <div class="prompt-chips d-flex flex-wrap gap-1 mb-2">
+        <span class="chips-label text-muted small me-1">Sugerencias:</span>
+        <button type="button" class="btn-chip" (click)="appendPrompt('objetivo', 'Reducir el tiempo necesario para completar la tarea principal en un 40%.')">
+          + Reducir tiempo de tarea
+        </button>
+        <button type="button" class="btn-chip" (click)="appendPrompt('objetivo', 'Construir una interfaz intuitiva y moderna que transmita confianza y profesionalismo.')">
+          + Elevar confianza visual
+        </button>
+        <button type="button" class="btn-chip" (click)="appendPrompt('objetivo', 'Optimizar el flujo responsivo para usuarios móviles y de escritorio.')">
+          + Fluidez multiplataforma
+        </button>
+      </div>
+
+      <div class="textarea-wrapper position-relative">
+        <textarea class="form-control modern-textarea" rows="3"
+                  placeholder="Ej: Diseñar un flujo simplificado de 3 pasos que reduzca el abandono y mejore la satisfacción de usuario (CSAT)..."
+                  [ngModel]="objetivo" 
+                  (ngModelChange)="onObjetivoChange($event)"></textarea>
+
+        <div class="textarea-footer d-flex justify-content-between align-items-center mt-2 px-1">
+          <span class="text-muted small" style="font-size: 0.75rem;">
+            Define metas de usabilidad y valor de negocio.
+          </span>
+          <span class="char-counter small text-muted" style="font-size: 0.75rem;">
+            {{ objetivo.length }} caracteres
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Descripción del Producto -->
+    <div class="card-field p-3 p-md-4 rounded-4 border bg-white shadow-sm transition-all"
+         [class.is-completed]="producto && producto.trim().length > 0">
+      
+      <div class="d-flex align-items-start justify-content-between gap-2 mb-2">
+        <div>
+          <label class="form-label fw-bold text-dark mb-1" style="font-size: 0.92rem;">
+            3. Naturaleza del Producto o Módulo
+          </label>
+          <p class="text-muted mb-0 small" style="font-size: 0.82rem;">
+            Tipo de sistema, plataforma o arquitectura sobre la que se operará.
+          </p>
+        </div>
+
+        @if (producto && producto.trim().length > 0) {
+        <span class="badge bg-success-subtle text-success border-0 rounded-pill px-2 py-1 d-flex align-items-center gap-1" style="font-size: 0.72rem;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+          Completado
+        </span>
+        }
+      </div>
+
+      <!-- Quick Suggestion Chips -->
+      <div class="prompt-chips d-flex flex-wrap gap-1 mb-2">
+        <span class="chips-label text-muted small me-1">Formatos:</span>
+        <button type="button" class="btn-chip" (click)="appendPrompt('producto', 'Plataforma Web SaaS con panel administrativo y reportes en tiempo real.')">
+          + Dashboard Web SaaS
+        </button>
+        <button type="button" class="btn-chip" (click)="appendPrompt('producto', 'Aplicación móvil responsiva (iOS / Android) para usuarios finales.')">
+          + App Móvil
+        </button>
+        <button type="button" class="btn-chip" (click)="appendPrompt('producto', 'Módulo interno de gestión y analítica para equipos operativos.')">
+          + Módulo Interno
+        </button>
+      </div>
+
+      <div class="textarea-wrapper position-relative">
+        <textarea class="form-control modern-textarea" rows="2"
+                  placeholder="Ej: Dashboard web responsivo con analítica en tiempo real y vista móvil optimizada..."
+                  [ngModel]="producto" 
+                  (ngModelChange)="onProductoChange($event)"></textarea>
+
+        <div class="textarea-footer d-flex justify-content-between align-items-center mt-2 px-1">
+          <span class="text-muted small" style="font-size: 0.75rem;">
+            Ej. Dashboard web, App móvil, eCommerce, Portal de autoservicio.
+          </span>
+          <span class="char-counter small text-muted" style="font-size: 0.75rem;">
+            {{ producto.length }} caracteres
+          </span>
+        </div>
+      </div>
+    </div>
+
   </div>
 
-  <div class="mb-4">
-    <label class="form-label fw-medium mb-1" style="font-size: 0.85rem;">Objetivo del Proyecto</label>
-    <div class="textarea-wrapper">
-      <textarea class="form-control custom-textarea" rows="2"
-        placeholder="¿Qué se espera lograr con el diseño de esta interfaz?" [ngModel]="objetivo"
-        (ngModelChange)="onObjetivoChange($event)"></textarea>
+  <!-- Bottom Navigation & Action Bar -->
+  <div class="section-footer mt-4 pt-3 border-top d-flex flex-wrap align-items-center justify-content-between gap-3">
+    <div class="d-flex align-items-center gap-2 text-muted small">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+        <polyline points="17 21 17 13 7 13 7 21"></polyline>
+        <polyline points="7 3 7 8 15 8"></polyline>
+      </svg>
+      <span>Tus cambios se guardan automáticamente en tiempo real.</span>
     </div>
-  </div>
 
-  <div>
-    <label class="form-label fw-medium mb-1" style="font-size: 0.85rem;">Descripción del Producto</label>
-    <div class="textarea-wrapper">
-      <textarea class="form-control custom-textarea" rows="2"
-        placeholder="Información sobre el sistema, app o módulo (ej. Dashboard web, App móvil)" [ngModel]="producto"
-        (ngModelChange)="onProductoChange($event)"></textarea>
-    </div>
+    <button type="button" class="btn btn-primary-gradient px-4 py-2 d-flex align-items-center gap-2 shadow-sm rounded-3"
+            (click)="onNext()">
+      <span class="fw-medium">Continuar a Expectativas</span>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="5" y1="12" x2="19" y2="12"></line>
+        <polyline points="12 5 19 12 12 19"></polyline>
+      </svg>
+    </button>
   </div>
 
 </div>

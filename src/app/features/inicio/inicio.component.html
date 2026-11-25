@@ -13,14 +13,14 @@
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ms-1"><polyline points="6 9 12 15 18 9"></polyline></svg>
       </button>
       <ul class="dropdown-menu dropdown-menu-end border-0 shadow mt-2 rounded-3 py-2" style="min-width: 200px;">
-        <li><a class="dropdown-item py-2 px-3 d-flex align-items-center gap-3 text-dark fw-medium" href="#">
+        <li><button type="button" class="dropdown-item py-2 px-3 d-flex align-items-center gap-3 text-dark fw-medium border-0 bg-transparent w-100" (click)="openCreateModal('nuevo')">
           <svg class="text-primary" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
           Nuevo proyecto
-        </a></li>
-        <li><a class="dropdown-item py-2 px-3 d-flex align-items-center gap-3 text-dark fw-medium" href="#">
+        </button></li>
+        <li><button type="button" class="dropdown-item py-2 px-3 d-flex align-items-center gap-3 text-dark fw-medium border-0 bg-transparent w-100" (click)="openCreateModal('rediseño')">
           <svg class="text-secondary" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/></svg>
           Rediseño
-        </a></li>
+        </button></li>
       </ul>
     </div>
   </div>
@@ -178,7 +178,7 @@
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
                 Nuevo
               </div>
-              <a href="#" class="text-primary text-decoration-none fw-semibold small d-flex align-items-center gap-1">Ver detalles <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></a>
+              <a routerLink="/projects" class="text-primary text-decoration-none fw-semibold small d-flex align-items-center gap-1">Ver detalles <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></a>
             </div>
           </div>
         </div>
@@ -243,7 +243,7 @@
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/></svg>
                 Rediseño
               </div>
-              <a href="#" class="text-primary text-decoration-none fw-semibold small d-flex align-items-center gap-1">Ver detalles <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></a>
+              <a routerLink="/projects" class="text-primary text-decoration-none fw-semibold small d-flex align-items-center gap-1">Ver detalles <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></a>
             </div>
           </div>
         </div>
@@ -313,7 +313,7 @@
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/></svg>
                 Rediseño
               </div>
-              <a href="#" class="text-primary text-decoration-none fw-semibold small d-flex align-items-center gap-1">Ver detalles <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></a>
+              <a routerLink="/projects" class="text-primary text-decoration-none fw-semibold small d-flex align-items-center gap-1">Ver detalles <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></a>
             </div>
           </div>
         </div>
@@ -378,7 +378,7 @@
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
                 Nuevo
               </div>
-              <a href="#" class="text-primary text-decoration-none fw-semibold small d-flex align-items-center gap-1">Ver detalles <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></a>
+              <a routerLink="/projects" class="text-primary text-decoration-none fw-semibold small d-flex align-items-center gap-1">Ver detalles <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></a>
             </div>
           </div>
         </div>
@@ -399,7 +399,7 @@
             <h5 class="fw-bold mb-0 text-dark">Tareas pendientes</h5>
             <span class="badge bg-danger rounded-circle d-flex align-items-center justify-content-center ms-1" style="width: 22px; height: 22px; font-size: 0.75rem;">5</span>
           </div>
-          <a href="#" class="text-primary text-decoration-none small fw-semibold">Ver todas</a>
+          <a routerLink="/projects" class="text-primary text-decoration-none small fw-semibold">Ver todas</a>
         </div>
         
         <div class="d-flex flex-column gap-3">
@@ -474,7 +474,7 @@
             </div>
             <h5 class="fw-bold mb-0 text-dark">Notificaciones del equipo</h5>
           </div>
-          <a href="#" class="text-primary text-decoration-none small fw-semibold">Ver todas</a>
+          <a routerLink="/projects" class="text-primary text-decoration-none small fw-semibold">Ver todas</a>
         </div>
 
         <div class="d-flex flex-column gap-4">
@@ -540,3 +540,42 @@
   </div>
 
 </div>
+
+<!-- Modal para Crear/Rediseñar Proyecto -->
+<app-modal [isOpen]="isCreateModalOpen"
+  [title]="newProject.tipo === 'nuevo' ? 'Crear Nuevo Proyecto' : 'Registrar Rediseño'" size="medium"
+  (closeEvent)="closeCreateModal()">
+
+  <div modal-body>
+    <form (ngSubmit)="submitCreateProject()" #projectForm="ngForm" class="d-flex flex-column gap-3 mt-2">
+
+      <!-- Nombre del Proyecto -->
+      <div class="form-group">
+        <label for="projectName" class="form-label fw-medium text-dark">Nombre del Proyecto <span
+            class="text-danger">*</span></label>
+        <input type="text" id="projectName" name="projectName"
+          class="form-control form-control-lg bg-light border-0 shadow-none px-3" placeholder="Ej: E-commerce Nike"
+          [(ngModel)]="newProject.nombre" required autofocus>
+        <div class="form-text text-muted small mt-1">Este nombre se usará en todas las fases del framework.</div>
+      </div>
+
+    </form>
+  </div>
+
+  <div modal-footer class="d-flex justify-content-end gap-2 mt-4">
+    <button type="button" class="btn btn-light rounded-pill px-4" (click)="closeCreateModal()"
+      [disabled]="isSubmitting">
+      Cancelar
+    </button>
+    <button type="button" class="btn btn-primary rounded-pill px-4 d-flex align-items-center gap-2"
+      style="background-color: #2563EB;" (click)="submitCreateProject()"
+      [disabled]="!newProject.nombre.trim() || isSubmitting">
+      @if (isSubmitting) {
+      <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+      <span role="status">Creando...</span>
+      } @else {
+      Crear Proyecto
+      }
+    </button>
+  </div>
+</app-modal>

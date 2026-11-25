@@ -1,30 +1,33 @@
-<div class="diseno-visual-library-container">
-  <!-- Barra de Flujo Obligatorio (Stepper Secuencial) -->
+<div class="diseno-visual-library-container d-flex flex-column">
+
+  <!-- Flow Stepper Bar (Secuencial Inteligente) -->
   <div class="card border-0 shadow-sm rounded-4 p-3 mb-4 bg-white flow-stepper-card">
+    
     <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
       <div class="d-flex align-items-center gap-2">
-        <span
-          class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill fw-bold d-flex align-items-center gap-2"
-          style="font-size: 0.75rem;">
-          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
-            <path
-              d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0m3.5 7.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5z" />
+        <span class="badge rounded-pill bg-primary-subtle text-primary border-0 px-3 py-1-5 fw-semibold d-flex align-items-center gap-2" style="font-size: 0.75rem;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
           </svg>
-          Flujo de Diseño
+          Sistemas de Diseño
         </span>
-        <span class="text-muted small">Configuración secuencial del sistema de diseño</span>
+        <span class="text-secondary small">Configuración estructurada del Design System institucional</span>
       </div>
 
-      <div class="d-flex align-items-center gap-2">
-        <span class="small fw-semibold text-secondary">Progreso:</span>
-        <div class="progress" style="width: 130px; height: 8px; border-radius: 4px; background-color: #e2e8f0;">
-          <div class="progress-bar bg-primary transition-all" role="progressbar" [style.width.%]="progressPercentage"
-            [attr.aria-valuenow]="progressPercentage" aria-valuemin="0" aria-valuemax="100">
+      <div class="d-flex align-items-center gap-3">
+        <div class="d-flex align-items-center gap-2">
+          <span class="small fw-semibold text-secondary" style="font-size: 0.8rem;">Progreso:</span>
+          <div class="progress" style="width: 120px; height: 6px; border-radius: 999px; background-color: #E2E8F0;">
+            <div class="progress-bar rounded-pill transition-all" role="progressbar" 
+                 [style.width.%]="progressPercentage"
+                 [style.background]="'linear-gradient(90deg, #FF3366, #7C3AED)'"
+                 [attr.aria-valuenow]="progressPercentage" aria-valuemin="0" aria-valuemax="100">
+            </div>
           </div>
         </div>
-        <span class="badge bg-light text-primary border rounded-pill font-monospace fw-bold"
-          style="font-size: 0.75rem;">
-          Paso {{ currentStepIndex + 1 }} de {{ steps.length }} ({{ progressPercentage }}%)
+
+        <span class="badge bg-light text-dark border rounded-pill px-2 py-1 fw-bold" style="font-size: 0.74rem;">
+          Paso {{ currentStepIndex + 1 }} de {{ steps.length }} · {{ progressPercentage }}%
         </span>
       </div>
     </div>
@@ -32,114 +35,163 @@
     <!-- Stepper Flow Pills -->
     <div class="stepper-flow-container d-flex align-items-center justify-content-between flex-wrap gap-2">
       <ng-container *ngFor="let step of steps; let i = index; let last = last">
+        
         <!-- Step Pill Button -->
         <button type="button"
-          class="step-flow-pill d-flex align-items-center gap-2 px-3 py-2 rounded-pill transition-all text-start"
-          [class.active]="activeTab === step.id" [class.completed]="isStepCompleted(step.id) && activeTab !== step.id"
-          [class.pending]="!isStepCompleted(step.id) && activeTab !== step.id" (click)="setTab(step.id)">
+                class="step-flow-pill d-flex align-items-center gap-2 px-3 py-2 rounded-pill transition-all text-start"
+                [class.active]="activeTab === step.id" 
+                [class.completed]="isStepCompleted(step.id) && activeTab !== step.id"
+                [class.pending]="!isStepCompleted(step.id) && activeTab !== step.id" 
+                (click)="setTab(step.id)">
 
-          <!-- Number/Check Circle Indicator -->
+          <!-- Number / Check Circle Indicator -->
           <span class="step-indicator-circle flex-shrink-0 d-flex align-items-center justify-content-center fw-bold">
-            <svg *ngIf="isStepCompleted(step.id) && activeTab !== step.id" xmlns="http://www.w3.org/2000/svg" width="11" height="11" fill="currentColor" viewBox="0 0 16 16">
-              <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425z"/>
+            @if (isStepCompleted(step.id) && activeTab !== step.id) {
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"></polyline>
             </svg>
-            <span *ngIf="!isStepCompleted(step.id) || activeTab === step.id">{{ step.stepNumber }}</span>
+            } @else {
+            <span>{{ step.stepNumber }}</span>
+            }
           </span>
 
           <!-- Label and Status Subtitle -->
-          <div class="d-flex flex-column">
-            <span class="step-label fw-semibold" style="font-size: 0.85rem;">{{ step.label }}</span>
-            <span class="step-sublabel" style="font-size: 0.65rem;">
-              <span *ngIf="activeTab === step.id" class="text-white-50 fw-medium">Paso actual</span>
-              <span *ngIf="isStepCompleted(step.id) && activeTab !== step.id"
-                class="text-success fw-medium">Completado</span>
-              <span *ngIf="!isStepCompleted(step.id) && activeTab !== step.id" class="text-muted">Obligatorio</span>
+          <div class="d-flex flex-column overflow-hidden">
+            <span class="step-label fw-semibold text-truncate" style="font-size: 0.84rem;">{{ step.label }}</span>
+            <span class="step-sublabel" style="font-size: 0.68rem;">
+              @if (activeTab === step.id) {
+              <span class="text-white-50 fw-medium">Paso actual</span>
+              } @else if (isStepCompleted(step.id)) {
+              <span class="text-success fw-medium">Listo ✓</span>
+              } @else {
+              <span class="text-muted">Pendiente</span>
+              }
             </span>
           </div>
 
-          <!-- Mandatory requirement tag -->
-          <span *ngIf="!isStepCompleted(step.id) && activeTab !== step.id" class="badge-mandatory ms-1">
-            *
-          </span>
+          <!-- Mandatory requirement asterisk -->
+          @if (!isStepCompleted(step.id) && activeTab !== step.id) {
+          <span class="badge-mandatory ms-1" title="Requerido">*</span>
+          }
         </button>
 
         <!-- Connecting Arrow / Connector (between steps) -->
-        <div *ngIf="!last" class="step-connector d-none d-lg-flex align-items-center justify-content-center text-muted">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-            <path fill-rule="evenodd"
-              d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z" />
+        @if (!last) {
+        <div class="step-connector d-none d-xl-flex align-items-center justify-content-center text-muted opacity-50">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 18 15 12 9 6"></polyline>
           </svg>
         </div>
+        }
       </ng-container>
     </div>
   </div>
 
-  <!-- Sistema 1: Color -->
-  <section id="section-colors" *ngIf="activeTab === 'colors'">
-    <app-diseno-visual-colors [proyectoId]="proyectoId" [identidadMarca]="identidadMarca">
-    </app-diseno-visual-colors>
-  </section>
+  <!-- Content of Active Step (Smooth Transitions) -->
+  <div class="step-content-wrapper flex-grow-1 animation-fade-in">
 
-  <!-- Sistema 2: Tipografía & Escalas -->
-  <section id="section-typography" *ngIf="activeTab === 'typography'">
-    <app-diseno-visual-typography [proyectoId]="proyectoId">
-    </app-diseno-visual-typography>
-  </section>
+    <!-- Sistema 1: Color -->
+    @if (activeTab === 'colors') {
+    <section id="section-colors">
+      <app-diseno-visual-colors [proyectoId]="proyectoId" [identidadMarca]="identidadMarca">
+      </app-diseno-visual-colors>
+    </section>
+    }
 
-  <!-- Sistema 3: Contraste & WCAG 2.1 -->
-  <section id="section-wcag" *ngIf="activeTab === 'wcag'">
-    <app-diseno-visual-wcag [proyectoId]="proyectoId">
-    </app-diseno-visual-wcag>
-  </section>
+    <!-- Sistema 2: Tipografía & Escalas -->
+    @if (activeTab === 'typography') {
+    <section id="section-typography">
+      <app-diseno-visual-typography [proyectoId]="proyectoId">
+      </app-diseno-visual-typography>
+    </section>
+    }
 
-  <!-- Sistema 4: Iconografía -->
-  <section id="section-icons" *ngIf="activeTab === 'icons'">
-    <app-diseno-visual-icons [proyectoId]="proyectoId">
-    </app-diseno-visual-icons>
-  </section>
+    <!-- Sistema 3: Contraste & WCAG 2.1 -->
+    @if (activeTab === 'wcag') {
+    <section id="section-wcag">
+      <app-diseno-visual-wcag [proyectoId]="proyectoId">
+      </app-diseno-visual-wcag>
+    </section>
+    }
 
-  <!-- Sistema 5: Espaciado, Forma y Grids -->
-  <section id="section-layout" *ngIf="activeTab === 'layout'">
-    <app-diseno-visual-layout [proyectoId]="proyectoId">
-    </app-diseno-visual-layout>
-  </section>
+    <!-- Sistema 4: Iconografía -->
+    @if (activeTab === 'icons') {
+    <section id="section-icons">
+      <app-diseno-visual-icons [proyectoId]="proyectoId">
+      </app-diseno-visual-icons>
+    </section>
+    }
 
-  <!-- Navegación Inferior del Flujo (Continuar / Anterior) -->
-  <div
-    class="card border-0 shadow-sm rounded-4 p-3 mt-4 bg-white d-flex flex-row align-items-center justify-content-between flex-wrap gap-3">
+    <!-- Sistema 5: Espaciado, Forma y Grids -->
+    @if (activeTab === 'layout') {
+    <section id="section-layout">
+      <app-diseno-visual-layout [proyectoId]="proyectoId">
+      </app-diseno-visual-layout>
+    </section>
+    }
+
+  </div>
+
+  <!-- Bottom Navigation & Action Bar -->
+  <div class="card border-0 shadow-sm rounded-4 p-3 mt-4 bg-white d-flex flex-row align-items-center justify-content-between flex-wrap gap-3">
+    
+    <!-- Previous Step Button -->
     <div>
-      <button *ngIf="previousStep" type="button"
-        class="btn btn-outline-secondary btn-sm px-3 py-2 rounded-pill fw-medium d-flex align-items-center gap-2 shadow-xs transition-all"
-        (click)="goToPreviousStep()">
-        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
-          <path fill-rule="evenodd"
-            d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z" />
+      @if (previousStep) {
+      <button type="button" class="btn btn-outline-secondary px-3 py-2 rounded-3 fw-medium d-flex align-items-center gap-2 shadow-xs transition-all"
+              (click)="goToPreviousStep()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="19" y1="12" x2="5" y2="12"></line>
+          <polyline points="12 19 5 12 12 5"></polyline>
         </svg>
         <span>Anterior: {{ previousStep.label }}</span>
       </button>
+      }
     </div>
 
+    <!-- Center Tip Reassurance -->
+    <div class="d-none d-md-flex align-items-center gap-2 text-muted small">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+        <polyline points="17 21 17 13 7 13 7 21"></polyline>
+      </svg>
+      <span>Los tokens y estilos se sincronizan en tiempo real con la guía visual.</span>
+    </div>
+
+    <!-- Right Next / Complete Actions -->
     <div class="d-flex align-items-center gap-2 ms-auto">
-      <button *ngIf="nextStep" type="button"
-        class="btn btn-primary btn-sm px-4 py-2 rounded-pill fw-bold shadow-sm d-flex align-items-center gap-2"
-        style="background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); border: none;" (click)="goToNextStep()">
-        <span>Continuar al paso {{ nextStep.stepNumber }}: {{ nextStep.label }}</span>
-        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
-          <path fill-rule="evenodd"
-            d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z" />
+      <button type="button" class="btn btn-outline-secondary px-3 py-2 rounded-3 fw-medium d-flex align-items-center gap-2"
+              (click)="onTriggerPreview()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+          <circle cx="12" cy="12" r="3"></circle>
         </svg>
+        <span>Ver Guía Visual</span>
       </button>
 
-      <button *ngIf="!nextStep" type="button"
-        class="btn btn-success btn-sm px-4 py-2 rounded-pill fw-bold shadow-sm d-flex align-items-center gap-2"
-        style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); border: none;"
-        (click)="markFlowCompleted()">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-          <path
-            d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z" />
+      @if (nextStep) {
+      <button type="button" class="btn btn-primary-gradient px-4 py-2 rounded-3 fw-medium shadow-sm d-flex align-items-center gap-2"
+              (click)="goToNextStep()">
+        <span>Continuar al paso {{ nextStep.stepNumber }}: {{ nextStep.label }}</span>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+          <polyline points="12 5 19 12 12 19"></polyline>
         </svg>
-        <span>¡Flujo de Diseño Completado!</span>
       </button>
+      }
+
+      @if (!nextStep) {
+      <button type="button" class="btn btn-primary-gradient px-4 py-2 rounded-3 fw-bold shadow-sm d-flex align-items-center gap-2"
+              (click)="markFlowCompleted()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+          <polyline points="22 4 12 14.01 9 11.01"></polyline>
+        </svg>
+        <span>¡Finalizar Sistema y Pasar a Fase 4!</span>
+      </button>
+      }
     </div>
+
   </div>
+
 </div>
