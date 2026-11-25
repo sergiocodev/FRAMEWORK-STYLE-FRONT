@@ -1,7 +1,7 @@
 export const environment = {
   production: false,
-  // URL de tu Backend en Contabo VPS (reemplaza con tu IP o dominio, ej: 'https://api.tudominio.com' o 'http://123.45.67.89')
-  backendProductionUrl: 'http://TU_IP_CONTABO',
+  // URL de tu Backend en Contabo VPS con HTTPS
+  backendProductionUrl: 'https://sslip.io',
 
   get apiUrl(): string {
     if (typeof window !== 'undefined' && window.location && window.location.hostname) {
