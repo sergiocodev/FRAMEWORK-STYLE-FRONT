@@ -1,11 +1,11 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule, Router } from '@angular/router';
 import { ProjectsService, ProyectoResponse } from './projects.service';
 import { ClientsService, ClientResponse } from './clients.service';
+import { AuthStateService } from '../../core/services/auth-state.service';
 import { ModalComponent } from '../../shared/components/modal/modal.component';
-import { PageHeaderComponent } from '../../shared/components/page-header/page-header.component';
 
 export interface Project {
   id: string;
@@ -26,26 +26,36 @@ export interface Project {
 @Component({
   selector: 'app-projects',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, ModalComponent, PageHeaderComponent],
+  imports: [CommonModule, FormsModule, RouterModule, ModalComponent],
   templateUrl: './projects.component.html',
   styleUrl: './projects.component.scss'
 })
 export class ProjectsComponent implements OnInit {
   private projectsService = inject(ProjectsService);
   private clientsService = inject(ClientsService);
+  private authState = inject(AuthStateService);
   private router = inject(Router);
+
+  userGreetingName = computed(() => {
+    const user = this.authState.currentUser();
+    if (user?.full_name) {
+      return user.full_name.split(' ')[0];
+    }
+    return user?.username || 'Diseñador';
+  });
+
+  statusFilter = 'Todos';
 
   headerBreadcrumbs = [
     { label: 'Inicio', url: '#' },
     { label: 'Gestor de Proyectos', active: true }
   ];
 
-  // KPIs will be calculated dynamically based on data
+  // 3 KPIs claros y reales (Total, En desarrollo, Completados)
   kpis = [
-    { label: 'Total Proyectos', value: '0', trend: 'Actualizado', bg: 'bg-primary-subtle', color: 'text-primary', icon: 'M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z' },
-    { label: 'En Desarrollo', value: '0', trend: 'Activos', bg: 'bg-success-subtle', color: 'text-success', icon: 'M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6' },
-    { label: 'En Riesgo / Detenido', value: '0', trend: 'Requieren atención', bg: 'bg-danger-subtle', color: 'text-danger', icon: 'M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0zM12 9v4M12 17h.01' },
-    { label: 'Completados', value: '0', trend: 'Casos de éxito', bg: 'bg-info-subtle', color: 'text-info', icon: 'M23 6l-9.5 9.5-5-5L1 18M23 6h-6M23 6v6' }
+    { label: 'Total de proyectos', value: '0', trend: 'Registrados', bg: 'bg-primary-subtle', color: 'text-primary', icon: 'M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z' },
+    { label: 'En desarrollo', value: '0', trend: 'Fases activas', bg: 'bg-success-subtle', color: 'text-success', icon: 'M22 11.08V12a10 10 0 1 1-5.93-9.14 M22 4 12 14.01 9 11.01' },
+    { label: 'Completados', value: '0', trend: 'Fase 5 culminada', bg: 'bg-info-subtle', color: 'text-info', icon: 'M9 11l3 3L22 4 M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11' }
   ];
 
   phases = [
@@ -126,27 +136,32 @@ export class ProjectsComponent implements OnInit {
 
   calculateKPIs(data: Project[]) {
     const total = data.length;
-    const inDev = data.filter(p => p.status === 'En desarrollo').length;
-    const atRisk = data.filter(p => p.status === 'En espera').length;
+    const inDev = data.filter(p => p.status === 'En desarrollo' || p.status === 'Nuevo').length;
     const completed = data.filter(p => p.status === 'Completado').length;
 
     this.kpis[0].value = total.toString();
     this.kpis[1].value = inDev.toString();
-    this.kpis[2].value = atRisk.toString();
-    this.kpis[3].value = completed.toString();
+    this.kpis[2].value = completed.toString();
   }
 
   filterProjects() {
-    if (!this.searchTerm.trim()) {
-      this.filteredProjects = this.projects;
-    } else {
+    let result = this.projects;
+
+    if (this.statusFilter === 'Activos' || this.statusFilter === 'En desarrollo') {
+      result = result.filter(p => p.status === 'En desarrollo' || p.status === 'Nuevo');
+    } else if (this.statusFilter === 'Completados') {
+      result = result.filter(p => p.status === 'Completado');
+    }
+
+    if (this.searchTerm.trim()) {
       const term = this.searchTerm.toLowerCase();
-      this.filteredProjects = this.projects.filter(p =>
+      result = result.filter(p =>
         p.name.toLowerCase().includes(term) ||
         p.client.toLowerCase().includes(term)
       );
     }
-    // Reset visible count when searching to avoid layout jumps
+
+    this.filteredProjects = result;
     this.visibleCount = 6;
   }
 
@@ -240,6 +255,19 @@ export class ProjectsComponent implements OnInit {
     }
 
     this.router.navigate(['/framework/projects', project.id, phaseRoute]);
+  }
+
+  goToPhase(project: Project, phaseIndex: number, event: Event) {
+    event.stopPropagation();
+    const phaseRoutes = [
+      'investigation',
+      'diseno_conceptual',
+      'visual',
+      'detallado',
+      'evaluacion'
+    ];
+    const targetRoute = phaseRoutes[phaseIndex] || 'investigation';
+    this.router.navigate(['/framework/projects', project.id, targetRoute]);
   }
 
   // Quick Actions (3-dots menu)
@@ -353,19 +381,6 @@ export class ProjectsComponent implements OnInit {
         alert('Error al editar el proyecto.');
       }
     });
-  }
-
-  pauseProject(project: Project, event: Event) {
-    event.stopPropagation();
-    if (confirm(`¿Estás seguro de que deseas pausar el proyecto "${project.name}"?`)) {
-      this.projectsService.updateProject(project.id, { estado: 'en_espera' }).subscribe({
-        next: () => {
-          project.status = 'En espera';
-          this.calculateKPIs(this.projects);
-        },
-        error: (err) => console.error('Error al pausar:', err)
-      });
-    }
   }
 
   deleteProject(project: Project, event: Event) {

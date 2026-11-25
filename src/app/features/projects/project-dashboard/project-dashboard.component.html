@@ -18,113 +18,270 @@
   } @else if (project) {
     
     <!-- Dashboard Header -->
-    <header class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-5 gap-3">
+    <header class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
       <div>
         <a routerLink="/projects" class="text-decoration-none text-muted d-flex align-items-center gap-2 mb-3 hover-primary">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <line x1="19" y1="12" x2="5" y2="12"></line>
             <polyline points="12 19 5 12 12 5"></polyline>
           </svg>
-          Volver al Portafolio
+          Volver al Portafolio de Proyectos
         </a>
-        <h2 class="fw-bold text-dark mb-2 d-flex align-items-center gap-3">
+        <h2 class="fw-bold text-dark mb-1 d-flex align-items-center gap-3">
           {{project.nombre}}
-          <span class="badge bg-primary-subtle text-primary border-0 rounded-pill px-3 py-1 fs-6 fw-medium">
-            {{project.tipo | titlecase}}
+          <span class="badge rounded-pill px-3 py-1 fs-6 fw-medium"
+                [ngClass]="project.estado === 'completado' ? 'bg-success bg-opacity-10 text-success' : 'bg-primary-subtle text-primary'">
+            {{ project.estado === 'completado' ? 'Completado' : 'En desarrollo' }}
           </span>
         </h2>
-        <p class="text-muted mb-0 fs-5">
-          Cliente: <span class="fw-medium text-dark">{{project.cliente?.nombre || 'Desconocido'}}</span>
+        <p class="text-muted mb-0">
+          Cliente: <span class="fw-medium text-dark">{{project.cliente?.nombre || 'Sin cliente asignado'}}</span>
+          <span class="mx-2 text-muted">·</span>
+          Plataforma: <span class="fw-medium text-dark text-capitalize">{{project.plataforma || 'Web'}}</span>
         </p>
       </div>
       
-      <div class="d-flex gap-2">
-        <button class="btn btn-white border shadow-sm rounded-pill px-4 py-2 text-muted fw-medium d-flex align-items-center gap-2">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+      <!-- Action Buttons -->
+      <div class="d-flex align-items-center gap-2 flex-wrap">
+        <!-- Editar Proyecto Modal Trigger -->
+        <button type="button" class="btn btn-white bg-white border shadow-sm rounded-pill px-4 py-2 text-dark fw-medium d-flex align-items-center gap-2 hover-elevate"
+                (click)="openEditModal()">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+          </svg>
           Editar Proyecto
         </button>
       </div>
     </header>
 
-    <!-- Full-Width Stepper -->
-    <div class="card border-0 shadow-sm rounded-4 mb-5 p-4 p-md-5 overflow-hidden">
-      <h5 class="fw-bold text-dark mb-4">Progreso del Framework STYLE</h5>
-      
-      <div class="stepper-wrapper w-100 d-flex justify-content-between position-relative">
-        @for (phase of phases; track phase.id) {
-          <div class="step-item text-center" style="z-index: 1; flex: 1;">
-            
-            <!-- Connectors (except for last item) -->
-            @if ($index < phases.length - 1) {
-              <div class="step-connector position-absolute" 
-                   style="top: 24px; left: calc(50% + 24px); width: calc(100% - 48px); height: 3px; background-color: #e2e8f0; z-index: -1;"
-                   [style.backgroundColor]="phase.id < project.fase_actual_id ? '#10b981' : '#e2e8f0'">
-              </div>
-            }
-
-            <!-- Circle -->
-            <div class="step-circle mx-auto mb-3 d-flex align-items-center justify-content-center rounded-circle" 
-                 style="width: 48px; height: 48px; transition: all 0.3s ease;"
-                 [ngStyle]="{
-                   'background-color': phase.id < project.fase_actual_id ? '#10b981' : (phase.id === project.fase_actual_id ? '#2563eb' : '#f8fafc'),
-                   'color': phase.id <= project.fase_actual_id ? '#ffffff' : '#94a3b8',
-                   'border': phase.id > project.fase_actual_id ? '2px solid #e2e8f0' : 'none',
-                   'box-shadow': phase.id === project.fase_actual_id ? '0 0 0 4px rgba(37, 99, 235, 0.2)' : 'none'
-                 }">
-                 
-                 @if (phase.id < project.fase_actual_id) {
-                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-                     <polyline points="20 6 9 17 4 12"></polyline>
-                   </svg>
-                 } @else {
-                   <span class="fs-5 fw-bold">{{phase.id}}</span>
-                 }
-            </div>
-            
-            <!-- Label -->
-            <span class="d-block fw-bold" 
-                  [ngClass]="phase.id === project.fase_actual_id ? 'text-primary' : (phase.id < project.fase_actual_id ? 'text-success' : 'text-muted')">
-              {{phase.name}}
-            </span>
-            <span class="d-block small text-muted mt-1">
-              {{phase.id < project.fase_actual_id ? 'Completado' : (phase.id === project.fase_actual_id ? 'En Proceso' : 'Pendiente')}}
-            </span>
+    <!-- Full-Width Interactive Stepper -->
+    <div class="card border-0 shadow-sm rounded-4 mb-4 p-4 p-md-5 overflow-hidden bg-white interactive-stepper">
+      <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center mb-4 gap-2">
+        <div>
+          <div class="d-flex align-items-center gap-2 mb-1">
+            <span class="badge bg-primary bg-opacity-10 text-primary fw-semibold px-2 py-1 rounded-pill small">Proceso Metodológico</span>
+            <h5 class="fw-bold text-dark mb-0">Progreso del Framework STYLE</h5>
           </div>
-        }
+          <p class="text-secondary small mb-0">Ruta guiada de diseño en 5 fases secuenciales. Pasa el cursor sobre cualquier fase desbloqueada para ingresar directamente.</p>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <span class="badge bg-light text-dark border px-3 py-2 rounded-pill fw-semibold shadow-xs">
+            Fase Actual: {{ project.fase_actual_id }} de 5
+          </span>
+        </div>
+      </div>
+      
+      <div class="position-relative w-100 mt-2 pt-2">
+        <!-- Connector background line behind circles -->
+        <div class="position-absolute start-0 end-0" style="top: 36px; height: 4px; background-color: #e2e8f0; z-index: 0; margin: 0 45px;"></div>
+
+        <div class="d-flex justify-content-between position-relative" style="z-index: 1;">
+          @for (phase of phases; track phase.id) {
+            @let isUnlocked = isPhaseUnlocked(phase.id);
+            @let isCurrent = phase.id === project.fase_actual_id;
+            @let isCompleted = phase.id < project.fase_actual_id;
+
+            <div class="step-node text-center" 
+                 [ngClass]="isUnlocked ? 'unlocked' : 'locked'"
+                 style="flex: 1; max-width: 190px;"
+                 [title]="getPhaseTooltip(phase)"
+                 (click)="navigateToPhase(phase)">
+              
+              <!-- Circle -->
+              <div class="step-circle mx-auto mb-2 d-flex align-items-center justify-content-center rounded-circle" 
+                   [ngStyle]="{
+                     'background-color': isCompleted ? '#10b981' : (isCurrent ? '#2563eb' : '#ffffff'),
+                     'color': (isCompleted || isCurrent) ? '#ffffff' : '#94a3b8',
+                     'border': (!isCompleted && !isCurrent) ? '2px solid #cbd5e1' : 'none',
+                     'box-shadow': isCurrent ? '0 0 0 5px rgba(37, 99, 235, 0.22)' : (isCompleted ? '0 0 0 4px rgba(16, 185, 129, 0.15)' : 'none')
+                   }">
+                   
+                   @if (isCompleted) {
+                     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                       <polyline points="20 6 9 17 4 12"></polyline>
+                     </svg>
+                   } @else {
+                     <span class="fs-5 fw-bold">{{phase.id}}</span>
+                   }
+              </div>
+              
+              <!-- Title -->
+              <span class="d-block fw-bold step-title fs-6" 
+                    [ngClass]="isCurrent ? 'text-primary' : (isCompleted ? 'text-dark' : 'text-muted')">
+                {{phase.name}}
+              </span>
+
+              <!-- Status Tag -->
+              <span class="badge rounded-pill px-2 py-0.5 mt-1 small"
+                    [ngClass]="isCompleted ? 'bg-success-subtle text-success' : (isCurrent ? 'bg-primary-subtle text-primary' : 'bg-light text-muted')">
+                {{ isCompleted ? 'Completado' : (isCurrent ? 'En Proceso' : 'Pendiente') }}
+              </span>
+
+              <!-- Hover Call-to-action Indicator -->
+              @if (isUnlocked) {
+                <div class="step-hover-indicator text-primary fw-bold mt-1 d-flex align-items-center justify-content-center gap-1">
+                  <span>{{ isCurrent ? 'Continuar →' : 'Entrar a la Fase →' }}</span>
+                </div>
+              }
+            </div>
+          }
+        </div>
       </div>
     </div>
 
-    <!-- Active Workspace Placeholder -->
-    <div class="row g-4">
-      <div class="col-12">
-        <div class="card border-0 shadow-sm rounded-4 h-100" style="min-height: 400px; background: linear-gradient(145deg, #ffffff, #f8fafc);">
-          <div class="card-body p-5 d-flex flex-column align-items-center justify-content-center text-center">
-            
-            <div class="bg-primary-subtle text-primary rounded-circle p-4 mb-4 d-inline-flex">
-              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                <line x1="3" y1="9" x2="21" y2="9"></line>
-                <line x1="9" y1="21" x2="9" y2="9"></line>
-              </svg>
+    <!-- Navegación de Fases (Grilla de 5 Fases) -->
+    <div class="mb-4">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="fw-bold text-dark mb-0">Fases de Trabajo del Proyecto</h5>
+        <span class="text-secondary small">Haz clic en cualquier fase desbloqueada para abrir su módulo de trabajo</span>
+      </div>
+      <div class="row g-3">
+        @for (phase of phases; track phase.id) {
+          @let isUnlocked = isPhaseUnlocked(phase.id);
+          @let isCurrent = phase.id === project.fase_actual_id;
+          @let isCompleted = phase.id < project.fase_actual_id;
+          
+          <div class="col-12 col-md-6 col-xl">
+            <div class="card h-100 rounded-4 shadow-sm p-3 d-flex flex-column justify-content-between phase-card"
+                 [ngClass]="{
+                   'unlocked': isUnlocked,
+                   'locked': !isUnlocked,
+                   'active-phase': isCurrent,
+                   'bg-white': isUnlocked,
+                   'bg-light bg-opacity-50': !isUnlocked
+                 }"
+                 style="min-height: 210px;"
+                 (click)="navigateToPhase(phase)">
+              
+              <div>
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <span class="badge rounded-pill px-2 py-1 fw-semibold"
+                        [ngClass]="isCurrent ? 'bg-primary text-white' : (isCompleted ? 'bg-success-subtle text-success' : 'bg-secondary bg-opacity-10 text-secondary')">
+                    {{ phase.badgeLabel }}
+                  </span>
+                  @if (isCompleted) {
+                    <span class="text-success small fw-bold d-flex align-items-center gap-1">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                      Completada
+                    </span>
+                  } @else if (isCurrent) {
+                    <span class="text-primary small fw-bold d-flex align-items-center gap-1">
+                      <span class="spinner-grow spinner-grow-sm text-primary" style="width: 8px; height: 8px;"></span>
+                      Fase Activa
+                    </span>
+                  } @else {
+                    <span class="text-muted small d-flex align-items-center gap-1">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                      </svg>
+                      Bloqueada
+                    </span>
+                  }
+                </div>
+
+                <h6 class="fw-bold text-dark mb-1">{{ phase.name }}</h6>
+                <p class="text-secondary small mb-3" style="line-height: 1.4;">{{ phase.subtitle }}</p>
+              </div>
+
+              <div>
+                @if (isUnlocked) {
+                  <button type="button" 
+                          class="btn btn-sm w-100 rounded-pill fw-medium d-flex align-items-center justify-content-center gap-1 phase-btn"
+                          [ngClass]="isCurrent ? 'btn-primary shadow-xs' : 'btn-outline-primary'"
+                          (click)="$event.stopPropagation(); navigateToPhase(phase)">
+                    <span>{{ isCurrent ? 'Continuar Fase Activa' : 'Entrar a la Fase' }}</span>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <line x1="5" y1="12" x2="19" y2="12"></line>
+                      <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg>
+                  </button>
+                } @else {
+                  <button type="button" class="btn btn-sm w-100 btn-light text-muted rounded-pill" disabled>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="me-1">
+                      <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                      <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                    </svg>
+                    Bloqueada
+                  </button>
+                }
+              </div>
+
             </div>
-            
-            <h3 class="fw-bold text-dark mb-3">Fase Activa: {{phases[project.fase_actual_id - 1].name}}</h3>
-            <p class="text-muted fs-5 mb-5 max-w-md mx-auto" style="max-width: 600px;">
-              Has entrado al entorno de trabajo del proyecto. Desde aquí gestionarás todos los recursos, documentos y nodos correspondientes a la fase actual.
-            </p>
-            
-            <button class="btn btn-primary rounded-pill px-5 py-3 fs-5 fw-bold d-flex align-items-center gap-3 shadow hover-elevate" style="background-color: #2563EB;" [routerLink]="['/framework/projects', project.id, phases[project.fase_actual_id - 1].route]">
-              Comenzar a trabajar en {{phases[project.fase_actual_id - 1].name}}
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <line x1="5" y1="12" x2="19" y2="12"></line>
-                <polyline points="12 5 19 12 12 19"></polyline>
-              </svg>
-            </button>
-            
           </div>
-        </div>
+        }
       </div>
     </div>
     
   }
 </div>
+
+<!-- ========================================== -->
+<!-- MODAL DE EDICIÓN DE PROYECTO               -->
+<!-- ========================================== -->
+<app-modal [isOpen]="isEditModalOpen" title="Editar Proyecto" size="medium" (closeEvent)="closeEditModal()">
+  <div modal-body>
+    <form (ngSubmit)="submitEditProject()" #editForm="ngForm" class="d-flex flex-column gap-3 p-1">
+      
+      <!-- Nombre del Proyecto -->
+      <div class="form-group">
+        <label for="projectName" class="form-label fw-medium text-dark small mb-1">Nombre del Proyecto <span class="text-danger">*</span></label>
+        <input type="text" id="projectName" name="nombre" class="form-control" [(ngModel)]="editingProject.nombre" required autofocus>
+      </div>
+
+      <!-- Cliente -->
+      <div class="form-group">
+        <label for="projectClient" class="form-label fw-medium text-dark small mb-1">Cliente Asociado</label>
+        <select id="projectClient" name="cliente_id" class="form-select" [(ngModel)]="editingProject.cliente_id">
+          <option [ngValue]="null">Sin cliente asignado</option>
+          @for (c of clientsList; track c.id) {
+            <option [ngValue]="c.id">{{ c.nombre }}</option>
+          }
+        </select>
+      </div>
+
+      <!-- Plataforma -->
+      <div class="form-group">
+        <label for="projectPlatform" class="form-label fw-medium text-dark small mb-1">Plataforma Objetivo</label>
+        <select id="projectPlatform" name="plataforma" class="form-select" [(ngModel)]="editingProject.plataforma">
+          <option value="web">Web Responsive</option>
+          <option value="desktop">Desktop / Aplicación de Escritorio</option>
+          <option value="mobile">Móvil (iOS / Android)</option>
+        </select>
+      </div>
+
+      <!-- Nivel de Diseño Objetivo -->
+      <div class="form-group">
+        <label for="projectDesignLevel" class="form-label fw-medium text-dark small mb-1">Nivel de Diseño Objetivo</label>
+        <select id="projectDesignLevel" name="nivel_diseno_objetivo" class="form-select" [(ngModel)]="editingProject.nivel_diseno_objetivo">
+          <option value="bajo">Bajo (Wireframes rápidos y prototipos iniciales)</option>
+          <option value="medio">Medio (Estructura visual estándar con tokens)</option>
+          <option value="alto">Alto (Alta fidelidad estética y accesibilidad WCAG AAA)</option>
+        </select>
+      </div>
+
+      <!-- Estado del Proyecto -->
+      <div class="form-group">
+        <label for="projectStatus" class="form-label fw-medium text-dark small mb-1">Estado de Progreso</label>
+        <select id="projectStatus" name="estado" class="form-select" [(ngModel)]="editingProject.estado">
+          <option value="en_proceso">En desarrollo (Activo)</option>
+          <option value="completado">Completado</option>
+        </select>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
+        <button type="button" class="btn btn-light rounded-pill px-4" (click)="closeEditModal()">Cancelar</button>
+        <button type="submit" class="btn btn-primary rounded-pill px-4 fw-medium" [disabled]="!editingProject.nombre.trim() || isSubmitting">
+          @if (isSubmitting) {
+            <span class="spinner-border spinner-border-sm me-1"></span> Guardando...
+          } @else {
+            Guardar Cambios
+          }
+        </button>
+      </div>
+
+    </form>
+  </div>
+</app-modal>

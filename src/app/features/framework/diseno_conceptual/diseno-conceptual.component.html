@@ -1200,7 +1200,7 @@
                           </svg>
                           <span class="fw-bold" style="font-size: 0.84rem;">Multicriterio</span>
                         </div>
-                        <span [ngClass]="activeInspectorTab === 'multicriteria' ? 'text-white text-opacity-75' : 'text-secondary fw-medium'" style="font-size: 0.74rem;">MRA + Entropía</span>
+                        <span [ngClass]="activeInspectorTab === 'multicriteria' ? 'text-white text-opacity-75' : 'text-secondary fw-medium'" style="font-size: 0.74rem;">7 Criterios</span>
                       </div>
                     </button>
                   </div>
@@ -1315,7 +1315,7 @@
                             <span>Diagnóstico de Composición Visual</span>
                           </div>
                           <div class="text-secondary" style="font-size: 0.82rem; line-height: 1.4;">
-                            Evaluación matemática de equilibrio, simetría y balance visual para interfaces (Web, Desktop y Móvil).
+                            Evaluación matemática de equilibrio, simetría y balance visual para interfaces.
                           </div>
                         </div>
                         <button class="btn btn-sm btn-primary rounded-pill px-3 py-1 fw-bold shadow-xs d-flex align-items-center gap-1"
@@ -1330,25 +1330,6 @@
                         </button>
                       </div>
 
-                      <!-- Leyenda de Rangos de Calidad Estética -->
-                      <div class="p-3 bg-white rounded-4 border shadow-xs">
-                        <div class="fw-bold text-dark mb-2" style="font-size: 0.84rem;">Escala de Calidad de Composición Visual:</div>
-                        <div class="d-flex flex-column gap-1 text-secondary" style="font-size: 0.82rem;">
-                          <div class="d-flex align-items-center gap-2">
-                            <span class="badge bg-danger rounded-pill px-2 py-1" style="min-width: 70px; font-size: 0.76rem;">0% – 49%</span>
-                            <span class="text-dark"><strong>Calidad Baja:</strong> Desbalance notorio, asimetría o sobrecarga en la composición.</span>
-                          </div>
-                          <div class="d-flex align-items-center gap-2">
-                            <span class="badge bg-warning text-dark rounded-pill px-2 py-1" style="min-width: 70px; font-size: 0.76rem;">50% – 74%</span>
-                            <span class="text-dark"><strong>Calidad Media:</strong> Estructura legible y aceptable, con margen de alineación.</span>
-                          </div>
-                          <div class="d-flex align-items-center gap-2">
-                            <span class="badge bg-success rounded-pill px-2 py-1" style="min-width: 70px; font-size: 0.76rem;">75% – 100%</span>
-                            <span class="text-dark"><strong>Calidad Alta:</strong> Excelente balance espacial, orden y armonía visual.</span>
-                          </div>
-                        </div>
-                      </div>
-
                       <!-- Error -->
                       @if (ngoError) {
                         <div class="alert alert-danger small rounded-3 py-2 px-3">{{ ngoError }}</div>
@@ -1357,29 +1338,21 @@
                       <!-- Resultado -->
                       @if (ngoResult) {
 
-                        <!-- Overall Score -->
-                        <div class="p-3 rounded-4 border shadow-xs"
-                             [ngClass]="ngoResult.nivel_calidad === 'Alta' ? 'bg-success bg-opacity-10 border-success' : ngoResult.nivel_calidad === 'Media' ? 'bg-warning bg-opacity-10 border-warning' : 'bg-danger bg-opacity-10 border-danger'">
+                        <!-- Overall Score OM -->
+                        <div class="p-3 bg-white rounded-4 border shadow-xs">
                           <div class="d-flex justify-content-between align-items-center">
                             <div>
-                              <div class="fw-bold text-dark" style="font-size: 0.92rem;">Puntaje Global de Composición</div>
-                              <div class="text-secondary" style="font-size: 0.8rem;">Promedio ponderado de las 13 métricas de composición</div>
+                              <div class="fw-bold text-dark" style="font-size: 0.95rem;">Medida Global de Composición (OM)</div>
+                              <div class="text-secondary" style="font-size: 0.82rem;">Promedio de las 13 métricas de composición espacial</div>
                             </div>
                             <div class="text-end">
-                              <div class="display-6 fw-black"
-                                   [ngClass]="ngoResult.nivel_calidad === 'Alta' ? 'text-success' : ngoResult.nivel_calidad === 'Media' ? 'text-warning' : 'text-danger'">
-                                {{ getNgoPercent(ngoResult.metrics.OM) }}<span style="font-size:0.5em">%</span>
-                              </div>
-                              <div class="badge rounded-pill px-3 py-1 fw-bold"
-                                   [ngClass]="ngoResult.nivel_calidad === 'Alta' ? 'bg-success text-white' : ngoResult.nivel_calidad === 'Media' ? 'bg-warning text-dark' : 'bg-danger text-white'"
-                                   style="font-size: 0.78rem;">
-                                Calidad {{ ngoResult.nivel_calidad }}
+                              <div class="fs-2 fw-bold text-primary">
+                                {{ getNgoPercent(ngoResult.metrics.OM) }}%
                               </div>
                             </div>
                           </div>
                           <div class="progress mt-2" style="height: 8px;">
-                            <div class="progress-bar"
-                                 [ngClass]="getNgoBarClass(ngoResult.metrics.OM)"
+                            <div class="progress-bar bg-primary"
                                  [style.width.%]="getNgoPercent(ngoResult.metrics.OM)"></div>
                           </div>
                           <div class="text-secondary mt-2 d-flex justify-content-between align-items-center" style="font-size:0.78rem;">
@@ -1392,28 +1365,20 @@
                         <div class="d-flex flex-column gap-2">
                           @for (entry of ngoResult.interpretaciones | keyvalue; track entry.key) {
                             @if (entry.key !== 'OM') {
-                              <div class="p-2 rounded-3 border bg-white shadow-xs">
+                              <div class="p-2 px-3 rounded-3 border bg-white shadow-xs">
                                 <div class="d-flex justify-content-between align-items-center mb-1">
                                   <div>
                                     <span class="fw-bold text-dark" style="font-size: 0.84rem;">{{ entry.key }}</span>
                                     <span class="text-secondary ms-1 fw-medium" style="font-size: 0.82rem;">— {{ $any(entry.value).nombre }}</span>
                                   </div>
-                                  <div class="d-flex align-items-center gap-2">
-                                    <span class="fw-bold"
-                                          [ngClass]="$any(entry.value).color === 'success' ? 'text-success' : $any(entry.value).color === 'warning' ? 'text-warning' : 'text-danger'"
-                                          style="font-size: 0.84rem;">
+                                  <div>
+                                    <span class="fw-bold text-primary" style="font-size: 0.86rem;">
                                       {{ getNgoPercent($any(entry.value).valor) }}%
-                                    </span>
-                                    <span class="badge rounded-pill"
-                                          [ngClass]="$any(entry.value).color === 'success' ? 'bg-success text-white' : $any(entry.value).color === 'warning' ? 'bg-warning text-dark' : 'bg-danger text-white'"
-                                          style="font-size: 0.74rem;">
-                                      {{ $any(entry.value).estado }}
                                     </span>
                                   </div>
                                 </div>
                                 <div class="progress" style="height: 6px;">
-                                  <div class="progress-bar"
-                                       [ngClass]="'bg-' + $any(entry.value).color"
+                                  <div class="progress-bar bg-primary"
                                        [style.width.%]="getNgoPercent($any(entry.value).valor)"></div>
                                 </div>
                                 <div class="text-secondary mt-1" style="font-size: 0.78rem; line-height: 1.35;">{{ $any(entry.value).descripcion }}</div>
@@ -1434,7 +1399,7 @@
                   </div>
                 }
 
-                <!-- TAB 4: EVALUACIÓN MULTICRITERIO DE LAYOUT (REGRESIÓN & ENTROPÍA - WANG ET AL., 2024) -->
+                <!-- TAB 4: EVALUACIÓN MULTICRITERIO DE LAYOUT (REGRESIÓN MRA - WANG ET AL., 2024) -->
 
                 @if (activeInspectorTab === 'multicriteria') {
                   <div class="d-flex flex-column gap-3">
@@ -1460,10 +1425,10 @@
                               <polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2"></polygon>
                               <circle cx="12" cy="12" r="3"></circle>
                             </svg>
-                            <span>Evaluación Multicriterio de Layout (Wang et al., 2024)</span>
+                            <span>Evaluación Multicriterio de Layout</span>
                           </div>
                           <div class="text-secondary" style="font-size: 0.82rem; line-height: 1.4;">
-                            Modelo dual de Regresión Lineal Múltiple (percepción humana, Ec. 22) y Método de Entropía de Shannon (orden reticular, Ec. 32).
+                            Análisis de proporciones, simetría y armonía visual del wireframe.
                           </div>
                         </div>
 
@@ -1503,69 +1468,25 @@
 
                       @if (multicriteriaResult) {
 
-                        <!-- Resumen de Puntuaciones Sintéticas del Paper (MRA vs Entropía - Wang et al., 2024) -->
+                        <!-- Puntuación Estética Global -->
                         <div class="row g-2">
-                          <!-- Modelo 1: Regresión Lineal Múltiple (MRA, Ec. 22) -->
-                          <div class="col-6">
-                            <div class="p-3 bg-light rounded-3 border h-100 d-flex flex-column justify-content-between">
-                              <div>
-                                <div class="d-flex align-items-center justify-content-between mb-1">
-                                  <span class="text-primary fw-bold" style="font-size: 0.78rem;">ÍNDICE MRA</span>
-                                  <span class="badge bg-primary text-white" style="font-size: 0.72rem;">Percepción Humana (Ec. 22)</span>
-                                </div>
-                                <div class="fw-bold text-dark" style="font-size: 0.86rem;">Regresión Lineal Múltiple</div>
-                                <div class="d-flex align-items-baseline gap-2 my-1">
-                                  <span class="fs-4 fw-bold text-primary">{{ multicriteriaResult.score_regresion }}%</span>
-                                  @if (multicriteriaResult.score_regresion_raw !== undefined) {
-                                    <span class="text-secondary small fw-medium">({{ multicriteriaResult.score_regresion_raw }})</span>
-                                  }
-                                </div>
-                                <div class="progress mb-2" style="height: 6px;">
-                                  <div class="progress-bar bg-primary" [style.width.%]="multicriteriaResult.score_regresion"></div>
-                                </div>
+                          <div class="col-12">
+                            <div class="p-3 bg-white rounded-4 border shadow-xs">
+                              <div class="d-flex align-items-center justify-content-between mb-1">
+                                <span class="fw-bold text-dark" style="font-size: 0.95rem;">Puntaje Estético Global</span>
+                                <span class="badge bg-primary-subtle text-primary border border-primary-subtle" style="font-size: 0.74rem;">Percepción Visual</span>
                               </div>
-                              <div class="text-secondary" style="font-size: 0.8rem; line-height: 1.45;">
-                                <strong>Enfoque Perceptual:</strong> Modela las calificaciones estéticas humanas recogidas mediante escala Likert. Da mayor ponderación a la simetría vertical (<span class="font-monospace text-dark">0.549</span>) y a la simplicidad/alineación (<span class="font-monospace text-dark">0.483</span>).
+                              <div class="d-flex align-items-baseline gap-2 my-2">
+                                <span class="fs-2 fw-bold text-primary">{{ multicriteriaResult.score_regresion }}%</span>
+                                @if (multicriteriaResult.score_regresion_raw !== undefined) {
+                                  <span class="text-secondary small fw-medium">({{ multicriteriaResult.score_regresion_raw }} / 1.0)</span>
+                                }
+                              </div>
+                              <div class="progress" style="height: 8px;">
+                                <div class="progress-bar bg-primary" [style.width.%]="multicriteriaResult.score_regresion"></div>
                               </div>
                             </div>
                           </div>
-
-                          <!-- Modelo 2: Método de Entropía de Shannon (EM, Ec. 32) -->
-                          <div class="col-6">
-                            <div class="p-3 bg-light rounded-3 border h-100 d-flex flex-column justify-content-between">
-                              <div>
-                                <div class="d-flex align-items-center justify-content-between mb-1">
-                                  <span class="text-info fw-bold" style="font-size: 0.78rem;">ÍNDICE EM</span>
-                                  <span class="badge bg-info text-white" style="font-size: 0.72rem;">Orden de Retícula (Ec. 32)</span>
-                                </div>
-                                <div class="fw-bold text-dark" style="font-size: 0.86rem;">Método de Entropía (EWM)</div>
-                                <div class="d-flex align-items-baseline gap-2 my-1">
-                                  <span class="fs-4 fw-bold text-info">{{ multicriteriaResult.score_entropia }}%</span>
-                                  @if (multicriteriaResult.score_entropia_raw !== undefined) {
-                                    <span class="text-secondary small fw-medium">({{ multicriteriaResult.score_entropia_raw }})</span>
-                                  }
-                                </div>
-                                <div class="progress mb-2" style="height: 6px;">
-                                  <div class="progress-bar bg-info" [style.width.%]="multicriteriaResult.score_entropia"></div>
-                                </div>
-                              </div>
-                              <div class="text-secondary" style="font-size: 0.8rem; line-height: 1.45;">
-                                <strong>Enfoque de Información:</strong> Ponderación matemática objetiva libre de sesgo humano basada en la entropía de Shannon. Prioriza la densidad de espacio libre (<span class="font-monospace text-dark">0.227</span>) y las proporciones armónicas (<span class="font-monospace text-dark">0.178</span>).
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-
-                        <!-- Nota explicativa metodológica según el paper -->
-                        <div class="p-2 px-3 bg-light border rounded-3 d-flex align-items-center gap-2">
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-secondary flex-shrink-0">
-                            <circle cx="12" cy="12" r="10"></circle>
-                            <line x1="12" y1="16" x2="12" y2="12"></line>
-                            <line x1="12" y1="8" x2="12.01" y2="8"></line>
-                          </svg>
-                          <span class="text-secondary" style="font-size: 0.79rem; line-height: 1.4;">
-                            <strong>Metodología Wang et al. (2024):</strong> Los índices MRA y EM son modelos sintéticos complementarios e independientes para evaluación estética de retícula. El paper evalúa cada diseño en escala continua para análisis de calidad e iteración de layouts.
-                          </span>
                         </div>
 
                         <!-- Gráfico de Radar Interactivo de 7 Ejes (SVG) -->
@@ -1670,25 +1591,14 @@
                                 {{ getMulticriteriaMetricDescription(item) }}
                               </div>
 
-                              <!-- Ponderaciones en los modelos (Regresión vs Entropía) -->
-                              <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mt-2 pt-2 border-top text-secondary" style="font-size: 0.76rem;">
-                                <div class="d-flex align-items-center gap-1">
-                                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-primary flex-shrink-0">
-                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                                    <circle cx="12" cy="12" r="3"></circle>
-                                  </svg>
-                                  <span>Percepción:</span>
-                                  <strong class="text-dark">{{ getPercepcionImpactText(item) }}</strong>
-                                </div>
-
-                                <div class="d-flex align-items-center gap-1">
-                                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-info flex-shrink-0">
-                                    <rect x="3" y="3" width="18" height="18" rx="2"></rect>
-                                    <path d="M3 9h18M3 15h18M9 3v18M15 3v18"></path>
-                                  </svg>
-                                  <span>Retícula:</span>
-                                  <strong class="text-dark">{{ item.peso_entropia }}% de peso</strong>
-                                </div>
+                              <!-- Ponderación en Percepción -->
+                              <div class="d-flex align-items-center gap-1 mt-2 pt-2 border-top text-secondary" style="font-size: 0.76rem;">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-primary flex-shrink-0">
+                                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                  <circle cx="12" cy="12" r="3"></circle>
+                                </svg>
+                                <span>Impacto en percepción:</span>
+                                <strong class="text-dark">{{ getPercepcionImpactText(item) }}</strong>
                               </div>
                             </div>
                           }
@@ -1706,7 +1616,7 @@
                           </div>
                           <h6 class="fw-bold text-dark mb-1">Evaluación Estética Multicriterio</h6>
                           <p class="text-secondary small mb-3">
-                            Analiza la distribución espacial del wireframe utilizando las 7 métricas ortogonales del modelo y compara la satisfacción visual perceptual con el orden matemático de la cuadrícula.
+                            Analiza la distribución espacial del wireframe según sus dimensiones ortogonales y calcula el nivel de armonía visual.
                           </p>
                           <button class="btn btn-primary rounded-pill px-4 shadow-xs" (click)="evaluateMulticriteria()">
                             Iniciar Evaluación

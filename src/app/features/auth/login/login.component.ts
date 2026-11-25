@@ -46,7 +46,7 @@ export class LoginComponent implements OnInit {
         localStorage.setItem('access_token', response.access_token);
         this.authState.loadUserProfile();
         this.isLoading = false;
-        this.router.navigate(['/inicio']);
+        this.router.navigate(['/projects']);
       },
       error: (err) => {
         this.isLoading = false;
@@ -76,7 +76,7 @@ export class LoginComponent implements OnInit {
         localStorage.setItem('access_token', response.access_token);
         this.authState.loadUserProfile();
         this.isLoading = false;
-        this.router.navigate(['/inicio']);
+        this.router.navigate(['/projects']);
       },
       error: (err) => {
         this.isLoading = false;
