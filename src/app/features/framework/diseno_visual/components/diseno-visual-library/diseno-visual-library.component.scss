@@ -3,109 +3,132 @@
   flex-direction: column;
 }
 
+.flow-stepper-card {
+  border: 1px solid rgba(226, 232, 240, 0.8) !important;
+  background-color: #ffffff;
+}
 
-    .flow-stepper-card {
-      border: 1px solid #e2e8f0 !important;
-      background-color: #ffffff;
+.stepper-flow-container {
+  width: 100%;
+}
+
+.step-flow-pill {
+  flex: 1 1 auto;
+  min-width: 160px;
+  background-color: #ffffff;
+  border: 1.5px solid #E2E8F0;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+
+  .step-indicator-circle {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    font-size: 0.75rem;
+    transition: all 0.2s ease;
+  }
+
+  // Estado: Pendiente
+  &.pending {
+    color: #475569;
+    background-color: #F8FAFC;
+
+    .step-indicator-circle {
+      background-color: #E2E8F0;
+      color: #64748B;
     }
 
-    .stepper-flow-container {
-      width: 100%;
+    .badge-mandatory {
+      color: #EF4444;
+      font-weight: bold;
+      font-size: 0.9rem;
+      line-height: 1;
     }
 
-    .step-flow-pill {
-      flex: 1 1 auto;
-      min-width: 150px;
-      background-color: #ffffff;
-      border: 1.5px solid #e2e8f0;
-      cursor: pointer;
-      text-decoration: none;
-      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    &:hover {
+      background-color: #F1F5F9;
+      border-color: #CBD5E1;
+      transform: translateY(-1px);
+    }
+  }
 
-      .step-indicator-circle {
-        width: 28px;
-        height: 28px;
-        border-radius: 50%;
-        font-size: 0.75rem;
-        transition: all 0.2s ease;
-      }
+  // Estado: Completado
+  &.completed {
+    border-color: #A7F3D0;
+    background-color: #F0FDF4;
+    color: #065F46;
 
-      // Estado: Pendiente (Obligatorio)
-      &.pending {
-        color: #475569;
-        background-color: #f8fafc;
+    .step-indicator-circle {
+      background-color: #10B981;
+      color: #FFFFFF;
+    }
 
-        .step-indicator-circle {
-          background-color: #e2e8f0;
-          color: #64748b;
-        }
+    &:hover {
+      background-color: #ECFDF5;
+      border-color: #6EE7B7;
+      transform: translateY(-1px);
+      box-shadow: 0 2px 8px rgba(16, 185, 129, 0.15);
+    }
+  }
 
-        .badge-mandatory {
-          color: #ef4444;
-          font-weight: bold;
-          font-size: 0.9rem;
-          line-height: 1;
-        }
+  // Estado: Activo (Paso en curso) con gradiente de marca
+  &.active {
+    background: linear-gradient(135deg, #FF3366 0%, #7C3AED 100%);
+    border-color: transparent;
+    color: #FFFFFF;
+    box-shadow: 0 4px 14px rgba(255, 51, 102, 0.25);
+    transform: translateY(-1px);
 
-        &:hover {
-          background-color: #f1f5f9;
-          border-color: #cbd5e1;
-          transform: translateY(-1px);
-        }
-      }
+    .step-indicator-circle {
+      background-color: #FFFFFF;
+      color: #FF3366;
+    }
 
+    .step-label {
+      color: #FFFFFF;
+    }
 
-        // Estado: Completado (Previamente revisado con éxito)
-        &.completed {
-          border-color: #a7f3d0;
-          background-color: #f0fdf4;
-          color: #065f46;
+    .step-sublabel {
+      color: rgba(255, 255, 255, 0.85) !important;
+    }
+  }
+}
 
-          .step-indicator-circle {
-            background-color: #10b981;
-            color: #ffffff;
-          }
+.step-connector {
+  color: #CBD5E1;
+}
 
-          &:hover {
-            background-color: #ecfdf5;
-            border-color: #6ee7b7;
-            transform: translateY(-1px);
-            box-shadow: 0 2px 6px rgba(16, 185, 129, 0.15);
-          }
-        }
+// Fade in Animation
+.animation-fade-in {
+  animation: fadeIn 0.25s ease-out;
+}
 
-        // Estado: Activo (Paso en curso)
-        &.active {
-          background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-          border-color: #2563eb;
-          color: #ffffff;
-          box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
-          transform: translateY(-2px);
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 
-          .step-indicator-circle {
-            background-color: #ffffff;
-            color: #2563eb;
-          }
+.btn-primary-gradient {
+  background: linear-gradient(135deg, #FF3366 0%, #7C3AED 100%);
+  color: #ffffff;
+  border: none;
+  font-weight: 500;
+  transition: all 0.25s ease;
 
-          .step-label {
-            color: #ffffff;
-          }
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px -2px rgba(255, 51, 102, 0.35);
+    color: #ffffff;
+  }
 
-          .step-sublabel {
-            color: rgba(255, 255, 255, 0.8) !important;
-          }
-        }
-      }
-
-      .step-connector {
-        color: #94a3b8;
-        padding: 0 0.25rem;
-      }
-
-      .shadow-xs {
-        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-      }
-
-      .transition-all {
-        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-      }
+  &:active {
+    transform: translateY(0);
+  }
+}

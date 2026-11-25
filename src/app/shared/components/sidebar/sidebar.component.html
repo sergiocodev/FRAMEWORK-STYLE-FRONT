@@ -31,17 +31,93 @@
 
   <div class="sidebar-divider mb-2"></div>
 
-  <!-- Footer Options -->
-  <div class="sidebar-footer mb-3">
-    <ul class="nav flex-column align-items-center">
-      <li class="nav-item w-100 d-flex justify-content-center" *ngFor="let item of footerSection.items">
-        <a [routerLink]="item.link" routerLinkActive="active" class="nav-link">
-          <div class="icon-wrapper">
-            <span [innerHTML]="getSafeIcon(item.iconSvg)" class="icon-inner d-flex align-items-center justify-content-center"></span>
-          </div>
-          <span class="nav-label">{{ item.label }}</span>
-        </a>
-      </li>
-    </ul>
+  <!-- Sidebar Footer / Controls from Header -->
+  <div class="sidebar-footer d-flex flex-column align-items-center gap-2 mb-3">
+    <!-- Theme Toggle -->
+    <button type="button" class="sidebar-action-btn" (click)="toggleTheme()" title="Cambiar tema">
+      <!-- Sun icon (shows when dark mode is active) -->
+      <svg *ngIf="themeService.isDarkTheme$ | async" width="20" height="20" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="5"></circle>
+        <line x1="12" y1="1" x2="12" y2="3"></line>
+        <line x1="12" y1="21" x2="12" y2="23"></line>
+        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+        <line x1="1" y1="12" x2="3" y2="12"></line>
+        <line x1="21" y1="12" x2="23" y2="12"></line>
+        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+      </svg>
+      <!-- Moon icon (shows when light mode is active) -->
+      <svg *ngIf="!(themeService.isDarkTheme$ | async)" width="20" height="20" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+      </svg>
+    </button>
+
+    <!-- Notifications -->
+    <div class="position-relative">
+      <button type="button" class="sidebar-action-btn" title="Notificaciones">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+          <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+        </svg>
+        <span class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-white rounded-circle"
+          style="width: 10px; height: 10px; margin-top: 8px; margin-left: -8px;">
+          <span class="visually-hidden">Nuevas notificaciones</span>
+        </span>
+      </button>
+    </div>
+
+    <!-- User Profile Dropdown (Dropend) -->
+    <div class="dropend w-100 d-flex justify-content-center">
+      <button type="button" class="btn p-0 border-0 rounded-circle user-avatar-btn" data-bs-toggle="dropdown" aria-expanded="false" [title]="user().name">
+        <img [src]="user().avatarUrl" alt="Avatar" class="rounded-circle border" width="38" height="38">
+      </button>
+
+      <ul class="dropdown-menu shadow-lg py-2 rounded-3 border dropdown-menu-sidebar" style="min-width: 210px; border-color: #E5E7EB;">
+        <li class="px-3 py-2 border-bottom mb-1">
+          <div class="user-name text-truncate">{{ user().name }}</div>
+          <div class="user-role text-truncate">{{ user().email || 'Usuario' }}</div>
+        </li>
+        <li>
+          <a class="dropdown-item py-2 px-3 d-flex align-items-center gap-3 text-dark" href="#" (click)="$event.preventDefault()" style="font-size: 0.9rem;">
+            <svg class="text-secondary" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+            Mi Perfil
+          </a>
+        </li>
+        <li>
+          <a class="dropdown-item py-2 px-3 d-flex align-items-center gap-3 text-dark" href="#" (click)="$event.preventDefault()" style="font-size: 0.9rem;">
+            <svg class="text-secondary" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="3"></circle>
+              <path
+                d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
+              </path>
+            </svg>
+            Configuración
+          </a>
+        </li>
+        <li>
+          <hr class="dropdown-divider my-1">
+        </li>
+        <li>
+          <a class="dropdown-item py-2 px-3 d-flex align-items-center gap-3 text-danger" href="javascript:void(0)" (click)="logout()" style="font-size: 0.9rem;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+              <polyline points="16 17 21 12 16 7"></polyline>
+              <line x1="21" y1="12" x2="9" y2="12"></line>
+            </svg>
+            Cerrar Sesión
+          </a>
+        </li>
+      </ul>
+    </div>
   </div>
 </div>

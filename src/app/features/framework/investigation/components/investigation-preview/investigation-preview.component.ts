@@ -14,15 +14,6 @@ import { environment } from '../../../../../../environments/environment';
 export class InvestigationPreviewComponent implements OnChanges {
   @Input() project: any;
 
-  getImageUrl(url: string): string {
-    if (!url) return '';
-    if (url.startsWith('http') || url.startsWith('data:')) {
-      return url;
-    }
-    return `${environment.apiUrl}${url}`;
-  }
-
-
   // Phase 1 Data
   @Input() problema: string = '';
   @Input() objetivo: string = '';
@@ -39,7 +30,16 @@ export class InvestigationPreviewComponent implements OnChanges {
   @Input() identidadMarca: { tieneManual: boolean, colores: string, notas: string } = { tieneManual: false, colores: '', notas: '' };
 
   safeMarkdown: SafeHtml = '';
+  copySuccess: boolean = false;
   private sanitizer = inject(DomSanitizer);
+
+  getImageUrl(url: string): string {
+    if (!url) return '';
+    if (url.startsWith('http') || url.startsWith('data:')) {
+      return url;
+    }
+    return `${environment.apiUrl}${url}`;
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
     this.updatePreview();
@@ -51,185 +51,141 @@ export class InvestigationPreviewComponent implements OnChanges {
     this.safeMarkdown = this.sanitizer.bypassSecurityTrustHtml(rawHtml);
   }
 
-  private generateMarkdown(): string {
-    const date = new Date().toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' });
+  copyMarkdown() {
+    const raw = this.generateMarkdown();
+    navigator.clipboard.writeText(raw).then(() => {
+      this.copySuccess = true;
+      setTimeout(() => this.copySuccess = false, 2500);
+    });
+  }
 
-    let md = `
-<div class="d-flex justify-content-between align-items-start mb-5 border-bottom pb-4">
+  printDocument() {
+    window.print();
+  }
+
+  private generateMarkdown(): string {
+    const date = new Date().toLocaleDateString('es-ES', { day: '2-digit', month: 'long', year: 'numeric' });
+
+    let usersHtml = '';
+    if (this.usuarios && this.usuarios.length > 0) {
+      usersHtml = this.usuarios.map(u => `
+<div class="user-preview-card p-3 rounded-3 border bg-light mb-2">
+  <div class="d-flex align-items-center justify-content-between mb-1">
+    <strong class="text-dark">${u.role || 'Usuario'} — ${u.name || 'Sin nombre'}</strong>
+    <span class="badge bg-secondary-subtle text-secondary">${u.tag || 'General'}</span>
+  </div>
+  <ul class="mb-0 ps-3 small text-secondary">
+    ${(u.needs || []).map((n: string) => `<li>${n}</li>`).join('')}
+  </ul>
+</div>
+      `).join('');
+    } else {
+      usersHtml = '<p class="text-muted small fst-italic">No se han registrado arquetipos de usuario.</p>';
+    }
+
+    let filesHtml = '';
+    if (this.recursos && this.recursos.length > 0) {
+      filesHtml = `<ul class="small text-secondary mb-0">` + 
+        this.recursos.map(r => `<li><strong>${r.name}</strong> (${r.size})</li>`).join('') +
+        `</ul>`;
+    } else {
+      filesHtml = '<p class="text-muted small fst-italic">No se adjuntaron archivos adicionales.</p>';
+    }
+
+    let refsHtml = '';
+    if (this.referencias && this.referencias.length > 0) {
+      refsHtml = `<ul class="small text-secondary mb-0">` +
+        this.referencias.map(r => `<li><a href="${this.getImageUrl(r.url)}" target="_blank">${r.url || 'Imagen adjunta'}</a> ${r.notas ? `— <em>${r.notas}</em>` : ''}</li>`).join('') +
+        `</ul>`;
+    } else {
+      refsHtml = '<p class="text-muted small fst-italic">Sin referencias visuales registradas.</p>';
+    }
+
+    return `
+<div class="doc-header d-flex justify-content-between align-items-start mb-4 pb-3 border-bottom">
   <div class="d-flex align-items-center gap-3">
-    <div class="bg-primary text-white d-flex align-items-center justify-content-center rounded-3 fs-3 fw-bold shadow-sm" style="width: 48px; height: 48px;">
+    <div class="brand-badge bg-primary text-white d-flex align-items-center justify-content-center rounded-3 fs-4 fw-bold shadow-sm" style="width: 44px; height: 44px;">
       S
     </div>
     <div>
-      <h4 class="fw-bold text-dark mb-0 fs-5" style="letter-spacing: 1px;">STYLE</h4>
-      <p class="text-secondary mb-0" style="font-size: 0.7rem; line-height: 1.2;">Framework de Diseño y Aseguramiento <br>de la estética de Interfaces de Usuario</p>
+      <h4 class="fw-bold text-dark mb-0 fs-5" style="letter-spacing: 0.5px;">STYLE Framework</h4>
+      <p class="text-secondary mb-0 small">Informe de Investigación de Interfaz · Fase 1</p>
     </div>
   </div>
   <div class="text-end">
-    <h5 class="fw-bold text-dark mb-2 fs-6">Informe de Investigación</h5>
-    <p class="text-secondary mb-1" style="font-size: 0.8rem;"><span class="fw-bold text-dark">Proyecto:</span> ${this.project?.title || 'Sin nombre'}</p>
-    <p class="text-secondary mb-1" style="font-size: 0.8rem;"><span class="fw-bold text-dark">Cliente:</span> ${this.project?.client || 'Sin cliente'}</p>
-    <p class="text-secondary mb-0" style="font-size: 0.8rem;"><span class="fw-bold text-dark">Fecha:</span> ${date}</p>
+    <span class="badge bg-success-subtle text-success border-0 px-2 py-1 mb-1">Informe Oficial</span>
+    <p class="text-secondary mb-0 small"><strong>Proyecto:</strong> ${this.project?.title || 'Sin nombre'}</p>
+    <p class="text-secondary mb-0 small"><strong>Cliente:</strong> ${this.project?.client || 'General'}</p>
+    <p class="text-muted mb-0 small" style="font-size: 0.75rem;">${date}</p>
   </div>
 </div>
 
-<div class="doc-content text-dark px-3">
+<div class="doc-body text-dark">
 
-<h6 class="fw-bold mb-3 fs-6" style="color: #1e293b;">Comprensión del proyecto</h6>
-<div class="mb-4">
-  <div class="mb-3">
-    <span class="fw-bold" style="font-size: 0.85rem;">Problema o Necesidad:</span>
-    <p class="text-secondary mb-0 mt-1" style="font-size: 0.85rem; line-height: 1.5; white-space: pre-wrap;">${this.problema || '*Sin especificar*'}</p>
-  </div>
-  <div class="mb-3">
-    <span class="fw-bold" style="font-size: 0.85rem;">Objetivo del Proyecto:</span>
-    <p class="text-secondary mb-0 mt-1" style="font-size: 0.85rem; line-height: 1.5; white-space: pre-wrap;">${this.objetivo || '*Sin especificar*'}</p>
-  </div>
-  <div>
-    <span class="fw-bold" style="font-size: 0.85rem;">Descripción del Producto:</span>
-    <p class="text-secondary mb-0 mt-1" style="font-size: 0.85rem; line-height: 1.5; white-space: pre-wrap;">${this.producto || '*Sin especificar*'}</p>
-  </div>
-</div>
-
-<hr class="my-4" style="opacity: 0.1;">
-
-<h6 class="fw-bold mb-3 fs-6" style="color: #1e293b;">Expectativas y Referencias</h6>
-<div class="mb-4">
-  <div class="mb-3">
-    <span class="fw-bold" style="font-size: 0.85rem;">Expectativas del Cliente:</span>
-    <p class="text-secondary mb-0 mt-1" style="font-size: 0.85rem; line-height: 1.5; white-space: pre-wrap;">${this.expectativas || '*Sin especificar*'}</p>
-  </div>
-  
-  <div class="mb-3">
-    <span class="fw-bold" style="font-size: 0.85rem;">Referencias (Inspiración):</span>
-`;
-
-    if (this.referencias && this.referencias.length > 0) {
-      md += `<ul class="text-secondary mb-0 mt-2 d-flex flex-column gap-3" style="font-size: 0.85rem; line-height: 1.5; list-style-type: none; padding-left: 0;">`;
-      for (const rawRef of this.referencias) {
-        const ref = typeof rawRef === 'string' ? { url: rawRef, notas: '' } : (rawRef || { url: '', notas: '' });
-        const isImage = ref.url && (ref.url.startsWith('http') || ref.url.includes('/uploads/') || /\.(png|jpe?g|gif|webp|svg)$/i.test(ref.url));
-        const fullUrl = this.getImageUrl(ref.url);
-        
-        md += `<li class="border p-2 rounded-2 bg-light">`;
-        if (isImage) {
-          md += `
-            <div class="text-center bg-white rounded-2 mb-2 p-1 border" style="min-height: 50px;">
-              <img src="${fullUrl}" alt="Referencia" style="max-height: 200px; object-fit: contain;" class="img-fluid rounded-1">
-            </div>`;
-        } else if (ref.url) {
-          md += `<p class="mb-1 text-dark"><strong>Referencia:</strong> ${ref.url}</p>`;
-        }
-        if (ref.notas) {
-          md += `<p class="mb-0 text-dark" style="font-size: 0.8rem;"><strong>Notas:</strong> ${ref.notas}</p>`;
-        }
-        md += `</li>`;
-      }
-      md += `</ul>`;
-    } else {
-      md += `<p class="text-secondary mb-0 mt-1" style="font-size: 0.85rem;">*Sin referencias adjuntas*</p>`;
-    }
-
-    md += `
-  </div>
-  
-  <div>
-    <span class="fw-bold" style="font-size: 0.85rem;">Análisis de Situación Actual:</span>
-    <p class="text-secondary mb-0 mt-1" style="font-size: 0.85rem; line-height: 1.5; white-space: pre-wrap;">${this.analisisActual || '*Sin análisis previo*'}</p>
-  </div>
-</div>
-
-<hr class="my-4" style="opacity: 0.1;">
-
-<h6 class="fw-bold mb-4 fs-6" style="color: #1e293b;">Usuarios (Arquetipos)</h6>
-<div class="row g-3 mb-4">
-`;
-
-    if (this.usuarios && this.usuarios.length > 0) {
-      for (const user of this.usuarios) {
-        let needsList = user.needs ? user.needs.map((n: string) => `<li class="text-secondary mb-2 d-flex gap-2" style="font-size: 0.75rem; line-height: 1.4;"><span class="text-primary mt-1" style="font-size: 0.5rem;">●</span> <span>${n}</span></li>`).join('') : '';
-        md += `
-<div class="col-12 col-md-6 col-lg-4" style="page-break-inside: avoid;">
-  <div class="border rounded-3 p-3 h-100">
-    <div class="d-flex align-items-center gap-2 mb-3">
-      <i class="bi bi-person-circle text-secondary flex-shrink-0" style="font-size: 36px; line-height: 36px; width: 36px; height: 36px;"></i>
+  <div class="section-block mb-4">
+    <h6 class="fw-bold text-primary text-uppercase mb-2" style="font-size: 0.8rem; letter-spacing: 0.5px;">1. Comprensión del Proyecto</h6>
+    <div class="p-3 rounded-3 border bg-light-subtle">
+      <div class="mb-2">
+        <strong class="small d-block text-dark">Problema o Necesidad:</strong>
+        <p class="text-secondary mb-0 small">${this.problema || '<em>No especificado</em>'}</p>
+      </div>
+      <div class="mb-2">
+        <strong class="small d-block text-dark">Objetivo del Proyecto:</strong>
+        <p class="text-secondary mb-0 small">${this.objetivo || '<em>No especificado</em>'}</p>
+      </div>
       <div>
-        <div class="fw-bold text-dark" style="font-size: 0.8rem;">${user.role}</div>
-        <div class="text-primary" style="font-size: 0.75rem; font-weight: 500;">${user.name}</div>
+        <strong class="small d-block text-dark">Naturaleza del Producto:</strong>
+        <p class="text-secondary mb-0 small">${this.producto || '<em>No especificado</em>'}</p>
       </div>
     </div>
-    <ul class="list-unstyled mb-0 ms-1">
-      ${needsList}
-    </ul>
   </div>
-</div>`;
-      }
-    } else {
-      md += `<p class="text-secondary small">*No hay usuarios definidos*</p>`;
-    }
 
-    md += `
-</div>
-
-<hr class="my-4" style="opacity: 0.1;">
-
-<h6 class="fw-bold mb-4 fs-6" style="color: #1e293b;">Recursos y Restricciones</h6>
-<div class="mb-4">
-  <div class="mb-3">
-    <span class="fw-bold" style="font-size: 0.85rem;">Restricciones Técnicas:</span>
-    <p class="text-secondary mb-0 mt-1" style="font-size: 0.85rem; line-height: 1.5; white-space: pre-wrap;">${this.restricciones || '*Sin restricciones*'}</p>
+  <div class="section-block mb-4">
+    <h6 class="fw-bold text-primary text-uppercase mb-2" style="font-size: 0.8rem; letter-spacing: 0.5px;">2. Expectativas y Referencias</h6>
+    <div class="p-3 rounded-3 border bg-light-subtle">
+      <div class="mb-2">
+        <strong class="small d-block text-dark">Expectativas Estéticas:</strong>
+        <p class="text-secondary mb-0 small">${this.expectativas || '<em>No especificado</em>'}</p>
+      </div>
+      <div class="mb-2">
+        <strong class="small d-block text-dark">Referencias Visuales:</strong>
+        ${refsHtml}
+      </div>
+      <div>
+        <strong class="small d-block text-dark">Diagnóstico del Estado Actual:</strong>
+        <p class="text-secondary mb-0 small">${this.analisisActual || '<em>No aplica o sin registrar</em>'}</p>
+      </div>
+    </div>
   </div>
-  
-  <div class="mb-4 p-3 bg-light rounded border">
-    <span class="fw-bold d-block mb-2" style="font-size: 0.85rem;">Identidad Institucional:</span>
-    <ul class="text-secondary mb-0" style="font-size: 0.85rem; line-height: 1.5; list-style-type: none; padding-left: 0;">
-      <li><strong>Manual de marca:</strong> ${this.identidadMarca?.tieneManual ? 'Sí' : 'No'}</li>
-      <li><strong>Colores Principales:</strong> ${this.identidadMarca?.colores || '*No especificado*'}</li>
-      <li><strong>Notas adicionales:</strong> ${this.identidadMarca?.notas || '*No especificado*'}</li>
-    </ul>
-  </div>
-  
-  <span class="fw-bold d-block mb-2" style="font-size: 0.85rem;">Archivos Adjuntos:</span>
-  <div class="d-flex flex-column gap-2 mb-2">
-`;
 
-    if (this.recursos && this.recursos.length > 0) {
-      for (const file of this.recursos) {
-        let icon = '';
-        if (file.type === 'pdf') {
-          icon = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>`;
-        } else if (file.type === 'image') {
-          icon = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>`;
-        } else {
-          icon = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="12" y1="18" x2="12" y2="12"></line><line x1="9" y1="15" x2="15" y2="15"></line></svg>`;
-        }
+  <div class="section-block mb-4">
+    <h6 class="fw-bold text-primary text-uppercase mb-2" style="font-size: 0.8rem; letter-spacing: 0.5px;">3. Arquetipos de Usuario</h6>
+    ${usersHtml}
+  </div>
 
-        md += `
-<div class="d-flex align-items-center gap-3 border p-2 rounded-2 mb-2">
-  <div class="d-flex align-items-center justify-content-center bg-light rounded text-secondary border flex-shrink-0" style="width: 36px; height: 36px;">
-    ${icon}
+  <div class="section-block mb-3">
+    <h6 class="fw-bold text-primary text-uppercase mb-2" style="font-size: 0.8rem; letter-spacing: 0.5px;">4. Recursos, Restricciones y Marca</h6>
+    <div class="p-3 rounded-3 border bg-light-subtle">
+      <div class="mb-2">
+        <strong class="small d-block text-dark">Restricciones Técnicas:</strong>
+        <p class="text-secondary mb-0 small">${this.restricciones || '<em>No especificadas</em>'}</p>
+      </div>
+      <div class="mb-2">
+        <strong class="small d-block text-dark">Identidad de Marca:</strong>
+        <p class="text-secondary mb-0 small">
+          Manual oficial: ${this.identidadMarca?.tieneManual ? 'Sí cuenta con manual de marca' : 'No cuenta con manual formal'}.<br>
+          Colores: ${this.identidadMarca?.colores || 'Sin definir'}.<br>
+          Notas: ${this.identidadMarca?.notas || 'Sin notas adicionales'}.
+        </p>
+      </div>
+      <div>
+        <strong class="small d-block text-dark">Archivos Adjuntos:</strong>
+        ${filesHtml}
+      </div>
+    </div>
   </div>
-  <div>
-    <h6 class="text-dark fw-bold mb-0" style="font-size: 0.75rem;">${file.name}</h6>
-    <p class="text-secondary small mb-0" style="font-size: 0.7rem;">${file.size}</p>
-  </div>
-</div>`;
-      }
-    } else {
-      md += `<p class="text-secondary small">*No hay recursos adjuntos*</p>`;
-    }
-
-    md += `
-  </div>
-</div>
 
 </div>
-<div class="mt-5 pt-4 border-top d-flex justify-content-between align-items-center text-secondary" style="font-size: 0.7rem;">
-  <div><span class="fw-bold">STYLE</span> - Framework de Diseño y Aseguramiento de la estética de Interfaces de Usuario</div>
-  <div>Página 1 de 1</div>
-</div>
-`;
-
-    return md;
+    `;
   }
 }

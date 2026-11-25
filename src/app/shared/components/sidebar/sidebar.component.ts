@@ -1,8 +1,10 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router, NavigationEnd } from '@angular/router';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { filter, Subscription } from 'rxjs';
+import { ThemeService } from '../../../core/services/theme.service';
+import { AuthStateService } from '../../../core/services/auth-state.service';
 
 export interface MenuItem {
   label: string;
@@ -25,10 +27,31 @@ export interface MenuSection {
   styleUrls: ['./sidebar.component.scss']
 })
 export class SidebarComponent implements OnInit, OnDestroy {
+  themeService = inject(ThemeService);
+  private authState = inject(AuthStateService);
+  private sanitizer = inject(DomSanitizer);
+  private router = inject(Router);
+
   currentProjectId = 1;
   private routerSub!: Subscription;
 
-  constructor(private sanitizer: DomSanitizer, private router: Router) { }
+  user = computed(() => {
+    const currentUser = this.authState.currentUser();
+    return {
+      name: currentUser?.full_name || currentUser?.username || 'Usuario',
+      email: currentUser?.email || '',
+      avatarUrl: currentUser?.profile_picture || 'https://i.pravatar.cc/150?img=12'
+    };
+  });
+
+  toggleTheme() {
+    this.themeService.toggleTheme();
+  }
+
+  logout() {
+    this.authState.clearState();
+    this.router.navigate(['/login']);
+  }
 
   ngOnInit() {
     this.routerSub = this.router.events.pipe(
@@ -93,12 +116,4 @@ export class SidebarComponent implements OnInit, OnDestroy {
       ]
     }
   ];
-
-  footerSection: MenuSection = {
-    items: [
-      { label: 'Salir', link: '/login', iconSvg: '<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line>' }
-    ]
-  };
-
 }
-

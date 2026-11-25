@@ -18,14 +18,20 @@ export class InvestigationUsersComponent {
   @Input() usuarios: any[] = [];
   @Output() usuariosChange = new EventEmitter<any[]>();
 
-  addUser() {
+  @Output() next = new EventEmitter<void>();
+  @Output() prev = new EventEmitter<void>();
+
+  isCreating: boolean = false;
+
+  addUser(preset?: { role: string, name: string, tag: string, need: string }) {
     if (!this.projectId) return;
 
+    this.isCreating = true;
     const newUser = {
-      name: 'Nuevo Nombre',
-      role: 'Nuevo Rol',
-      tag: 'General',
-      needs: ['Nueva necesidad']
+      name: preset?.name || 'Nombre del Usuario',
+      role: preset?.role || 'Rol del Usuario',
+      tag: preset?.tag || 'General',
+      needs: preset?.need ? [preset.need] : ['Necesidad principal de interfaz']
     };
 
     const payload = {
@@ -39,9 +45,11 @@ export class InvestigationUsersComponent {
         (newUser as any).id = res.id;
         this.usuarios.push(newUser);
         this.emitChanges();
+        this.isCreating = false;
       },
       error: (err) => {
         console.error('Error al crear arquetipo', err);
+        this.isCreating = false;
         alert('Hubo un error al crear el arquetipo.');
       }
     });
@@ -90,5 +98,13 @@ export class InvestigationUsersComponent {
   emitChanges() {
     this.usuarios = [...this.usuarios];
     this.usuariosChange.emit(this.usuarios);
+  }
+
+  onNext() {
+    this.next.emit();
+  }
+
+  onPrev() {
+    this.prev.emit();
   }
 }

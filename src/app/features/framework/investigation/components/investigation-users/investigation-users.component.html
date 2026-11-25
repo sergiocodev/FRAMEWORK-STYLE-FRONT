@@ -1,29 +1,141 @@
-<div class="users-card bg-white rounded-4 shadow-sm border p-4 mb-3 flex-shrink-0">
-  <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-4">
-    <div class="card-header-content">
-      <div class="d-flex align-items-center gap-3 mb-2">
-        <h6 class="card-title fw-bold mb-0">Usuarios</h6>
+<div class="users-section d-flex flex-column h-100">
+
+  <!-- Top Hero Header -->
+  <div class="section-hero mb-4">
+    <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-2">
+      <div class="d-flex align-items-center gap-2">
+        <span class="badge rounded-pill bg-primary-subtle text-primary border-0 px-3 py-1 fw-semibold" style="font-size: 0.75rem;">
+          Paso 3 de 4
+        </span>
+        <span class="badge rounded-pill bg-light text-secondary border px-2 py-1 fw-medium" style="font-size: 0.72rem;">
+          User-Centered Design
+        </span>
       </div>
-      <p class="card-description mb-0">
-        Define los perfiles de usuarios (arquetipos) y sus principales necesidades.
-      </p>
+
+      <div class="text-muted small d-flex align-items-center gap-1" style="font-size: 0.8rem;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        <span>Tiempo estimado: ~5 min</span>
+      </div>
     </div>
 
-    <button (click)="addUser()" class="btn btn-custom-soft-primary d-flex align-items-center gap-2 px-3 py-2">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-        stroke-linecap="round" stroke-linejoin="round">
-        <line x1="12" y1="5" x2="12" y2="19"></line>
-        <line x1="5" y1="12" x2="19" y2="12"></line>
+    <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+      <div>
+        <h5 class="fw-bold text-dark mb-1 d-flex align-items-center gap-2">
+          Arquetipos de Usuario y Necesidades
+        </h5>
+        <p class="text-secondary mb-0" style="font-size: 0.9rem; line-height: 1.5;">
+          Modela los perfiles clave de usuarios para garantizar que las soluciones visuales resuelvan sus problemas y dolores reales.
+        </p>
+      </div>
+
+      <button type="button" class="btn btn-primary-gradient d-flex align-items-center gap-2 px-3 py-2 rounded-3 shadow-sm"
+              (click)="addUser()" [disabled]="isCreating">
+        @if (isCreating) {
+        <span class="spinner-border spinner-border-sm text-white" role="status"></span>
+        <span>Creando...</span>
+        } @else {
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+        <span class="fw-medium">Añadir Arquetipo</span>
+        }
+      </button>
+    </div>
+  </div>
+
+  <!-- Main Content Area -->
+  <div class="form-fields-container flex-grow-1">
+
+    <!-- Empty State -->
+    @if (usuarios.length === 0) {
+    <div class="empty-users-card p-5 rounded-4 border border-dashed bg-white text-center shadow-sm my-2">
+      <div class="empty-icon-wrapper mx-auto mb-3">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+          <circle cx="9" cy="7" r="4"></circle>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+        </svg>
+      </div>
+
+      <h5 class="fw-bold text-dark mb-1">Aún no hay arquetipos de usuario</h5>
+      <p class="text-secondary mb-4 mx-auto" style="max-width: 480px; font-size: 0.9rem; line-height: 1.5;">
+        Los arquetipos te permiten diseñar interfaces empáticas. Modela quiénes son tus usuarios, qué buscan lograr y qué fricciones deben evitarse.
+      </p>
+
+      <div class="d-flex flex-wrap justify-content-center gap-2 mb-3">
+        <button type="button" class="btn btn-outline-secondary btn-sm px-3 py-1-5 rounded-pill"
+                (click)="addUser({ role: 'Administrador', name: 'Laura Gómez', tag: 'Principal', need: 'Visualizar reportes diarios sin demora y gestionar permisos' })">
+          + Agregar Rol Administrador
+        </button>
+        <button type="button" class="btn btn-outline-secondary btn-sm px-3 py-1-5 rounded-pill"
+                (click)="addUser({ role: 'Usuario Final / Cliente', name: 'Carlos Morales', tag: 'Principal', need: 'Completar compras y consultas en menos de 2 minutos desde el móvil' })">
+          + Agregar Rol Cliente Final
+        </button>
+        <button type="button" class="btn btn-outline-secondary btn-sm px-3 py-1-5 rounded-pill"
+                (click)="addUser({ role: 'Operador / Soporte', name: 'Andrea Ruiz', tag: 'Secundario', need: 'Atender incidencias y buscar registros de manera rápida' })">
+          + Agregar Rol Soporte
+        </button>
+      </div>
+
+      <button type="button" class="btn btn-primary-gradient px-4 py-2 rounded-3 shadow-sm" (click)="addUser()" [disabled]="isCreating">
+        Crear Arquetipo Personalizado
+      </button>
+    </div>
+    }
+
+    <!-- Archetypes Grid -->
+    @if (usuarios.length > 0) {
+    <div class="row g-4">
+      <div class="col-12 col-md-6 col-xl-4" *ngFor="let user of usuarios; let i = index">
+        <div class="archetype-card-wrapper h-100 position-relative">
+          <app-user-archetype-card [user]="user" (userChange)="updateUser(user)" (remove)="removeUser(i)">
+          </app-user-archetype-card>
+        </div>
+      </div>
+
+      <!-- Add Another Archetype Ghost Card -->
+      <div class="col-12 col-md-6 col-xl-4">
+        <button type="button" class="add-ghost-card w-100 h-100 p-4 rounded-3 border border-dashed d-flex flex-column align-items-center justify-content-center text-center text-muted"
+                (click)="addUser()" [disabled]="isCreating" style="min-height: 200px;">
+          <div class="ghost-icon-circle mb-2">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+          </div>
+          <span class="fw-semibold text-dark" style="font-size: 0.9rem;">Añadir otro arquetipo</span>
+          <span class="small text-muted" style="font-size: 0.78rem;">Define otro rol o perfil de usuario</span>
+        </button>
+      </div>
+    </div>
+    }
+
+  </div>
+
+  <!-- Bottom Navigation -->
+  <div class="section-footer mt-4 pt-3 border-top d-flex flex-wrap align-items-center justify-content-between gap-3">
+    <button type="button" class="btn btn-outline-secondary px-3 py-2 d-flex align-items-center gap-2 rounded-3"
+            (click)="onPrev()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="19" y1="12" x2="5" y2="12"></line>
+        <polyline points="12 19 5 12 12 5"></polyline>
       </svg>
-      <span>Añadir arquetipo</span>
+      <span>Volver a Expectativas</span>
+    </button>
+
+    <button type="button" class="btn btn-primary-gradient px-4 py-2 d-flex align-items-center gap-2 shadow-sm rounded-3"
+            (click)="onNext()">
+      <span class="fw-medium">Continuar a Recursos</span>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="5" y1="12" x2="19" y2="12"></line>
+        <polyline points="12 5 19 12 12 19"></polyline>
+      </svg>
     </button>
   </div>
 
-  <div class="row g-4 mt-1">
-    <!-- Arquetipos Cards -->
-    <div class="col-12 col-md-6 col-lg-4" *ngFor="let user of usuarios; let i = index">
-      <app-user-archetype-card [user]="user" (userChange)="updateUser(user)" (remove)="removeUser(i)">
-      </app-user-archetype-card>
-    </div>
-  </div>
 </div>

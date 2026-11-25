@@ -18,12 +18,13 @@ export interface Phase {
 export class DisenoVisualHeaderComponent {
   @Input() project: any;
   @Input() phases: Phase[] = [];
+  @Input() totalProgress: number = 0;
+  @Input() completedSystems: number = 0;
+  @Input() totalSystems: number = 5;
 
   get formattedStatus(): string {
     const status = this.project?.status || this.project?.estado;
     if (!status) return 'En progreso';
-    
-    // Replace underscores with spaces and capitalize first letter
     const formatted = status.replace(/_/g, ' ');
     return formatted.charAt(0).toUpperCase() + formatted.slice(1).toLowerCase();
   }

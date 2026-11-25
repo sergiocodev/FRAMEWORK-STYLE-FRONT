@@ -1,193 +1,266 @@
 @if (isLoading) {
-<div class="d-flex justify-content-center align-items-center min-vh-100 bg-light">
-  <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+<div class="d-flex flex-column justify-content-center align-items-center min-vh-100 bg-light">
+  <div class="spinner-border text-primary mb-3" role="status" style="width: 3rem; height: 3rem;">
     <span class="visually-hidden">Cargando...</span>
   </div>
+  <p class="text-secondary fw-medium">Cargando investigación del proyecto...</p>
 </div>
 } @else if (error) {
-<div class="d-flex flex-column justify-content-center align-items-center min-vh-100 bg-light text-center">
-  <div class="bg-white p-5 rounded-4 shadow-sm border">
-    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round"
-      stroke-linejoin="round" class="mb-4">
-      <circle cx="12" cy="12" r="10"></circle>
-      <line x1="15" y1="9" x2="9" y2="15"></line>
-      <line x1="9" y1="9" x2="15" y2="15"></line>
-    </svg>
+<div class="d-flex flex-column justify-content-center align-items-center min-vh-100 bg-light text-center p-4">
+  <div class="bg-white p-5 rounded-4 shadow-sm border max-w-md">
+    <div class="error-icon-box mx-auto mb-3">
+      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="15" y1="9" x2="9" y2="15"></line>
+        <line x1="9" y1="9" x2="15" y2="15"></line>
+      </svg>
+    </div>
     <h4 class="fw-bold text-dark">Proyecto no encontrado</h4>
-    <p class="text-secondary mb-0 mt-2">No se pudo cargar la información del proyecto o hubo un error de conexión.</p>
+    <p class="text-secondary mb-4">No se pudo cargar la información del proyecto o hubo un error de conexión con el
+      servidor.</p>
+    <a routerLink="/projects" class="btn btn-outline-primary px-4 py-2 rounded-3">
+      Volver a Proyectos
+    </a>
   </div>
 </div>
 } @else {
-<div class="investigation-container min-vh-100 bg-light d-flex flex-column"
-  style="background-color: #F8FAFC !important;">
+<div class="investigation-container min-vh-100 bg-light d-flex flex-column">
 
-  <!-- Page Header (Reusable Navigation) -->
-  <app-page-header [title]="project.title || 'Investigación'" [breadcrumbs]="headerBreadcrumbs" [showSearch]="false">
+  <!-- Main Investigation Container -->
+  <main class="container-fluid px-3 px-md-4 py-3 flex-grow-1 d-flex flex-column">
 
-    <div header-badges class="d-flex align-items-center gap-2">
-      <span class="badge rounded-pill text-success bg-success-subtle border-0 px-3 py-1 fw-medium"
-        style="font-size: 0.75rem;">
-        {{ formattedStatus }}
-      </span>
-      <span class="badge rounded-pill text-secondary bg-secondary-subtle border-0 px-3 py-1 fw-medium"
-        style="font-size: 0.75rem;">
-        {{ project.type || 'Estudio de mercado' }}
-      </span>
-    </div>
+    <!-- Investigation Stepper Header Banner -->
+    <app-investigation-header [project]="project" [phases]="phases" [isSaving]="isSaving" [saveSuccess]="saveSuccess"
+      [totalProgress]="totalProgressPercentage" [completedSections]="completedSectionsCount"
+      [totalSections]="sectionsOrder.length">
+    </app-investigation-header>
 
-    <!-- Right Side Actions -->
-    <div class="d-flex align-items-center gap-3">
-      <!-- Auto-save indicator -->
-      <div class="d-flex align-items-center gap-2 text-secondary" style="font-size: 0.85rem;">
-        @if (isSaving) {
-        <span class="spinner-border spinner-border-sm text-primary" role="status"></span>
-        <span>Guardando...</span>
-        } @else if (saveSuccess) {
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"
-          stroke-linecap="round" stroke-linejoin="round">
-          <polyline points="20 6 9 17 4 12"></polyline>
-        </svg>
-        <span class="text-success">Guardado en la nube</span>
-        } @else {
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-          stroke-linecap="round" stroke-linejoin="round">
-          <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
-          <polyline points="17 21 17 13 7 13 7 21"></polyline>
-          <polyline points="7 3 7 8 15 8"></polyline>
-        </svg>
-        <span>Todos los cambios guardados</span>
-        }
+    <!-- Validation Error Toast / Alert -->
+    @if (validationError) {
+    <div
+      class="alert alert-warning border-0 shadow-sm rounded-4 d-flex align-items-center justify-content-between p-3 mb-3 fade show"
+      role="alert">
+      <div class="d-flex align-items-center gap-3">
+        <div
+          class="alert-icon-box bg-warning-subtle text-warning rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
+          style="width: 36px; height: 36px;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          </svg>
+        </div>
+        <div>
+          <span class="fw-bold text-dark d-block">Requisitos pendientes para avanzar</span>
+          <span class="text-secondary small">{{ validationError }}</span>
+        </div>
       </div>
-      <button class="btn d-flex align-items-center gap-2 px-4 py-2"
-        style="background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%); color: white; border: none; font-weight: 500; border-radius: 8px;"
-        (click)="completePhase()" [disabled]="isCompleting">
-        @if (isCompleting) {
-        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-        }
-        <span>Siguiente: Fase 2</span>
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-          stroke-linecap="round" stroke-linejoin="round">
-          <line x1="5" y1="12" x2="19" y2="12"></line>
-          <polyline points="12 5 19 12 12 19"></polyline>
-        </svg>
-      </button>
+      <button type="button" class="btn-close ms-2" (click)="validationError = null" aria-label="Cerrar"></button>
     </div>
-  </app-page-header>
+    }
 
-  <!-- Header Navbar (Investigation Specific) -->
-  <app-investigation-header [project]="project" [phases]="phases" [isSaving]="isSaving"
-    [saveSuccess]="saveSuccess"></app-investigation-header>
+    <!-- Two-Column Workspace Layout -->
+    <div class="row g-4 flex-grow-1">
 
-  <!-- Main Content -->
-  <div class="container-fluid pt-2 pb-4 flex-grow-1 d-flex flex-column overflow-hidden">
+      <!-- Left Column: Navigation Sidebar -->
+      <aside class="col-12 col-lg-4 col-xl-3">
+        <div class="investigation-sidebar bg-white p-3 p-md-4 rounded-4 shadow-sm border sticky-top" style="top: 85px;">
 
-    <div class="row g-4 h-100 flex-grow-1">
+          <!-- Sidebar Header & Progress Overview -->
+          <div class="d-flex align-items-center justify-content-between mb-3 px-1">
+            <span class="text-uppercase text-muted fw-bold" style="font-size: 0.72rem; letter-spacing: 0.6px;">
+              Secciones
+            </span>
+            <span class="badge rounded-pill bg-light text-primary border fw-semibold" style="font-size: 0.72rem;">
+              {{ completedSectionsCount }} / {{ sectionsOrder.length }} completas
+            </span>
+          </div>
 
-      <!-- Main Panel: Form Inputs -->
-      <div class="col-12 flex-column h-100 pb-2 d-flex">
+          <!-- Section Navigation Tabs -->
+          <nav class="nav flex-column gap-2 mb-4" aria-label="Secciones de investigación">
 
-        <div class="main-section-header mb-3 ps-2 flex-shrink-0">
-
-          <div class="d-flex align-items-center justify-content-end w-100" style="min-height: 42px;">
-
-            <div class="d-flex align-items-center gap-3">
-              <!-- Preview Button -->
-              <button
-                class="btn btn-outline-primary d-flex align-items-center gap-2 shadow-sm rounded-3 px-3 transition-all"
-                style="font-weight: 500;" (click)="isModalOpen = true">
+            <!-- 1. Necesidad -->
+            <button type="button" class="nav-item-btn text-start w-100 border-0"
+              [class.active]="activeSection === 'necesidad'" (click)="setActiveSection('necesidad')">
+              <div class="nav-icon-wrapper flex-shrink-0">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                   stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                  <circle cx="12" cy="12" r="3"></circle>
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                  <polyline points="14 2 14 8 20 8"></polyline>
+                  <line x1="16" y1="13" x2="8" y2="13"></line>
+                  <line x1="16" y1="17" x2="8" y2="17"></line>
                 </svg>
-                Vista Previa
-              </button>
-
-            </div>
-          </div>
-        </div>
-
-        <div class="row g-4 pb-2 flex-grow-1 overflow-auto custom-scrollbar">
-
-          <!-- Sidebar Navigation -->
-          <div class="col-12 col-md-4 col-xl-3">
-            <div class="sidebar-nav bg-white p-3 rounded-4 shadow-sm border">
-              <h6 class="text-uppercase text-muted fw-bold mb-3 px-2" style="font-size: 0.75rem; letter-spacing: 0.5px;">Secciones</h6>
-              
-              <div class="d-flex flex-column gap-1">
-                <div class="nav-item" [class.active]="activeSection === 'necesidad'" (click)="setActiveSection('necesidad')">
-                  <div class="icon-container">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-                  </div>
-                  <span>Necesidad</span>
-                </div>
-                
-                <div class="nav-item" [class.active]="activeSection === 'expectativas'" (click)="setActiveSection('expectativas')">
-                  <div class="icon-container">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
-                  </div>
-                  <span>Expectativas</span>
-                </div>
-                
-                <div class="nav-item" [class.active]="activeSection === 'usuarios'" (click)="setActiveSection('usuarios')">
-                  <div class="icon-container">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-                  </div>
-                  <span>Usuarios</span>
-                </div>
-                
-                <div class="nav-item" [class.active]="activeSection === 'recursos'" (click)="setActiveSection('recursos')">
-                  <div class="icon-container">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg>
-                  </div>
-                  <span>Recursos</span>
-                </div>
               </div>
-            </div>
-          </div>
 
-          <!-- Content Area -->
-          <div class="col-12 col-md-8 col-xl-9 content-area d-flex flex-column">
-            
-            <!-- 1. Necesidad -->
-            @if (activeSection === 'necesidad') {
-            <app-investigation-necessity class="flex-grow-1 d-flex flex-column h-100 bg-white rounded-4 shadow-sm border p-3 p-md-4 animation-fade-in" [(problema)]="problema"
-              [(objetivo)]="objetivo" [(producto)]="producto">
-            </app-investigation-necessity>
-            }
+              <div class="nav-text-container flex-grow-1 overflow-hidden">
+                <div class="nav-title fw-semibold text-truncate">1. Necesidad</div>
+                <div class="nav-subtitle small text-muted text-truncate">Problema y objetivo</div>
+              </div>
 
-            <!-- 2. Expectativas y Referencias -->
-            @if (activeSection === 'expectativas') {
-            <app-investigation-expectations class="flex-grow-1 d-flex flex-column h-100 bg-white rounded-4 shadow-sm border p-3 p-md-4 animation-fade-in" [(expectativas)]="expectativas"
-              [(referencias)]="referencias" [(analisisActual)]="analisisActual" [projectId]="currentProjectId">
-            </app-investigation-expectations>
-            }
+              @if (isSectionComplete('necesidad')) {
+              <span class="status-check-badge flex-shrink-0" title="Completado">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+              </span>
+              }
+            </button>
+
+            <!-- 2. Expectativas -->
+            <button type="button" class="nav-item-btn text-start w-100 border-0"
+              [class.active]="activeSection === 'expectativas'" (click)="setActiveSection('expectativas')">
+              <div class="nav-icon-wrapper flex-shrink-0">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <path d="M12 8v4l3 3"></path>
+                </svg>
+              </div>
+
+              <div class="nav-text-container flex-grow-1 overflow-hidden">
+                <div class="nav-title fw-semibold text-truncate">2. Expectativas</div>
+                <div class="nav-subtitle small text-muted text-truncate">Referencias visuales</div>
+              </div>
+
+              @if (isSectionComplete('expectativas')) {
+              <span class="status-check-badge flex-shrink-0" title="Completado">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+              </span>
+              }
+            </button>
 
             <!-- 3. Usuarios -->
-            @if (activeSection === 'usuarios') {
-            <app-investigation-users class="flex-grow-1 d-flex flex-column h-100 bg-white rounded-4 shadow-sm border p-3 p-md-4 animation-fade-in" [(usuarios)]="usuarios" [projectId]="currentProjectId">
-            </app-investigation-users>
-            }
+            <button type="button" class="nav-item-btn text-start w-100 border-0"
+              [class.active]="activeSection === 'usuarios'" (click)="setActiveSection('usuarios')">
+              <div class="nav-icon-wrapper flex-shrink-0">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="9" cy="7" r="4"></circle>
+                  <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                </svg>
+              </div>
+
+              <div class="nav-text-container flex-grow-1 overflow-hidden">
+                <div class="nav-title fw-semibold text-truncate">3. Usuarios</div>
+                <div class="nav-subtitle small text-muted text-truncate">Arquetipos y metas</div>
+              </div>
+
+              @if (isSectionComplete('usuarios')) {
+              <span class="status-check-badge flex-shrink-0" title="Completado">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+              </span>
+              }
+            </button>
 
             <!-- 4. Recursos -->
-            @if (activeSection === 'recursos') {
-            <app-investigation-resources class="flex-grow-1 d-flex flex-column h-100 bg-white rounded-4 shadow-sm border p-3 p-md-4 animation-fade-in" [(recursos)]="recursos"
-              [(restricciones)]="restricciones" [(identidadMarca)]="identidadMarca" [projectId]="currentProjectId">
-            </app-investigation-resources>
-            }
+            <button type="button" class="nav-item-btn text-start w-100 border-0"
+              [class.active]="activeSection === 'recursos'" (click)="setActiveSection('recursos')">
+              <div class="nav-icon-wrapper flex-shrink-0">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <path
+                    d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48">
+                  </path>
+                </svg>
+              </div>
 
+              <div class="nav-text-container flex-grow-1 overflow-hidden">
+                <div class="nav-title fw-semibold text-truncate">4. Recursos</div>
+                <div class="nav-subtitle small text-muted text-truncate">Marca y archivos</div>
+              </div>
+
+              @if (isSectionComplete('recursos')) {
+              <span class="status-check-badge flex-shrink-0" title="Completado">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+              </span>
+              }
+            </button>
+
+          </nav>
+
+          <!-- Sidebar Bottom Helper Card -->
+          <div class="sidebar-help-card p-3 rounded-3 border bg-light-subtle">
+            <div class="d-flex align-items-center gap-2 mb-1 text-dark fw-semibold" style="font-size: 0.82rem;">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#7C3AED" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="16" x2="12" y2="12"></line>
+                <line x1="12" y1="8" x2="12.01" y2="8"></line>
+              </svg>
+              <span>Tip de Usabilidad</span>
+            </div>
+            <p class="text-secondary small mb-2" style="font-size: 0.76rem; line-height: 1.45;">
+              La calidad visual de las fases posteriores depende de una clara definición del dolor del usuario en esta
+              etapa.
+            </p>
+            <button type="button" class="btn btn-sm btn-link text-primary p-0 text-decoration-none fw-semibold"
+              style="font-size: 0.78rem;" (click)="isModalOpen = true">
+              Ver reporte consolidado →
+            </button>
           </div>
 
         </div>
-      </div>
+      </aside>
+
+      <!-- Right Column: Active Section Content Area -->
+      <section class="col-12 col-lg-8 col-xl-9 content-area d-flex flex-column">
+        <div
+          class="active-card-container bg-white p-3 p-md-4 rounded-4 shadow-sm border flex-grow-1 d-flex flex-column animation-fade-in">
+
+          <!-- 1. Necesidad Component -->
+          @if (activeSection === 'necesidad') {
+          <app-investigation-necessity class="d-flex flex-column h-100" [(problema)]="problema" [(objetivo)]="objetivo"
+            [(producto)]="producto" (next)="goToNextSection()">
+          </app-investigation-necessity>
+          }
+
+          <!-- 2. Expectativas Component -->
+          @if (activeSection === 'expectativas') {
+          <app-investigation-expectations class="d-flex flex-column h-100" [(expectativas)]="expectativas"
+            [(referencias)]="referencias" [(analisisActual)]="analisisActual" [projectId]="currentProjectId"
+            (next)="goToNextSection()" (prev)="goToPrevSection()">
+          </app-investigation-expectations>
+          }
+
+          <!-- 3. Usuarios Component -->
+          @if (activeSection === 'usuarios') {
+          <app-investigation-users class="d-flex flex-column h-100" [(usuarios)]="usuarios"
+            [projectId]="currentProjectId" (next)="goToNextSection()" (prev)="goToPrevSection()">
+          </app-investigation-users>
+          }
+
+          <!-- 4. Recursos Component -->
+          @if (activeSection === 'recursos') {
+          <app-investigation-resources class="d-flex flex-column h-100" [(recursos)]="recursos"
+            [(restricciones)]="restricciones" [(identidadMarca)]="identidadMarca" [projectId]="currentProjectId"
+            (prev)="goToPrevSection()" (openPreview)="isModalOpen = true" (complete)="completePhase()">
+          </app-investigation-resources>
+          }
+
+        </div>
+      </section>
 
     </div>
-  </div>
+  </main>
 </div>
 
-<!-- Preview Modal -->
-<app-modal [isOpen]="isModalOpen" title="Vista Previa de Investigación" size="large" (closeEvent)="isModalOpen = false">
-
+<!-- Consolidated Preview Modal -->
+<app-modal [isOpen]="isModalOpen" title="Informe de Investigación de Interfaz" size="large"
+  (closeEvent)="isModalOpen = false">
   <div modal-body class="h-100 w-100 d-flex flex-column" style="min-height: 70vh;">
     <app-investigation-preview class="d-flex flex-column h-100 w-100" [project]="project" [problema]="problema"
       [objetivo]="objetivo" [producto]="producto" [expectativas]="expectativas" [referencias]="referencias"

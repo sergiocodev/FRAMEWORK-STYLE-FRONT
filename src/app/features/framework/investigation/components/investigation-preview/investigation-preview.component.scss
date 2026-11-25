@@ -1,135 +1,62 @@
 .preview-toolbar {
-  .icon-container {
-    width: 44px;
-    height: 44px;
-    border-radius: 12px;
-    background: var(--app-secondary-soft-bg);
-    color: var(--bs-secondary);
+  border-color: #E2E8F0 !important;
+
+  .preview-icon-box {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, rgba(255, 51, 102, 0.1) 0%, rgba(124, 58, 237, 0.1) 100%);
+    color: #FF3366;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: inset 0 0 0 1px rgba(var(--bs-secondary-rgb), 0.1);
+    flex-shrink: 0;
   }
 
-  .pulse-dot {
-    width: 8px;
-    height: 8px;
-    background-color: var(--app-status-active, var(--bs-success));
-    border-radius: 50%;
-    box-shadow: 0 0 0 0 rgba(var(--bs-success-rgb), 0.4);
-    animation: pulse 2s infinite;
-  }
-
-  @keyframes pulse {
-    0% {
-      transform: scale(0.95);
-      box-shadow: 0 0 0 0 rgba(var(--bs-success-rgb), 0.7);
-    }
-    70% {
-      transform: scale(1);
-      box-shadow: 0 0 0 6px rgba(var(--bs-success-rgb), 0);
-    }
-    100% {
-      transform: scale(0.95);
-      box-shadow: 0 0 0 0 rgba(var(--bs-success-rgb), 0);
-    }
-  }
-
-  .btn-premium-gradient {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 600;
-    color: #09090b !important; // Dark text for contrast inside the white pill
-    text-decoration: none;
-    border-radius: 8px;
-    background: transparent;
-    position: relative;
-    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    z-index: 1;
+  .btn-primary-gradient {
+    background: linear-gradient(135deg, #FF3366 0%, #7C3AED 100%);
+    color: #ffffff;
     border: none;
-
-    // Glowing aura
-    &::before {
-      content: '';
-      position: absolute;
-      inset: -3px;
-      background: linear-gradient(135deg, #FF3366, #7C3AED);
-      border-radius: 11px;
-      z-index: -1;
-      opacity: 0.4;
-      filter: blur(8px);
-      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    // Inner shape (white background)
-    &::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: #ffffff;
-      border-radius: 8px;
-      z-index: -1;
-    }
+    font-weight: 500;
+    transition: all 0.25s ease;
 
     &:hover {
-      transform: translateY(-2px);
-      
-      &::before {
-        opacity: 0.85;
-        filter: blur(14px);
-        inset: -4px;
-      }
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(255, 51, 102, 0.35);
+      color: #ffffff;
     }
 
     &:active {
       transform: translateY(0);
     }
-
-    // Ensure svg and span text render above the ::after background
-    > svg, > span {
-      position: relative;
-      z-index: 2;
-    }
   }
 }
 
 .document-workspace {
-  background-color: var(--bs-tertiary-bg);
-  border: 1px solid var(--bs-border-color);
-  border-radius: 1.25rem;
-  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.03);
-  min-height: 500px;
-  width: 100%;
+  background-color: #F1F5F9;
+  border: 1px solid #E2E8F0;
+  max-height: 72vh;
+
+  .document-sheet {
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04) !important;
+    border-color: #E2E8F0 !important;
+    min-height: 600px;
+  }
 }
 
-.document-sheet {
-  width: 100%;
-  max-width: 800px; // A4 approx width
-  min-height: 1130px; // A4 approx height
-  background: var(--app-surface-bg);
-  box-shadow: var(--app-shadow-lg);
-  border-radius: 8px;
-  border: 1px solid var(--bs-border-color);
-  transition: box-shadow 0.3s ease;
-  margin: 0 auto;
-
-  &:hover {
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+@media print {
+  body * {
+    visibility: hidden;
   }
-
-  // Inner Markdown overrides for dark mode support if enabled later
-  ::ng-deep {
-    .doc-content {
-      h4, h5, h6 {
-        color: var(--bs-emphasis-color) !important;
-      }
-      p, li, span, div {
-        color: var(--bs-secondary-color);
-      }
-      .fw-bold.text-dark {
-        color: var(--bs-emphasis-color) !important;
-      }
-    }
+  .document-sheet, .document-sheet * {
+    visibility: visible;
+  }
+  .document-sheet {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    box-shadow: none !important;
+    border: none !important;
   }
 }

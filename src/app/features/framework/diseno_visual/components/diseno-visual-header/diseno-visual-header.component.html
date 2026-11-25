@@ -1,36 +1,90 @@
-<!-- Segmented Progress Bar -->
-<div class="header-progress-bar d-flex w-100 mb-2">
-  <div *ngFor="let phase of phases" 
-       class="progress-segment flex-fill"
-       [ngClass]="{
-         'segment-completed': phase.status === 'completed',
-         'segment-active': phase.status === 'active',
-         'segment-upcoming': phase.status === 'upcoming'
-       }"
-       [title]="phase.name">
+<!-- Segmented Progress Bar across Framework Phases -->
+<div class="header-progress-container mb-3">
+  <div class="d-flex align-items-center justify-content-between mb-1 px-1">
+    <div class="d-flex align-items-center gap-2">
+      <span class="stepper-title fw-semibold text-secondary">Fases del Framework</span>
+      <span class="badge bg-primary-subtle text-primary border-0 rounded-pill px-2 py-0 fw-medium" style="font-size: 0.7rem;">
+        Fase 3 Activa
+      </span>
+    </div>
+    <div class="stepper-meta text-muted small" style="font-size: 0.75rem;">
+      Fase 3 de 5 · Diseño Visual & Tokens
+    </div>
+  </div>
+
+  <div class="header-progress-bar d-flex w-100">
+    <div *ngFor="let phase of phases; let i = index" 
+         class="progress-segment flex-fill"
+         [ngClass]="{
+           'segment-completed': phase.status === 'completed',
+           'segment-active': phase.status === 'active',
+           'segment-upcoming': phase.status === 'upcoming'
+         }"
+         [title]="'Fase ' + (i + 1) + ': ' + phase.name">
+      <div class="segment-indicator"></div>
+    </div>
   </div>
 </div>
 
-<!-- Phase Header / Stepper -->
-<div class="container-fluid mb-1">
-  <div class="bg-white rounded p-3 shadow-sm border border-light">
-    <div class="d-flex align-items-center gap-3">
-      <div class="header-icon-container" style="background-color: rgba(37, 99, 235, 0.1); color: #2563EB; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; border-radius: 12px;">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-          stroke-linecap="round" stroke-linejoin="round">
-          <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
-          <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
-        </svg>
-      </div>
-      <div>
-        <h4 class="mb-1 fw-bold d-flex align-items-center gap-2">
-          Fase 3: Diseño Visual
-        </h4>
-        <div class="text-muted" style="font-size: 0.9rem;">
-          <span class="fw-medium text-secondary-emphasis">Cliente:</span> <span class="opacity-75 me-2">{{ project?.client || 'Cliente Interno' }}</span> | 
-          <span class="ms-2">Estilos, tipografías y componentes visuales.</span>
+<!-- Visual Design Context Card -->
+<div class="container-fluid px-0 mb-3">
+  <div class="phase-hero-card p-3 p-md-4 rounded-4 shadow-sm border bg-white position-relative overflow-hidden">
+    <div class="glow-accent"></div>
+    
+    <div class="d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-3 position-relative z-1">
+      
+      <!-- Left: Identity & Description -->
+      <div class="d-flex align-items-start align-items-sm-center gap-3">
+        <div class="header-icon-container">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path>
+          </svg>
+        </div>
+
+        <div>
+          <div class="d-flex flex-wrap align-items-center gap-2 mb-1">
+            <h4 class="mb-0 fw-bold text-dark header-title">
+              Fase 3 · Diseño Visual y Sistema de Estilos
+            </h4>
+            <span class="badge rounded-pill text-primary bg-primary-subtle border-0 px-2 py-1 fw-semibold" style="font-size: 0.72rem;">
+              Tokens & Componentes
+            </span>
+          </div>
+
+          <div class="d-flex flex-wrap align-items-center gap-2 text-muted header-subtitle" style="font-size: 0.85rem;">
+            <span><strong class="text-dark">Cliente:</strong> {{ project?.client || 'Cliente General' }}</span>
+            <span class="text-black-50">•</span>
+            <span>Establece la paleta de color, tipografía morfológica, matrices WCAG, iconografía y escalas de espaciado.</span>
+          </div>
         </div>
       </div>
+
+      <!-- Right: Phase 3 Progress Metric -->
+      <div class="d-flex align-items-center gap-3 bg-light-subtle p-2 px-3 rounded-3 border border-light-subtle flex-shrink-0">
+        <div class="progress-ring-container text-center">
+          <div class="progress-value fw-bold text-primary" style="font-size: 1.15rem; line-height: 1;">
+            {{ totalProgress }}%
+          </div>
+          <div class="text-muted" style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600;">
+            Completado
+          </div>
+        </div>
+        
+        <div class="border-start ps-3 py-1">
+          <div class="d-flex align-items-center gap-1 text-dark fw-medium" style="font-size: 0.82rem;">
+            <span>{{ completedSystems }} de {{ totalSystems }} sistemas listos</span>
+          </div>
+          <div class="progress mt-1" style="height: 5px; width: 120px; background-color: rgba(0,0,0,0.06); border-radius: 10px;">
+            <div class="progress-bar rounded-pill" role="progressbar" 
+                 [style.width.%]="totalProgress" 
+                 [style.background]="'linear-gradient(90deg, #FF3366, #7C3AED)'"
+                 [attr.aria-valuenow]="totalProgress" aria-valuemin="0" aria-valuemax="100">
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 </div>

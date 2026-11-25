@@ -1,32 +1,60 @@
 <!-- Preview Toolbar -->
-<div class="preview-toolbar flex-shrink-0 mb-4">
-
-
-
-  <!-- Bottom Row: Badge & Button -->
+<div class="preview-toolbar flex-shrink-0 mb-3 p-3 rounded-4 bg-white border shadow-sm">
   <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 w-100">
-
-    <!-- Right: Download PDF Button -->
-    <div class="d-flex justify-content-end" style="flex: 1;">
-      <button class="btn btn-premium-gradient d-flex align-items-center gap-2 px-3 py-2">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-          stroke-linecap="round" stroke-linejoin="round">
-          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-          <polyline points="7 10 12 15 17 10"></polyline>
-          <line x1="12" y1="15" x2="12" y2="3"></line>
+    
+    <div class="d-flex align-items-center gap-2">
+      <div class="preview-icon-box">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="16" y1="13" x2="8" y2="13"></line>
+          <line x1="16" y1="17" x2="8" y2="17"></line>
+          <polyline points="10 9 9 9 8 9"></polyline>
         </svg>
-        <span>Descargar PDF</span>
+      </div>
+      <div>
+        <h6 class="mb-0 fw-bold text-dark">Vista del Documento de Investigación</h6>
+        <span class="text-muted small" style="font-size: 0.78rem;">
+          Reporte consolidado listo para presentación y exportación
+        </span>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="d-flex align-items-center gap-2">
+      <button type="button" class="btn btn-sm btn-outline-secondary d-flex align-items-center gap-1 rounded-3 px-3 py-1-5"
+              (click)="copyMarkdown()">
+        @if (copySuccess) {
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+        <span class="text-success fw-medium">¡Copiado!</span>
+        } @else {
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+        </svg>
+        <span>Copiar Markdown</span>
+        }
+      </button>
+
+      <button type="button" class="btn btn-sm btn-primary-gradient d-flex align-items-center gap-2 px-3 py-1-5 rounded-3 shadow-sm"
+              (click)="printDocument()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="6 9 6 2 18 2 18 9"></polyline>
+          <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+          <rect x="6" y="14" width="12" height="8"></rect>
+        </svg>
+        <span>Imprimir / PDF</span>
       </button>
     </div>
-  </div>
 
+  </div>
 </div>
 
-<!-- A4 Document Preview Wrapper -->
-<div
-  class="document-workspace d-flex justify-content-center bg-light p-4 p-md-4 rounded-4 shadow-inner flex-grow-1 overflow-auto custom-scrollbar">
-  <!-- A4 Document Sheet -->
-  <div class="document-sheet bg-white p-5" style="font-family: 'Inter', sans-serif;">
+<!-- A4 Document Workspace -->
+<div class="document-workspace d-flex justify-content-center p-3 p-md-4 rounded-4 flex-grow-1 overflow-auto custom-scrollbar">
+  <div class="document-sheet bg-white p-4 p-md-5 rounded-3 shadow border" style="max-width: 800px; width: 100%;">
     <div [innerHTML]="safeMarkdown"></div>
   </div>
 </div>

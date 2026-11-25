@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, Input, signal, computed } from '@angular/core';
+import { Component, OnInit, inject, Input, Output, EventEmitter, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DisenoVisualService } from '../../services/diseno-visual.service';
 import { InvestigationService } from '../../../services/investigation.service';
@@ -34,6 +34,8 @@ export interface FlowStep {
 })
 export class DisenoVisualLibraryComponent implements OnInit {
   @Input({ required: true }) proyectoId!: number;
+  @Output() complete = new EventEmitter<void>();
+  @Output() openPreview = new EventEmitter<void>();
 
   private disenoVisualService = inject(DisenoVisualService);
   private investigationService = inject(InvestigationService);
@@ -41,41 +43,41 @@ export class DisenoVisualLibraryComponent implements OnInit {
   identidadMarca: any = null;
   activeTab: SystemTab = 'colors';
 
-  // Flujo obligatorio secuencial (5 pasos: 1. Color, 2. Tipografía, 3. Contraste, 4. Iconografía, 5. Espaciado y Layout)
+  // Flujo secuencial estructurado (5 sistemas de diseño visual)
   steps: FlowStep[] = [
     {
       id: 'colors',
       stepNumber: 1,
       label: 'Color',
-      icon: 'bi-palette-fill',
+      icon: 'palette',
       description: 'Paleta cromática y roles'
     },
     {
       id: 'typography',
       stepNumber: 2,
       label: 'Tipografía',
-      icon: 'bi-fonts',
+      icon: 'type',
       description: 'Jerarquía y Fuentes'
     },
     {
       id: 'wcag',
       stepNumber: 3,
-      label: 'Contraste',
-      icon: 'bi-circle-half',
-      description: 'Matriz WCAG y Accesibilidad'
+      label: 'Contraste WCAG',
+      icon: 'contrast',
+      description: 'Matriz y Accesibilidad'
     },
     {
       id: 'icons',
       stepNumber: 4,
       label: 'Iconografía',
-      icon: 'bi-app-indicator',
+      icon: 'icons',
       description: 'Librerías y SVG'
     },
     {
       id: 'layout',
       stepNumber: 5,
-      label: 'Espaciado y Layout',
-      icon: 'bi-distribute-horizontal',
+      label: 'Espaciado & Layout',
+      icon: 'grid',
       description: 'Grilla de 8pt y Formas'
     }
   ];
@@ -89,11 +91,10 @@ export class DisenoVisualLibraryComponent implements OnInit {
     layout: false
   });
 
-  // Verificaciones reactivas de compleción por datos del servicio
   isStepCompleted(tab: SystemTab): boolean {
     if (this.completedSteps()[tab]) return true;
 
-    // Validación automática según datos existentes
+    // Validación automática según datos existentes en el servicio
     switch (tab) {
       case 'colors':
         return (this.disenoVisualService.colores() || []).length > 0;
@@ -111,77 +112,80 @@ export class DisenoVisualLibraryComponent implements OnInit {
   }
 
   get currentStepIndex(): number {
-  return this.steps.findIndex((s) => s.id === this.activeTab);
-}
+    return this.steps.findIndex((s) => s.id === this.activeTab);
+  }
 
   get currentStep(): FlowStep {
-  return this.steps[this.currentStepIndex] || this.steps[0];
-}
+    return this.steps[this.currentStepIndex] || this.steps[0];
+  }
 
   get nextStep(): FlowStep | null {
-  const nextIdx = this.currentStepIndex + 1;
-  return nextIdx < this.steps.length ? this.steps[nextIdx] : null;
-}
+    const nextIdx = this.currentStepIndex + 1;
+    return nextIdx < this.steps.length ? this.steps[nextIdx] : null;
+  }
 
   get previousStep(): FlowStep | null {
-  const prevIdx = this.currentStepIndex - 1;
-  return prevIdx >= 0 ? this.steps[prevIdx] : null;
-}
+    const prevIdx = this.currentStepIndex - 1;
+    return prevIdx >= 0 ? this.steps[prevIdx] : null;
+  }
 
   get completedStepsCount(): number {
-  return this.steps.filter((s) => this.isStepCompleted(s.id)).length;
-}
+    return this.steps.filter((s) => this.isStepCompleted(s.id)).length;
+  }
 
   get progressPercentage(): number {
-  return Math.round((this.completedStepsCount / this.steps.length) * 100);
-}
+    return Math.round((this.completedStepsCount / this.steps.length) * 100);
+  }
 
-ngOnInit(): void {
-  this.cargarDatos();
-}
+  ngOnInit(): void {
+    this.cargarDatos();
+  }
 
-cargarDatos(): void {
-  if(this.proyectoId) {
-  this.disenoVisualService.cargarDisenoVisualCompleto(this.proyectoId).subscribe();
-  this.investigationService.getInforme(this.proyectoId).subscribe({
-    next: (informe: any) => {
-      if (informe && informe.identidad_marca) {
-        this.identidadMarca = informe.identidad_marca;
-      }
+  cargarDatos(): void {
+    if (this.proyectoId) {
+      this.disenoVisualService.cargarDisenoVisualCompleto(this.proyectoId).subscribe();
+      this.investigationService.getInforme(this.proyectoId).subscribe({
+        next: (informe: any) => {
+          if (informe && informe.identidad_marca) {
+            this.identidadMarca = informe.identidad_marca;
+          }
+        }
+      });
     }
-  });
-}
   }
 
-setTab(tab: SystemTab): void {
-  this.activeTab = tab;
-}
-
-goToNextStep(): void {
-  // Marcar el paso actual como completado
-  this.completedSteps.update((curr) => ({
-    ...curr,
-    [this.activeTab]: true
-  }));
-
-  if(this.nextStep) {
-  this.activeTab = this.nextStep.id;
-  // Scroll suave hacia arriba
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
+  setTab(tab: SystemTab): void {
+    this.activeTab = tab;
   }
 
-goToPreviousStep(): void {
-  if(this.previousStep) {
-  this.activeTab = this.previousStep.id;
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
+  goToNextStep(): void {
+    this.completedSteps.update((curr) => ({
+      ...curr,
+      [this.activeTab]: true
+    }));
+
+    if (this.nextStep) {
+      this.activeTab = this.nextStep.id;
+      window.scrollTo({ top: 120, behavior: 'smooth' });
+    }
   }
 
-markFlowCompleted(): void {
-  this.completedSteps.update((curr) => ({
-    ...curr,
-    layout: true
-  }));
-}
+  goToPreviousStep(): void {
+    if (this.previousStep) {
+      this.activeTab = this.previousStep.id;
+      window.scrollTo({ top: 120, behavior: 'smooth' });
+    }
+  }
+
+  markFlowCompleted(): void {
+    this.completedSteps.update((curr) => ({
+      ...curr,
+      layout: true
+    }));
+    this.complete.emit();
+  }
+
+  onTriggerPreview(): void {
+    this.openPreview.emit();
+  }
 }

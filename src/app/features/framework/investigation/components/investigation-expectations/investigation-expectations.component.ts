@@ -18,12 +18,16 @@ export class InvestigationExpectationsComponent {
   @Input() expectativas: string = '';
   @Output() expectativasChange = new EventEmitter<string>();
 
-
   @Input() referencias: { url: string, notas: string }[] = [];
   @Output() referenciasChange = new EventEmitter<any[]>();
 
   @Input() analisisActual: string = '';
   @Output() analisisActualChange = new EventEmitter<string>();
+
+  @Output() next = new EventEmitter<void>();
+  @Output() prev = new EventEmitter<void>();
+
+  isUploadingImage: boolean = false;
 
   onExpectativasChange(value: string) {
     this.expectativas = value;
@@ -33,6 +37,16 @@ export class InvestigationExpectationsComponent {
   onAnalisisActualChange(value: string) {
     this.analisisActual = value;
     this.analisisActualChange.emit(this.analisisActual);
+  }
+
+  appendPrompt(field: 'expectativas' | 'analisisActual', text: string) {
+    if (field === 'expectativas') {
+      const current = this.expectativas ? this.expectativas.trim() + ' ' : '';
+      this.onExpectativasChange(current + text);
+    } else if (field === 'analisisActual') {
+      const current = this.analisisActual ? this.analisisActual.trim() + ' ' : '';
+      this.onAnalisisActualChange(current + text);
+    }
   }
 
   addReferencia() {
@@ -52,14 +66,16 @@ export class InvestigationExpectationsComponent {
   onFileSelected(event: any) {
     const file = event.target.files[0];
     if (file && this.projectId) {
-      // Optimizacion: subimos la imagen fisicamente y guardamos solo la URL en el JSON
+      this.isUploadingImage = true;
       this.investigationService.uploadReferencia(this.projectId, file).subscribe({
         next: (response) => {
-          this.referencias.push({ url: response.url, notas: '' });
+          this.referencias.push({ url: response.url, notas: 'Referencia visual subida' });
           this.emitReferenciasChange();
+          this.isUploadingImage = false;
         },
         error: (err) => {
           console.error('Error uploading referencia', err);
+          this.isUploadingImage = false;
           alert('Hubo un error al subir la imagen. Inténtalo nuevamente.');
         }
       });
@@ -67,7 +83,6 @@ export class InvestigationExpectationsComponent {
       console.warn('Falta projectId, no se puede subir el archivo.');
     }
     
-    // Reset input so the same file can be selected again if needed
     if (event.target) {
       event.target.value = '';
     }
@@ -75,16 +90,22 @@ export class InvestigationExpectationsComponent {
 
   getImageUrl(url: string): string {
     if (!url) return '';
-    // Si la URL ya es absoluta (http, https, data:image), la retornamos tal cual
     if (url.startsWith('http') || url.startsWith('data:')) {
       return url;
     }
-    // Si es una ruta relativa del backend, le agregamos el apiUrl
     return `${environment.apiUrl}${url}`;
   }
 
   private emitReferenciasChange() {
     this.referencias = [...this.referencias];
     this.referenciasChange.emit(this.referencias);
+  }
+
+  onNext() {
+    this.next.emit();
+  }
+
+  onPrev() {
+    this.prev.emit();
   }
 }
