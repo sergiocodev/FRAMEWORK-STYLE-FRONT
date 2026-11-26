@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 export interface ClientResponse {
   id: number;
@@ -21,7 +22,7 @@ export interface ClientCreate {
 })
 export class ClientsService {
   private http = inject(HttpClient);
-  private apiUrl = 'http://localhost:8000/api/v1/clientes';
+  private apiUrl = `${environment.apiUrl}/api/v1/clientes`;
 
   getClients(): Observable<ClientResponse[]> {
     return this.http.get<ClientResponse[]>(this.apiUrl);
