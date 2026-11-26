@@ -2,6 +2,7 @@ import { Component, Input, Output, EventEmitter, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { InvestigationService } from '../../../services/investigation.service';
+import { DialogService } from '../../../../../core/services/dialog.service';
 import { environment } from '../../../../../../environments/environment';
 
 @Component({
@@ -13,6 +14,7 @@ import { environment } from '../../../../../../environments/environment';
 })
 export class InvestigationExpectationsComponent {
   private investigationService = inject(InvestigationService);
+  private dialogService = inject(DialogService);
 
   @Input() projectId!: number;
   @Input() expectativas: string = '';
@@ -76,7 +78,7 @@ export class InvestigationExpectationsComponent {
         error: (err) => {
           console.error('Error uploading referencia', err);
           this.isUploadingImage = false;
-          alert('Hubo un error al subir la imagen. Inténtalo nuevamente.');
+          this.dialogService.error('Hubo un error al subir la imagen. Inténtalo nuevamente.');
         }
       });
     } else if (!this.projectId) {

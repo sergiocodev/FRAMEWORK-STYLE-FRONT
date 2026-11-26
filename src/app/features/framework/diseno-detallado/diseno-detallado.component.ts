@@ -6,6 +6,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { DisenoDetalladoService, Fase4Pantalla, DisenoDetalladoArchivo, WireframeDisponible } from '../services/diseno-detallado.service';
 import { ProjectService } from '../../../core/services/project.service';
+import { DialogService } from '../../../core/services/dialog.service';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 
 interface AiAlert {
@@ -65,6 +66,7 @@ export class DisenoDetalladoComponent implements OnInit {
   constructor(
     private disenoService: DisenoDetalladoService,
     private projectService: ProjectService,
+    private dialogService: DialogService,
     private route: ActivatedRoute,
     private router: Router
   ) {}
@@ -259,13 +261,18 @@ export class DisenoDetalladoComponent implements OnInit {
     });
   }
 
-  unlinkCurrentScreenWireframe() {
+  async unlinkCurrentScreenWireframe() {
     const screen = this.currentScreen;
     if (!screen) return;
 
-    if (!confirm(`¿Estás seguro de desvincular el wireframe de la pantalla "${screen.title}"?`)) {
-      return;
-    }
+    const confirmed = await this.dialogService.confirm({
+      title: '¿Desvincular wireframe?',
+      message: `¿Estás seguro de desvincular el wireframe de la pantalla "${screen.title}"?`,
+      confirmText: 'Sí, desvincular',
+      cancelText: 'Cancelar',
+      type: 'warning'
+    });
+    if (!confirmed) return;
 
     this.disenoService.unlinkWireframe(this.projectId, screen._dbId).subscribe({
       next: () => {
@@ -539,7 +546,7 @@ export class DisenoDetalladoComponent implements OnInit {
       error: (err) => {
         screen.isAnalyzing = false;
         console.error('Error uploading design', err);
-        alert('Ocurrió un error al analizar el diseño.');
+        this.dialogService.error('Ocurrió un error al analizar el diseño.');
       }
     });
   }
@@ -565,7 +572,10 @@ export class DisenoDetalladoComponent implements OnInit {
 
     const hasDesigns = this.screens.some(s => !!s.image || s.tieneDiseno);
     if (!hasDesigns) {
-      alert('Por favor sube al menos el diseño detallado de una pantalla antes de continuar.');
+      this.dialogService.warning(
+        'Por favor sube al menos el diseño detallado de una pantalla antes de continuar a la evaluación.',
+        'Diseño Requerido'
+      );
       return;
     }
 
@@ -578,7 +588,7 @@ export class DisenoDetalladoComponent implements OnInit {
       error: (err) => {
         console.error('Error al avanzar fase', err);
         this.isCompleting = false;
-        alert('Ocurrió un error al intentar avanzar de fase.');
+        this.dialogService.error('Ocurrió un error al intentar avanzar de fase.');
       }
     });
   }

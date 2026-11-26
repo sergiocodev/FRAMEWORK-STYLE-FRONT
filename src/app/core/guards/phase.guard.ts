@@ -3,10 +3,12 @@ import { Router, type CanActivateFn } from '@angular/router';
 import { map, catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { ProjectService } from '../services/project.service';
+import { DialogService } from '../services/dialog.service';
 
 export const phaseGuard: CanActivateFn = (route, state) => {
   const router = inject(Router);
   const projectService = inject(ProjectService);
+  const dialogService = inject(DialogService);
   
   const projectId = Number(route.paramMap.get('id'));
   const requiredPhase = route.data['phase'] as number;
@@ -21,7 +23,10 @@ export const phaseGuard: CanActivateFn = (route, state) => {
         return true; // El proyecto ya alcanzó o superó esta fase
       } else {
         // Redirigir al dashboard del proyecto
-        alert('Acceso denegado: Aún no has completado las fases anteriores para acceder a esta pantalla.');
+        dialogService.warning(
+          'Acceso restringido: Aún no has completado las fases anteriores para acceder a esta pantalla.',
+          'Fase No Desbloqueada'
+        );
         return router.createUrlTree(['/framework/projects', projectId]);
       }
     }),

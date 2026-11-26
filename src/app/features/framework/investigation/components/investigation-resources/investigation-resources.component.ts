@@ -2,6 +2,7 @@ import { Component, Input, Output, EventEmitter, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { InvestigationService } from '../../../services/investigation.service';
+import { DialogService } from '../../../../../core/services/dialog.service';
 
 @Component({
   selector: 'app-investigation-resources',
@@ -12,6 +13,7 @@ import { InvestigationService } from '../../../services/investigation.service';
 })
 export class InvestigationResourcesComponent {
   private investigationService = inject(InvestigationService);
+  private dialogService = inject(DialogService);
 
   @Input() projectId!: number;
   @Input() recursos: any[] = [];
@@ -118,24 +120,33 @@ export class InvestigationResourcesComponent {
           this.recursos = this.recursos.filter(r => r !== newRecurso);
           this.emitRecursosChange();
           this.isUploading = false;
-          alert('Hubo un error al subir el archivo: ' + file.name);
+          this.dialogService.error('Hubo un error al subir el archivo: ' + file.name);
         }
       });
     }
   }
 
-  removeFile(index: number) {
+  async removeFile(index: number) {
     const fileToRemove = this.recursos[index];
+    const confirmed = await this.dialogService.confirm({
+      title: '¿Eliminar archivo?',
+      message: `¿Estás seguro de eliminar el archivo "${fileToRemove.nombre || fileToRemove.name || 'seleccionado'}"?`,
+      confirmText: 'Sí, eliminar',
+      cancelText: 'Cancelar',
+      type: 'danger'
+    });
+    if (!confirmed) return;
     
     if (fileToRemove.id && this.projectId) {
       this.investigationService.deleteRecurso(this.projectId, fileToRemove.id).subscribe({
         next: () => {
           this.recursos.splice(index, 1);
           this.emitRecursosChange();
+          this.dialogService.success('Archivo eliminado correctamente.');
         },
         error: (err) => {
           console.error('Error deleting recurso:', err);
-          alert('No se pudo eliminar el archivo del servidor.');
+          this.dialogService.error('No se pudo eliminar el archivo del servidor.');
         }
       });
     } else {

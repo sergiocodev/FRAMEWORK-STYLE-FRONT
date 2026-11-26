@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterModule, Router } from '@angular/router';
 import { ProjectsService, ProyectoResponse } from '../projects.service';
 import { ClientsService, ClientResponse } from '../clients.service';
+import { DialogService } from '../../../core/services/dialog.service';
 import { ModalComponent } from '../../../shared/components/modal/modal.component';
 
 export interface PhaseInfo {
@@ -26,6 +27,7 @@ export class ProjectDashboardComponent implements OnInit {
   private router = inject(Router);
   private projectsService = inject(ProjectsService);
   private clientsService = inject(ClientsService);
+  private dialogService = inject(DialogService);
 
   project: ProyectoResponse | null = null;
   isLoading = true;
@@ -124,7 +126,10 @@ export class ProjectDashboardComponent implements OnInit {
     if (this.isPhaseUnlocked(phase.id)) {
       this.router.navigate(['/framework/projects', this.project.id, phase.route]);
     } else {
-      alert(`La Fase ${phase.id} (${phase.name}) está bloqueada hasta que completes las fases anteriores.`);
+      this.dialogService.warning(
+        `La Fase ${phase.id} (${phase.name}) se encuentra bloqueada actualmente.\nDebes completar las fases anteriores para poder acceder.`,
+        'Fase Bloqueada'
+      );
     }
   }
 
@@ -173,11 +178,12 @@ export class ProjectDashboardComponent implements OnInit {
         this.project = updatedProj;
         this.isSubmitting = false;
         this.closeEditModal();
+        this.dialogService.success('Proyecto actualizado correctamente.');
       },
       error: (err) => {
         console.error('Error al editar proyecto:', err);
         this.isSubmitting = false;
-        alert('Error al guardar los cambios del proyecto.');
+        this.dialogService.error('Ocurrió un error al guardar los cambios del proyecto.');
       }
     });
   }

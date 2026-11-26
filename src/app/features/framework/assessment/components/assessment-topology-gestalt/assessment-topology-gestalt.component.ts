@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterModule, Router, ParamMap } from '@angular/router';
 import { AssessmentService } from '../../../services/assessment.service';
 import { ProjectService } from '../../../../../core/services/project.service';
+import { DialogService } from '../../../../../core/services/dialog.service';
 import { environment } from '../../../../../../environments/environment';
 import {
   EvaluacionEsteticaResponse,
@@ -32,6 +33,7 @@ export class AssessmentTopologyGestaltComponent implements OnInit {
   private router: Router = inject(Router);
   private assessmentService: AssessmentService = inject(AssessmentService);
   private projectService: ProjectService = inject(ProjectService);
+  private dialogService: DialogService = inject(DialogService);
 
   projectId: number = 1;
   project: any = null;
@@ -170,7 +172,7 @@ export class AssessmentTopologyGestaltComponent implements OnInit {
       error: (err: any) => {
         console.error('Error al aplicar resultados TDA:', err);
         this.isApplyingTda = false;
-        alert('Ocurrió un error al aplicar las calificaciones topológicas.');
+        this.dialogService.error('Ocurrió un error al aplicar las calificaciones topológicas.');
       }
     });
   }

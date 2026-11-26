@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterModule, Router, ParamMap } from '@angular/router';
 import { AssessmentService } from '../../../services/assessment.service';
 import { ProjectService } from '../../../../../core/services/project.service';
+import { DialogService } from '../../../../../core/services/dialog.service';
 import { environment } from '../../../../../../environments/environment';
 import {
   EvaluacionEsteticaResponse,
@@ -27,6 +28,7 @@ export class AssessmentVisawiComponent implements OnInit {
   private router: Router = inject(Router);
   private assessmentService: AssessmentService = inject(AssessmentService);
   private projectService: ProjectService = inject(ProjectService);
+  private dialogService: DialogService = inject(DialogService);
 
   projectId: number = 1;
   project: any = null;
@@ -380,7 +382,7 @@ export class AssessmentVisawiComponent implements OnInit {
       error: (err: any) => {
         console.error('Error al actualizar métricas VisAWI:', err);
         this.isSaving = false;
-        alert('Hubo un error al guardar las métricas VisAWI.');
+        this.dialogService.error('Hubo un error al guardar las métricas VisAWI.');
       }
     });
   }
@@ -492,14 +494,21 @@ export class AssessmentVisawiComponent implements OnInit {
       error: (err: any) => {
         console.error('Error al guardar encuesta VisAWI:', err);
         this.isSavingSurvey = false;
-        alert('Hubo un error al guardar la encuesta en la base de datos.');
+        this.dialogService.error('Hubo un error al guardar la encuesta en la base de datos.');
       }
     });
   }
 
-  deleteSurvey(surveyId: number, event?: MouseEvent): void {
+  async deleteSurvey(surveyId: number, event?: MouseEvent): Promise<void> {
     if (event) event.stopPropagation();
-    if (!confirm('¿Deseas eliminar esta evaluación registrada de la base de datos? Se recalcularán los promedios globales.')) {
+    const confirmed = await this.dialogService.confirm({
+      title: '¿Eliminar evaluación?',
+      message: '¿Deseas eliminar esta evaluación registrada de la base de datos?\nSe recalcularán los promedios globales.',
+      confirmText: 'Sí, eliminar',
+      cancelText: 'Cancelar',
+      type: 'danger'
+    });
+    if (!confirmed) {
       return;
     }
 
@@ -516,7 +525,7 @@ export class AssessmentVisawiComponent implements OnInit {
       error: (err: any) => {
         console.error('Error al eliminar evaluación:', err);
         this.isDeletingSurveyId = null;
-        alert('No se pudo eliminar la evaluación.');
+        this.dialogService.error('No se pudo eliminar la evaluación.');
       }
     });
   }
@@ -656,14 +665,20 @@ export class AssessmentVisawiComponent implements OnInit {
       error: (err: any) => {
         console.error('Error al actualizar configuración de cupo:', err);
         this.isSavingQuota = false;
-        alert('Hubo un error al guardar la configuración del cupo.');
+        this.dialogService.error('Hubo un error al guardar la configuración del cupo.');
       }
     });
   }
 
-  regenerateSurveyLink(): void {
+  async regenerateSurveyLink(): Promise<void> {
     if (this.isRegeneratingLink) return;
-    const confirmed = confirm('¿Estás seguro de generar un nuevo enlace? El enlace actual quedará revocado e invalidado inmediatamente, y nadie podrá volver a usarlo.');
+    const confirmed = await this.dialogService.confirm({
+      title: '¿Regenerar enlace público?',
+      message: '¿Estás seguro de generar un nuevo enlace?\nEl enlace actual quedará revocado e invalidado inmediatamente, y nadie podrá volver a usarlo.',
+      confirmText: 'Sí, regenerar',
+      cancelText: 'Cancelar',
+      type: 'warning'
+    });
     if (!confirmed) return;
 
     this.isRegeneratingLink = true;
@@ -732,7 +747,7 @@ export class AssessmentVisawiComponent implements OnInit {
       },
       error: (err: any) => {
         console.error('Error al agregar hallazgo desde VisAWI:', err);
-        alert('No se pudo registrar el hallazgo.');
+        this.dialogService.error('No se pudo registrar el hallazgo.');
       }
     });
   }

@@ -4,6 +4,7 @@ import { RouterModule, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ModalComponent } from '../../shared/components/modal/modal.component';
 import { ProjectsService } from '../projects/projects.service';
+import { DialogService } from '../../core/services/dialog.service';
 
 @Component({
   selector: 'app-inicio',
@@ -14,6 +15,7 @@ import { ProjectsService } from '../projects/projects.service';
 })
 export class InicioComponent {
   private projectsService = inject(ProjectsService);
+  private dialogService = inject(DialogService);
   private router = inject(Router);
 
   // Modal State
@@ -49,7 +51,7 @@ export class InicioComponent {
       error: (err) => {
         console.error('Error al crear proyecto:', err);
         this.isSubmitting = false;
-        alert('Ocurrió un error al crear el proyecto.');
+        this.dialogService.error('Ocurrió un error al crear el proyecto.');
       }
     });
   }

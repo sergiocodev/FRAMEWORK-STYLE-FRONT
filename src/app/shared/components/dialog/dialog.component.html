@@ -1,0 +1,79 @@
+@if (state) {
+  <div class="dialog-backdrop" (click)="onBackdropClick($event)" role="dialog" aria-modal="true">
+    <div class="dialog-card shadow-lg animate-scale-in">
+      
+      <!-- Icon Container -->
+      <div class="dialog-icon-wrapper mx-auto mb-3"
+           [ngClass]="{
+             'bg-danger-subtle text-danger': state.type === 'danger',
+             'bg-warning-subtle text-warning': state.type === 'warning',
+             'bg-success-subtle text-success': state.type === 'success',
+             'bg-primary-subtle text-primary': state.type === 'info' || !state.type
+           }">
+        
+        @if (state.type === 'danger') {
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+            <line x1="12" y1="9" x2="12" y2="13"></line>
+            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+          </svg>
+        } @else if (state.type === 'warning') {
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          </svg>
+        } @else if (state.type === 'success') {
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+        } @else {
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="16" x2="12" y2="12"></line>
+            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+          </svg>
+        }
+      </div>
+
+      <!-- Title & Message -->
+      <h5 class="fw-bold text-dark text-center mb-2">{{ state.title }}</h5>
+      <p class="text-secondary text-center small mb-4 px-2" style="line-height: 1.5; white-space: pre-line;">{{ state.message }}</p>
+
+      <!-- Action Buttons -->
+      @if (state.isConfirm) {
+        <div class="d-flex align-items-center gap-2 justify-content-center">
+          <button type="button" class="btn btn-light rounded-pill px-4 py-2 text-secondary fw-medium flex-grow-1"
+                  (click)="onCancel()">
+            {{ state.cancelText || 'Cancelar' }}
+          </button>
+          
+          <button type="button" class="btn rounded-pill px-4 py-2 fw-medium flex-grow-1 shadow-xs"
+                  [ngClass]="{
+                    'btn-danger': state.type === 'danger',
+                    'btn-warning text-dark': state.type === 'warning',
+                    'btn-success': state.type === 'success',
+                    'btn-primary': state.type === 'info' || !state.type
+                  }"
+                  (click)="onConfirm()">
+            {{ state.confirmText || 'Confirmar' }}
+          </button>
+        </div>
+      } @else {
+        <div class="d-flex justify-content-center">
+          <button type="button" class="btn rounded-pill px-5 py-2 fw-medium w-100 shadow-xs"
+                  [ngClass]="{
+                    'btn-danger': state.type === 'danger',
+                    'btn-warning text-dark': state.type === 'warning',
+                    'btn-success': state.type === 'success',
+                    'btn-primary': state.type === 'info' || !state.type
+                  }"
+                  (click)="onConfirm()">
+            {{ state.confirmText || 'Entendido' }}
+          </button>
+        </div>
+      }
+
+    </div>
+  </div>
+}

@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ApiService } from '../../../core/services/api.service';
+import { DialogService } from '../../../core/services/dialog.service';
 import { Router, RouterLink } from '@angular/router';
 
 @Component({
@@ -14,6 +15,7 @@ import { Router, RouterLink } from '@angular/router';
 export class RegisterComponent {
   private fb = inject(FormBuilder);
   private apiService = inject(ApiService);
+  private dialogService = inject(DialogService);
   private router = inject(Router);
 
   registerForm: FormGroup = this.fb.group({
@@ -39,9 +41,9 @@ export class RegisterComponent {
     const payload = this.registerForm.value;
 
     this.apiService.post<any>('auth/register', payload).subscribe({
-      next: (response) => {
+      next: async (response) => {
         this.isLoading = false;
-        alert('¡Registro exitoso! Por favor inicia sesión.');
+        await this.dialogService.success('¡Registro exitoso! Por favor inicia sesión con tu cuenta.', 'Cuenta Creada');
         this.router.navigate(['/login']);
       },
       error: (err) => {

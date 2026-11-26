@@ -10,6 +10,7 @@ import { PageHeaderComponent } from '../../../shared/components/page-header/page
 import { DisenoHeaderComponent } from './components/diseno-header/diseno-header.component';
 import { ProjectService } from '../../../core/services/project.service';
 import { DisenoConceptualService } from '../services/diseno-conceptual.service';
+import { DialogService } from '../../../core/services/dialog.service';
 import {
   NodoPantalla,
   Wireframe,
@@ -44,6 +45,7 @@ import { environment } from '../../../../environments/environment';
 export class DisenoConceptualComponent implements OnInit, OnDestroy {
   private projectService = inject(ProjectService);
   private disenoService = inject(DisenoConceptualService);
+  private dialogService = inject(DialogService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
 
@@ -440,16 +442,23 @@ export class DisenoConceptualComponent implements OnInit, OnDestroy {
       error: (err) => {
         console.error('Error subiendo wireframe', err);
         this.isUploadingWireframe = false;
-        alert('Hubo un error al subir el wireframe.');
+        this.dialogService.error('Hubo un error al subir el wireframe.');
       }
     });
   }
 
-  deleteWireframe(wireframeId?: number, event?: Event): void {
+  async deleteWireframe(wireframeId?: number, event?: Event): Promise<void> {
     if (event) event.stopPropagation();
     if (!wireframeId) return;
 
-    if (!confirm('¿Deseas eliminar este wireframe?')) return;
+    const confirmed = await this.dialogService.confirm({
+      title: '¿Eliminar wireframe?',
+      message: '¿Deseas eliminar este wireframe? Esta acción no se puede deshacer.',
+      confirmText: 'Sí, eliminar',
+      cancelText: 'Cancelar',
+      type: 'danger'
+    });
+    if (!confirmed) return;
 
     this.disenoService.deleteWireframe(this.projectId, wireframeId).subscribe({
       next: () => {
@@ -457,8 +466,12 @@ export class DisenoConceptualComponent implements OnInit, OnDestroy {
         if (this.inspectingWireframe?.id === wireframeId) {
           this.closeInspector();
         }
+        this.dialogService.success('Wireframe eliminado correctamente.');
       },
-      error: (err) => console.error('Error eliminando wireframe', err)
+      error: (err) => {
+        console.error('Error eliminando wireframe', err);
+        this.dialogService.error('Ocurrió un error al eliminar el wireframe.');
+      }
     });
   }
 
@@ -480,14 +493,24 @@ export class DisenoConceptualComponent implements OnInit, OnDestroy {
     this.organizeColumns();
   }
 
-  deleteModule(modulo: string, event?: Event): void {
+  async deleteModule(modulo: string, event?: Event): Promise<void> {
     if (event) event.stopPropagation();
     const count = this.getModuleScreensCount(modulo);
     if (count > 0) {
-      alert(`No puedes eliminar el módulo "${modulo}" porque contiene ${count} pantalla(s). Reasigna o elimina esas pantallas primero.`);
+      this.dialogService.warning(
+        `No puedes eliminar el módulo "${modulo}" porque contiene ${count} pantalla(s).\nReasigna o elimina esas pantallas primero.`,
+        'Módulo no vacío'
+      );
       return;
     }
-    if (!confirm(`¿Deseas eliminar el módulo "${modulo}"?`)) return;
+    const confirmed = await this.dialogService.confirm({
+      title: '¿Eliminar módulo?',
+      message: `¿Deseas eliminar el módulo "${modulo}"?`,
+      confirmText: 'Sí, eliminar',
+      cancelText: 'Cancelar',
+      type: 'danger'
+    });
+    if (!confirmed) return;
 
     this.customModules = this.customModules.filter(m => m !== modulo);
     localStorage.setItem('custom_modules_' + this.projectId, JSON.stringify(this.customModules));
@@ -538,7 +561,7 @@ export class DisenoConceptualComponent implements OnInit, OnDestroy {
 
   saveScreen(): void {
     if (!this.screenForm.nombre.trim()) {
-      alert('Por favor ingresa un nombre para el elemento de interfaz.');
+      this.dialogService.warning('Por favor ingresa un nombre para el elemento de interfaz.', 'Nombre Requerido');
       return;
     }
 
@@ -598,18 +621,29 @@ export class DisenoConceptualComponent implements OnInit, OnDestroy {
     }
   }
 
-  deleteScreen(nodo: NodoPantalla, event?: Event): void {
+  async deleteScreen(nodo: NodoPantalla, event?: Event): Promise<void> {
     if (event) event.stopPropagation();
     if (!nodo.id) return;
 
-    if (!confirm(`¿Eliminar la pantalla "${nodo.nombre}"?`)) return;
+    const confirmed = await this.dialogService.confirm({
+      title: '¿Eliminar pantalla?',
+      message: `¿Estás seguro de eliminar la pantalla "${nodo.nombre}"?`,
+      confirmText: 'Sí, eliminar',
+      cancelText: 'Cancelar',
+      type: 'danger'
+    });
+    if (!confirmed) return;
 
     this.disenoService.deleteNodo(this.projectId, nodo.id).subscribe({
       next: () => {
         this.nodos = this.nodos.filter(n => n.id !== nodo.id);
         this.organizeColumns();
+        this.dialogService.success(`Pantalla "${nodo.nombre}" eliminada.`);
       },
-      error: (err) => console.error('Error al eliminar pantalla', err)
+      error: (err) => {
+        console.error('Error al eliminar pantalla', err);
+        this.dialogService.error('Ocurrió un error al eliminar la pantalla.');
+      }
     });
   }
 
@@ -1120,16 +1154,26 @@ export class DisenoConceptualComponent implements OnInit, OnDestroy {
   }
 
   // --- AVANZAR A FASE 3 ---
-  completePhase(): void {
+  async completePhase(): Promise<void> {
     if (!this.projectId) return;
 
     if (this.nodos.length === 0) {
-      alert('Por favor agrega al menos una pantalla en la arquitectura conceptual antes de avanzar.');
+      this.dialogService.warning(
+        'Por favor agrega al menos una pantalla en la arquitectura conceptual antes de avanzar.',
+        'Arquitectura Incompleta'
+      );
       return;
     }
 
     if (this.altaNodos.length === 0) {
-      if (!confirm('No tienes ninguna pantalla clasificada con Prioridad Alta (MVP). ¿Deseas continuar de todas formas?')) {
+      const confirmed = await this.dialogService.confirm({
+        title: 'Sin pantallas de Alta Prioridad',
+        message: 'No tienes ninguna pantalla clasificada con Prioridad Alta (MVP).\n¿Deseas continuar a la siguiente fase de todas formas?',
+        confirmText: 'Continuar de todos modos',
+        cancelText: 'Volver y revisar',
+        type: 'warning'
+      });
+      if (!confirmed) {
         return;
       }
     }
@@ -1144,7 +1188,7 @@ export class DisenoConceptualComponent implements OnInit, OnDestroy {
       error: (err) => {
         console.error('Error al avanzar fase', err);
         this.isCompleting = false;
-        alert('Ocurrió un error al intentar avanzar a la Fase 3.');
+        this.dialogService.error('Ocurrió un error al intentar avanzar a la Fase 3.');
       }
     });
   }

@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { AssessmentService } from '../services/assessment.service';
 import { ProjectService } from '../../../core/services/project.service';
+import { DialogService } from '../../../core/services/dialog.service';
 import { environment } from '../../../../environments/environment';
 import {
   EvaluacionEsteticaResponse,
@@ -25,6 +26,7 @@ export class AssessmentComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private assessmentService = inject(AssessmentService);
   private projectService = inject(ProjectService);
+  private dialogService = inject(DialogService);
 
   projectId: number = 1;
   project: any = null;
@@ -187,7 +189,7 @@ export class AssessmentComponent implements OnInit {
 
   saveFinding(): void {
     if (!this.newFinding.problema.trim()) {
-      alert('Por favor describe el problema detectado.');
+      this.dialogService.warning('Por favor describe el problema detectado en el diseño.', 'Descripción Requerida');
       return;
     }
 
@@ -202,6 +204,7 @@ export class AssessmentComponent implements OnInit {
       error: (err) => {
         console.error('Error al agregar hallazgo:', err);
         this.isSaving = false;
+        this.dialogService.error('Ocurrió un error al registrar el hallazgo.');
       }
     });
   }
@@ -218,7 +221,7 @@ export class AssessmentComponent implements OnInit {
 
   saveEditFinding(): void {
     if (!this.editingFinding.problema.trim()) {
-      alert('Por favor describe el problema detectado.');
+      this.dialogService.warning('Por favor describe el problema detectado en el diseño.', 'Descripción Requerida');
       return;
     }
 
@@ -239,6 +242,7 @@ export class AssessmentComponent implements OnInit {
       error: (err) => {
         console.error('Error al actualizar hallazgo:', err);
         this.isSaving = false;
+        this.dialogService.error('Ocurrió un error al actualizar el hallazgo.');
       }
     });
   }
@@ -264,8 +268,15 @@ export class AssessmentComponent implements OnInit {
     }
   }
 
-  deleteFinding(findingId: number): void {
-    if (!confirm('¿Estás seguro de eliminar este hallazgo?')) return;
+  async deleteFinding(findingId: number): Promise<void> {
+    const confirmed = await this.dialogService.confirm({
+      title: '¿Eliminar hallazgo?',
+      message: '¿Estás seguro de eliminar este hallazgo? Esta acción no se puede deshacer.',
+      confirmText: 'Sí, eliminar',
+      cancelText: 'Cancelar',
+      type: 'danger'
+    });
+    if (!confirmed) return;
 
     this.activeActionRowId = null;
     this.assessmentService.deleteFinding(this.projectId, findingId).subscribe({
@@ -273,22 +284,31 @@ export class AssessmentComponent implements OnInit {
         this.showToast('Hallazgo eliminado correctamente');
         this.loadAssessment();
       },
-      error: (err) => console.error('Error al eliminar hallazgo:', err)
+      error: (err) => {
+        console.error('Error al eliminar hallazgo:', err);
+        this.dialogService.error('Ocurrió un error al eliminar el hallazgo.');
+      }
     });
   }
 
-
-
   // --- Finalización del Proyecto ---
-  finalizeProject(): void {
+  async finalizeProject(): Promise<void> {
     if (this.criticalFindingsCount > 0) {
-      alert('No puedes finalizar el proyecto mientras existan hallazgos críticos pendientes de resolver.');
+      this.dialogService.warning(
+        'No puedes finalizar el proyecto mientras existan hallazgos críticos pendientes de resolver.',
+        'Hallazgos Críticos Pendientes'
+      );
       return;
     }
 
-    if (!confirm('¿Deseas dar por concluida la evaluación y finalizar el proyecto en el Framework STYLE?')) {
-      return;
-    }
+    const confirmed = await this.dialogService.confirm({
+      title: '¿Finalizar proyecto?',
+      message: '¿Deseas dar por concluida la evaluación estética y finalizar el proyecto en el Framework STYLE?',
+      confirmText: 'Sí, finalizar proyecto',
+      cancelText: 'Continuar editando',
+      type: 'success'
+    });
+    if (!confirmed) return;
 
     this.isFinalizingProject = true;
     this.projectService.updateProject(this.projectId, {
@@ -298,13 +318,13 @@ export class AssessmentComponent implements OnInit {
       next: (updatedProject: any) => {
         this.project = updatedProject;
         this.isFinalizingProject = false;
-        this.showToast('¡Proyecto finalizado y aprobado con éxito!');
+        this.dialogService.success('¡Proyecto finalizado y aprobado con éxito!', 'Proyecto Culminado');
         this.loadProject();
       },
       error: (err) => {
         console.error('Error al finalizar el proyecto:', err);
         this.isFinalizingProject = false;
-        alert('Ocurrió un error al intentar finalizar el proyecto.');
+        this.dialogService.error('Ocurrió un error al intentar finalizar el proyecto.');
       }
     });
   }
@@ -483,7 +503,7 @@ export class AssessmentComponent implements OnInit {
       error: (err) => {
         console.error('Error al sincronizar con Fase 4:', err);
         this.isSyncingFase4 = false;
-        alert('Ocurrió un error al sincronizar con los resultados de Fase 4.');
+        this.dialogService.error('Ocurrió un error al sincronizar con los resultados de Fase 4.');
       }
     });
   }

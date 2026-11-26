@@ -1,10 +1,12 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { AuthStateService } from './core/services/auth-state.service';
+import { DialogComponent } from './shared/components/dialog/dialog.component';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  standalone: true,
+  imports: [RouterOutlet, DialogComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })

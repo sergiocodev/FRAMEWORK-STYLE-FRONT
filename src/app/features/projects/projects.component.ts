@@ -5,6 +5,7 @@ import { RouterModule, Router } from '@angular/router';
 import { ProjectsService, ProyectoResponse } from './projects.service';
 import { ClientsService, ClientResponse } from './clients.service';
 import { AuthStateService } from '../../core/services/auth-state.service';
+import { DialogService } from '../../core/services/dialog.service';
 import { ModalComponent } from '../../shared/components/modal/modal.component';
 
 export interface Project {
@@ -34,6 +35,7 @@ export class ProjectsComponent implements OnInit {
   private projectsService = inject(ProjectsService);
   private clientsService = inject(ClientsService);
   private authState = inject(AuthStateService);
+  private dialogService = inject(DialogService);
   private router = inject(Router);
 
   userGreetingName = computed(() => {
@@ -339,7 +341,7 @@ export class ProjectsComponent implements OnInit {
       error: (err) => {
         console.error('Error creando cliente:', err);
         this.isSubmittingClient = false;
-        alert('Error al crear el cliente.');
+        this.dialogService.error('Ocurrió un error al intentar crear el cliente.');
       }
     });
   }
@@ -378,21 +380,33 @@ export class ProjectsComponent implements OnInit {
       error: (err) => {
         console.error('Error al editar:', err);
         this.isSubmitting = false;
-        alert('Error al editar el proyecto.');
+        this.dialogService.error('Ocurrió un error al guardar los cambios del proyecto.');
       }
     });
   }
 
-  deleteProject(project: Project, event: Event) {
+  async deleteProject(project: Project, event: Event) {
     event.stopPropagation();
-    if (confirm(`¿Estás seguro de eliminar permanentemente el proyecto "${project.name}"?`)) {
+    const confirmed = await this.dialogService.confirm({
+      title: '¿Eliminar proyecto?',
+      message: `¿Estás seguro de eliminar permanentemente el proyecto "${project.name}"?\nEsta acción no se puede deshacer.`,
+      confirmText: 'Sí, eliminar',
+      cancelText: 'Cancelar',
+      type: 'danger'
+    });
+
+    if (confirmed) {
       this.projectsService.deleteProject(project.id).subscribe({
         next: () => {
           this.projects = this.projects.filter(p => p.id !== project.id);
           this.filterProjects();
           this.calculateKPIs(this.projects);
+          this.dialogService.success(`El proyecto "${project.name}" fue eliminado correctamente.`);
         },
-        error: (err) => console.error('Error al eliminar:', err)
+        error: (err) => {
+          console.error('Error al eliminar:', err);
+          this.dialogService.error('Ocurrió un error al intentar eliminar el proyecto.');
+        }
       });
     }
   }
@@ -424,11 +438,12 @@ export class ProjectsComponent implements OnInit {
 
         this.isSubmitting = false;
         this.closeCreateModal();
+        this.dialogService.success(`Proyecto "${newProj.name}" creado con éxito.`);
       },
       error: (err) => {
         console.error('Error al crear proyecto:', err);
         this.isSubmitting = false;
-        alert('Ocurrió un error al crear el proyecto.');
+        this.dialogService.error('Ocurrió un error al crear el proyecto.');
       }
     });
   }

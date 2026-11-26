@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterModule, ParamMap } from '@angular/router';
 import { AssessmentService } from '../framework/services/assessment.service';
+import { DialogService } from '../../core/services/dialog.service';
 import { environment } from '../../../environments/environment';
 import {
   VisawiPublicSurveyInfo,
@@ -22,6 +23,7 @@ import {
 export class PublicVisawiSurveyComponent implements OnInit, OnDestroy {
   private route: ActivatedRoute = inject(ActivatedRoute);
   private assessmentService: AssessmentService = inject(AssessmentService);
+  private dialogService: DialogService = inject(DialogService);
 
   projectId: number = 0;
   surveyIdentifier: string = '';
@@ -303,7 +305,10 @@ export class PublicVisawiSurveyComponent implements OnInit, OnDestroy {
     if (this.isSubmitting) return;
 
     if (this.totalAnsweredCount < 18) {
-      alert(`Por favor responde los 18 reactivos antes de enviar. Has respondido ${this.totalAnsweredCount} de 18.`);
+      this.dialogService.warning(
+        `Por favor responde los 18 reactivos antes de enviar tu evaluación.\nHas completado ${this.totalAnsweredCount} de 18 preguntas.`,
+        'Encuesta Incompleta'
+      );
       this.scrollToFirstUnanswered();
       return;
     }
@@ -329,7 +334,7 @@ export class PublicVisawiSurveyComponent implements OnInit, OnDestroy {
           this.isSurveyClosed = true;
           this.closedMessage = err.error?.detail || 'El cuestionario ha sido cerrado y ya no acepta respuestas.';
         } else {
-          alert('Ocurrió un error al enviar tu evaluación. Por favor intenta nuevamente.');
+          this.dialogService.error('Ocurrió un error al enviar tu evaluación. Por favor intenta nuevamente.');
         }
       }
     });

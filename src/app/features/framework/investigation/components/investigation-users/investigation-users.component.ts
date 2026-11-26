@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { UserArchetypeCardComponent } from '../../../../../shared/components/cards/user-archetype-card/user-archetype-card.component';
 import { InvestigationService } from '../../../services/investigation.service';
+import { DialogService } from '../../../../../core/services/dialog.service';
 
 @Component({
   selector: 'app-investigation-users',
@@ -13,6 +14,7 @@ import { InvestigationService } from '../../../services/investigation.service';
 })
 export class InvestigationUsersComponent {
   private investigationService = inject(InvestigationService);
+  private dialogService = inject(DialogService);
 
   @Input() projectId!: number;
   @Input() usuarios: any[] = [];
@@ -50,7 +52,7 @@ export class InvestigationUsersComponent {
       error: (err) => {
         console.error('Error al crear arquetipo', err);
         this.isCreating = false;
-        alert('Hubo un error al crear el arquetipo.');
+        this.dialogService.error('Hubo un error al crear el arquetipo de usuario.');
       }
     });
   }
@@ -76,17 +78,27 @@ export class InvestigationUsersComponent {
     this.emitChanges();
   }
 
-  removeUser(index: number) {
+  async removeUser(index: number) {
     const userToRemove = this.usuarios[index];
+    const confirmed = await this.dialogService.confirm({
+      title: '¿Eliminar arquetipo?',
+      message: `¿Estás seguro de eliminar el arquetipo "${userToRemove.name || userToRemove.role || 'seleccionado'}"?`,
+      confirmText: 'Sí, eliminar',
+      cancelText: 'Cancelar',
+      type: 'danger'
+    });
+    if (!confirmed) return;
+
     if (userToRemove.id && this.projectId) {
       this.investigationService.deleteArquetipo(this.projectId, userToRemove.id).subscribe({
         next: () => {
           this.usuarios.splice(index, 1);
           this.emitChanges();
+          this.dialogService.success('Arquetipo eliminado.');
         },
         error: (err) => {
           console.error('Error al eliminar arquetipo', err);
-          alert('No se pudo eliminar el arquetipo del servidor.');
+          this.dialogService.error('No se pudo eliminar el arquetipo del servidor.');
         }
       });
     } else {
